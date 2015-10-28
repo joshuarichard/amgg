@@ -1,7 +1,6 @@
 #!/bin/bash
 
-SLAVE_LABELS="${SWARM_CLIENT_LABELS}"
-SLAVE_NAME="${SWARM_CLIENT_NAME_PREFIX}-`hostname`"
+SLAVE_NAME="${SLAVE_NAME_PREFIX}-`hostname`"
 
 echo "Starting jenkins slave \"${SLAVE_NAME}\" with the labels \"${SLAVE_LABELS}\""
 
