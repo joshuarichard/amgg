@@ -10,7 +10,7 @@ RUN apt-get update && \
 RUN wget -O /var/tmp/swarm-client.jar http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/2.0/swarm-client-2.0-jar-with-dependencies.jar
 
 ENV SLAVE_NAME_PREFIX "slave-one"
-ENV LABELS "test"
+ENV SLAVE_LABELS "test"
 
 COPY run.sh /var/tmp/
 RUN chmod +x /var/tmp/run.sh
