@@ -2,4 +2,4 @@
 
 docker run -d \
     -p 8080:8080 \
-    --volumes-from jenkins-volume --name jenkinsserver amg/jenkins-server
+    --volumes-from jenkins-volume --name jenkins-volume test/jenkins-server
