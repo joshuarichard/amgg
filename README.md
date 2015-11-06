@@ -1,29 +1,36 @@
 ### amg-m4c
-Repo for work done in 2015-16 Josh, Dane, Jake
+2015 Gordon College Senior Project
+Jake Buettner, Joshua Richard, Dane Vanden Berg
+
+Preliminary system documentation for this project can be found in `planning/`
 
 ### dependencies
-node, npm, grunt
+node, npm, and grunt
 
 ### building
-`npm install` in the root directory
+`npm install` in the root dir
 
 ### running
-`node app.js`
+`node app.js` also in the root dir
 
 ### dev workflow
-make changes to your branch.
-run `grunt checkstyle` to lint your code
-`git add FILES_TO_COMMIT`
-`git commit`
-add a commit message
-`git push`
+1. read about your assigned issue
+2. create a new branch called GHxx where `xx` is the issue number
+3. `git fetch` the latest changes
+4. `git checkout YOUR_BRANCH`
+5. make your changes
+6. run `grunt checkstyle` to lint your code
+7. `git add FILES_TO_COMMIT`
+8. `git commit`
+9. add a commit message
+10. `git push`
 
-if your branch is not up to date with master:
-`git fetch` the latest changes to the remote repo
-`git stash` if you have any changes on your branch
-`git checkout master`
-`git pull` apply the latest changes to master
-`git checkout YOUR_BRANCH`
-`git rebase master`
-`git stash apply` put back your branch changes
+### branch isn't up to date with master?
+1. `git fetch` the latest changes to the remote repo
+2. `git stash` if you have any changes on your branch
+3. `git checkout master`
+4. `git pull` apply the latest changes to master
+5. `git checkout YOUR_BRANCH`
+6. `git rebase master`
+7. `git stash apply` put back your branch changes
 all done, nice work.
