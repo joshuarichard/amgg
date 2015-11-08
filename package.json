@@ -1,0 +1,24 @@
+{
+  "name": "team-amg",
+  "version": "0.0.1",
+  "description": "website and backend infrastructure for amg guatemala",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshuarichard/amg-m4c.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshuarichard/amg-m4c/issues"
+  },
+  "homepage": "https://github.com/joshuarichard/amg-m4c#readme",
+  "dependencies": {
+    "couchdb": "^0.3.8",
+    "nconf": "^0.8.2"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-eslint": "^17.3.1"
+  }
+}
