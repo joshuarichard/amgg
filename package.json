@@ -15,7 +15,9 @@
   "homepage": "https://github.com/joshuarichard/amg-m4c#readme",
   "dependencies": {
     "couchdb": "^0.3.8",
-    "nconf": "^0.8.2"
+    "express": "^4.13.3",
+    "nconf": "^0.8.2",
+    "node-mysql": "^0.4.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
