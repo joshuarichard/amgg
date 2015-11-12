@@ -1,5 +1,9 @@
 #!/bin/bash
 
-docker run -d \
-    -p 8080:8080 \
-    --volumes-from jenkins-volume --name jenkins-volume test/jenkins-server
+docker run \
+    -p 8043:8080 \
+    -p 50000:50000 \
+    --name=jenkins-master \
+    --volumes-from=jenkins-data \
+    -d \
+    test/jenkins-server
