@@ -34,3 +34,8 @@ node, npm, and grunt
 6. `git rebase master`
 7. `git stash apply` put back your branch changes
 all done, nice work.
+
+### Testing
+We use jenkins running in a docker container for automated testing.
+
+Talk to josh if you want more information on this.
