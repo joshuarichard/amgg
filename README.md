@@ -8,10 +8,10 @@ Preliminary system documentation for this project can be found in `planning/`
 node, npm, and grunt
 
 ### building
-`npm install`
+`npm install` in the root dir
 
 ### running
-`node app.js`
+`node app.js` also in the root dir
 
 ### dev workflow
 1. read about your assigned issue
