@@ -6,4 +6,4 @@ docker run \
     --name=jenkins-master \
     --volumes-from=jenkins-data \
     -d \
-    test/jenkins-server
+    jenkins-server
