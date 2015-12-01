@@ -1,4 +1,4 @@
-### amg-m4c
+### amgg
 2015 Gordon College Senior Project
 Jake Buettner, Joshua Richard, Dane Vanden Berg
 
