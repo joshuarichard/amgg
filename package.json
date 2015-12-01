@@ -7,20 +7,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshuarichard/amg-m4c.git"
+    "url": "git+https://github.com/joshuarichard/amgg.git"
   },
   "bugs": {
-    "url": "https://github.com/joshuarichard/amg-m4c/issues"
+    "url": "https://github.com/joshuarichard/amgg/issues"
   },
-  "homepage": "https://github.com/joshuarichard/amg-m4c#readme",
+  "homepage": "https://github.com/joshuarichard/amgg#readme",
   "dependencies": {
-    "couchdb": "^0.3.8",
     "express": "^4.13.3",
     "nconf": "^0.8.2",
-    "node-mysql": "^0.4.2"
+    "mongodb": "~2.0.49"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-eslint": "^17.3.1"
+    "grunt": "~0.4.5",
+    "gruntify-eslint": "~1.3.0",
+    "eslint-config-standard": "~4.4.0"
   }
 }

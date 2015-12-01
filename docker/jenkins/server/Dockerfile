@@ -1,4 +1,4 @@
-FROM jenkins
+FROM jenkins:latest
 MAINTAINER Joshua Richard <eos.josh.richard@gmail.com>
 
 USER root

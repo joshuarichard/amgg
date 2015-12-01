@@ -1,15 +1,12 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     grunt.initConfig({
         eslint: {
-            src: ['*.js'],
-            options: {
-                quiet: true
-            }
+            src: ['*.js']
         }
     });
 
-    grunt.loadNpmTasks('grunt-eslint');
- 
+    grunt.loadNpmTasks('gruntify-eslint');
+
     grunt.registerTask('default', ['eslint']);
     grunt.registerTask('checkstyle', ['eslint']);
 };
