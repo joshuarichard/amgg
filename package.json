@@ -7,12 +7,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joshuarichard/amg-m4c.git"
+    "url": "git+https://github.com/joshuarichard/amgg.git"
   },
   "bugs": {
-    "url": "https://github.com/joshuarichard/amg-m4c/issues"
+    "url": "https://github.com/joshuarichard/amgg/issues"
   },
-  "homepage": "https://github.com/joshuarichard/amg-m4c#readme",
+  "homepage": "https://github.com/joshuarichard/amgg#readme",
   "dependencies": {
     "express": "^4.13.3",
     "nconf": "^0.8.2",
