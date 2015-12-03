@@ -1,13 +1,12 @@
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.use('/home', express.static('public'));
+
+app.get('/', function(req, res) {
+    res.send('index.html');
 });
 
 var server = app.listen(3000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('es.amg.org is live at http://%s:%s', host, port);
+    console.log('Express port listening at localhost:3000/home');
 });

@@ -1,0 +1,846 @@
+﻿.container-full, .row-full { 
+  padding: 0px;
+  width: 100%;
+}
+
+.subtitulo {
+    color: #15274D;
+    text-align: center;
+    width: 100%;
+    font-weight: bold;
+}
+
+.enfasis {
+    color: #EF801F;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+}
+
+.section-det {
+    margin-top: 150px;
+    margin-bottom: 150px;
+}
+
+.section-det-2 {
+    margin-top: -100px;
+    margin-bottom: 150px;
+}
+
+.vcenter {
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+.div-marco-top, .div-marco-puente-top {
+    background-image: url('../image/bkg-marco-top.png');
+    background-size: auto;
+    background-position: right;
+    background-repeat: no-repeat;
+    margin-top: 10px;
+    height: 80px;
+}
+
+.div-marco-puente-top {
+    background-image: url('../image/bkg-marco-top-puente.png');
+}
+
+.div-marco {
+    margin-top: -40px;
+    margin-bottom: -40px;
+    padding-left: 30px;
+    padding-right: 30px;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.div-marco-bottom, .div-marco-puente-bottom {
+    background-image: url('../image/bkg-marco-bottom.png');
+    background-size: auto;
+    background-position: left;
+    background-repeat: no-repeat;
+    margin-bottom: 20px;
+    height: 80px;
+}
+
+.div-marco-puente-bottom {
+    background-image: url('../image/bkg-marco-bottom-puente.png');
+}
+
+.pre-active {
+    background-color: #EF801F;
+}
+
+/* Cambios a Bootstrap */
+.carousel-indicators {
+    margin-bottom: -15px;
+    opacity: 1;
+}
+
+.carousel-indicators li {
+  background-color: #EF801F;
+}
+.carousel-indicators .active {
+  background-color: #212b4d;
+}
+
+.carousel-control.left, .carousel-control.right {
+    background-image: none;
+    color: #EF801F;
+}
+
+.carousel-control.left {
+    margin-left: -40px;
+    opacity: 1;
+}
+
+.carousel-control.right {
+    margin-right: -40px;
+    opacity: 1;
+}
+
+.navbar-fixed-top {
+    top: 26px;
+    border-width: 0 0 1px;
+}
+
+.navbar-default {
+     background: transparent;
+}
+
+.dropdown-toggle {
+    color: white;
+}
+
+.navbar-brand {
+    background-image: url('../image/logo-amg.png');
+    background-repeat: no-repeat;
+    background-position: 50px;
+    width: 250px;
+}
+
+.dropdown-menu {
+    background-color: #ee801f !important;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #15274D !important;
+    background-image: none;
+    color: white;
+}
+
+.dropdown-menu > li > a {
+    color: white;
+}
+
+/* Secciones */
+.pre-header {
+    background-color: #15274D;
+    color: white;
+    height: 26px;
+    top: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 10000;
+}
+
+.pre-header a {
+    color: white;
+    text-align: center;
+}
+
+.img-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#ModeloTrabajo {
+    background-image: url('../images/bkg-modelo-de-trabajo.png');
+    background-size: 100%;
+    background-repeat:no-repeat;
+    padding-top: 60px;
+}
+
+/* Clases de personalización del sitio */
+
+.full-width {
+    width: 100%;
+}
+
+.content-center-90 {
+    width:90%; 
+    margin: auto;
+}
+
+img[usemap] {
+	border: none;
+	height: auto;
+	max-width: 100%;
+	width: auto;
+}
+
+map {
+    display: inline;
+}
+
+footer {
+    background-image: url('../images/bkg-footer.png');
+    background-size: 100%;
+    background-repeat:no-repeat;
+    color: white;
+    font-size: 1.25vw;
+    padding-top: 40px;
+    height: auto;
+    background-color: #15274D;
+}
+
+footer p {
+    color: #fff;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-white:hover {
+    color: white;
+}
+
+/* centered columns styles */
+.row-centered {
+    text-align:center;
+}
+
+.col-centered {
+    display:inline-block;
+    float:none;
+    /* reset the text-align */
+    text-align:left;
+}
+
+.row-spaced {
+    margin-bottom: 30px;
+}
+
+.box{
+	position: relative;
+	width: 100%;		/* desired width */
+    max-width: 650px;
+}
+.box:before{
+	content: "";
+	display: block;
+	padding-top: 57%; 	/* initial ratio of 1:1*/
+}
+
+.left-text {
+    text-align: left;
+}
+
+.content{
+	position:  absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.content-prog {
+    vertical-align: top;
+}
+
+.texto-importante {
+    font-size: 24px;
+    color: #00224D;
+}
+
+.full-cover-educacion, .full-cover-salud, .full-cover-riesgo,
+.full-cover-plan, .full-cover-asistencia, .full-cover-espiritual,
+.full-cover-calle, .full-cover-hilos {
+    background-size: cover !important;
+}
+
+.full-cover-educacion {
+    background: url('../images/ed-fondo.jpg') no-repeat;
+}
+
+.full-cover-salud {
+    background: url('../images/sa-fondo.jpg') no-repeat;
+}
+
+.full-cover-riesgo {
+    background: url('../images/ri-fondo.jpg') no-repeat;
+}
+
+.full-cover-plan {
+    background: url('../images/pl-fondo.jpg') no-repeat;
+}
+
+.full-cover-asistencia {
+    background: url('../images/as-fondo.jpg') no-repeat;
+}
+
+.full-cover-espiritual {
+    background: url('../images/es-fondo.jpg') no-repeat;
+}
+
+.full-cover-calle {
+    background: url('../images/ca-fondo.jpg') no-repeat;
+}
+
+.full-cover-hilos {
+    background: url('../images/hi-fondo.jpg') no-repeat;
+}
+
+#DondeTrabajamos {
+    background: url('../image/bkg-donde-trabajamos.png') no-repeat;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+} 
+
+.full-cover-voluntariado {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+}
+
+.titulo-modal {
+    background-color: #EF801F;
+    color: #fff;
+    font-style: italic;
+}
+
+.fondo-modal {
+    background-color: #212b4d;
+    color: #fff;
+    border: none !important;
+}
+
+.articulo-apadrina {
+    background-image: url('../images/bkg-ap.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: #fff;
+    font-size: 1.20vw;
+    padding-bottom: 15px;
+}
+
+.ref-apadrina {
+    color: #EF801F;
+}
+
+#Apadrina {
+    background: url('../images/bkg-Apadrinamiento.jpg') no-repeat;
+    padding-top: 50px;
+    background-position: 50% 50%;
+}
+
+#Orando {
+    background: url('../images/bkg-orando.jpg') no-repeat;
+    padding-top: 45%;
+    padding-left: 50%;
+    background-position: 50% 50%;
+    background-size: 100% auto;
+}
+
+.col-offset-article {
+    padding-left: 7vw;
+}
+
+#Dando {
+    padding-top: 100px;
+    background: url('../images/bkg-dando-1.jpg') no-repeat;
+    background-position: 50% 50%;
+}
+
+#Dando2 {
+    padding-top: 100px;
+    background: url('../images/bkg-dando-2.jpg') no-repeat;
+    background-position: 50% 50%;
+}
+
+.container-dando {
+    color: #fff;
+    font-size: 1.25vw;
+}
+
+/* Efectos */
+.bounce {
+  position:fixed;
+  left:50%;
+  bottom:0;
+  margin-top:-25px;
+  margin-left:-25px;
+  height:50px;
+  width:50px;
+  -webkit-animation:bounce 1s infinite;
+}
+
+@-webkit-keyframes bounce {
+  0%       { bottom:5px; }
+  25%, 75% { bottom:15px; }
+  50%      { bottom:20px; }
+  100%     {bottom:0;}
+}
+
+@font-face {
+  font-family: 'Gotham';
+  src: url('../fonts/Gotham-Book.otf');
+}
+
+a {
+    color: #EF801F;    
+}
+
+h1, h2 {
+    font-family: 'Damion';
+    color: #EF801F;
+}
+
+p {
+    font-family: 'Gotham';
+    color: #00224D;
+}
+
+.tp-caption {
+    white-space: normal !important;
+}
+
+h4, .p-apadriana {
+    font-family: 'Gotham';
+    color: White;
+}
+
+.tp-caption.gotham-text,
+.gotham-text {
+    font-family: 'Gotham';
+}
+
+.p-apadriana {
+    font-size: 0.8em;
+}
+
+.link-programa {
+     color: #EF801F;
+}
+
+.img-icono {
+    max-width: 50px;
+}
+
+@media screen and (max-width: 480px) {
+    .link-programa {
+        font-size: 12px !important;
+    }
+    
+    .tit-puente {
+        width: 152.4px;
+        height: 44.4px;
+    }
+    
+    .box{
+        position: relative;
+        width: 100%;		/* desired width */
+        max-width: 320px;
+    }
+    
+    .img-trigo-title {
+        width: 165px;
+    }
+    
+    .div-flecha {
+        background-image: url('../image/bkg-flecha.png');
+        background-position: right;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        margin-top: 40px;
+        padding-top: 5px;
+        color: white;
+        font-size: 10px;
+        line-height: 12px;
+        height: 40px;
+    }
+    
+    h1 {
+        font-size: 20px;
+        line-height: 24px;
+    }
+    
+    h2 {
+        font-size: 16px;
+    }
+    
+    p, .divTexto>ul>li {
+        font-size: 10px;
+        line-height: 12px;
+    }
+    
+    .divTexto {
+        width: 420%;
+         margin-left: 10px;
+         margin-top: 20px;
+    }
+    
+    .foto-programa, .sa-foto, .ri-foto, .pl-foto, .as-foto,
+    .es-foto, .ca-foto {
+        display: none;   
+    }
+    
+    .texto-importante {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 768px) {
+    .link-programa {
+        font-size: 0.8em;
+    }
+    
+    .tit-puente {
+        width: 228.6px;
+        height: 66.6px;
+    }
+    
+    .box{
+        position: relative;
+        width: 100%;		/* desired width */
+        max-width: 475px;
+    }  
+    
+    .img-trigo-title {
+        width: 300px;
+    }
+    
+    .div-flecha {
+        background-image: url('../image/bkg-flecha.png');
+        background-position: right;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        margin-top: 80px;
+        padding-top: 5px;
+        padding-left: 10px;
+        color: white;
+        font-size: 14px;
+        line-height: 16px;
+        height: 44px;
+    }
+    
+    h1 {
+        font-size: 38px;
+        line-height: 42px;
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+    
+    p, .divTexto>ul>li {
+        font-size: 13px;
+        line-height: 15px;
+    }
+    
+    .divTexto {
+        width: 420%;
+         margin-left: 20px;
+         margin-top: 20px;
+    }
+    
+    .foto-programa {
+        width: 172px;
+        height: 181.6px;    
+    }
+    
+    .sa-foto {
+        width: 210.4px;
+        height: 179.2px;
+    }
+    
+    .ri-foto {
+        width: 169.2px;
+        height: 177.2px;
+    }
+    
+    .pl-foto {
+        width: 211.2px;
+        height: 187.6px;
+    }
+    
+    .as-foto {
+        width: 177.6px;
+        height: 178px;
+    }
+    
+    .es-foto {
+        width: 202.8px;
+        height: 176.8px;
+    }
+        
+    .ca-foto {
+        width: 188.4px;
+        height: 197.6px;
+    }
+    
+    .texto-importante {
+        font-size: 20px;
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 992px) {
+    .link-programa {
+        font-size: 1em;
+    }
+    
+    .tit-puente {
+        width: 342.9px;
+        height: 99.9px;
+    }
+    
+    .img-trigo-title {
+        width: 350px;
+    }
+    
+    .div-flecha {
+        background-image: url('../image/bkg-flecha.png');
+        background-position: right;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        margin-top: 120px;
+        padding-top: 5px;
+        padding-left: 10px;
+        color: white;
+        font-size: 24px;
+        line-height: 26px;
+        height: 66px;
+    }
+    
+    h1 {
+        font-size: 44px;
+        line-height: 48px;
+    }
+    
+    h2 {
+        font-size: 34px;
+    }
+    
+    p, .divTexto>ul>li {
+        font-size: 15px;
+        line-height: 17px;
+    }
+    
+    .divTexto {
+        width: 375%;
+         margin-left: 20px;
+         margin-top: 20px;
+    }
+    
+    .foto-programa {
+        width: 258px;
+        height: 272.4px;  
+    }
+    
+    .sa-foto {
+        width: 315.6px;
+        height: 268.8px;
+    }
+    
+    .ri-foto {
+        width: 253.8px;
+        height: 265.8px;
+    }
+    
+    .pl-foto {
+        width: 316.8px;
+        height: 281.4px;
+    }
+    
+    .as-foto {
+        width: 266.4px;
+        height: 267px;
+    }
+    
+    .es-foto {
+        width: 304.2px;
+        height: 265.2px;
+    }
+        
+    .ca-foto {
+        width: 282.6px;
+        height: 296.4px;
+    }
+    
+    .texto-importante {
+        font-size: 20px;
+    }
+}
+
+@media screen and (min-width: 993px) and (max-width: 1200px) {
+    .link-programa {
+        font-size: 1.2em;
+    }
+    
+    .tit-puente {
+        width: 381px;
+        height: 111px;
+    }
+    
+    .img-trigo-title {
+        width: 375px;
+    }
+    
+    .div-flecha {
+        background-image: url('../image/bkg-flecha.png');
+        background-position: right;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        margin-top: 120px;
+        padding-top: 5px;
+        padding-left: 10px;
+        color: white;
+        font-size: 28px;
+        line-height: 30px;
+        height: 76px;
+    }
+    
+    h1 {
+        font-size: 46px;
+        line-height: 50px;
+    }
+    
+    h2 {
+        font-size: 38px;
+    }
+    
+    p, .divTexto>ul>li {
+        font-size: 15px;
+        line-height: 21px;
+    }
+    
+    .divTexto {
+        width: 355%;
+         margin: 20px;
+    }
+    
+    .foto-programa {
+        width: 387px;
+        height: 408.6px;
+    }
+    
+    .sa-foto {
+        width: 473.4px;
+        height: 403.2px;
+    }
+    
+    .ri-foto {
+        width: 380.7px;
+        height: 398.7px;
+    }
+    
+    .pl-foto {
+        width: 475.2px;
+        height: 422.1px;
+    }
+    
+    .as-foto {
+        width: 399.6px;
+        height: 400.5px;
+    }
+    
+    .es-foto {
+        width: 456.3px;
+        height: 397.8px;
+    }
+        
+    .ca-foto {
+        width: 423.9px;
+        height: 444.6px;
+    }
+}
+
+@media screen and (min-width: 1201px) {
+    .link-programa {
+        font-size: 1.2em;
+    }
+    
+    .tit-puente {
+        width: 381px;
+        height: 111px;
+    }
+    
+    .img-trigo-title {
+        width: 375px;
+    }
+    
+    .div-flecha {
+        background-image: url('../image/bkg-flecha.png');
+        background-position: right;
+        background-size: auto 100%;
+        background-repeat: no-repeat;
+        margin-top: 180px;
+        padding-top: 5px;
+        padding-left: 10px;
+        color: white;
+        font-size: 32px;
+        line-height: 34px;
+        height: 84px;
+    }
+    
+    h1 {
+        font-size: 48px;
+        line-height: 52px;
+    }
+    
+    h2 {
+        font-size: 38px;
+    }
+    
+    p, .divTexto>ul>li {
+        font-size: 15px;
+        line-height: 21px;
+    }
+    
+    .divTexto {
+        width: 355%;
+         margin: 20px;
+    }
+    
+    .foto-programa {
+        width: 430px;
+        height: 454px;
+    }
+    
+    .sa-foto {
+        width: 526px;
+        height: 448px;
+    }
+    
+    .ri-foto {
+        width: 423px;
+        height: 443px;
+    }
+    
+    .pl-foto {
+        width: 528px;
+        height: 469px;    
+    }
+    
+    .as-foto {
+        width: 444px;
+        height: 445px;
+    }
+    
+    .es-foto {
+        width: 507px;
+        height: 442px;
+    }
+        
+    .ca-foto {
+        width: 471px;
+        height: 494px;
+    }
+}
+
+
