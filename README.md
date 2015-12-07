@@ -39,37 +39,3 @@ all done, nice work.
 We use jenkins running in a docker container for automated testing.
 
 Talk to josh if you want more information on this.
-
-### directory tree
-├── app.js
-├── docker
-│   ├── jenkins
-│   │   ├── data
-│   │   │   └── Dockerfile
-│   │   ├── server
-│   │   │   ├── Dockerfile
-│   │   │   ├── plugins.txt
-│   │   │   └── start-jenkins.sh
-│   │   └── slaves
-│   │       ├── Dockerfile
-│   │       └── run.sh
-│   └── mongo
-│       ├── data
-│       │   └── Dockerfile
-│       ├── mongo
-│       │   ├── Dockerfile
-│       │   └── start-mongo.sh
-│       └── mongo-express
-│           ├── Dockerfile
-│           └── start-mongo-express.sh
-├── Gruntfile.js
-├── mongo-setup
-│   ├── fill.js
-│   ├── fill.js.bulk
-│   └── fill.js.save
-├── package.json
-├── planning
-│   ├── Project_Proposal.pdf
-│   ├── SocialImpactStatementForAMG.pdf
-│   └── SPMP.pdf
-└── README.md
