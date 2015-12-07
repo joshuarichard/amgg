@@ -13,7 +13,7 @@ RUN cd /usr/local/lib/node_modules/mongo-express && \
     cp config.default.js config.js
 
 ENV ME_CONFIG_BASICAUTH_USERNAME="mongo"
-ENV ME_CONFIG_BASICAUTH_PASSWORD="xxx"
+ENV ME_CONFIG_BASICAUTH_PASSWORD="x"
 
 EXPOSE 8081
 
