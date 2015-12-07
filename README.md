@@ -13,13 +13,13 @@ node, npm, and grunt
 ### running
 `node app.js`
 
-### dev workflow
+### development workflow
 1. read about your assigned issue
 2. create a new branch called GHxx where `xx` is the issue number
 3. `git fetch` the latest changes
 4. `git checkout YOUR_BRANCH`
 5. make your changes
-6. run `grunt checkstyle` to lint your code
+6. run `grunt checkstyle` to lint your code and fix any errors
 7. `git add FILES_TO_COMMIT`
 8. `git commit`
 9. add a commit message
@@ -39,3 +39,37 @@ all done, nice work.
 We use jenkins running in a docker container for automated testing.
 
 Talk to josh if you want more information on this.
+
+### directory tree
+├── app.js
+├── docker
+│   ├── jenkins
+│   │   ├── data
+│   │   │   └── Dockerfile
+│   │   ├── server
+│   │   │   ├── Dockerfile
+│   │   │   ├── plugins.txt
+│   │   │   └── start-jenkins.sh
+│   │   └── slaves
+│   │       ├── Dockerfile
+│   │       └── run.sh
+│   └── mongo
+│       ├── data
+│       │   └── Dockerfile
+│       ├── mongo
+│       │   ├── Dockerfile
+│       │   └── start-mongo.sh
+│       └── mongo-express
+│           ├── Dockerfile
+│           └── start-mongo-express.sh
+├── Gruntfile.js
+├── mongo-setup
+│   ├── fill.js
+│   ├── fill.js.bulk
+│   └── fill.js.save
+├── package.json
+├── planning
+│   ├── Project_Proposal.pdf
+│   ├── SocialImpactStatementForAMG.pdf
+│   └── SPMP.pdf
+└── README.md
