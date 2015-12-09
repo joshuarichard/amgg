@@ -1,7 +1,7 @@
 module.exports = function (grunt) {
     grunt.initConfig({
         eslint: {
-            src: ['*.js']
+            src: ['*.js', 'auto/*.js']
         }
     });
 
