@@ -1,0 +1,19 @@
+#child-img {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.num-children {
+    margin-top: 7%;
+    text-align: right;
+}
+
+#num-children-input {
+    width: 5em;
+    text-align: center;
+}
+
+.form-group {
+	margin-left: 1em;
+	margin-right: 1em;
+}
