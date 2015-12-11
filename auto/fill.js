@@ -19,12 +19,14 @@ var centro_de_ninos = [
     'Las Vistas Childcare Center', 'Matochos Childcare Center',
     'Oratorio Childcare Center', 'Yalu Nim Jay Childcare Center'
 ];
+
 var status = [
     'New Child - In Process', 'Sponsored',
     'Waiting for Sponsor - No Prior Sponsor',
     'Waiting for Sponsor - Discontinued', 'Additional Sponsor Needed',
     'No Longer in the Program - Deleted', 'Review Requested', 'Duplicate'
 ];
+
 var nombre = [
     'Sofia', 'Isabella', 'Camila', 'Valentina', 'Mariana',
     'Luciana', 'Daniela', 'Gabriela', 'Victoria', 'Martina',
@@ -39,16 +41,19 @@ var nombre = [
     'Elena', 'Manuela', 'Juana', 'Alejandra', 'Antonia', 'Guadalupe',
     'Agustina', 'Maria'
 ];
+
 var apellido = [
     'Garcia', 'Rodriguez', 'Hernandez', 'Lopez', 'Gonzalez', 'Perez',
     'Sanchez', 'Torres', 'Ramirez', 'Gomez', 'Diaz', 'Reyes', 'Cruz',
     'Guitierrez', 'Ramos', 'Alvarez', 'Mendoza', 'Castillo', 'Jimenez',
     'Moreno', 'Romero', 'Herrera', 'Vega'
 ];
+
 var genero = [
     'masculino',
     'mujer'
 ];
+
 var ciudad = [
     'Guatemala City', 'Mixco', 'Quetzaltenango', 'San Miguel Petapa',
     'Escuintla', 'San Juan Sacatepequez', 'Villa Canales',
@@ -61,6 +66,7 @@ var ciudad = [
     'Ciudad Vieja', 'San Benito', 'Palin', 'Barberena', 'Jacaltenango',
     'Momostenango', 'Ostuncalco', 'Santa Cruz del Quiche', 'San Marcos'
 ];
+
 var provincia = [
     'Alta Verapaz', 'Baja Verapaz', 'Chimaltenango', 'Chiquimula',
     'El Progreso', 'Escuintla', 'Guatemala', 'Huehuetenango',
@@ -69,6 +75,7 @@ var provincia = [
     'Santa Rosa', 'Solola', 'Suchitepequez', 'Totonicapan',
     'Zacapa'
 ];
+
 var ocupacion = [
     'plumber', 'mailman', 'firefighter', 'computer programmer', 'dogwatcher',
     'police officer', 'carpenter', 'accountant', 'writer', 'poet', 'musician',
@@ -77,6 +84,7 @@ var ocupacion = [
     'actor', 'director', 'producer', 'editor', 'teacher', 'principal',
     'janitor', 'car salesman', 'manager', 'president'
 ];
+
 var padres = [
     'padre',
     'madre',
@@ -87,10 +95,12 @@ var padres = [
     'hermano',
     'hermana'
 ];
+
 var abscent = [
     'true',
     'false'
 ];
+
 var religion_de_la_familia = [
     'Christain',
     'Buddhist',
@@ -99,6 +109,7 @@ var religion_de_la_familia = [
     'Atheist',
     'Baha\'i'
 ];
+
 var church = [
     'Red Church',
     'Blue Church',
@@ -109,24 +120,19 @@ var church = [
     'Brown Church',
     'Purple Church'
 ];
+
 var estado_civil_de_los_padres = [
     'Married',
     'Divorced'
 ];
 
-/**
- * start - start date (javascript date)
- * end - end date (javascript date)
- *
- * example: start Jan. 1st, 2012, end Feb. 1st, 2012
- * randomDate(new Date(2012, 0, 1), new Date(2012, 2, 1))
- *
- * for some reason this generates past Feb. 1st but only by
- * 20 days or so... w/e shouldn't be a problem
- */
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() *
                    (end.getTime() - start.getTime()));
+}
+
+function randomNumber(min, max) {
+     return Math.floor(Math.random() * (max - min) + min);
 }
 
 function generateAddress() {
@@ -136,15 +142,15 @@ function generateAddress() {
     var lower_letters = 'abcdefghijklmnopqrstuvwxyz';
     var type = ['Street', 'Ave', 'Lane', 'Circle', 'Drive'];
 
-    var number_length = Math.floor(Math.random() * (5 - 1) + 1);
+    var number_length = randomNumber(1, 5);
     for(var a = 0; a < number_length; a++) {
         address += numbers.charAt(Math.floor(Math.random() * numbers.length));
     }
 
     address += ' ';
-    address += upper_letters[Math.floor(Math.random()*upper_letters.length)];
+    address += upper_letters[Math.floor(Math.random() * upper_letters.length)];
 
-    var street_length = Math.floor(Math.random() * (15 - 3) + 3);
+    var street_length = randomNumber(3, 15);
     for(var b = 0; b < street_length; b++) {
         address += lower_letters.charAt(Math.floor(Math.random() *
                    lower_letters.length));
@@ -156,9 +162,10 @@ function generateAddress() {
     return address;
 }
 
+// generate random number of guardian mini-documents
 function generateGuardians() {
     var guardians = {};
-    var numOfGuardians = Math.floor(Math.random() * (4 - 1) + 1);
+    var numOfGuardians = randomNumber(1, 4);
     for(var x = 0; x < numOfGuardians; x++) {
         var guardian = {
             'relacion': padres[Math.floor(Math.random() * padres.length)],
@@ -175,15 +182,16 @@ function generateGuardians() {
     return guardians;
 }
 
+// generate random number of hermanos mini-documents
 function generateHermanos() {
     var hermanos = {};
-    var numOfHermanos = Math.floor(Math.random() * (4 - 1) + 1);
+    var numOfHermanos = randomNumber(1, 4);
     for(var x = 0; x < numOfHermanos; x++) {
         var hermano = {
             'nombre': nombre[Math.floor(Math.random() * nombre.length)],
             'apellido': apellido[Math.floor(Math.random() * apellido.length)],
             'cumpleaños': randomDate(new Date(1990, 00, 01), new Date()),
-            'grado_u_ocupación': Math.floor((Math.random() * (12 - 0) + 0)),
+            'grado_u_ocupación': randomNumber(0, 12),
             'género': genero[Math.floor(Math.random() * genero.length)],
             'status': status[Math.floor(Math.random() * status.length)],
             'amg_id':  Math.floor((Math.random() * 99999999) + 1),
@@ -228,7 +236,7 @@ function generateDocument() {
         'estado_civil_de_los_padres': estado_civil_de_los_padres[
                                       Math.floor(Math.random() *
                                       estado_civil_de_los_padres.length)],
-        'comidas_al_día_en_el_hogar': Math.floor((Math.random() * (3 - 0))),
+        'comidas_al_día_en_el_hogar': randomNumber(0, 3),
         'guardians': generateGuardians(),
         'hermanos': generateHermanos()
     };
@@ -244,6 +252,7 @@ var insertDocument = function(db, callback) {
     );
 };
 
+// this for loop controls basically the entire operation
 for (var x = 0; x < numOfDocs; x++) {
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
