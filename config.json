@@ -4,8 +4,8 @@
         "port": "27017"
     },
     "autofill": {
-    	"collection": "testing",
-        "numOfDocs": "20",
+        "collection": "testing",
+        "numOfDocs": "200",
         "dbName": "children"
     }
 }
