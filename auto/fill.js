@@ -132,7 +132,7 @@ function randomDate(start, end) {
 }
 
 function randomNumber(min, max) {
-     return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
 function generateAddress() {
