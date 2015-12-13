@@ -13,6 +13,9 @@ node, npm, and grunt
 ### running
 `node app.js`
 
+### db
+mongo and mongo-express run in docker containers. see `docker/mongo`.
+
 ### development workflow
 1. read about your assigned issue
 2. create a new branch called GHxx where `xx` is the issue number
@@ -34,6 +37,9 @@ node, npm, and grunt
 6. `git rebase master`
 7. `git stash apply` put back your branch changes
 all done, nice work.
+
+### autofilling db
+run `node auto/fill.js` from the root directory. make sure you run it from the root directory otherwise nconf doesn't know where to find the config file.
 
 ### Testing
 We use jenkins running in a docker container for automated testing.
