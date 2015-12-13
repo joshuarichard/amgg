@@ -1,0 +1,49 @@
+{
+	"centro_de_ninos": "Las Vistas Childcare Center",
+	"status": "Sponsored",
+	"patrocinado_por": "08/20/2009",
+	"amg_id": "1023932",
+	"alt_id": "2921/020",
+	"nombre": "Julio",
+	"segundo_nombre": "Fernando",
+	"apellido": "Rodriguez",
+	"género": "masculino",
+	"cumpleaños": "10/07/2005",
+	"años": "8",
+	"direccion_de_casa": "2 Natalie Lane",
+	"ciudad": "Boston",
+	"provincia": "Massachusetts",
+	"código_postal": "23920",
+	"patrocinador_id": "1922822",
+	"patrocinador_nombre": "John",
+	"última_actualización": "11/30/2015",
+	"guardian_1": {
+		"relacion": "padre",
+		"nombre": "Jose",
+		"apellido": "Rodriguez",
+		"ocupación": "plumber",
+		"ingreso_mensual_en_usd": "30",
+		"cumpleaños": "09/02/1969"
+	},
+	"guardian_2": {
+		"relacion": "madre",
+		"nombre": "Maria",
+		"apellido": "Rodriguez",
+		"ocupación": "housewife",
+		"cumpleaños": "06/30/1974"
+	},
+	"abscent_padre": "false",
+	"abscent_madre": "false",
+	"religión_de_la_familia": "Christian",
+	"iglesia_de_la_familia": "Nueva Esperanza",
+	"hermano_1": {
+		"nombre": "Juan",
+		"apellido": "Rodriguez",
+		"cumpleaños": "08/13/2009",
+		"grado_u_ocupación": "10",
+		"género": "masculino",
+		"status": "Sponsored"
+	},
+	"estado_civil_de_los_padres": "Married",
+	"comidas_al_día_en_el_hogar": "3"
+}

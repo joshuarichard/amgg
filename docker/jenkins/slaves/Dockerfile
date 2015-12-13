@@ -10,6 +10,8 @@ RUN apt-get update && \
     npm \
     wget
 
+RUN npm install -g grunt-cli
+
 RUN ln -s /usr/bin/nodejs /usr/local/bin/node
 
 RUN mkdir -p /var/run/sshd

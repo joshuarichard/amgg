@@ -23,6 +23,12 @@
             2,
             80,
             4
+        ],
+        "no-octal": [
+            0
+        ],
+        "no-trailing-spaces": [
+            2
         ]
     },
     "env": {
