@@ -102,11 +102,11 @@ var abscent = [
 ];
 
 var religion_de_la_familia = [
-    'Christain',
-    'Buddhist',
-    'Muslim',
-    'Hindu',
-    'Atheist',
+    'Christianity',
+    'Buddhism',
+    'Islam',
+    'Hinduism',
+    'Atheism',
     'Baha\'i'
 ];
 
