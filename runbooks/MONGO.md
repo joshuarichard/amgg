@@ -1,7 +1,14 @@
-### mongo
-Runbook for MongoDB.
+### Mongo
+Runbook for MongoDB. All of these commands require shell access on the server.
+
+```shell
+$ ssh -i PRIVATE_KEY_PATH amgg@73.227.187.84
+```
 
 ### Building containers
+##### Most common use case
+If Mongo or Mongo-Express is down, it's almost always the case that you
+
 ##### Mongo persistent data
 Mongo doesn't have much use without a persistent data store. This isn't always necessary, if you want to just spin up a few instances for quick testing that's fine.
 
