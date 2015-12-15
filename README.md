@@ -1,6 +1,7 @@
 ### amgg
 2015 Gordon College Senior Project
-Jake Buettner, Joshua Richard, Dane Vanden Berg
+
+Jake Buettner, Joshua Richard, and Dane Vanden Berg
 
 Preliminary system documentation for this project can be found in `planning/`
 
