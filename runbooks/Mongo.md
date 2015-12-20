@@ -8,6 +8,8 @@ ssh -i PRIVATE_KEY_PATH amgg@73.227.187.84
 ### Most common problem
 If Mongo or Mongo-Express is down, it's almost always the case that you just need to restart them. To do this...
 
+The main data volume name is `mongo-data`.
+
 ```shell
 cd /home/amgg/mongo/mongo
 sh start-mongo.sh MONGO_NAME DATA_VOLUME_NAME            # make sure you put in both args
