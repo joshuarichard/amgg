@@ -36,10 +36,10 @@ start-mongo.sh (change the `-p 27017:27017` to `-p 27018:27017`)
 #!/bin/bash
 
 docker run \
-       -p 27017:27017 \
-       --name $1 \
-       --volumes-from=$2 \
-       -d \
+       -p 27017:27017 \        # port mapped as host:container
+       --name $1 \             # name for the container
+       --volumes-from=$2 \     # link the data volume (note uses name not id or tag)
+       -d \                    # daemonize the container
        mongodb
 ```
 
@@ -56,11 +56,11 @@ start-mongo-express.sh (change the `-p 8081:8081` to `-p 8082:8081`)
 #!/bin/bash
 
 docker run \
-       -t \
-       -rm \
-       -p 8081:8081 \
-       --name $1 \
-       --link $2:mongodb \
+       -t \                    # which tag to run
+       -rm \                   # rm on shutdown
+       -p 8081:8081 \          # port mapped as host:container
+       --name $1 \             # name for the container
+       --link $2:mongodb \     # link to mongo (note uses name not id or tag)
        mongo-express
 ```
 
