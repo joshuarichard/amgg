@@ -5,8 +5,7 @@ Runbook for MongoDB. All of these commands require shell access on the server.
 ssh -i PRIVATE_KEY_PATH amgg@73.227.187.84
 ```
 
-### Running containers
-##### Most common use case
+### Most common problem
 If Mongo or Mongo-Express is down, it's almost always the case that you just need to restart them. To do this...
 
 ```shell
