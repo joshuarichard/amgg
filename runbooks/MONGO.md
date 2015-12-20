@@ -2,66 +2,80 @@
 Runbook for MongoDB. All of these commands require shell access on the server.
 
 ```shell
-$ ssh -i PRIVATE_KEY_PATH amgg@73.227.187.84
+ssh -i PRIVATE_KEY_PATH amgg@73.227.187.84
 ```
 
-### Building containers
+### Running containers
 ##### Most common use case
-If Mongo or Mongo-Express is down, it's almost always the case that you
-
-##### Mongo persistent data
-Mongo doesn't have much use without a persistent data store. This isn't always necessary, if you want to just spin up a few instances for quick testing that's fine.
-
-You can store this persistent data in another container known in docker as a data volume.
-
-Build and run the Dockerfile in `docker/mongo/data/`.
+If Mongo or Mongo-Express is down, it's almost always the case that you just need to restart them. To do this...
 
 ```shell
-$ docker build -t mongo-data .
-$ docker run --name YOUR_NAME_FOR_MONGO_DATA mongo-data
+cd /home/amgg/mongo/mongo
+sh start-mongo.sh MONGO_NAME DATA_VOLUME_NAME            # make sure you put in both args
+cd ../mongo-express
+sh start-mongo-express MONGO_EXPRESS_NAME MONGO_NAME     # same thing, make sure you put in the args
 ```
 
+### Create an entirely new Mongo
 ##### Mongo
-An actual instance of Mongo.
+If you want to spin up your own entirely new mongo instance you can do that but you'll have to do some extra work.
 
-Build and run the Dockerfile in `docker/mongo/mongo`.
+First, create your Mongo's data volume.
+```shell
+docker run --name DATA_VOLUME_NAME mongo-data
+```
+Next, modify the `/home/amgg/mongo/mongo/start-mongo.sh` script to include a new port number.
+For example, if there is already an instance of mongo running at 27017, change the first part of the docker port mapping to 27018. The order is `host:container`. Do a `docker ps` or `nmap localhost` if you aren't sure which ports are available.
 
 ```shell
-$ docker build -t mongo .
+cd /home/amgg/mongo/mongo
+nano start-mongo.sh
 ```
 
-Then modify `docker/mongo/mongo/start-mongo.sh` with the name you gave the mongo persistent data volume.
-
-Example:
+start-mongo.sh (change the `-p 27017:27017` to `-p 27018:27017`)
 ```shell
-$ docker run \
-         -p 27017:27017 \
-         --name YOUR_NAME_FOR_MONGO \
-         --volumes-from=YOUR_NAME_FOR_MONGO_DATA \
-         -d \
-         mongodb
+#!/bin/bash
+
+docker run \
+       -p 27017:27017 \
+       --name $1 \
+       --volumes-from=$2 \
+       -d \
+       mongodb
 ```
 
-Once you've modified it, run the command:
+After this you'll be ready to start mongo.
 ```shell
-$ sh start-mongo.sh
+sh start-mongo.sh MONGO_NAME DATA_VOLUME_NAME            # make sure you put in both args
 ```
 
-If you don't want to attach a persistent volume, just pull out the `--volumes-from` option, but make sure to keep the `-p 27017:27017`, `--name`, and `-d` options.
+##### Mongo-Express
+Now to start start mongo-express. You'll need to again modify the startup script if there's already mongo-express running somewhere.
 
-##### Mongo express
-Mongo can be accessed with the Mongo shell, but if you want to access it with a web UI then spin up a Mongo-Express container.
-
-cd into `docker/mongo/mongo-express/` and build the container.
-
+start-mongo-express.sh (change the `-p 8081:8081` to `-p 8082:8081`)
 ```shell
-$ docker build -t mongo-express .
+#!/bin/bash
+
+docker run \
+       -t \
+       -rm \
+       -p 8081:8081 \
+       --name $1 \
+       --link $2:mongodb \
+       mongo-express
 ```
 
-Start Mongo-Express with the shell script in the same directory. Put as an argument the name of your mongo container.
+You'll have to ask Josh to open up your new mongo-express port on LAN the test server is on.
 
+Now, start Mongo Express.
 ```shell
-$ sh start-mongo-express.sh YOUR_NAME_FOR_MONGO
+cd ../mongo-express
+sh start-mongo-express MONGO_EXPRESS_NAME MONGO_NAME     # same thing, make sure you put in the args
 ```
 
-Mongo should now be running at `localhost:27017` and Mongo-Express should be accessible in your browser at `localhost:8081`.
+And confirm that everything's up and running:
+```shell
+sudo docker ps
+```
+
+Great, Mongo should now be running at `localhost:SOME_PORT` and Mongo-Express should be accessible in your browser at `localhost:SOME_PORT`.
