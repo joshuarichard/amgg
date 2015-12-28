@@ -8,8 +8,6 @@ var dbName = nconf.get('autofill:dbName');
 var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
           nconf.get('mongo:port') + '/' + dbName;
 
-
-
 var exports = module.exports = {};
 
 exports.insert = function (doc) {
