@@ -26,13 +26,16 @@ exports.edit = function(lookupKeys, lookupValues, replaceKey, replaceValue) {
     return lookupKeys, lookupValues, replaceKey, replaceValue;
 };
 
-/**
- * findDocuments(collection, lookupKeys, lookupValues, limit, callback)
+/** findDocuments(collection, lookupKeys, lookupValues, limit, callback)
+ *
+ * find a specified number of documents that match a certain query. returns an
+ * array of documents as JSON objects. information can then be extracted from
+ * the documents by looping through the array and using JSON dot notation.
  *
  * collection (string) - the collection to search for documents
- * query (JSON)  - query to execute
- * limit - number of documents to limit the search results to
- * callback - callback function to execute after completion
+ * query       (JSON)  - query to execute
+ * limit         (int) - number of documents to limit the search results to
+ * callback     (func) - callback function to execute after completion
  *
  * example implementation:
  * -----------------------
@@ -50,7 +53,6 @@ exports.edit = function(lookupKeys, lookupValues, replaceKey, replaceValue) {
  *
  */
 exports.findDocuments = function(collection, query, limit, callback) {
-
     var documents = [];
 
     var findDocs = function(db, collection, query, callback) {
@@ -73,3 +75,37 @@ exports.findDocuments = function(collection, query, limit, callback) {
         });
     });
 };
+
+/** getIds(callback, query, limit, callback)
+ *
+ * get the ids of a certain set of documents and returns them as an array of
+ * strings. uses the findDocuments() function above. really just here to make
+ * things a little bit easier. takes the same parameters as findDocuments().
+ *
+ * collection (string) - the collection to search for documents
+ * query       (JSON)  - query to execute
+ * limit         (int) - number of documents to limit the search results to
+ * callback     (func) - callback function to execute after completion
+ *
+ * example implementation:
+ * -----------------------
+ * var mongoapi = require('./src/api/mongo.js');
+ *
+ * var query = { 'status': 'Sponsored' };
+ * mongoapi.getIds('testing', query, 10, function(ids) {
+ *     console.log(ids);
+ * });
+ *
+ */
+exports.getIds = function(collection, query, limit, callback) {
+    var ids = [];
+
+    exports.findDocuments(collection, query, limit, function(docs) {
+        for (var i = 0; i < docs.length; i++) {
+            if (docs[i]._id) {
+                ids.push(docs[i]._id);
+            }
+        }
+        callback(ids);
+    });
+}
