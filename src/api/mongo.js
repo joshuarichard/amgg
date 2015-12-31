@@ -28,7 +28,6 @@ var exports = module.exports = {};
  *         console.log('everything\'s okay');
  *     } else {
  *         console.log('everything sucks');
- *
  * });
  *
  */
