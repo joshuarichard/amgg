@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var mongo = require('mongodb');
 var assert = require('assert');
 var nconf = require('nconf');
 nconf.env()
@@ -10,29 +11,50 @@ var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
 
 var exports = module.exports = {};
 
-/** insertDocuments(collection, docs, callback)
+/** find(selector, collection, limit, callback)
  *
- * insert any number of documents into a specific collection.
+ * find a specified number of documents that match a certain selector.
+ * returns an array of documents as JSON objects.
  *
- * collection   (string) - the collection to search for documents
- * docs (JSON or array)  - docs to insert. one JSON doc or array of JSON docs
- * callback       (func) - callback function to execute after completion
- *
- * example implementation:
- * -----------------------
- * var mongoapi = require('./src/api/mongo.js');
- *
- * var docs = [{ 'name': 'Poe Dameron' }, { 'name' : 'Kylo Ren' }];
- * mongoapi.insertDocuments('testing', docs, function(isOk) {
- *     if(isOk) {
- *         console.log('everything\'s okay');
- *     } else {
- *         console.log('everything sucks');
- * });
- *
+ * selector    (JSON)  - selector
+ * collection (string) - the collection to search for documents
+ * limit         (int) - number of documents to limit the search results to
+ * callback     (func) - callback function to execute after completion
  */
-exports.insertDocuments = function(collection, docs, callback) {
-    var isOk = false;
+exports.find = function(selector, collection, limit, callback) {
+    var documents = [];
+
+    var findDocs = function(db, collection, selector, callback) {
+        var cursor = db.collection(collection).find(selector).limit(limit);
+        cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+                documents.push(doc);
+            } else {
+                callback();
+            }
+        });
+    };
+
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        findDocs(db, collection, selector, function() {
+            db.close();
+            callback(documents);
+        });
+    });
+};
+
+/** insert(docs, collection, callback)
+ *
+ * insert any number of documents into a specific collection. returns the
+ * results as a JSON object.
+ *
+ * docs (JSON or array)  - docs to insert. one JSON doc or array of JSON docs
+ * collection   (string) - the collection to search for documents
+ * callback       (func) - callback function to execute after completion
+ */
+exports.insert = function(docs, collection, callback) {
 
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
@@ -57,108 +79,87 @@ exports.insertDocuments = function(collection, docs, callback) {
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
         if(docs instanceof Array) {
-            bulkInsert(db, collection, docs, function() {
+            bulkInsert(db, collection, docs, function(result) {
                 db.close();
-                isOk = true;
-                callback(isOk);
+                callback(result);
             });
         } else {
-            insertDoc(db, collection, docs, function() {
+            insertDoc(db, collection, docs, function(result) {
                 db.close();
-                isOk = true;
-                callback(isOk);
+                callback(result);
             });
         }
     });
 };
 
-// lookupKeys - array of keys
-// lookupValues - array of values, must be the same length as lookupKey
-exports.delete = function(lookupKeys, lookupValues) {
-    return lookupKeys, lookupValues;
-};
-
-// lookupKeys - array of keys
-// lookupValues - array of values, must be the same length as lookupKey
-exports.edit = function(lookupKeys, lookupValues, replaceKey, replaceValue) {
-    return lookupKeys, lookupValues, replaceKey, replaceValue;
-};
-
-/** findDocuments(collection, lookupKeys, lookupValues, limit, callback)
- *
- * find a specified number of documents that match a certain query. returns an
- * array of documents as JSON objects. information can then be extracted from
- * the documents by looping through the array and using JSON dot notation.
- *
- * collection (string) - the collection to search for documents
- * query       (JSON)  - query to execute
- * limit         (int) - number of documents to limit the search results to
- * callback     (func) - callback function to execute after completion
- *
- * example implementation:
- * -----------------------
- * var mongoapi = require('./src/api/mongo.js');
- *
- * var query = { 'status': 'Sponsored' };
- * mongoapi.findDocuments('testing', query, 10, function(docs) {
- *     // loop through the returned documents and console out the doc ids
- *     for (var i = 0; i < docs.length; i++) {
- *         if (docs[i]._id) {
- *             console.log(docs[i]._id);
- *         }
- *     }
- * });
- *
+/**
+ * TODO: edit
  */
-exports.findDocuments = function(collection, query, limit, callback) {
-    var documents = [];
+exports.edit = function(selector, changes, collection, limit, callback) {
+    return selector, changes, collection, limit, callback;
+};
 
-    var findDocs = function(db, collection, query, callback) {
-        var cursor = db.collection(collection).find(query).limit(limit);
-        cursor.each(function(err, doc) {
-            assert.equal(err, null);
-            if (doc != null) {
-                documents.push(doc);
-            } else {
-                callback();
-            }
+/** delete(selector, collection, callback)
+ *
+ * delete any number of documents into a specific collection. returns the
+ * results as a JSON object.
+ *
+ * selector       (JSON) - document selector
+ * collection   (string) - the collection to search for documents
+ * callback       (func) - callback function to execute after completion
+ */
+exports.delete = function(selector, collection, callback) {
+
+    var deleteDoc = function(db, collection, selector, callback) {
+        db.collection(collection).deleteOne(selector, function(err, result) {
+            assert.equal(null, err);
+            callback(result);
+        });
+    };
+
+    var bulkDelete = function(db, collection, selector, callback) {
+        var bulk = db.collection(collection).initializeUnorderedBulkOp();
+        for (var i = 0; i < selector.length; i++) {
+            bulk.find(selector[i]).removeOne();
+        }
+
+        // execute bulk op and make some assertions
+        bulk.execute(function(err, result) {
+            callback(result);
         });
     };
 
     MongoClient.connect(url, function(err, db) {
         assert.equal(null, err);
-        findDocs(db, collection, query, function() {
-            db.close();
-            callback(documents);
-        });
+        if(selector instanceof Array) {
+            bulkDelete(db, collection, selector, function(result) {
+                db.close();
+                callback(result);
+            });
+        } else {
+            deleteDoc(db, collection, selector, function(result) {
+                db.close();
+                callback(result);
+            });
+        }
     });
 };
 
-/** getIds(callback, query, limit, callback)
+/** getIds(selector, collection, limit, callback)
  *
  * get the ids of a certain set of documents and returns them as an array of
- * strings. uses the findDocuments() function above. really just here to make
- * things a little bit easier. takes the same parameters as findDocuments().
+ * strings. uses the find() function above. really just here to make
+ * things a little bit easier. takes the same parameters as find().
  *
+ * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
- * query       (JSON)  - query to execute
  * limit         (int) - number of documents to limit the search results to
  * callback     (func) - callback function to execute after completion
- *
- * example implementation:
- * -----------------------
- * var mongoapi = require('./src/api/mongo.js');
- *
- * var query = { 'status': 'Sponsored' };
- * mongoapi.getIds('testing', query, 10, function(ids) {
- *     console.log(ids);
- * });
- *
  */
-exports.getIds = function(collection, query, limit, callback) {
+exports.getIds = function(selector, collection, limit, callback) {
     var ids = [];
 
-    exports.findDocuments(collection, query, limit, function(docs) {
+    exports.find(collection, selector, limit, function(docs) {
         for (var i = 0; i < docs.length; i++) {
             if (docs[i]._id) {
                 ids.push(docs[i]._id);
@@ -167,3 +168,42 @@ exports.getIds = function(collection, query, limit, callback) {
         callback(ids);
     });
 }
+
+/** isLocked(id, collection, callback)
+ *
+ * checks to see if a child is locked
+ *
+ * id        (string)  - document _id
+ * collection (string) - the collection to search for documents
+ * callback     (func) - callback function to execute after completion
+ */
+exports.getDoc = function(id, collection, callback) {
+    var o_id = new mongo.ObjectID(id);
+    var selector = {'_id': o_id};
+
+    var checkLock = function(db, id, collection, callback) {
+        var cursor = db.collection(collection).find(selector);
+        cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            var doc;
+            if (doc != null) {
+                callback(doc);
+            } else {
+                console.log('MONGO ERROR: Document not found with id:' + id + ' on ' +// INSERT DATE HERE );
+                callback(//CAN I CALLBACK NOTHING?);
+            }
+        });
+    }
+
+    MongoClient.connect(url, function(err, db) {
+        assert.equal(null, err);
+        checkLock(db, id, collection, function(doc) {
+            db.close();
+            callback(doc);
+        });
+    });
+}
+
+/**
+ * getDoc by id method
+ */
