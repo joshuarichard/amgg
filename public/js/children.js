@@ -1,30 +1,33 @@
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://73.227.187.84:27017';
+
 $(document).ready(function () {
-	$('#num-children-submit').click(function() {
-		var counter = 0;
-		var numChildren = $('#num-children-input').val();
+	var loadChildrenPictures = function() {
+		//number of children pictures we need
+		var numChildrenPicture = $(".child-picture").length; 
 
-		var row = document.createElement('div');		
-			row.className = 'row row-centered';
-			row.id = 'child-img';
-		for (i=0; i<numChildren; i++) {
 
-			var child = document.createElement('div');
-			child.id = 'child'+i;
-			child.className = 'col-xs-4 col-centered';
+		//function to return all documents in the children collection
+		var findChildren = function(db, callback) {
+		   var cursor = db.collection('children').find( );
+		   cursor.each(function(err, doc) {
+		      assert.equal(err, null);
+		      if (doc != null) {
+		         console.dir(doc);
+		      } else {
+		         callback();
+		      }
+		   });
+		};
 
-			var childLink = document.createElement('a');
-			childLink.href = 'https://amgg.org/donacion/index.php?nino='+i;
+		MongoClient.connect(url, function(err, db) {
+		  assert.equal(null, err);
+		  findRestaurants(db, function() {
+		      db.close();
+		  });
+		});
 
-			var childImg = document.createElement('img');
-			childImg.className = 'img-responsive center-block';
-			childImg.src = 'image/nino-2.png';
-
-			childLink.appendChild(childImg);
-			child.appendChild(childLink);
-			row.appendChild(child);
-
-			var footer = document.getElementById("Footer");
-			document.body.insertBefore(row, footer);
-		}
-	});
+	};
 });
