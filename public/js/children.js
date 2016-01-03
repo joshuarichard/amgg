@@ -9,25 +9,26 @@ $(document).ready(function () {
 		var numChildrenPicture = $(".child-picture").length; 
 
 
-		//function to return all documents in the children collection
-		var findChildren = function(db, callback) {
-		   var cursor = db.collection('children').find( );
-		   cursor.each(function(err, doc) {
-		      assert.equal(err, null);
-		      if (doc != null) {
-		         console.dir(doc);
-		      } else {
-		         callback();
-		      }
-		   });
-		};
+		// //function to return all documents in the children collection
+		// var findChildren = function(db, callback) {
+		//    var cursor = db.collection('children').find( );
+		//    cursor.each(function(err, doc) {
+		//       assert.equal(err, null);
+		//       if (doc != null) {
+		//          console.dir(doc);
+		//       } else {
+		//          callback();
+		//       }
+		//    });
+		// };
 
-		MongoClient.connect(url, function(err, db) {
-		  assert.equal(null, err);
-		  findRestaurants(db, function() {
-		      db.close();
-		  });
-		});
+		// MongoClient.connect(url, function(err, db) {
+		//   assert.equal(null, err);
+		//   findRestaurants(db, function() {
+		//       db.close();
+		//   });
+		// });
 
+		
 	};
 });
