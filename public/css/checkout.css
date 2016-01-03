@@ -42,6 +42,20 @@ input {
 	color: black;
 }
 
+.dropdown-menu {
+	background-color: white !important;
+}
+
+.dropdown-menu > li > a {
+	color: black;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 100px;
+    overflow-x: hidden;
+}
+
 .expiration-date { 
 	text-align: left;
 }
