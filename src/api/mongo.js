@@ -1,6 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
 var mongo = require('mongodb');
-var assert = require('assert');
 var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json' });
@@ -16,7 +15,7 @@ var exports = module.exports = {};
  * find a specified number of documents that match a certain selector.
  * returns an array of documents as JSON objects.
  *
- * selector    (JSON)  - selector
+ * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
  * limit         (int) - number of documents to limit the search results to
  * callback     (func) - callback function to execute after completion
@@ -27,7 +26,11 @@ exports.find = function(selector, collection, limit, callback) {
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
         cursor.each(function(err, doc) {
-            assert.equal(err, null);
+            if (err) {
+                console.log('DB ERROR: mongo.findDocs() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+                callback();
+            }
             if (doc != null) {
                 documents.push(doc);
             } else {
@@ -37,7 +40,11 @@ exports.find = function(selector, collection, limit, callback) {
     };
 
     MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
+        if (err) {
+            console.log('DB ERROR: find() Mongo connection error ' +
+                        err + ' on ' + new Date().toUTCString());
+            callback(documents);
+        }
         findDocs(db, collection, selector, function() {
             db.close();
             callback(documents);
@@ -58,7 +65,10 @@ exports.insert = function(docs, collection, callback) {
 
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
-            assert.equal(err, null);
+            if (err) {
+                console.log('DB ERROR: mongo.insertDoc() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
             callback(result);
         });
     };
@@ -71,13 +81,19 @@ exports.insert = function(docs, collection, callback) {
 
         // execute bulk op and make some assertions
         bulk.execute(function(err, result) {
-            assert.equal(docs.length, result.nInserted);
+            if (err) {
+                console.log('DB ERROR: mongo.bulkInsert() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
             callback(result);
         });
     };
 
     MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
+        if (err) {
+            console.log('DB ERROR: insert() Mongo connection error ' +
+                        err + ' on ' + new Date().toUTCString());
+        }
         if(docs instanceof Array) {
             bulkInsert(db, collection, docs, function(result) {
                 db.close();
@@ -92,11 +108,44 @@ exports.insert = function(docs, collection, callback) {
     });
 };
 
-/**
- * TODO: edit
+/** edit(docs, collection, callback)
+ *
+ * edit a document with a specific _id. returns the result as a JSON object.
+ *
+ * id           (string) - document _id
+ * changes        (JSON) - changes to be made in JSON notation
+ * collection   (string) - the collection to search for documents
+ * callback       (func) - callback function to execute after completion
  */
-exports.edit = function(selector, changes, collection, limit, callback) {
-    return selector, changes, collection, limit, callback;
+exports.edit = function(id, changes, collection, callback) {
+
+    var changesMod = {};
+    changesMod['$set'] = changes;
+
+    var o_id = new mongo.ObjectID(id);
+    var selector = {'_id': o_id};
+
+    var editDoc = function(db, collection, selector, changes, callback) {
+        db.collection(collection).updateOne(selector, changes,
+        function(err, res) {
+            if (err) {
+                console.log('DB ERROR: mongo.editDoc() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
+            callback(res);
+        });
+    };
+
+    MongoClient.connect(url, function(err, db) {
+        if (err) {
+            console.log('DB ERROR: edit() Mongo connection error ' +
+                        err + ' on ' + new Date().toUTCString());
+        }
+        editDoc(db, collection, selector, changesMod, function(res) {
+            db.close();
+            callback(res);
+        });
+    });
 };
 
 /** delete(selector, collection, callback)
@@ -111,9 +160,12 @@ exports.edit = function(selector, changes, collection, limit, callback) {
 exports.delete = function(selector, collection, callback) {
 
     var deleteDoc = function(db, collection, selector, callback) {
-        db.collection(collection).deleteOne(selector, function(err, result) {
-            assert.equal(null, err);
-            callback(result);
+        db.collection(collection).deleteOne(selector, function(err, res) {
+            if (err) {
+                console.log('DB ERROR: mongo.deleteDoc() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
+            callback(res);
         });
     };
 
@@ -124,22 +176,29 @@ exports.delete = function(selector, collection, callback) {
         }
 
         // execute bulk op and make some assertions
-        bulk.execute(function(err, result) {
-            callback(result);
+        bulk.execute(function(err, res) {
+            if (err) {
+                console.log('DB ERROR: mongo.bulkDelete() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
+            callback(res);
         });
     };
 
     MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
+        if (err) {
+            console.log('DB ERROR: delete() Mongo connection error ' +
+                        err + ' on ' + new Date().toUTCString());
+        }
         if(selector instanceof Array) {
-            bulkDelete(db, collection, selector, function(result) {
+            bulkDelete(db, collection, selector, function(res) {
                 db.close();
-                callback(result);
+                callback(res);
             });
         } else {
-            deleteDoc(db, collection, selector, function(result) {
+            deleteDoc(db, collection, selector, function(res) {
                 db.close();
-                callback(result);
+                callback(res);
             });
         }
     });
@@ -151,7 +210,7 @@ exports.delete = function(selector, collection, callback) {
  * strings. uses the find() function above. really just here to make
  * things a little bit easier. takes the same parameters as find().
  *
- * selector    (JSON)  - document selector
+ * selector     (JSON) - document selector
  * collection (string) - the collection to search for documents
  * limit         (int) - number of documents to limit the search results to
  * callback     (func) - callback function to execute after completion
@@ -167,43 +226,50 @@ exports.getIds = function(selector, collection, limit, callback) {
         }
         callback(ids);
     });
-}
+};
 
-/** isLocked(id, collection, callback)
+/** get(id, collection, callback)
  *
- * checks to see if a child is locked
+ * fetches a document with a certain _id. returns the document as a JSON object.
  *
- * id        (string)  - document _id
+ * id         (string) - document _id
  * collection (string) - the collection to search for documents
  * callback     (func) - callback function to execute after completion
  */
-exports.getDoc = function(id, collection, callback) {
+exports.get = function(id, collection, callback) {
     var o_id = new mongo.ObjectID(id);
     var selector = {'_id': o_id};
+    var foundOne = false;
 
-    var checkLock = function(db, id, collection, callback) {
+    var getDoc = function(db, id, collection, callback) {
         var cursor = db.collection(collection).find(selector);
         cursor.each(function(err, doc) {
-            assert.equal(err, null);
-            var doc;
+            if (err) {
+                console.log('DB ERROR: mongo.getDoc() error response ' +
+                            err + ' on ' + new Date().toUTCString());
+            }
             if (doc != null) {
+                foundOne = true;
                 callback(doc);
-            } else {
-                console.log('MONGO ERROR: Document not found with id:' + id + ' on ' +// INSERT DATE HERE );
-                callback(//CAN I CALLBACK NOTHING?);
+            }
+            // cursor.each() is always going to hit a null value so keep track
+            // of whether or not we've found one. console out on lookup failure
+            if (!foundOne){
+                console.log('DB ERROR: Document not found with id: \'' +
+                            id + '\' on ' + new Date().toUTCString());
+                callback(doc);
             }
         });
-    }
+    };
 
     MongoClient.connect(url, function(err, db) {
-        assert.equal(null, err);
-        checkLock(db, id, collection, function(doc) {
+        if (err) {
+            console.log('DB ERROR: get() Mongo connection error ' +
+                        err + ' on ' + new Date().toUTCString());
+        }
+        getDoc(db, id, collection, function(doc) {
             db.close();
             callback(doc);
         });
     });
-}
-
-/**
- * getDoc by id method
- */
+};
