@@ -62,7 +62,6 @@ exports.find = function(selector, collection, limit, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.insert = function(docs, collection, callback) {
-
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
@@ -79,7 +78,6 @@ exports.insert = function(docs, collection, callback) {
             bulk.insert(docs[i]);
         }
 
-        // execute bulk op and make some assertions
         bulk.execute(function(err, result) {
             if (err) {
                 console.log('DB ERROR: mongo.bulkInsert() error response ' +
@@ -118,7 +116,6 @@ exports.insert = function(docs, collection, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.edit = function(id, changes, collection, callback) {
-
     var changesMod = {};
     changesMod['$set'] = changes;
 
@@ -175,7 +172,6 @@ exports.delete = function(selector, collection, callback) {
             bulk.find(selector[i]).removeOne();
         }
 
-        // execute bulk op and make some assertions
         bulk.execute(function(err, res) {
             if (err) {
                 console.log('DB ERROR: mongo.bulkDelete() error response ' +
