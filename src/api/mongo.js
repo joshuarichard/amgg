@@ -155,7 +155,6 @@ exports.edit = function(id, changes, collection, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.delete = function(selector, collection, callback) {
-
     var deleteDoc = function(db, collection, selector, callback) {
         db.collection(collection).deleteOne(selector, function(err, res) {
             if (err) {
