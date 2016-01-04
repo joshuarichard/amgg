@@ -1,6 +1,4 @@
-
-Jake Buettner, Joshua Richard, and Dane Vanden Berg
-
+\\
 Preliminary system documentation for this project can be found in `planning/`
 
 ### dependencies
