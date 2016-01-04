@@ -1,4 +1,3 @@
-2015 Gordon College Senior Project
 
 Jake Buettner, Joshua Richard, and Dane Vanden Berg
 
