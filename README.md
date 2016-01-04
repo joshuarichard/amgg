@@ -1,6 +1,3 @@
-### building
-`npm install` in the root dir
-
 ### running
 `node app.js` also in the root dir
 
