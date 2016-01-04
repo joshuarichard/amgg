@@ -1,6 +1,3 @@
-### dependencies
-node, npm, and grunt
-
 ### building
 `npm install` in the root dir
 
