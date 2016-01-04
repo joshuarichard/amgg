@@ -1,6 +1,3 @@
-\\
-Preliminary system documentation for this project can be found in `planning/`
-
 ### dependencies
 node, npm, and grunt
 
