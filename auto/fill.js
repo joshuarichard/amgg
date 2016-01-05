@@ -248,8 +248,10 @@ function generateDocument() {
     // pic insert really shouldn't be done right here but it works and this is
     // just for development
     pics.insert(name + '_' + lastName, { amg_id: amgId });
+    
     console.log('INFO: inserting ' + name + ' ' + lastName +
-                ' with amg_id' + amgId);
+                ' with amg_id ' + amgId);
+
     return doc;
 }
 
