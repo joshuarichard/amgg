@@ -1,11 +1,11 @@
 {
     "mongo": {
-        "host": "0.0.0.0",
+        "host": "73.227.187.84",
         "port": "27017"
     },
     "autofill": {
-        "collection": "testing",
-        "numOfDocs": "10",
-        "dbName": "children"
+        "dbName": "development",
+        "collection": "children",
+        "numOfDocs": "10"
     }
 }
