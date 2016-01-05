@@ -5,7 +5,7 @@
     },
     "autofill": {
         "collection": "testing",
-        "numOfDocs": "200",
+        "numOfDocs": "10",
         "dbName": "children"
     }
 }

@@ -1,3 +1,7 @@
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var pics = require('./pics.js');
+
 var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json'});
@@ -5,9 +9,6 @@ nconf.env()
 var dbName = nconf.get('autofill:dbName');
 var collectionName = nconf.get('autofill:collection');
 var numOfDocs = nconf.get('autofill:numOfDocs');
-
-var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
 var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
            nconf.get('mongo:port') + '/' + dbName;
 
@@ -204,16 +205,19 @@ function generateHermanos() {
 
 function generateDocument() {
     var birthday = randomDate(new Date(2000, 0, 1), new Date());
+    var amgId = Math.floor((Math.random() * 99999999) + 1);
+    var name = nombre[Math.floor(Math.random() * nombre.length)];
+    var lastName = apellido[Math.floor(Math.random() * apellido.length)];
     var doc = {
         'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
                             centro_de_ninos.length)],
-        'amg_id':  Math.floor((Math.random() * 99999999) + 1),
+        'amg_id':  amgId,
         'alt_id': Math.floor((Math.random() * 99999999) + 1),
         'status': status[Math.floor(Math.random() * status.length)],
         'patrocinado_por': randomDate(new Date(2005, 00, 01), new Date()),
-        'nombre': nombre[Math.floor(Math.random() * nombre.length)],
+        'nombre': name,
         'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
-        'apellido': apellido[Math.floor(Math.random() * apellido.length)],
+        'apellido': lastName,
         'género': genero[Math.floor(Math.random() * genero.length)],
         'cumpleaños': birthday,
         'años': Math.abs((new Date(Date.now() - birthday.getTime()))
@@ -240,6 +244,12 @@ function generateDocument() {
         'guardians': generateGuardians(),
         'hermanos': generateHermanos()
     };
+
+    // pic insert really shouldn't be done right here but it works and this is
+    // just for development
+    pics.insert(name + '_' + lastName, { amg_id: amgId });
+    console.log('INFO: inserting ' + name + ' ' + lastName +
+                ' with amg_id' + amgId);
     return doc;
 }
 
@@ -258,6 +268,7 @@ for (var x = 0; x < numOfDocs; x++) {
         assert.equal(null, err);
         insertDocument(db, function() {
             db.close();
+            console.log('INFO: inserted document.');
         });
     });
 }
