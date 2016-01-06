@@ -8,8 +8,8 @@
         "collection": "children"
     },
     "autofill": {
+        "dbName": "testing",
         "collection": "children",
         "numOfDocs": "200",
-        "dbName": "testing"
     }
 }
