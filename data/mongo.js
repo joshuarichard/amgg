@@ -8,7 +8,7 @@ var log = bunyan.createLogger({
     streams: [
         {
             level: 'info',
-            stream: process.stdout,
+            stream: process.stdout
             // path: './var/log/mongo_info.log',
             // period: '1d',  // daily rotation
             // count: 3
@@ -78,10 +78,6 @@ exports.find = function(selector, collection, limit, callback) {
     log.trace('getting document(s) with selector ' + JSON.stringify(selector) +
               ' in collection \'' + collection + '\' with limit ' + limit);
     var documents = {}, i = 0;
-
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-             'July', 'August', 'September', 'October', 'November', 'December'
-    ];
 
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
@@ -259,7 +255,7 @@ exports.delete = function(selector, collection, callback) {
     MongoClient.connect(url, function(err, db) {
         if (err) {
             log.error('Mongo connection error in delete() ' + err);
-            callback({"err": "cannot establish a connection."});
+            callback({'err': 'cannot establish a connection.'});
         } else {
             if(selector instanceof Array) {
                 bulkDelete(db, collection, selector, function(res) {
@@ -358,8 +354,8 @@ exports.get = function(id, collection, callback) {
                 db.close();
                 var trimmedDoc = trim(doc);
                 log.trace('successfully got document with id ' + id +
-                          ' from collection \'' + collection + '\'. document: ' +
-                          JSON.stringify(trimmedDoc));
+                          ' from collection \'' + collection + '\'. document: '
+                          + JSON.stringify(trimmedDoc));
                 callback(trimmedDoc);
             });
         }
