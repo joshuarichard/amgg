@@ -28,12 +28,11 @@ var url = 'mongodb://' +
 var exports = module.exports = {};
 
 // this assertion doesnt work and the error never gets thrown. look into this
+// cont. maybe it does??
 MongoClient.connect(url, function(err, db) {
-    //assert.equal(err, null);
     if (err) {
         console.log('FATAL: test connection to Mongo UNSUCCESSFUL ' +
                     ' on ' + new Date().toUTCString() +' err: ' + err);
-        db.close();
     } else {
         console.log('INFO: test connection to Mongo successful.');
         db.close();
