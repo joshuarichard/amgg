@@ -14,9 +14,11 @@
   },
   "homepage": "https://github.com/joshuarichard/amgg#readme",
   "dependencies": {
+    "body-parser": "^1.14.2",
+    "bunyan": "^1.5.1",
     "express": "^4.13.3",
-    "nconf": "^0.8.2",
-    "mongodb": "~2.0.49"
+    "mongodb": "~2.0.49",
+    "nconf": "^0.8.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

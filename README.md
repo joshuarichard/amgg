@@ -17,16 +17,16 @@ $ sudo npm install -g grunt-cli
 Run `npm install` to install all dependencies.
 
 ### Running
-Run `node app.js` and go to `localhost:3000/home` in your browser.
+Run `node app.js | bunyan` to start the application and pipe the server logs into bunyan for human readible formatting. Go to `localhost:3000/home` in your browser to get access to the project.
 
 ### Database
 Mongo and Mongo-Express run in Docker containers on our test server. see `runbooks/MONGO.md` and `docker/mongo/` for more information.
 
+### Logging
+Bunyan is used for server side logging. All log files are stored in `var/log/`.
+
 ### Runbooks
 Developer runbooks are provided in `runbooks/`. Read these for information on different aspects of our system.
-
-### Autofilling Mongo
-Run `node auto/fill.js` from the root directory. Make sure you run it from the root directory otherwise nconf doesn't know where to find the config file. An example JSON document can be found in `auto/example.json`.
 
 ### Testing
 We use Jenkins running in a Docker container on our test server for automated testing and pull request linting.
