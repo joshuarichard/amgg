@@ -40,12 +40,6 @@ MongoClient.connect(url, function(err, db) {
     }
 });
 
-exports.findUnsponsoredChildren = function(callback) {
-    exports.find({'status': 'Sponsored'}, 'children', 100, function(docs) {
-        callback(docs);
-    });
-};
-
 /** find(selector, collection, limit, callback)
  *
  * find a specified number of documents that match a certain selector.
@@ -59,10 +53,6 @@ exports.findUnsponsoredChildren = function(callback) {
 exports.find = function(selector, collection, limit, callback) {
     var documents = {}, i = 0;
 
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-             'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
         cursor.each(function(err, doc) {
@@ -71,17 +61,7 @@ exports.find = function(selector, collection, limit, callback) {
                             err + ' on ' + new Date().toUTCString());
             }
             if (doc != null) {
-                documents[i] = {
-                    'nombre': doc.nombre,
-                    'años': doc.años,
-                    'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
-                                 ' ' +
-                                 doc.cumpleaños.getDate() +
-                                 ' ' +
-                                 doc.cumpleaños.getFullYear(),
-                    'género': doc.género,
-                    'centro_de_ninos': doc.centro_de_ninos
-                };
+                documents[i] = doc;
                 i++;
             } else {
                 callback();
@@ -96,7 +76,7 @@ exports.find = function(selector, collection, limit, callback) {
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                callback(documents);
+                callback(trim(documents));
             });
         }
     });
@@ -314,7 +294,62 @@ exports.get = function(id, collection, callback) {
         }
         getDoc(db, id, collection, function(doc) {
             db.close();
-            callback(doc);
+            callback(trim(doc));
         });
     });
 };
+
+exports.findUnsponsoredChildren = function(callback) {
+    exports.find({'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                  'children', 100, function(docs) {
+        callback(docs);
+    });
+};
+
+/** trim(doc)
+ *
+ *  trims a document down from a full document to a public, api-ready document.
+ *  returns a json doc.
+ *
+ *  doc  (JSON) - document to be trimmed
+ */
+function trim(doc) {
+    var trimmedDoc = {}, i = 0;
+
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+             'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    for (var miniDoc in doc) {
+        // if this is multiple documents
+        if (miniDoc != '_id') {
+            trimmedDoc[i] = {
+                 'nombre': doc[miniDoc].nombre,
+                 'años': doc[miniDoc].años,
+                 'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
+                                          ' ' +
+                                          doc[miniDoc].cumpleaños.getDate() +
+                                          ' ' +
+                                          doc[miniDoc].cumpleaños.getFullYear(),
+                 'género': doc[miniDoc].género,
+                 'centro_de_ninos': doc[miniDoc].centro_de_ninos
+             };
+        // else this is only one document
+        } else {
+            trimmedDoc = {
+                 'nombre': doc.nombre,
+                 'años': doc.años,
+                 'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
+                                          ' ' +
+                                          doc.cumpleaños.getDate() +
+                                          ' ' +
+                                          doc.cumpleaños.getFullYear(),
+                 'género': doc.género,
+                 'centro_de_ninos': doc.centro_de_ninos
+             };
+             break;
+        }
+        i++;
+    }
+    return(trimmedDoc);
+}
