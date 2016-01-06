@@ -16,10 +16,10 @@ app.get('/', function(req, res) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/unsponsored', function(req, res) {
-    mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                'children', 100, function(docs) {
-        res.send(JSON.stringify(docs));
-    });
+    mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
+        100, function(docs) {
+            res.send(JSON.stringify(docs));
+        });
 });
 
 app.get('/api/children/:id', function(req, res) {

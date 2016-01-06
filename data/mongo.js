@@ -317,30 +317,30 @@ function trim(doc) {
         // if this is multiple documents
         if (miniDoc != '_id') {
             trimmedDoc[i] = {
-                 'nombre': doc[miniDoc].nombre,
-                 'años': doc[miniDoc].años,
-                 'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
+                'nombre': doc[miniDoc].nombre,
+                'años': doc[miniDoc].años,
+                'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
                                           ' ' +
                                           doc[miniDoc].cumpleaños.getDate() +
                                           ' ' +
                                           doc[miniDoc].cumpleaños.getFullYear(),
-                 'género': doc[miniDoc].género,
-                 'centro_de_ninos': doc[miniDoc].centro_de_ninos
-             };
+                'género': doc[miniDoc].género,
+                'centro_de_ninos': doc[miniDoc].centro_de_ninos
+            };
         // else this is only one document
         } else {
             trimmedDoc = {
-                 'nombre': doc.nombre,
-                 'años': doc.años,
-                 'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
+                'nombre': doc.nombre,
+                'años': doc.años,
+                'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
                                           ' ' +
                                           doc.cumpleaños.getDate() +
                                           ' ' +
                                           doc.cumpleaños.getFullYear(),
-                 'género': doc.género,
-                 'centro_de_ninos': doc.centro_de_ninos
-             };
-             break;
+                'género': doc.género,
+                'centro_de_ninos': doc.centro_de_ninos
+            };
+            break;
         }
         i++;
     }
