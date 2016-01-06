@@ -28,16 +28,23 @@ var url = 'mongodb://' +
 var exports = module.exports = {};
 
 // this assertion doesnt work and the error never gets thrown. look into this
-// cont. maybe it does??
 MongoClient.connect(url, function(err, db) {
+    assert.equal(err, null);
     if (err) {
         console.log('FATAL: test connection to Mongo UNSUCCESSFUL ' +
                     ' on ' + new Date().toUTCString() +' err: ' + err);
+        db.close();
     } else {
         console.log('INFO: test connection to Mongo successful.');
         db.close();
     }
 });
+
+exports.findUnsponsoredChildren = function(callback) {
+    exports.find({'status': 'Sponsored'}, 'children', 100, function(docs) {
+        callback(docs);
+    });
+};
 
 /** find(selector, collection, limit, callback)
  *
@@ -52,6 +59,10 @@ MongoClient.connect(url, function(err, db) {
 exports.find = function(selector, collection, limit, callback) {
     var documents = {}, i = 0;
 
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+             'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
         cursor.each(function(err, doc) {
@@ -60,7 +71,17 @@ exports.find = function(selector, collection, limit, callback) {
                             err + ' on ' + new Date().toUTCString());
             }
             if (doc != null) {
-                documents[i] = doc;
+                documents[i] = {
+                    'nombre': doc.nombre,
+                    'años': doc.años,
+                    'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
+                                 ' ' +
+                                 doc.cumpleaños.getDate() +
+                                 ' ' +
+                                 doc.cumpleaños.getFullYear(),
+                    'género': doc.género,
+                    'centro_de_ninos': doc.centro_de_ninos
+                };
                 i++;
             } else {
                 callback();
@@ -75,7 +96,7 @@ exports.find = function(selector, collection, limit, callback) {
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                callback(trim(documents));
+                callback(documents);
             });
         }
     });
