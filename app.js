@@ -16,7 +16,8 @@ app.get('/', function(req, res) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/unsponsored', function(req, res) {
-    mongo.findUnsponsoredChildren(function(docs) {
+    mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                'children', 100, function(docs) {
         res.send(JSON.stringify(docs));
     });
 });

@@ -43,7 +43,7 @@ MongoClient.connect(url, function(err, db) {
 /** find(selector, collection, limit, callback)
  *
  * find a specified number of documents that match a certain selector.
- * returns an array of documents as JSON objects.
+ * returns a document composed of all documents that mongo returns.
  *
  * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
@@ -296,13 +296,6 @@ exports.get = function(id, collection, callback) {
             db.close();
             callback(trim(doc));
         });
-    });
-};
-
-exports.findUnsponsoredChildren = function(callback) {
-    exports.find({'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                  'children', 100, function(docs) {
-        callback(docs);
     });
 };
 
