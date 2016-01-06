@@ -1,13 +1,22 @@
 var express = require('express');
-var app = express();
-// var mongoapi = require('./src/api/mongo.js');
+var path = require('path');
 
-app.use('/home', express.static('public'));
+var mongo = require('./data/mongo.js');
+
+var app = express();
 
 app.get('/', function(req, res) {
-    res.send('index.html');
+    res.redirect('index.html');
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/api/unsponsered', function(req, res) {
+    mongo.findUnsponsoredChildren(function(docs) {
+        res.send(JSON.stringify(docs));
+    });
 });
 
 app.listen(3000, function () {
-    console.log('Express port listening at localhost:3000/home');
+    console.log('Express port listening at localhost:3000');
 });
