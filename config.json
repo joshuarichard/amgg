@@ -1,10 +1,14 @@
 {
     "mongo": {
         "host": "73.227.187.84",
-        "port": "27017"
+        "port": "27017",
+        "username": "x",
+        "password": "x",
+        "db": "testing",
+        "collection": "children"
     },
     "autofill": {
-        "dbName": "development",
+        "dbName": "testing",
         "collection": "children",
         "numOfDocs": "10"
     }

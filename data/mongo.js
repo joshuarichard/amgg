@@ -1,19 +1,48 @@
 var MongoClient = require('mongodb').MongoClient;
-var mongo = require('mongodb');
+var mongodb = require('mongodb');
 var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json' });
 
-var dbName = nconf.get('autofill:dbName');
-var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
-          nconf.get('mongo:port') + '/' + dbName;
+// mongodb://username:password@host:port/databasename
+/*
+var url = 'mongodb://' +
+          nconf.get('mongo:username') +
+          ':' +
+          nconf.get('mongo:password') +
+          '@' +
+          nconf.get('mongo:host') +
+          ':' +
+          nconf.get('mongo:port') +
+          '/' +
+          nconf.get('mongo:db');
+*/
+
+var url = 'mongodb://' +
+          nconf.get('mongo:host') +
+          ':' +
+          nconf.get('mongo:port') +
+          '/' +
+          nconf.get('mongo:db');
 
 var exports = module.exports = {};
+
+// this assertion doesnt work and the error never gets thrown. look into this
+// cont. maybe it does??
+MongoClient.connect(url, function(err, db) {
+    if (err) {
+        console.log('FATAL: test connection to Mongo UNSUCCESSFUL ' +
+                    ' on ' + new Date().toUTCString() +' err: ' + err);
+    } else {
+        console.log('INFO: test connection to Mongo successful.');
+        db.close();
+    }
+});
 
 /** find(selector, collection, limit, callback)
  *
  * find a specified number of documents that match a certain selector.
- * returns an array of documents as JSON objects.
+ * returns a document composed of all documents that mongo returns.
  *
  * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
@@ -21,7 +50,7 @@ var exports = module.exports = {};
  * callback     (func) - callback function to execute after completion
  */
 exports.find = function(selector, collection, limit, callback) {
-    var documents = [];
+    var documents = {}, i = 0;
 
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
@@ -29,10 +58,10 @@ exports.find = function(selector, collection, limit, callback) {
             if (err) {
                 console.log('DB ERROR: mongo.findDocs() error response ' +
                             err + ' on ' + new Date().toUTCString());
-                callback();
             }
             if (doc != null) {
-                documents.push(doc);
+                documents[i] = doc;
+                i++;
             } else {
                 callback();
             }
@@ -43,12 +72,12 @@ exports.find = function(selector, collection, limit, callback) {
         if (err) {
             console.log('DB ERROR: find() Mongo connection error ' +
                         err + ' on ' + new Date().toUTCString());
-            callback(documents);
+        } else {
+            findDocs(db, collection, selector, function() {
+                db.close();
+                callback(trim(documents));
+            });
         }
-        findDocs(db, collection, selector, function() {
-            db.close();
-            callback(documents);
-        });
     });
 };
 
@@ -119,7 +148,7 @@ exports.edit = function(id, changes, collection, callback) {
     var changesMod = {};
     changesMod['$set'] = changes;
 
-    var o_id = new mongo.ObjectID(id);
+    var o_id = new mongodb.ObjectID(id);
     var selector = {'_id': o_id};
 
     var editDoc = function(db, collection, selector, changes, callback) {
@@ -232,7 +261,7 @@ exports.getIds = function(selector, collection, limit, callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.get = function(id, collection, callback) {
-    var o_id = new mongo.ObjectID(id);
+    var o_id = new mongodb.ObjectID(id);
     var selector = {'_id': o_id};
     var foundOne = false;
 
@@ -264,7 +293,55 @@ exports.get = function(id, collection, callback) {
         }
         getDoc(db, id, collection, function(doc) {
             db.close();
-            callback(doc);
+            callback(trim(doc));
         });
     });
 };
+
+/** trim(doc)
+ *
+ *  trims a document down from a full document to a public, api-ready document.
+ *  returns a json doc.
+ *
+ *  doc  (JSON) - document to be trimmed
+ */
+function trim(doc) {
+    var trimmedDoc = {}, i = 0;
+
+    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+             'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    for (var miniDoc in doc) {
+        // if this is multiple documents
+        if (miniDoc != '_id') {
+            trimmedDoc[i] = {
+                'nombre': doc[miniDoc].nombre,
+                'años': doc[miniDoc].años,
+                'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
+                                          ' ' +
+                                          doc[miniDoc].cumpleaños.getDate() +
+                                          ' ' +
+                                          doc[miniDoc].cumpleaños.getFullYear(),
+                'género': doc[miniDoc].género,
+                'centro_de_ninos': doc[miniDoc].centro_de_ninos
+            };
+        // else this is only one document
+        } else {
+            trimmedDoc = {
+                'nombre': doc.nombre,
+                'años': doc.años,
+                'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
+                                          ' ' +
+                                          doc.cumpleaños.getDate() +
+                                          ' ' +
+                                          doc.cumpleaños.getFullYear(),
+                'género': doc.género,
+                'centro_de_ninos': doc.centro_de_ninos
+            };
+            break;
+        }
+        i++;
+    }
+    return(trimmedDoc);
+}
