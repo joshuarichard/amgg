@@ -56,7 +56,6 @@ var exports = module.exports = {};
 
 // this assertion doesnt work and the error never gets thrown. look into this
 MongoClient.connect(url, function(err, db) {
-    assert.equal(err, null);
     if (err) {
         log.error('test connection to Mongo unsuccessful.');
     } else {
@@ -91,17 +90,7 @@ exports.find = function(selector, collection, limit, callback) {
                 log.error('error in find().findDocs(). message: ' + err);
             }
             if (doc != null) {
-                documents[i] = {
-                    'nombre': doc.nombre,
-                    'años': doc.años,
-                    'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
-                                 ' ' +
-                                 doc.cumpleaños.getDate() +
-                                 ' ' +
-                                 doc.cumpleaños.getFullYear(),
-                    'género': doc.género,
-                    'centro_de_ninos': doc.centro_de_ninos
-                };
+                documents[i] = doc;
                 i++;
             } else {
                 callback();
@@ -118,9 +107,9 @@ exports.find = function(selector, collection, limit, callback) {
                 db.close();
                 var trimmedDoc = trim(documents);
                 log.trace('successfully found one document with selector ' +
-                          selector + ' in collection \'' + collection + '\'' +
-                          ' with limit ' + limit + '. document: ' +
-                          JSON.stringify(trimmedDoc));
+                          JSON.stringify(selector) + ' in collection \'' +
+                          collection + '\'' + ' with limit ' + limit +
+                          '. document: ' + JSON.stringify(trimmedDoc));
                 callback(trimmedDoc);
             });
         }
@@ -242,7 +231,7 @@ exports.edit = function(id, changes, collection, callback) {
  * TODO: look into fixing bulkDelete(). not sure if the for loop works correctly
  */
 exports.delete = function(selector, collection, callback) {
-    log.trace('deleting document(s) with selector ' + selector +
+    log.trace('deleting document(s) with selector ' + JSON.stringify(selector) +
               ' in collection \'' + collection + '\'');
     var deleteDoc = function(db, collection, selector, callback) {
         db.collection(collection).deleteOne(selector, function(err, res) {
@@ -276,16 +265,16 @@ exports.delete = function(selector, collection, callback) {
                 bulkDelete(db, collection, selector, function(res) {
                     db.close();
                     log.trace('successfully deleted documents with selector '+
-                              selector + ' from collection \'' + collection +
-                              '\'');
+                              JSON.stringify(selector) + ' from collection \'' +
+                              collection + '\'');
                     callback(res);
                 });
             } else {
                 deleteDoc(db, collection, selector, function(res) {
                     db.close();
                     log.trace('successfully deleted one document with selector '
-                              + selector + ' from collection \'' + collection +
-                              '\'');
+                              + JSON.stringify(selector) + ' from collection \''
+                              + collection + '\'');
                     callback(res);
                 });
             }
@@ -305,8 +294,9 @@ exports.delete = function(selector, collection, callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.getIds = function(selector, collection, limit, callback) {
-    log.trace('getting ids of documents with selector ' + selector +
-              ' collection \'' + collection + '\' and limit ' + limit);
+    log.trace('getting ids of documents with selector ' +
+              JSON.stringify(selector) + ' collection \'' + collection +
+              '\' and limit ' + limit);
     var ids = [];
 
     exports.find(collection, selector, limit, function(docs) {
@@ -315,8 +305,9 @@ exports.getIds = function(selector, collection, limit, callback) {
                 ids.push(docs[i]._id);
             }
         }
-        log.trace('successfully got document with selector ' + selector +
-                  ' from collection \'' + collection + '\' and limit ' + limit);
+        log.trace('successfully got document with selector ' +
+                  JSON.stringify(selector) + ' from collection \'' +
+                  collection + '\' and limit ' + limit);
         callback(ids);
     });
 };
