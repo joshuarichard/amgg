@@ -1,6 +1,33 @@
 var MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 var nconf = require('nconf');
+var bunyan = require('bunyan');
+
+var log = bunyan.createLogger({
+    name: 'mongo',
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout,
+            // path: './var/log/mongo_info.log',
+            // period: '1d',  // daily rotation
+            // count: 3
+        },
+        {
+            level: 'trace',
+            path: './var/log/mongo_access.log',
+            period: '1d',    // daily rotation
+            count: 3
+        },
+        {
+            level: 'error',
+            path: './var/log/mongo_error.log',
+            period: '1d',   // daily rotation
+            count: 10
+        }
+    ]
+});
+
 nconf.env()
      .file({ file: 'config.json' });
 
@@ -31,20 +58,12 @@ var exports = module.exports = {};
 MongoClient.connect(url, function(err, db) {
     assert.equal(err, null);
     if (err) {
-        console.log('FATAL: test connection to Mongo UNSUCCESSFUL ' +
-                    ' on ' + new Date().toUTCString() +' err: ' + err);
-        db.close();
+        log.error('test connection to Mongo unsuccessful.');
     } else {
-        console.log('INFO: test connection to Mongo successful.');
+        log.info('test connection to Mongo successful.');
         db.close();
     }
 });
-
-exports.findUnsponsoredChildren = function(callback) {
-    exports.find({'status': 'Sponsored'}, 'children', 100, function(docs) {
-        callback(docs);
-    });
-};
 
 /** find(selector, collection, limit, callback)
  *
@@ -57,6 +76,8 @@ exports.findUnsponsoredChildren = function(callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.find = function(selector, collection, limit, callback) {
+    log.trace('getting document(s) with selector ' + JSON.stringify(selector) +
+              ' in collection \'' + collection + '\' with limit ' + limit);
     var documents = {}, i = 0;
 
     var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -67,8 +88,7 @@ exports.find = function(selector, collection, limit, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
         cursor.each(function(err, doc) {
             if (err) {
-                console.log('DB ERROR: mongo.findDocs() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in find().findDocs(). message: ' + err);
             }
             if (doc != null) {
                 documents[i] = {
@@ -91,12 +111,17 @@ exports.find = function(selector, collection, limit, callback) {
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
-            console.log('DB ERROR: find() Mongo connection error ' +
-                        err + ' on ' + new Date().toUTCString());
+            log.error('Mongo connection error in find() ' + err);
+            callback({'err': 'cannot establish a connection'});
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                callback(documents);
+                var trimmedDoc = trim(documents);
+                log.trace('successfully found one document with selector ' +
+                          selector + ' in collection \'' + collection + '\'' +
+                          ' with limit ' + limit + '. document: ' +
+                          JSON.stringify(trimmedDoc));
+                callback(trimmedDoc);
             });
         }
     });
@@ -112,11 +137,12 @@ exports.find = function(selector, collection, limit, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.insert = function(docs, collection, callback) {
+    log.trace('inserting document(s) ' + docs +
+              ' in collection \'' + collection + '\'');
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
-                console.log('DB ERROR: mongo.insertDoc() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in insert().insertDoc() message: ' + err);
             }
             callback(result);
         });
@@ -130,8 +156,7 @@ exports.insert = function(docs, collection, callback) {
 
         bulk.execute(function(err, result) {
             if (err) {
-                console.log('DB ERROR: mongo.bulkInsert() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in insert().bulkInsert() message: ' + err);
             }
             callback(result);
         });
@@ -139,19 +164,24 @@ exports.insert = function(docs, collection, callback) {
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
-            console.log('DB ERROR: insert() Mongo connection error ' +
-                        err + ' on ' + new Date().toUTCString());
-        }
-        if(docs instanceof Array) {
-            bulkInsert(db, collection, docs, function(result) {
-                db.close();
-                callback(result);
-            });
+            log.error('Mongo connection error in insert() ' + err);
+            callback({'err': 'cannot establish a connection'});
         } else {
-            insertDoc(db, collection, docs, function(result) {
-                db.close();
-                callback(result);
-            });
+            if(docs instanceof Array) {
+                bulkInsert(db, collection, docs, function(result) {
+                    db.close();
+                    log.trace('successfully inserted one document ' + docs +
+                              ' into collection \'' + collection + '\'');
+                    callback(result);
+                });
+            } else {
+                insertDoc(db, collection, docs, function(result) {
+                    db.close();
+                    log.trace('successfully inserted many documents ' + docs +
+                              ' into collection \'' + collection + '\'');
+                    callback(result);
+                });
+            }
         }
     });
 };
@@ -166,6 +196,8 @@ exports.insert = function(docs, collection, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.edit = function(id, changes, collection, callback) {
+    log.trace('editing document(s) with id ' + id + ' in collection \'' +
+              collection + '\' with changes ' + changes);
     var changesMod = {};
     changesMod['$set'] = changes;
 
@@ -176,8 +208,7 @@ exports.edit = function(id, changes, collection, callback) {
         db.collection(collection).updateOne(selector, changes,
         function(err, res) {
             if (err) {
-                console.log('DB ERROR: mongo.editDoc() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in edit().editDoc(). message: ' + err);
             }
             callback(res);
         });
@@ -185,13 +216,17 @@ exports.edit = function(id, changes, collection, callback) {
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
-            console.log('DB ERROR: edit() Mongo connection error ' +
-                        err + ' on ' + new Date().toUTCString());
+            log.error('Mongo connection error in edit() ' + err);
+            callback({'err': 'cannot establish a connection'});
+        } else {
+            editDoc(db, collection, selector, changesMod, function(res) {
+                db.close();
+                log.trace('successfully edited one document with id ' +
+                          id + ' from collection ' + collection +
+                          ' with changes' + changes);
+                callback(res);
+            });
         }
-        editDoc(db, collection, selector, changesMod, function(res) {
-            db.close();
-            callback(res);
-        });
     });
 };
 
@@ -203,13 +238,16 @@ exports.edit = function(id, changes, collection, callback) {
  * selector       (JSON) - document selector
  * collection   (string) - the collection to search for documents
  * callback       (func) - callback function to execute after completion
+ *
+ * TODO: look into fixing bulkDelete(). not sure if the for loop works correctly
  */
 exports.delete = function(selector, collection, callback) {
+    log.trace('deleting document(s) with selector ' + selector +
+              ' in collection \'' + collection + '\'');
     var deleteDoc = function(db, collection, selector, callback) {
         db.collection(collection).deleteOne(selector, function(err, res) {
             if (err) {
-                console.log('DB ERROR: mongo.deleteDoc() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in deleteDoc(). message: ' + err);
             }
             callback(res);
         });
@@ -223,8 +261,7 @@ exports.delete = function(selector, collection, callback) {
 
         bulk.execute(function(err, res) {
             if (err) {
-                console.log('DB ERROR: mongo.bulkDelete() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in bulkDelete(). message: ' + err);
             }
             callback(res);
         });
@@ -232,19 +269,26 @@ exports.delete = function(selector, collection, callback) {
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
-            console.log('DB ERROR: delete() Mongo connection error ' +
-                        err + ' on ' + new Date().toUTCString());
-        }
-        if(selector instanceof Array) {
-            bulkDelete(db, collection, selector, function(res) {
-                db.close();
-                callback(res);
-            });
+            log.error('Mongo connection error in delete() ' + err);
+            callback({"err": "cannot establish a connection."});
         } else {
-            deleteDoc(db, collection, selector, function(res) {
-                db.close();
-                callback(res);
-            });
+            if(selector instanceof Array) {
+                bulkDelete(db, collection, selector, function(res) {
+                    db.close();
+                    log.trace('successfully deleted documents with selector '+
+                              selector + ' from collection \'' + collection +
+                              '\'');
+                    callback(res);
+                });
+            } else {
+                deleteDoc(db, collection, selector, function(res) {
+                    db.close();
+                    log.trace('successfully deleted one document with selector '
+                              + selector + ' from collection \'' + collection +
+                              '\'');
+                    callback(res);
+                });
+            }
         }
     });
 };
@@ -261,6 +305,8 @@ exports.delete = function(selector, collection, callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.getIds = function(selector, collection, limit, callback) {
+    log.trace('getting ids of documents with selector ' + selector +
+              ' collection \'' + collection + '\' and limit ' + limit);
     var ids = [];
 
     exports.find(collection, selector, limit, function(docs) {
@@ -269,6 +315,8 @@ exports.getIds = function(selector, collection, limit, callback) {
                 ids.push(docs[i]._id);
             }
         }
+        log.trace('successfully got document with selector ' + selector +
+                  ' from collection \'' + collection + '\' and limit ' + limit);
         callback(ids);
     });
 };
@@ -277,11 +325,16 @@ exports.getIds = function(selector, collection, limit, callback) {
  *
  * fetches a document with a certain _id. returns the document as a JSON object.
  *
+ * returns a document with content {'err' : 'not found'} if the id cannot be
+ * matched.
+ *
  * id         (string) - document _id
  * collection (string) - the collection to search for documents
  * callback     (func) - callback function to execute after completion
  */
 exports.get = function(id, collection, callback) {
+    log.trace('getting document with id ' + id + ' from collection ' +
+              collection);
     var o_id = new mongodb.ObjectID(id);
     var selector = {'_id': o_id};
     var foundOne = false;
@@ -290,8 +343,7 @@ exports.get = function(id, collection, callback) {
         var cursor = db.collection(collection).find(selector);
         cursor.each(function(err, doc) {
             if (err) {
-                console.log('DB ERROR: mongo.getDoc() error response ' +
-                            err + ' on ' + new Date().toUTCString());
+                log.error('error in getDoc(). message: ' + err);
             }
             if (doc != null) {
                 foundOne = true;
@@ -300,31 +352,35 @@ exports.get = function(id, collection, callback) {
             // cursor.each() is always going to hit a null value so keep track
             // of whether or not we've found one. console out on lookup failure
             if (!foundOne){
-                console.log('DB ERROR: Document not found with id: \'' +
-                            id + '\' on ' + new Date().toUTCString());
-                callback(doc);
+                log.error('document not found with id: \'' + id + '\'');
+                callback({'err' : 'not found'});
             }
         });
     };
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
-            console.log('DB ERROR: get() Mongo connection error ' +
-                        err + ' on ' + new Date().toUTCString());
+            log.error('Mongo connection error in get() ' + err);
+            callback({'err': 'cannot establish a connection.'});
+        } else {
+            getDoc(db, id, collection, function(doc) {
+                db.close();
+                var trimmedDoc = trim(doc);
+                log.trace('successfully got document with id ' + id +
+                          ' from collection \'' + collection + '\'. document: ' +
+                          JSON.stringify(trimmedDoc));
+                callback(trimmedDoc);
+            });
         }
-        getDoc(db, id, collection, function(doc) {
-            db.close();
-            callback(trim(doc));
-        });
     });
 };
 
 /** trim(doc)
  *
- *  trims a document down from a full document to a public, api-ready document.
- *  returns a json doc.
+ * trims a document down from a full document to a public, api-ready document.
+ * returns a json doc.
  *
- *  doc  (JSON) - document to be trimmed
+ * doc  (JSON) - document to be trimmed
  */
 function trim(doc) {
     var trimmedDoc = {}, i = 0;
