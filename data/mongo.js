@@ -3,6 +3,10 @@ var mongodb = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
 
+// TODO: need to take care of making this more robust. don't log.trace(success)
+// when there's failure. know this is happening for edit() with undefined ID
+// need to assert on mongo res's. need to know structure of the res's.
+
 var log = bunyan.createLogger({
     name: 'mongo',
     streams: [
@@ -122,7 +126,7 @@ exports.find = function(selector, collection, limit, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.insert = function(docs, collection, callback) {
-    log.trace('inserting document(s) ' + docs +
+    log.trace('inserting document(s) ' + JSON.stringify(docs) +
               ' in collection \'' + collection + '\'');
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
@@ -155,15 +159,17 @@ exports.insert = function(docs, collection, callback) {
             if(docs instanceof Array) {
                 bulkInsert(db, collection, docs, function(result) {
                     db.close();
-                    log.trace('successfully inserted one document ' + docs +
-                              ' into collection \'' + collection + '\'');
+                    log.trace('successfully inserted many documents ' +
+                              JSON.stringify(docs) + ' into collection \'' +
+                              collection + '\'');
                     callback(result);
                 });
             } else {
                 insertDoc(db, collection, docs, function(result) {
                     db.close();
-                    log.trace('successfully inserted many documents ' + docs +
-                              ' into collection \'' + collection + '\'');
+                    log.trace('successfully inserted one document ' +
+                              JSON.stringify(docs) + ' into collection \'' +
+                              collection + '\'');
                     callback(result);
                 });
             }
