@@ -106,7 +106,7 @@ exports.find = function(selector, collection, limit, callback) {
             findDocs(db, collection, selector, function() {
                 db.close();
                 var trimmedDoc = trim(documents);
-                log.trace('successfully found one document with selector ' +
+                log.trace('successfully found document(s) with selector ' +
                           JSON.stringify(selector) + ' in collection \'' +
                           collection + '\'' + ' with limit ' + limit +
                           '. document: ' + JSON.stringify(trimmedDoc));
@@ -385,7 +385,7 @@ function trim(doc) {
     for (var miniDoc in doc) {
         // if this is multiple documents
         if (miniDoc != '_id') {
-            trimmedDoc[i] = {
+            trimmedDoc[doc[miniDoc]._id] = {
                 'nombre': doc[miniDoc].nombre,
                 'años': doc[miniDoc].años,
                 'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
@@ -398,7 +398,7 @@ function trim(doc) {
             };
         // else this is only one document
         } else {
-            trimmedDoc = {
+            trimmedDoc[doc._id] = {
                 'nombre': doc.nombre,
                 'años': doc.años,
                 'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
