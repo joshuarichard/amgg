@@ -3,6 +3,10 @@ var mongodb = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
 
+// TODO: need to take care of making this more robust. don't log.trace(success)
+// when there's failure. know this is happening for edit() with undefined ID
+// need to assert on mongo res's. need to know structure of the res's.
+
 var log = bunyan.createLogger({
     name: 'mongo',
     streams: [

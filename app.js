@@ -60,9 +60,16 @@ app.get('/api/children/:id', function(req, res) {
 
 app.post('/api/donor', function(req, res) {
     log.info('posting to /api/donor ' + JSON.stringify(req.body));
-    mongo.insert(req.body, 'donors', function(doc) {
-        res.send('did it!');
-    })
+    mongo.insert(req.body, 'donors', function(result) {
+        res.send(result);
+    });
+});
+
+app.put('/api/donor', function(req, res) {
+    log.info('putting to /api/donor ' + JSON.stringify(req.body));
+    mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
+        res.send(result);
+    });
 });
 
 app.listen(3000, function () {
