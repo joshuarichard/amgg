@@ -45,6 +45,7 @@ app.get('/api/unsponsored', function(req, res) {
     log.info('getting /api/unsponsored');
     mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
         100, function(docs) {
+            log.info('got /api/unsponsored');
             res.send(JSON.stringify(docs));
         });
 });
@@ -52,8 +53,16 @@ app.get('/api/unsponsored', function(req, res) {
 app.get('/api/children/:id', function(req, res) {
     log.info('getting /api/children/' + req.params.id);
     mongo.get(req.params.id, 'children', function(doc) {
+        log.info('got /api/children/' + req.params.id);
         res.send(JSON.stringify(doc));
     });
+});
+
+app.post('/api/donor', function(req, res) {
+    log.info('posting to /api/donor ' + JSON.stringify(req.body));
+    mongo.insert(req.body, 'donors', function(doc) {
+        res.send('did it!');
+    })
 });
 
 app.listen(3000, function () {
