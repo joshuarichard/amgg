@@ -7,6 +7,9 @@
         "db": "testing",
         "collection": "children"
     },
+    "app": {
+        "port": 3000
+    },
     "autofill": {
         "dbName": "testing",
         "collection": "children",
