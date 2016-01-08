@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>AMGG MongoDB API</title>
+    <style type="text/css">
+      body {
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+	display: none;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+.http-method {
+ text-transform: uppercase;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.up {
+  float:right;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.param-enum-header {
+width: 700px;
+padding: 0 0 0 60px;
+color: #777;
+font-weight: bold;
+}
+
+.param-enum {
+width: 700px;
+padding: 0 0 0 80px;
+color: #777;
+font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+    </style>
+  </head>
+  <body>
+  <h1>AMGG MongoDB API</h1>
+    <div class="app-desc">API to access MongoDB for AMG Guatemala</div>
+    <div class="app-desc">More information: <a href="https://github.com/joshuarichard/amgg">https://github.com/joshuarichard/amgg</a></div>
+    <div class="app-desc">Contact Info: <a href="eos.josh.richard@gmail.com">eos.josh.richard@gmail.com</a></div>
+    <div class="app-desc">Version: 0.0.1</div>
+    <!-- <div class="license-info">All rights reserved</div> -->
+    <!-- <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div> -->
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+  <h2>Table of Contents </h2>
+  <div class="method-summary"></div>
+  <ol>
+    <li><a href="#apiChildrenIdGet"><code><span class="http-method">get</span> /api/children/id</code></a></li>
+    <li><a href="#apiUnsponsoredGet"><code><span class="http-method">get</span> /api/unsponsored</code></a></li>
+    <li><a href="#apiDonorPost"><code><span class="http-method">post</span> /api/donor</code></a></li>
+    <li><a href="#apiDonorPut"><code><span class="http-method">put</span> /api/donor</code></a></li>
+  </ol>
+
+  <!-- apiChildrenIdGet method -->
+  <div class="method"><a name="apiChildrenIdGet"/>
+    <div class="method-path">
+      <a class="up" href="#__Methods">Up </a>
+      <pre class="get"><code class="huge"><span class="http-method">get</span> /api/children/:id</code></pre>
+    </div>
+    <div class="method-notes">Gets a single Child object where { _id: req.params.id }.</div>
+    <h3 class="field-label">Return type:</h3>
+    <div class="return-type">
+      <a href="#child">child</a>
+    </div>
+    <h3 class="field-label">Responses:</h3>
+    <h4 class="field-label">200</h4>
+    Successful response
+  </div>
+  <!-- end apiChildrenIdGet method-->
+
+  <!-- apiUnsponsoredGet method -->
+  <div class="method"><a name="apiUnsponsoredGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up </a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/unsponsored</code></pre></div>
+
+    <div class="method-notes">Gets Child objects where { status: Waiting for Sponsor - No Prior Sponsor }. Limit 100 objects.</div>
+    <h3 class="field-label">Return type:</h3>
+    <div class="return-type">
+      <a href="#child">child</a>
+    </div>
+    <h3 class="field-label">Responses:</h3>
+    <h4 class="field-label">200</h4>
+    Successful response
+  </div>
+  <!-- end apiUnsponsoredGet method-->
+
+  <!-- apiDonorPost method -->
+  <div class="method"><a name="apiDonorPost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up </a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/donor</code></pre></div>
+
+    <div class="method-notes">Posts (inserts) donor objects into the donor collection. The document to insert should be the JSON body of the request.</div>
+    <h3 class="field-label">Return type:</h3>
+    <div class="return-type">
+      <a href="#result">result</a>
+    </div>
+    <h3 class="field-label">Responses:</h3>
+    <h4 class="field-label">200</h4>
+    Successful response
+  </div>
+  <!-- end apiDonorPost method-->
+
+  <!-- apiDonorPut method -->
+  <div class="method"><a name="apiDonorPut"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up </a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/donor</code></pre></div>
+
+    <div class="method-notes">Puts (edits) donor objects in the donor collection. Changes should be formatted { _id: "xxxxxx", changes: { "key": "value" } } in the JSON body of the request.</div>
+    <h3 class="field-label">Return type:</h3>
+    <div class="return-type">
+      <a href="#result">result</a>
+    </div>
+    <h3 class="field-label">Responses:</h3>
+    <h4 class="field-label">200</h4>
+    Successful response
+  </div>
+  <!-- end apiDonorPut method-->
+
+  <hr/>
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+  <h2>Table of Contents</h2>
+  <!-- first item in table of contents -->
+  <ol>
+    <li><a name="#child"><code>child</code></a></li>
+  </ol>
+  <div class="model">
+    <h3 class="field-label"><a name="Inline_response_200">types:</a></h3>
+    <div class="field-items">
+      <div class="param">nombre </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">anos </div><div class="param-desc"><span class="param-type">int</span> </div>
+      <div class="param">cumpleanos </div><div class="param-desc"><span class="param-type">date (ISO 8601)</span> </div>
+      <div class="param">genero </div><div class="param-desc"><span class="param-type">String</span> </div>
+      <div class="param">centro_de_ninos </div><div class="param-desc"><span class="param-type">String</span> </div>
+    </div>
+  </div>
+  <!-- next item in table of contents -->
+  <ol>
+    <li><a name="#result"><code>result</code></a></li>
+  </ol>
+  <div class="model">
+    <h3 class="field-label"><a name="Inline_response_200">types:</a></h3>
+    <div class="field-items">
+      <div class="param">ok </div><div class="param-desc"><span class="param-type">int (1 on success)</span> </div>
+      <div class="param">n </div><div class="param-desc"><span class="param-type">int (1 on success)</span> </div>
+    </div>
+  </div>
+  </body>
+</html>
