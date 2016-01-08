@@ -48,7 +48,6 @@ $(document).ready(function() {
         }
 
         if (nullFields.length > 0) {
-            console.log(nullFields);
             var alertMessage = 'You are missing some fields: \n';
             for (var i = 0; i < nullFields.length; i++) {
                 alertMessage += nullFields[i];
@@ -67,7 +66,11 @@ $(document).ready(function() {
             }
 
             $.post("/api/donor", data, function(result) {
-                console.log(result);
+                if(result.n + result.ok === 2) {
+                    console.log('Donor inserted.');
+                } else {
+                    console.log('Something bad happened on donor insert.');
+                };
             });
         }
     });
