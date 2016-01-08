@@ -401,11 +401,7 @@ function trim(doc) {
             trimmedDoc[doc._id] = {
                 'nombre': doc.nombre,
                 'años': doc.años,
-                'cumpleaños': monthNames[doc.cumpleaños.getMonth()] +
-                                          ' ' +
-                                          doc.cumpleaños.getDate() +
-                                          ' ' +
-                                          doc.cumpleaños.getFullYear(),
+                'cumpleaños': doc.cumpleaños,
                 'género': doc.género,
                 'centro_de_ninos': doc.centro_de_ninos
             };
