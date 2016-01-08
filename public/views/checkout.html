@@ -11,10 +11,12 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-        <script type="text/javascript" src="../js/children.js"></script>
+
+        <script type="text/javascript" src="./../js/checkout.js"></script>
 
         <link href="../css/Site.css" rel="stylesheet" />
-        <link href="../css/checkout.css" rel="stylesheet" />        
+        <link href="../css/checkout.css" rel="stylesheet" />
+
     </head>
 
     <body>
@@ -81,19 +83,43 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label">First Name</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="text" name="first-name" placeholder="First Name" >
+                        <input id="form-first-name" class="form-control" type="text" name="first-name" placeholder="First Name" >
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-4 control-label">Last Name</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="text" name="last-name" placeholder="Last Name" >
+                        <input id="form-last-name" class="form-control" type="text" name="last-name" placeholder="Last Name" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Tel&#233;fono</label>
+                    <div class="col-md-8">
+                        <input id="form-phone" class="form-control" type="text" name="phone-number" placeholder="(978) 927-2300" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Email</label>
+                    <div class="col-md-8">
+                        <input id="form-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Address</label>
+                    <div class="col-md-8">
+                        <input id="form-address-street" class="form-control" type="text" name="address" placeholder="Street" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-8">
+                        <input id="form-address-city" class="form-control" type="text" name="address-city" placeholder="City" >
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-4 control-label">Country</label>
                     <div class="col-md-8">
-                        <select id="country" name="country" class="inputbox form-control validate[required]">
+                        <select id="form-country" name="country" class="inputbox form-control validate[required]">
                             <option value=""><font><font>Select country</font></font></option>
                             <option value="Afghanistan"><font><font>Afghanistan</font></font></option>
                             <option value="Albania"><font><font>Albania</font></font></option>
@@ -344,51 +370,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-4 control-label">Tel&#233;fono</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="phone-number" placeholder="(978) 927-2300" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Email</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Address</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="address" placeholder="Street" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label"></label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="address-city" placeholder="City" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label"></label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="address-country" placeholder="Country" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label">Email</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="col-md-4 control-label">Card Number</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="text" name="email" placeholder="xxxx xxxx xxxx xxxx" >
+                        <input id="form-credit" class="form-control" type="text" name="credit" placeholder="xxxx xxxx xxxx xxxx" >
                     </div>
-                </div>              
+                </div>
                 <div class="form-group">
-                    <label class="col-md-4 control-label">CSV</label>
+                    <label class="col-md-4 control-label">CVV</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="text" name="email" placeholder="123" >
+                        <input id="form-cvv" class="form-control" type="text" name="cvv" placeholder="123" >
                     </div>
                 </div>
                 <div class="form-group">
@@ -396,7 +386,7 @@
                     <div class="expiration-date">
                         <div class="col-md-8">
                             <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <button id="form-expiration-1" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 01
                                 <span class="caret"></span>
                                 </button>
@@ -404,7 +394,7 @@
                                 <li><a href="#">02</a></li>
                                 <li><a href="#">03</a></li>
                                 <li><a href="#">04</a></li>
-                                <li><a href="#">05</a></li>                       
+                                <li><a href="#">05</a></li>
                                 <li><a href="#">06</a></li>
                                 <li><a href="#">07</a></li>
                                 <li><a href="#">08</a></li>
@@ -416,7 +406,7 @@
                             </div>
                             /
                             <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <button id="form-expiration-2" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 16
                                 <span class="caret"></span>
                                 </button>
@@ -424,7 +414,7 @@
                                 <li><a href="#">17</a></li>
                                 <li><a href="#">18</a></li>
                                 <li><a href="#">19</a></li>
-                                <li><a href="#">20</a></li>                       
+                                <li><a href="#">20</a></li>
                                 <li><a href="#">21</a></li>
                                 <li><a href="#">22</a></li>
                                 <li><a href="#">23</a></li>
@@ -434,7 +424,7 @@
                                 <li><a href="#">27</a></li>
                                 <li><a href="#">28</a></li>
                                 <li><a href="#">29</a></li>
-                                <li><a href="#">30</a></li>                                
+                                <li><a href="#">30</a></li>
                               </ul>
                             </div>
                         </div>
@@ -443,7 +433,7 @@
                 <div class="form-group">
                     <label class="col-md-4 control-label">Name on Card</label>
                     <div class="col-md-8">
-                        <input class="form-control" type="text" name="name-on-card" placeholder="John Doe" >
+                        <input id="form-name-on-card" class="form-control" type="text" name="name-on-card" placeholder="John Doe" >
                     </div>
                 </div>
 

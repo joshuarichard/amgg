@@ -384,11 +384,7 @@ function trim(doc) {
             trimmedDoc[doc[miniDoc]._id] = {
                 'nombre': doc[miniDoc].nombre,
                 'años': doc[miniDoc].años,
-                'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
-                                          ' ' +
-                                          doc[miniDoc].cumpleaños.getDate() +
-                                          ' ' +
-                                          doc[miniDoc].cumpleaños.getFullYear(),
+                'cumpleaños':doc.cumpleaños,
                 'género': doc[miniDoc].género,
                 'centro_de_ninos': doc[miniDoc].centro_de_ninos
             };
