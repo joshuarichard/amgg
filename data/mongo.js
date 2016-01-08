@@ -378,10 +378,6 @@ exports.get = function(id, collection, callback) {
 function trim(doc) {
     var trimmedDoc = {}, i = 0;
 
-    var monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-             'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
     for (var miniDoc in doc) {
         // if this is multiple documents
         if (miniDoc != '_id') {
