@@ -2,6 +2,7 @@ var MongoClient = require('mongodb').MongoClient;
 var mongodb = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
+var grid = require('gridfs-stream');
 
 // TODO: need to take care of making this more robust. don't log.trace(success)
 // when there's failure. know this is happening for edit() with undefined ID
@@ -76,9 +77,10 @@ MongoClient.connect(url, function(err, db) {
  * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
  * limit         (int) - number of documents to limit the search results to
+ * trim      (boolean) - true if trim is request, false if not
  * callback     (func) - callback function to execute after completion
  */
-exports.find = function(selector, collection, limit, callback) {
+exports.find = function(selector, collection, limit, isTrim, callback) {
     log.trace('getting document(s) with selector ' + JSON.stringify(selector) +
               ' in collection \'' + collection + '\' with limit ' + limit);
     var documents = {}, i = 0;
@@ -105,12 +107,14 @@ exports.find = function(selector, collection, limit, callback) {
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                var trimmedDoc = trim(documents);
+                if(isTrim) {
+                    doc = trim(doc);
+                }
                 log.trace('successfully found document(s) with selector ' +
                           JSON.stringify(selector) + ' in collection \'' +
                           collection + '\'' + ' with limit ' + limit +
-                          '. document: ' + JSON.stringify(trimmedDoc));
-                callback(trimmedDoc);
+                          '. document: ' + JSON.stringify(doc));
+                callback(doc);
             });
         }
     });
@@ -323,9 +327,10 @@ exports.getIds = function(selector, collection, limit, callback) {
  *
  * id         (string) - document _id
  * collection (string) - the collection to search for documents
+ * trim      (boolean) - true if trim is request, false if not
  * callback     (func) - callback function to execute after completion
  */
-exports.get = function(id, collection, callback) {
+exports.get = function(id, collection, isTrim, callback) {
     log.trace('getting document with id ' + id + ' from collection ' +
               collection);
     var o_id = new mongodb.ObjectID(id);
@@ -358,13 +363,54 @@ exports.get = function(id, collection, callback) {
         } else {
             getDoc(db, id, collection, function(doc) {
                 db.close();
-                var trimmedDoc = trim(doc);
+                if(isTrim) {
+                    doc = trim(doc);
+                }
                 log.trace('successfully got document with id ' + id +
                           ' from collection \'' + collection + '\'. document: '
-                          + JSON.stringify(trimmedDoc));
-                callback(trimmedDoc);
+                          + JSON.stringify(doc));
+                callback(doc);
             });
         }
+    });
+};
+
+/** getPic(id, collection, callback)
+ *
+ * fetches a buffer for child pictures based on the child's document _id
+ *
+ * returns a document with content {'err' : 'not found'} if the id cannot be
+ * matched.
+ *
+ * id         (string) - _id of the child whose picture buffer to return
+ * collection (string) - the collection to search for documents
+ * callback     (func) - callback function to execute after completion
+ */
+exports.getPic = function(id, collection, callback) {
+    log.trace('getting picture for child with id ' + id + ' from collection ' +
+              collection);
+
+    var buffer = '';
+
+    exports.get(id, collection, false, function(doc) {
+        var childDoc = doc;
+        MongoClient.connect(url, function(err, db) {
+            var gridfs = grid(db, mongodb);
+
+            var readStream = gridfs.createReadStream({ _id: doc.image_id });
+
+            readStream.on('data', function (chunk) {
+                buffer += chunk;
+            });
+
+            readStream.on('error', function (err) {
+                log.error('error in getPic(). message: ' + err);
+            });
+
+            readStream.on('end', function () {
+                callback(buffer);
+            });
+        });
     });
 };
 
@@ -384,7 +430,7 @@ function trim(doc) {
             trimmedDoc[doc[miniDoc]._id] = {
                 'nombre': doc[miniDoc].nombre,
                 'años': doc[miniDoc].años,
-                'cumpleaños':doc.cumpleaños,
+                'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
                 'centro_de_ninos': doc[miniDoc].centro_de_ninos
             };

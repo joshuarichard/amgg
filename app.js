@@ -47,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/unsponsored', function(req, res) {
     log.info('getting /api/unsponsored');
     mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
-        100, function(docs) {
+        100, true, function(docs) {
             log.info('got /api/unsponsored');
             res.send(JSON.stringify(docs));
         });
@@ -55,7 +55,7 @@ app.get('/api/unsponsored', function(req, res) {
 
 app.get('/api/children/:id', function(req, res) {
     log.info('getting /api/children/' + req.params.id);
-    mongo.get(req.params.id, 'children', function(doc) {
+    mongo.get(req.params.id, 'children', true, function(doc) {
         res.send(JSON.stringify(doc));
     });
 });
@@ -71,6 +71,13 @@ app.put('/api/donor', function(req, res) {
     log.info('putting to /api/donor ' + JSON.stringify(req.body));
     mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
         res.send(result);
+    });
+});
+
+app.get('/api/pictures/:id', function(req, res) {
+    log.info('getting picture for ' + req.params.id);
+    mongo.getPic(req.params.id, 'children', function(buffer) {
+        res.send(buffer);
     });
 });
 

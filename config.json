@@ -4,7 +4,7 @@
         "port": "27017",
         "username": "admin",
         "password": "testing",
-        "db": "testing",
+        "db": "development",
         "collection": "children"
     },
     "app": {
