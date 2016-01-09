@@ -25,16 +25,16 @@ function insertPic(fileName, filePath, metaData, callback) {
             assert.equal(err, null);
             assert.ok(typeof result.close == 'function');
             db.close();
-            callback(result);
+            callback(result.fileId);
         });
     });
 }
 
-exports.insert = function(fileName, metaData) {
+exports.insert = function(fileName, metaData, callback) {
     var filePath = './auto/pics/flowers/flower_' +
                    Math.floor(Math.random() * (22 - 1) + 1) + '.jpeg';
 
-    insertPic(fileName, filePath, metaData, function() {
-        console.log('INFO: inserted picture.');
+    insertPic(fileName, filePath, metaData, function(fileId) {
+        callback(fileId)
     });
 };

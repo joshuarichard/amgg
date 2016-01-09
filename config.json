@@ -4,7 +4,7 @@
         "port": "27017",
         "username": "admin",
         "password": "testing",
-        "db": "development",
+        "db": "testing",
         "collection": "children"
     },
     "app": {
@@ -13,6 +13,6 @@
     "autofill": {
         "dbName": "testing",
         "collection": "children",
-        "numOfDocs": "200"
+        "numOfDocs": "10"
     }
 }
