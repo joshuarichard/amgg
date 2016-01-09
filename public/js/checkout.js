@@ -1,4 +1,38 @@
 $(document).ready(function() {
+    function dummyLoad(id) {
+        var monthNames = ['January', 'February', 'March', 'April', 'May',
+                          'June', 'July', 'August', 'September', 'October',
+                          'November', 'December' ];
+
+        $.getJSON('/api/children/' + id, function(res) {
+            var birthday = new Date(res[id].cumpleaños);
+            document.getElementById('child-name').innerHTML = 'Nombre: ' +
+                                                              res[id].nombre;
+
+            document.getElementById('child-age').innerHTML = 'Años: ' +
+                                                             res[id].años;
+
+            document.getElementById('child-birthday').innerHTML = 'Cumpleaños: '
+            + monthNames[birthday.getMonth()] + ' ' + birthday.getDate() + ' ' +
+            birthday.getFullYear();
+
+            document.getElementById('child-gender').innerHTML = 'Género: ' +
+                                                                res[id].género;
+            document.getElementById('child-center').innerHTML =
+                                  'Centro De Ninos: ' + res[id].centro_de_ninos;
+        });
+
+        $.getJSON('/api/pictures/' + id, function(res) {
+            console.log('hello, you are in here');
+            var img = document.createElement("img");
+            // added `width` , `height` properties to `img` attributes
+            img.width = "250px";
+            img.height = "250px";
+            img.src = "data:image/jpeg;base64," + res;
+            alert(img);
+        });
+    }
+
     $("#checkout-submit").click(function() {
         var firstName = document.getElementById('form-first-name').value;
         var lastName = document.getElementById('form-last-name').value;
@@ -74,4 +108,6 @@ $(document).ready(function() {
             });
         }
     });
+
+    dummyLoad('5690af8562b84ed1d336c5c1');
 });

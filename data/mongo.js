@@ -408,7 +408,9 @@ exports.getPic = function(id, collection, callback) {
             });
 
             readStream.on('end', function () {
-                callback(buffer);
+                var buffer64 = new Buffer(buffer, 'binary').toString('base64');
+                console.log(buffer64);
+                callback(buffer64);
             });
         });
     });
