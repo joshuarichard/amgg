@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var pics = require('./pics.js');
@@ -231,14 +233,18 @@ function generateDocument(callback) {
                                 centro_de_ninos.length)],
             'direccion_de_casa': generateAddress(),
             'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
-            'provincia': provincia[Math.floor(Math.random() * provincia.length)],
+            'provincia': provincia[Math.floor(Math.random() *
+                                   provincia.length)],
             'código_postal': Math.floor((Math.random() * (99999) + 1)),
             'patrocinador_id': Math.floor((Math.random() * (99999) + 1)),
             'patrocinador_nombre': nombre[Math.floor(Math.random() *
                                    nombre.length)],
-            'última_actualización': randomDate(new Date(2013, 00, 01), new Date()),
-            'abscent_padre': abscent[Math.floor(Math.random() * abscent.length)],
-            'abscent_madre': abscent[Math.floor(Math.random() * abscent.length)],
+            'última_actualización': randomDate(new Date(2013, 00, 01),
+                                               new Date()),
+            'abscent_padre': abscent[Math.floor(Math.random() *
+                                     abscent.length)],
+            'abscent_madre': abscent[Math.floor(Math.random() *
+                                     abscent.length)],
             'religión_de_la_familia': religion_de_la_familia[Math.floor(
                                       Math.random() *
                                       religion_de_la_familia.length)],

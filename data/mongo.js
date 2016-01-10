@@ -1,8 +1,9 @@
+/* eslint-env node */
+
 var MongoClient = require('mongodb').MongoClient;
-var mongodb = require('mongodb');
+var mongo = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
-var grid = require('gridfs-stream');
 
 // TODO: need to take care of making this more robust. don't log.trace(success)
 // when there's failure. know this is happening for edit() with undefined ID
@@ -108,13 +109,13 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
             findDocs(db, collection, selector, function() {
                 db.close();
                 if(isTrim) {
-                    doc = trim(doc);
+                    documents = trim(documents);
                 }
                 log.trace('successfully found document(s) with selector ' +
                           JSON.stringify(selector) + ' in collection \'' +
                           collection + '\'' + ' with limit ' + limit +
-                          '. document: ' + JSON.stringify(doc));
-                callback(doc);
+                          '. document: ' + JSON.stringify(documents));
+                callback(documents);
             });
         }
     });
@@ -196,7 +197,7 @@ exports.edit = function(id, changes, collection, callback) {
     var changesMod = {};
     changesMod['$set'] = changes;
 
-    var o_id = new mongodb.ObjectID(id);
+    var o_id = new mongo.ObjectID(id);
     var selector = {'_id': o_id};
 
     var editDoc = function(db, collection, selector, changes, callback) {
@@ -333,7 +334,7 @@ exports.getIds = function(selector, collection, limit, callback) {
 exports.get = function(id, collection, isTrim, callback) {
     log.trace('getting document with id ' + id + ' from collection ' +
               collection);
-    var o_id = new mongodb.ObjectID(id);
+    var o_id = new mongo.ObjectID(id);
     var selector = {'_id': o_id};
     var foundOne = false;
 
@@ -387,30 +388,24 @@ exports.get = function(id, collection, isTrim, callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.getPic = function(id, collection, callback) {
-    log.trace('getting picture for child with id ' + id + ' from collection ' +
-              collection);
-
-    var buffer = '';
+    log.trace('getting picture for child with id ' + id);
 
     exports.get(id, collection, false, function(doc) {
-        var childDoc = doc;
-        MongoClient.connect(url, function(err, db) {
-            var gridfs = grid(db, mongodb);
+        var db = new mongo.Db(nconf.get('mongo:db'),
+                 new mongo.Server(nconf.get('mongo:host'),
+                 nconf.get('mongo:port')));
 
-            var readStream = gridfs.createReadStream({ _id: doc.image_id });
-
-            readStream.on('data', function (chunk) {
-                buffer += chunk;
-            });
-
-            readStream.on('error', function (err) {
-                log.error('error in getPic(). message: ' + err);
-            });
-
-            readStream.on('end', function () {
-                var buffer64 = new Buffer(buffer, 'binary').toString('base64');
-                console.log(buffer64);
-                callback(buffer64);
+        db.open(function(err, db) {
+            var imageId = new mongo.ObjectID(doc.image_id);
+            var gridStore = new mongo.GridStore(db, imageId, 'r');
+            gridStore.open(function(err, gridStore) {
+                gridStore.seek(0, function() {
+                    gridStore.read(function(err, data) {
+                        db.close();
+                        log.trace('got picture for child with id ' + id);
+                        callback(data.toString('base64'));
+                    });
+                });
             });
         });
     });

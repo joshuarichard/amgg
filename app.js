@@ -49,14 +49,14 @@ app.get('/api/unsponsored', function(req, res) {
     mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
         100, true, function(docs) {
             log.info('got /api/unsponsored');
-            res.send(JSON.stringify(docs));
+            res.send(docs);
         });
 });
 
 app.get('/api/children/:id', function(req, res) {
     log.info('getting /api/children/' + req.params.id);
     mongo.get(req.params.id, 'children', true, function(doc) {
-        res.send(JSON.stringify(doc));
+        res.send(doc);
     });
 });
 
@@ -76,8 +76,9 @@ app.put('/api/donor', function(req, res) {
 
 app.get('/api/pictures/:id', function(req, res) {
     log.info('getting picture for ' + req.params.id);
-    mongo.getPic(req.params.id, 'children', function(buffer) {
-        res.send(buffer);
+    mongo.getPic(req.params.id, 'children', function(data) {
+        res.set('Content-Type', 'text/plain; charset=x-user-defined');
+        res.send(data);
     });
 });
 

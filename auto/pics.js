@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var Db = require('mongodb').Db;
 var Server = require('mongodb').Server;
 var GridStore = require('mongodb').GridStore;
@@ -35,6 +37,6 @@ exports.insert = function(fileName, metaData, callback) {
                    Math.floor(Math.random() * (22 - 1) + 1) + '.jpeg';
 
     insertPic(fileName, filePath, metaData, function(fileId) {
-        callback(fileId)
+        callback(fileId);
     });
 };
