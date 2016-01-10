@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var pics = require('./pics.js');
@@ -203,65 +205,69 @@ function generateHermanos() {
     return hermanos;
 }
 
-function generateDocument() {
+function generateDocument(callback) {
     var birthday = randomDate(new Date(2000, 0, 1), new Date());
     var amgId = Math.floor((Math.random() * 99999999) + 1);
     var name = nombre[Math.floor(Math.random() * nombre.length)];
     var lastName = apellido[Math.floor(Math.random() * apellido.length)];
-    var doc = {
-        'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
-                            centro_de_ninos.length)],
-        'amg_id':  amgId,
-        'alt_id': Math.floor((Math.random() * 99999999) + 1),
-        'status': status[Math.floor(Math.random() * status.length)],
-        'patrocinado_por': randomDate(new Date(2005, 00, 01), new Date()),
-        'nombre': name,
-        'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
-        'apellido': lastName,
-        'género': genero[Math.floor(Math.random() * genero.length)],
-        'cumpleaños': birthday,
-        'años': Math.abs((new Date(Date.now() - birthday.getTime()))
-                                                .getUTCFullYear() - 1970),
-        'direccion_de_casa': generateAddress(),
-        'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
-        'provincia': provincia[Math.floor(Math.random() * provincia.length)],
-        'código_postal': Math.floor((Math.random() * (99999) + 1)),
-        'patrocinador_id': Math.floor((Math.random() * (99999) + 1)),
-        'patrocinador_nombre': nombre[Math.floor(Math.random() *
-                               nombre.length)],
-        'última_actualización': randomDate(new Date(2013, 00, 01), new Date()),
-        'abscent_padre': abscent[Math.floor(Math.random() * abscent.length)],
-        'abscent_madre': abscent[Math.floor(Math.random() * abscent.length)],
-        'religión_de_la_familia': religion_de_la_familia[Math.floor(
-                                  Math.random() *
-                                  religion_de_la_familia.length)],
-        'iglesia_de_la_familia': church[Math.floor(Math.random() *
-                                 church.length)],
-        'estado_civil_de_los_padres': estado_civil_de_los_padres[
-                                      Math.floor(Math.random() *
-                                      estado_civil_de_los_padres.length)],
-        'comidas_al_día_en_el_hogar': randomNumber(0, 3),
-        'guardians': generateGuardians(),
-        'hermanos': generateHermanos()
-    };
-
-    // pic insert really shouldn't be done right here but it works and this is
-    // just for development
-    pics.insert(name + '_' + lastName, { amg_id: amgId });
 
     console.log('INFO: inserting ' + name + ' ' + lastName +
                 ' with amg_id ' + amgId);
 
-    return doc;
+    // insert picture for this child and get the image_id
+    pics.insert(name + '_' + lastName, { amg_id: amgId}, function(fileId) {
+        var doc = {
+            'amg_id':  amgId,
+            'alt_id': Math.floor((Math.random() * 99999999) + 1),
+            'image_id': fileId,
+            'status': status[Math.floor(Math.random() * status.length)],
+            'patrocinado_por': randomDate(new Date(2005, 00, 01), new Date()),
+            'nombre': name,
+            'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
+            'apellido': lastName,
+            'género': genero[Math.floor(Math.random() * genero.length)],
+            'cumpleaños': birthday,
+            'años': Math.abs((new Date(Date.now() - birthday.getTime()))
+                                                    .getUTCFullYear() - 1970),
+            'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
+                                centro_de_ninos.length)],
+            'direccion_de_casa': generateAddress(),
+            'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
+            'provincia': provincia[Math.floor(Math.random() *
+                                   provincia.length)],
+            'código_postal': Math.floor((Math.random() * (99999) + 1)),
+            'patrocinador_id': Math.floor((Math.random() * (99999) + 1)),
+            'patrocinador_nombre': nombre[Math.floor(Math.random() *
+                                   nombre.length)],
+            'última_actualización': randomDate(new Date(2013, 00, 01),
+                                               new Date()),
+            'abscent_padre': abscent[Math.floor(Math.random() *
+                                     abscent.length)],
+            'abscent_madre': abscent[Math.floor(Math.random() *
+                                     abscent.length)],
+            'religión_de_la_familia': religion_de_la_familia[Math.floor(
+                                      Math.random() *
+                                      religion_de_la_familia.length)],
+            'iglesia_de_la_familia': church[Math.floor(Math.random() *
+                                     church.length)],
+            'estado_civil_de_los_padres': estado_civil_de_los_padres[
+                                          Math.floor(Math.random() *
+                                          estado_civil_de_los_padres.length)],
+            'comidas_al_día_en_el_hogar': randomNumber(0, 3),
+            'guardians': generateGuardians(),
+            'hermanos': generateHermanos()
+        };
+        callback(doc);
+    });
 }
 
 var insertDocument = function(db, callback) {
-    db.collection(collectionName).insertOne(
-        generateDocument(), function(err, result) {
+    generateDocument(function(doc) {
+        db.collection(collectionName).insertOne(doc, function(err, result) {
             assert.equal(err, null);
             callback(result);
-        }
-    );
+        });
+    });
 };
 
 // this for loop controls basically the entire operation

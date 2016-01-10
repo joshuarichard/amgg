@@ -1,5 +1,7 @@
+/* eslint-env node */
+
 var MongoClient = require('mongodb').MongoClient;
-var mongodb = require('mongodb');
+var mongo = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
 
@@ -76,9 +78,10 @@ MongoClient.connect(url, function(err, db) {
  * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
  * limit         (int) - number of documents to limit the search results to
+ * trim      (boolean) - true if trim is request, false if not
  * callback     (func) - callback function to execute after completion
  */
-exports.find = function(selector, collection, limit, callback) {
+exports.find = function(selector, collection, limit, isTrim, callback) {
     log.trace('getting document(s) with selector ' + JSON.stringify(selector) +
               ' in collection \'' + collection + '\' with limit ' + limit);
     var documents = {}, i = 0;
@@ -105,12 +108,14 @@ exports.find = function(selector, collection, limit, callback) {
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                var trimmedDoc = trim(documents);
+                if(isTrim) {
+                    documents = trim(documents);
+                }
                 log.trace('successfully found document(s) with selector ' +
                           JSON.stringify(selector) + ' in collection \'' +
                           collection + '\'' + ' with limit ' + limit +
-                          '. document: ' + JSON.stringify(trimmedDoc));
-                callback(trimmedDoc);
+                          '. document: ' + JSON.stringify(documents));
+                callback(documents);
             });
         }
     });
@@ -192,7 +197,7 @@ exports.edit = function(id, changes, collection, callback) {
     var changesMod = {};
     changesMod['$set'] = changes;
 
-    var o_id = new mongodb.ObjectID(id);
+    var o_id = new mongo.ObjectID(id);
     var selector = {'_id': o_id};
 
     var editDoc = function(db, collection, selector, changes, callback) {
@@ -323,12 +328,13 @@ exports.getIds = function(selector, collection, limit, callback) {
  *
  * id         (string) - document _id
  * collection (string) - the collection to search for documents
+ * trim      (boolean) - true if trim is request, false if not
  * callback     (func) - callback function to execute after completion
  */
-exports.get = function(id, collection, callback) {
+exports.get = function(id, collection, isTrim, callback) {
     log.trace('getting document with id ' + id + ' from collection ' +
               collection);
-    var o_id = new mongodb.ObjectID(id);
+    var o_id = new mongo.ObjectID(id);
     var selector = {'_id': o_id};
     var foundOne = false;
 
@@ -358,13 +364,50 @@ exports.get = function(id, collection, callback) {
         } else {
             getDoc(db, id, collection, function(doc) {
                 db.close();
-                var trimmedDoc = trim(doc);
+                if(isTrim) {
+                    doc = trim(doc);
+                }
                 log.trace('successfully got document with id ' + id +
                           ' from collection \'' + collection + '\'. document: '
-                          + JSON.stringify(trimmedDoc));
-                callback(trimmedDoc);
+                          + JSON.stringify(doc));
+                callback(doc);
             });
         }
+    });
+};
+
+/** getPic(id, collection, callback)
+ *
+ * fetches a buffer for child pictures based on the child's document _id
+ *
+ * returns a document with content {'err' : 'not found'} if the id cannot be
+ * matched.
+ *
+ * id         (string) - _id of the child whose picture buffer to return
+ * collection (string) - the collection to search for documents
+ * callback     (func) - callback function to execute after completion
+ */
+exports.getPic = function(id, collection, callback) {
+    log.trace('getting picture for child with id ' + id);
+
+    exports.get(id, collection, false, function(doc) {
+        var db = new mongo.Db(nconf.get('mongo:db'),
+                 new mongo.Server(nconf.get('mongo:host'),
+                 nconf.get('mongo:port')));
+
+        db.open(function(err, db) {
+            var imageId = new mongo.ObjectID(doc.image_id);
+            var gridStore = new mongo.GridStore(db, imageId, 'r');
+            gridStore.open(function(err, gridStore) {
+                gridStore.seek(0, function() {
+                    gridStore.read(function(err, data) {
+                        db.close();
+                        log.trace('got picture for child with id ' + id);
+                        callback(data.toString('base64'));
+                    });
+                });
+            });
+        });
     });
 };
 
@@ -384,11 +427,7 @@ function trim(doc) {
             trimmedDoc[doc[miniDoc]._id] = {
                 'nombre': doc[miniDoc].nombre,
                 'años': doc[miniDoc].años,
-                'cumpleaños': monthNames[doc[miniDoc].cumpleaños.getMonth()] +
-                                          ' ' +
-                                          doc[miniDoc].cumpleaños.getDate() +
-                                          ' ' +
-                                          doc[miniDoc].cumpleaños.getFullYear(),
+                'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
                 'centro_de_ninos': doc[miniDoc].centro_de_ninos
             };

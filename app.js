@@ -3,8 +3,11 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var mongo = require('./data/mongo.js');
 var bunyan = require('bunyan');
+var nconf = require('nconf');
 
 var app = express();
+
+var port = nconf.get('app:port');
 
 var log = bunyan.createLogger({
     name: 'app',
@@ -44,24 +47,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/unsponsored', function(req, res) {
     log.info('getting /api/unsponsored');
     mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
-        100, function(docs) {
+        100, true, function(docs) {
             log.info('got /api/unsponsored');
-            res.send(JSON.stringify(docs));
+            res.send(docs);
         });
 });
 
 app.get('/api/children/:id', function(req, res) {
     log.info('getting /api/children/' + req.params.id);
-    mongo.get(req.params.id, 'children', function(doc) {
-        log.info('got /api/children/' + req.params.id);
-        res.send(JSON.stringify(doc));
+    mongo.get(req.params.id, 'children', true, function(doc) {
+        res.send(doc);
     });
 });
 
 app.post('/api/donor', function(req, res) {
     log.info('posting to /api/donor ' + JSON.stringify(req.body));
     mongo.insert(req.body, 'donors', function(result) {
-        log.info('posted to /api/donor ' + JSON.stringify(req.body));
         res.send(result);
     });
 });
@@ -69,11 +70,18 @@ app.post('/api/donor', function(req, res) {
 app.put('/api/donor', function(req, res) {
     log.info('putting to /api/donor ' + JSON.stringify(req.body));
     mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
-        log.info('put to /api/donor' + JSON.stringify(req.body));
         res.send(result);
     });
 });
 
-app.listen(3000, function () {
-    log.info('express port listening at localhost:3000');
+app.get('/api/pictures/:id', function(req, res) {
+    log.info('getting picture for ' + req.params.id);
+    mongo.getPic(req.params.id, 'children', function(data) {
+        res.set('Content-Type', 'text/plain; charset=x-user-defined');
+        res.send(data);
+    });
+});
+
+app.listen(port, function () {
+    log.info('express port listening at localhost:' + port);
 });
