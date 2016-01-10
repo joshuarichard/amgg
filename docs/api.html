@@ -193,17 +193,18 @@ font-style: italic;
   <h2>Table of Contents </h2>
   <div class="method-summary"></div>
   <ol>
-    <li><a href="#apiChildrenIdGet"><code><span class="http-method">get</span> /api/children/id</code></a></li>
-    <li><a href="#apiUnsponsoredGet"><code><span class="http-method">get</span> /api/unsponsored</code></a></li>
-    <li><a href="#apiDonorPost"><code><span class="http-method">post</span> /api/donor</code></a></li>
-    <li><a href="#apiDonorPut"><code><span class="http-method">put</span> /api/donor</code></a></li>
+    <li><a href="#apiChildrenIdGet"><code><span class="http-method">get</span> /api/v1/children/:id</code></a></li>
+    <li><a href="#apiUnsponsoredGet"><code><span class="http-method">get</span> /api/v1/unsponsored</code></a></li>
+    <li><a href="#apiPicturesGet"><code><span class="http-method">put</span> /api/v1/pictures/:id</code></a></li>
+    <li><a href="#apiDonorPost"><code><span class="http-method">post</span> /api/v1/donors</code></a></li>
+    <li><a href="#apiDonorPut"><code><span class="http-method">put</span> /api/v1/donors</code></a></li>
   </ol>
 
   <!-- apiChildrenIdGet method -->
   <div class="method"><a name="apiChildrenIdGet"/>
     <div class="method-path">
       <a class="up" href="#__Methods">Up </a>
-      <pre class="get"><code class="huge"><span class="http-method">get</span> /api/children/:id</code></pre>
+      <pre class="get"><code class="huge"><span class="http-method">get</span> /api/v1/children/:id</code></pre>
     </div>
     <div class="method-notes">Gets a single Child object where { _id: req.params.id }.</div>
     <h3 class="field-label">Return type:</h3>
@@ -220,7 +221,7 @@ font-style: italic;
   <div class="method"><a name="apiUnsponsoredGet"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up </a>
-    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/unsponsored</code></pre></div>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/v1/unsponsored</code></pre></div>
 
     <div class="method-notes">Gets Child objects where { status: Waiting for Sponsor - No Prior Sponsor }. Limit 100 objects.</div>
     <h3 class="field-label">Return type:</h3>
@@ -233,11 +234,28 @@ font-style: italic;
   </div>
   <!-- end apiUnsponsoredGet method-->
 
+  <!-- apiPicturesGet method -->
+  <div class="method"><a name="apiPicturesGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up </a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/v1/pictures/:id</code></pre></div>
+
+    <div class="method-notes">Gets a child's image as a base64 string. JSON body should be formatted as { _id: req.params.id }</div>
+    <h3 class="field-label">Return type:</h3>
+    <div class="return-type">
+      <a href="#result">base64 string</a>
+    </div>
+    <h3 class="field-label">Responses:</h3>
+    <h4 class="field-label">200</h4>
+    Successful response
+  </div>
+  <!-- end apiPicturesGet method-->
+
   <!-- apiDonorPost method -->
   <div class="method"><a name="apiDonorPost"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up </a>
-    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/donor</code></pre></div>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/v1/donors</code></pre></div>
 
     <div class="method-notes">Posts (inserts) donor objects into the donor collection. The document to insert should be the JSON body of the request.</div>
     <h3 class="field-label">Return type:</h3>
@@ -254,7 +272,7 @@ font-style: italic;
   <div class="method"><a name="apiDonorPut"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up </a>
-    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/donor</code></pre></div>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /api/v1/donors</code></pre></div>
 
     <div class="method-notes">Puts (edits) donor objects in the donor collection. Changes should be formatted { _id: "xxxxxx", changes: { "key": "value" } } in the JSON body of the request.</div>
     <h3 class="field-label">Return type:</h3>

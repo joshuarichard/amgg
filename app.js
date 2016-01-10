@@ -44,7 +44,7 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-app.get('/api/unsponsored', function(req, res) {
+app.get('/api/v1/unsponsored', function(req, res) {
     log.info('getting /api/unsponsored');
     mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
         100, true, function(docs) {
@@ -53,28 +53,28 @@ app.get('/api/unsponsored', function(req, res) {
         });
 });
 
-app.get('/api/children/:id', function(req, res) {
+app.get('/api/v1/children/:id', function(req, res) {
     log.info('getting /api/children/' + req.params.id);
     mongo.get(req.params.id, 'children', true, function(doc) {
         res.send(doc);
     });
 });
 
-app.post('/api/donor', function(req, res) {
+app.post('/api/v1/donors', function(req, res) {
     log.info('posting to /api/donor ' + JSON.stringify(req.body));
     mongo.insert(req.body, 'donors', function(result) {
         res.send(result);
     });
 });
 
-app.put('/api/donor', function(req, res) {
+app.put('/api/v1/donors', function(req, res) {
     log.info('putting to /api/donor ' + JSON.stringify(req.body));
     mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
         res.send(result);
     });
 });
 
-app.get('/api/pictures/:id', function(req, res) {
+app.get('/api/v1/pictures/:id', function(req, res) {
     log.info('getting picture for ' + req.params.id);
     mongo.getPic(req.params.id, 'children', function(data) {
         res.set('Content-Type', 'text/plain; charset=x-user-defined');
