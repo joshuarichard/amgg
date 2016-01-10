@@ -37,12 +37,12 @@ var log = bunyan.createLogger({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', function(req, res) {
     log.info('getting index.html');
     res.redirect('index.html');
 });
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/unsponsored', function(req, res) {
     log.info('getting /api/unsponsored');
