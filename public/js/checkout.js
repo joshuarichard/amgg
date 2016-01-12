@@ -119,6 +119,9 @@ $(document).ready(function() {
             });
         }
     });
+    if (!sessionStorage.child_id) {
+        sessionStorage.child_id = '5690ae6d458367e8d28c5152';
+    }
 
-    dummyLoad('5690ae6d458367e8d28c5152');
+    dummyLoad(sessionStorage.child_id');
 });
