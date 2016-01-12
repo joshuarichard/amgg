@@ -2,7 +2,14 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function () {
+    var ids = [];
+    $.getJSON('/api/v1/unsponsored', function(res) {
+        for (var key in res) {
+            ids.push(key);
+        }
+    });
+
     $('.child-picture').click(function() {
-        sessionStorage.child_id = '5690af8562b84ed1d336c5c1';
+        sessionStorage.child_id = ids[Math.floor(Math.random() * ids.length)];
     });
 });

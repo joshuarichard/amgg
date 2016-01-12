@@ -16,8 +16,8 @@ $(document).ready(function() {
                                                              res[id].años;
 
             document.getElementById('child-birthday').innerHTML = 'Cumpleaños: '
-            + monthNames[birthday.getMonth()] + ' ' + birthday.getDate() + ' ' +
-            birthday.getFullYear();
+            + monthNames[birthday.getMonth()] + ' ' + birthday.getDate() + ', '
+            + birthday.getFullYear();
 
             document.getElementById('child-gender').innerHTML = 'Género: ' +
                                                                 res[id].género;
