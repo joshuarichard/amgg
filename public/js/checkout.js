@@ -7,7 +7,7 @@ $(document).ready(function() {
                           'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre',
                           'Noviembre', 'Diciembre'];
 
-        $.getJSON('/api/children/' + id, function(res) {
+        $.getJSON('/api/v1/children/' + id, function(res) {
             var birthday = new Date(res[id].cumpleaños);
             document.getElementById('child-name').innerHTML = 'Nombre: ' +
                                                               res[id].nombre;
@@ -28,7 +28,7 @@ $(document).ready(function() {
         // get the picture and load it in
         $.ajax({
             type: 'GET',
-            url: '/api/pictures/' + id,
+            url: '/api/v1/pictures/' + id,
             beforeSend: function (xhr) {
                 xhr.overrideMimeType('text/plain; charset=x-user-defined');
             },
@@ -110,7 +110,7 @@ $(document).ready(function() {
                 'país': country
             };
 
-            $.post('/api/donor', data, function(result) {
+            $.post('/api/v1/donor', data, function(result) {
                 if(result.n + result.ok === 2) {
                     console.log('Donor inserted.');
                 } else {
@@ -120,5 +120,5 @@ $(document).ready(function() {
         }
     });
 
-    dummyLoad('5690af8562b84ed1d336c5c1');
+    dummyLoad(sessionStorage.child_id);
 });
