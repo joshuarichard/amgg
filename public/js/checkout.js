@@ -123,5 +123,5 @@ $(document).ready(function() {
         sessionStorage.child_id = '5690ae6d458367e8d28c5152';
     }
 
-    dummyLoad(sessionStorage.child_id');
+    dummyLoad(sessionStorage.child_id);
 });
