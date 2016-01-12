@@ -120,5 +120,5 @@ $(document).ready(function() {
         }
     });
 
-    dummyLoad(sessionStorage.child_id);
+    dummyLoad('5690ae6d458367e8d28c5152');
 });
