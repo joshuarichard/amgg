@@ -20,7 +20,7 @@ Run `npm install` to install all dependencies.
 Run `node app.js | bunyan` to start the application and pipe the server logs into bunyan for human readible formatting. Go to `localhost:3000/home` in your browser to get access to the project.
 
 ### Database
-Mongo and Mongo-Express run in Docker containers on our test server. see `runbooks/MONGO.md` and `docker/mongo/` for more information.
+Mongo and Mongo-Express run in Docker containers on our test server. see `runbooks/MONGO.md` for more information.
 
 ### Logging
 Bunyan is used for server side logging. All log files are stored in `var/log/`.
@@ -30,3 +30,6 @@ Developer runbooks are provided in `runbooks/`. Read these for information on di
 
 ### Testing
 We use Jenkins running in a Docker container on our test server for automated testing and pull request linting.
+
+### Development Utilities
+A separate repository contains development docker containers. Find it here: https://github.com/joshuarichard/amgg-docker
