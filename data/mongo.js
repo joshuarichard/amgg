@@ -51,13 +51,13 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
-//var host = ;
+var host = nconf.get('MONGO_SERVER_HOST') || nconf.get('mongo:host');
 var url = 'mongodb://' +
-          nconf.get('MONGO_SERVER_HOST') || nconf.get('mongo:host') +
+          host +
           ':' +
-          nconf.get('MONGO_SERVER_PORT') || nconf.get('mongo:port') +
+          nconf.get('mongo:port') +
           '/' +
-          nconf.get('MONGO_SERVER_DB_NAME') || nconf.get('mongo:db');
+          nconf.get('mongo:db');
 
 var exports = module.exports = {};
 
