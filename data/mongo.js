@@ -51,7 +51,7 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
-var host = nconf.get('MONGO_SERVER_HOST') || nconf.get('mongo:host');
+var host = nconf.get('MONGO_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
 var url = 'mongodb://' +
           host +
           ':' +
