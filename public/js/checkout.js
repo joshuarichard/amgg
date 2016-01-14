@@ -110,7 +110,7 @@ $(document).ready(function() {
                 'país': country
             };
 
-            $.post('/api/v1/donor', data, function(result) {
+            $.post('/api/v1/donors', data, function(result) {
                 if(result.n + result.ok === 2) {
                     console.log('Donor inserted.');
                 } else {
