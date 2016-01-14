@@ -393,7 +393,7 @@ exports.getPic = function(id, collection, callback) {
 
     exports.get(id, collection, false, function(doc) {
         var db = new mongo.Db(nconf.get('mongo:db'),
-                 new mongo.Server(nconf.get('mongo:host'),
+                 new mongo.Server(host,
                  nconf.get('mongo:port')));
 
         db.open(function(err, db) {
