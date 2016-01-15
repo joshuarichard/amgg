@@ -13,6 +13,10 @@ input {
 	margin-bottom: .1em;
 }
 
+table {
+	display: table;
+}
+
 /*Class Styles*/
 .header {
 	text-align: left;
@@ -32,6 +36,10 @@ input {
 	margin-top: .1em;
 	margin-bottom: .1em;
 	text-align: left;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+  line-height: 2rem;
+	/*font-weight: bold;*/
 }
 
 .dropdown {
@@ -56,8 +64,21 @@ input {
     overflow-x: hidden;
 }
 
-.expiration-date { 
+.expiration-date {
 	text-align: left;
+}
+
+.children {
+	max-width: 100%;
+}
+
+.child-img {
+	max-width: 10em;
+}
+
+.child-info-group {
+	display: table-cell;
+  vertical-align: middle;
 }
 
 /*ID Styles*/
