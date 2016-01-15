@@ -12,6 +12,6 @@ $(document).ready(function () {
     });
 
     $('.child-picture').click(function() {
-        sessionStorage.child_id = ids[Math.floor(Math.random() * ids.length)];
+        localStorage['children'] = ids.toString();
     });
 });
