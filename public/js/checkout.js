@@ -100,7 +100,7 @@ $(document).ready(function() {
             });
         }
 
-        function deleteButton() {
+        function deleteButton(callback) {
             var button = document.createElement('button');
             var td = document.createElement('td');
 
@@ -119,14 +119,17 @@ $(document).ready(function() {
 
             td.appendChild(button);
             tr.appendChild(td);
+
+            callback();
         }
 
         pic(function() {
-            data(function ()  {
-                deleteButton();
+            data(function()  {
+                deleteButton(function() {
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
+                });
             });
-            tbody.appendChild(tr);
-            table.appendChild(tbody);
         });
     }
 
