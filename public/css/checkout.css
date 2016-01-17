@@ -68,7 +68,7 @@ table {
 	text-align: left;
 }
 
-.children {
+.child-selections {
 	max-width: 100%;
 }
 
@@ -79,6 +79,10 @@ table {
 .child-info-group {
 	display: table-cell;
   vertical-align: middle;
+}
+
+.table {
+  border-bottom: 1px solid #DDDDDD;
 }
 
 /*ID Styles*/

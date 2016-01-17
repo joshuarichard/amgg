@@ -2,12 +2,13 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
+    // get the element to put the table and create the table
     var container = document.getElementById('children-to-sponsor');
     var table = document.createElement('table');
-    table.className = 'table table-hover children';
+    table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    // create header
+    // create header (leave out unless we feel like we need it. delete later)
     /*
     var thead = document.createElement('thead');
     var theadTR = document.createElement('tr');
@@ -20,6 +21,7 @@ $(document).ready(function() {
     */
 
     function createChild(id) {
+        // create child's table row
         var tr = document.createElement('tr');
 
         function pic(callback) {
@@ -47,7 +49,7 @@ $(document).ready(function() {
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/' + id, function(res) {
-                var td = document.createElement('td');
+                var dataTD = document.createElement('td');
                 tr.id = id;
 
                 // set up all child info as vars
@@ -62,9 +64,9 @@ $(document).ready(function() {
                 var gender = res[id].género;
                 var center = res[id].centro_de_ninos;
 
-                // create div elements
-                var div = document.createElement('td');
-                div.className = 'child-info-group';
+                // create elements for each piece of info
+                var dataDiv = document.createElement('td');
+                dataDiv.className = 'child-info-group';
 
                 var nameDiv = document.createElement('div');
                 var ageDiv = document.createElement('div');
@@ -72,7 +74,7 @@ $(document).ready(function() {
                 var genderDiv = document.createElement('div');
                 var centerDiv = document.createElement('div');
 
-                // assign classes
+                // assign classes to those elements
                 nameDiv.className = 'child-info';
                 ageDiv.className = 'child-info';
                 birthdayDiv.className = 'child-info';
@@ -87,45 +89,56 @@ $(document).ready(function() {
                 centerDiv.innerHTML = 'Centro de Ninos: ' + center;
 
                 // append children to div
-                td.appendChild(nameDiv);
-                td.appendChild(ageDiv);
-                td.appendChild(birthdayDiv);
-                td.appendChild(genderDiv);
-                td.appendChild(centerDiv);
+                dataTD.appendChild(nameDiv);
+                dataTD.appendChild(ageDiv);
+                dataTD.appendChild(birthdayDiv);
+                dataTD.appendChild(genderDiv);
+                dataTD.appendChild(centerDiv);
 
-                div.appendChild(td);
-                tr.appendChild(div);
+                // append dataTD to the dataDiv for styling, then append to row
+                dataDiv.appendChild(dataTD);
+                tr.appendChild(dataDiv);
 
                 callback();
             });
         }
 
         function deleteButton(callback) {
-            var button = document.createElement('button');
-            var td = document.createElement('td');
+            var buttonTD = document.createElement('td');
 
+            // create button, add classname for styling, append text
+            var button = document.createElement('button');
             button.className = 'btn btn-default';
             button.appendChild(document.createTextNode('eliminar'));
+
+            // set on click button function
             button.onclick = function() {
-                // ids is list of ids in local storage, id is the id to delete
+                // remove child from localStorage
                 var ids = localStorage['children'].split(',');
                 var id = button.parentNode.parentNode.id;
-                ids.indexOf(id);
                 if (ids.indexOf(id)) {
                     ids.splice(ids.indexOf(id), 1);
+                    localStorage['children'] = ids.toString();
                 }
+
+                // remove child from table
                 button.parentNode.parentNode.remove();
             };
 
-            td.appendChild(button);
-            tr.appendChild(td);
+            // add button to table entry and add table entry to row
+            buttonTD.appendChild(button);
+            tr.appendChild(buttonTD);
 
             callback();
         }
 
+        // first insert pic
         pic(function() {
+            // then append data
             data(function()  {
+                // then append delete button
                 deleteButton(function() {
+                    // append the row to the tbody, add the tbody to the table
                     tbody.appendChild(tr);
                     table.appendChild(tbody);
                 });
@@ -134,6 +147,7 @@ $(document).ready(function() {
     }
 
     $('#checkout-submit').click(function() {
+        // get all form info
         var firstName = document.getElementById('form-first-name').value;
         var lastName = document.getElementById('form-last-name').value;
         var phone = document.getElementById('form-phone').value;
@@ -151,6 +165,7 @@ $(document).ready(function() {
         var nameOnCard = document.getElementById('form-name-on-card').value;
         */
 
+        // manage any null fields and throw errors accordingly
         var nullFields = [];
 
         if(firstName === '') {
@@ -186,6 +201,7 @@ $(document).ready(function() {
         }
         */
 
+        // if anything is null then alert, else submit a post with donor info
         if (nullFields.length > 0) {
             var alertMessage = 'You are missing some fields: \n';
             for (var i = 0; i < nullFields.length; i++) {
@@ -214,6 +230,7 @@ $(document).ready(function() {
         }
     });
 
+    // get all of the unsponsored children
     var ids = localStorage['children'].split(',');
     var num = Math.floor(Math.random() * (5 - 1) + 1);
     var ran = 0;
