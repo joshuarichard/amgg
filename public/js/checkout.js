@@ -230,7 +230,7 @@ $(document).ready(function() {
         }
     });
 
-    // get all of the unsponsored children
+    // get all of the unsponsored children and put in a few random ones
     var ids = localStorage['children'].split(',');
     var num = Math.floor(Math.random() * (5 - 1) + 1);
     var ran = 0;
@@ -240,12 +240,13 @@ $(document).ready(function() {
         container.appendChild(table);
     }
 
+    // after all that append the 'add a child' button
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-default';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
 
-    addButton.appendChild(document.createTextNode('+'));
+    addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
 });
