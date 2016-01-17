@@ -82,11 +82,11 @@ $(document).ready(function() {
                 centerDiv.className = 'child-info';
 
                 // assign values
-                nameDiv.innerHTML = 'Nombre: ' + name;
-                ageDiv.innerHTML = 'Años: ' + age;
-                birthdayDiv.innerHTML = 'Cumpleaños: ' + birthday;
-                genderDiv.innerHTML = 'Género: ' + gender;
-                centerDiv.innerHTML = 'Centro de Ninos: ' + center;
+                nameDiv.innerHTML = '<b> nombre: </b>' + name;
+                ageDiv.innerHTML = '<b> años:  </b>' + age;
+                birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
+                genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
 
                 // append children to div
                 dataTD.appendChild(nameDiv);
