@@ -17,208 +17,83 @@
         <link href="../css/children.css" rel="stylesheet" />
     </head>
 	<body>
-
-<div style="min-height: 50px;">
-        <!-- Jssor Slider Begin -->
-        <!-- To move inline styles to css file/block, please specify a class name for each element. -->
-        <!-- ================================================== -->
-        <div id="slider1_container" style="visibility: hidden; position: relative; margin: 0 auto;
-        top: 0px; left: 0px; width: 1300px; height: 500px; overflow: hidden;">
-            <!-- Loading Screen -->
-            <div u="loading" style="position: absolute; top: 0px; left: 0px;">
-                <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block;
-                top: 0px; left: 0px; width: 100%; height: 100%;">
-                </div>
-                <div style="position: absolute; display: block; background: url(../images/loading.gif) no-repeat center center;
-                top: 0px; left: 0px; width: 100%; height: 100%;">
+        <section class="pre-header">
+            <div class="content">
+                <div class="row vcenter">
+                    <div class="col-sm-1 hidden-xs col-sm-offset-1">
+                        <a class="vcenter" href="https://twitter.com/AMGGuatemala">
+                            <img src="../image/btn-pre-twitter.png" class="img-center" />
+                        </a>
+                    </div>
+                    <div class="col-sm-1 hidden-xs">
+                        <a class="vcenter" href="https://www.facebook.com/amgguatemala">
+                            <img src="../image/btn-pre-facebook.png" class="img-center" />
+                        </a>
+                    </div>
+                    <div class="col-sm-1 hidden-xs">
+                        <a class="vcenter" href="https://www.youtube.com/channel/UCDRWMZkdIWYWq7lqZzcuFxQ">
+                            <img src="../image/btn-pre-youtube.png" class="img-center" />
+                        </a>
+                    </div>
+                    <div class="col-sm-1 hidden-xs">
+                        <a class="vcenter" href="https://instagram.com/amgguatemala/">
+                            <img src="../image/btn-pre-instagram.png" class="img-center" />
+                        </a>
+                    </div>
+                    <div class="col-sm-1 col-sm-offset-1">
+                        <a class="vcenter" href="https://en.amgg.org">English</a>
+                    </div>
+                    <div class="col-sm-1">
+                        <a class="vcenter" href="pdf/boletin.pdf">Boletin</a>
+                    </div>
+                    <div class="col-sm-1">
+                        <a class="vcenter" href="children.html">Donar</a>
+                    </div>
+                    <div class="col-sm-2 hidden-xs">
+                        <a class="vcenter" href="https://www.facebook.com/Guates-Best-Store-1431567437168029/">Guates Best</a>
+                    </div>
+                    <div class="col-sm-1 pre-active">
+                        <a class="vcenter" href="involucrate.html#Apadrina">Apadrina</a>
+                    </div>
                 </div>
             </div>
-            <!-- Slides Container -->
-            <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 1300px; height: 500px; overflow: hidden;">
-                <div>
-                    <img u="image" src2="../images/1920/red.jpg" />
+        </section>
+        <div style="min-height: 50px;">
+            <!-- Jssor Slider Begin -->
+            <!-- To move inline styles to css file/block, please specify a class name for each element. -->
+            <!-- ================================================== -->
+            <div id="slider1_container" class="slider1_container">
+                <!-- Loading Screen -->
+                <div class="loading" u="loading">
+                    <div class="loading1">
+                    </div>
+                    <div class="loading_gif">
+                    </div>
                 </div>
-                <div>
-                    <img u="image" src2="../images/1920/purple.jpg" />
-                </div>
-                <div>
-                    <img u="image" src2="../images/1920/blue.jpg" />
-                </div>
-            </div>
-
-            <!--#region Bullet Navigator Skin Begin -->
-            <!-- Help: http://www.jssor.com/development/slider-with-bullet-navigator-jquery.html -->
-            <style>
-                /* jssor slider bullet navigator skin 21 css */
-                /*
-                .jssorb21 div           (normal)
-                .jssorb21 div:hover     (normal mouseover)
-                .jssorb21 .av           (active)
-                .jssorb21 .av:hover     (active mouseover)
-                .jssorb21 .dn           (mousedown)
-                */
-                .jssorb21 {
-                    position: absolute;
-                }
-                .jssorb21 div, .jssorb21 div:hover, .jssorb21 .av {
-                    position: absolute;
-                    /* size of bullet elment */
-                    width: 19px;
-                    height: 19px;
-                    text-align: center;
-                    line-height: 19px;
-                    color: white;
-                    font-size: 12px;
-                    background: url(../images/b21.png) no-repeat;
-                    overflow: hidden;
-                    cursor: pointer;
-                }
-                .jssorb21 div { background-position: -5px -5px; }
-                .jssorb21 div:hover, .jssorb21 .av:hover { background-position: -35px -5px; }
-                .jssorb21 .av { background-position: -65px -5px; }
-                .jssorb21 .dn, .jssorb21 .dn:hover { background-position: -95px -5px; }
-            </style>
-            <!-- bullet navigator container -->
-            <div u="navigator" class="jssorb21" style="bottom: 26px; right: 6px;">
-                <!-- bullet navigator item prototype -->
-                <div u="prototype"></div>
-            </div>
-            <!--#endregion Bullet Navigator Skin End -->
-
-            <!--#region Arrow Navigator Skin Begin -->
-            <!-- Help: http://www.jssor.com/development/slider-with-arrow-navigator-jquery.html -->
-            <style>
-                /* jssor slider arrow navigator skin 21 css */
-                /*
-                .jssora21l                  (normal)
-                .jssora21r                  (normal)
-                .jssora21l:hover            (normal mouseover)
-                .jssora21r:hover            (normal mouseover)
-                .jssora21l.jssora21ldn      (mousedown)
-                .jssora21r.jssora21rdn      (mousedown)
-                */
-                .jssora21l, .jssora21r {
-                    display: block;
-                    position: absolute;
-                    /* size of arrow element */
-                    width: 55px;
-                    height: 55px;
-                    cursor: pointer;
-                    background: url(../images/a21.png) center center no-repeat;
-                    overflow: hidden;
-                }
-                .jssora21l { background-position: -3px -33px; }
-                .jssora21r { background-position: -63px -33px; }
-                .jssora21l:hover { background-position: -123px -33px; }
-                .jssora21r:hover { background-position: -183px -33px; }
-                .jssora21l.jssora21ldn { background-position: -243px -33px; }
-                .jssora21r.jssora21rdn { background-position: -303px -33px; }
-            </style>
-            <!-- Arrow Left -->
-            <span u="arrowleft" class="jssora21l" style="top: 123px; left: 8px;">
-            </span>
-            <!-- Arrow Right -->
-            <span u="arrowright" class="jssora21r" style="top: 123px; right: 8px;">
-            </span>
-            <!--#endregion Arrow Navigator Skin End -->
-            <a style="display: none" href="http://www.jssor.com">Bootstrap Slider</a>
-        </div>
-        <!-- Jssor Slider End -->
-    </div>
-
-
- <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../js/jquery-1.9.1.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="docs.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="ie10-viewport-bug-workaround.js"></script>
-
-    <!-- jssor slider scripts-->
-    <!-- use jssor.slider.debug.js for debug -->
-    <script type="text/javascript" src="../js/jssor.slider.mini.js"></script>
-    <script>
-        jQuery(document).ready(function ($) {
-
-            var options = {
-                $FillMode: 2,                                       //[Optional] The way to fill image in slide, 0 stretch, 1 contain (keep aspect ratio and put all inside slide), 2 cover (keep aspect ratio and cover whole slide), 4 actual size, 5 contain for large image, actual size for small image, default value is 0
-                $AutoPlay: true,                                    //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
-                $AutoPlayInterval: 4000,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
-                $PauseOnHover: 1,                                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, 4 freeze for desktop, 8 freeze for touch device, 12 freeze for desktop and touch device, default value is 1
-
-                $ArrowKeyNavigation: true,                          //[Optional] Allows keyboard (arrow key) navigation or not, default value is false
-                $SlideEasing: $JssorEasing$.$EaseOutQuint,          //[Optional] Specifies easing for right to left animation, default value is $JssorEasing$.$EaseOutQuad
-                $SlideDuration: 800,                               //[Optional] Specifies default duration (swipe) for slide in milliseconds, default value is 500
-                $MinDragOffsetToSlide: 20,                          //[Optional] Minimum drag offset to trigger slide , default value is 20
-                //$SlideWidth: 600,                                 //[Optional] Width of every slide in pixels, default value is width of 'slides' container
-                //$SlideHeight: 300,                                //[Optional] Height of every slide in pixels, default value is height of 'slides' container
-                $SlideSpacing: 0,                                   //[Optional] Space between each slide in pixels, default value is 0
-                $DisplayPieces: 1,                                  //[Optional] Number of pieces to display (the slideshow would be disabled if the value is set to greater than 1), the default value is 1
-                $ParkingPosition: 0,                                //[Optional] The offset position to park slide (this options applys only when slideshow disabled), default value is 0.
-                $UISearchMode: 1,                                   //[Optional] The way (0 parellel, 1 recursive, default value is 1) to search UI components (slides container, loading screen, navigator container, arrow navigator container, thumbnail navigator container etc).
-                $PlayOrientation: 1,                                //[Optional] Orientation to play slide (for auto play, navigation), 1 horizental, 2 vertical, 5 horizental reverse, 6 vertical reverse, default value is 1
-                $DragOrientation: 1,                                //[Optional] Orientation to drag slide, 0 no drag, 1 horizental, 2 vertical, 3 either, default value is 1 (Note that the $DragOrientation should be the same as $PlayOrientation when $DisplayPieces is greater than 1, or parking position is not 0)
-
-                $BulletNavigatorOptions: {                          //[Optional] Options to specify and enable navigator or not
-                    $Class: $JssorBulletNavigator$,                 //[Required] Class to create navigator instance
-                    $ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
-                    $AutoCenter: 1,                                 //[Optional] Auto center navigator in parent container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
-                    $Steps: 1,                                      //[Optional] Steps to go for each navigation request, default value is 1
-                    $Lanes: 1,                                      //[Optional] Specify lanes to arrange items, default value is 1
-                    $SpacingX: 8,                                   //[Optional] Horizontal space between each item in pixel, default value is 0
-                    $SpacingY: 8,                                   //[Optional] Vertical space between each item in pixel, default value is 0
-                    $Orientation: 1,                                //[Optional] The orientation of the navigator, 1 horizontal, 2 vertical, default value is 1
-                    $Scale: false                                   //Scales bullets navigator or not while slider scale
-                },
-
-                $ArrowNavigatorOptions: {                           //[Optional] Options to specify and enable arrow navigator or not
-                    $Class: $JssorArrowNavigator$,                  //[Requried] Class to create arrow navigator instance
-                    $ChanceToShow: 1,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
-                    $AutoCenter: 2,                                 //[Optional] Auto center arrows in parent container, 0 No, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
-                    $Steps: 1                                       //[Optional] Steps to go for each navigation request, default value is 1
-                }
-            };
-
-            var jssor_slider1 = new $JssorSlider$("slider1_container", options);
-
-            //responsive code begin
-            //you can remove responsive code if you don't want the slider scales while window resizes
-            function ScaleSlider() {
-                var bodyWidth = document.body.clientWidth;
-                if (bodyWidth)
-                    jssor_slider1.$ScaleWidth(Math.min(bodyWidth, 1920));
-                else
-                    window.setTimeout(ScaleSlider, 30);
-            }
-            ScaleSlider();
-
-            $(window).bind("load", ScaleSlider);
-            $(window).bind("resize", ScaleSlider);
-            $(window).bind("orientationchange", ScaleSlider);
-            //responsive code end
-        });
-    </script>
-
-
-
-    <!-- <div class="col-xs-7">
-                                <h1 class="child-name ng-binding">My name is Araceli</h1>
-                                <div class="child-description">
-                                    <p class="lead ng-binding">I'm a 2-year-old girl from Bolivia, and you can change my world for good!</p>
-                                    <p>Make me part of your family, and help me reach my God-given potential. $39 a month can help transform my community and change my world.</p>
-                                </div>
-                                <a ng-href="http://donate.worldvision.org/singlepagecheckout/cart/addProducts?itemId[]=2861773&amp;newSpon[]=1&amp;amt[]=39" class="btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button" href="http://donate.worldvision.org/singlepagecheckout/cart/addProducts?itemId[]=2861773&amp;newSpon[]=1&amp;amt[]=39">Become My Sponsor</a>
-                                <div class="child-search">
-                                    <div class="panel panel-primary">
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-xs-12">
-                                                    <p class="lead text-center">Find a Child</p>
-                                                    <p class="text-center">Thousands of children are waiting for sponsorship around the globe.<br>Find your perfect match!</p>
-                                                </div>
+                <!-- Slides Container -->
+                <div u="slides" class="slides">
+                    <div>
+                        <div class="col-xs-4">
+                            <img class="img-responsive center-block child-picture" src="../image/nino-1.png"
+                        onmouseover="this.src = '../image/nino-1-hover.png';"
+                        onmouseout="this.src = '../image/nino-1.png';"/>
+                        </div>
+                        <div class="col-xs-6">
+                            <h1>My name is <span class="child-name"></span></h1>
+                            <div class="child-description">
+                                <p class="lead ng-binding">I'm a 2-year-old girl from Bolivia, and you can change my world for good!</p>
+                                <p>Make me part of your family, and help me reach my God-given potential. $39 a month can help transform my community and change my world.</p>
+                            </div>
+                            <a id="sponsor-button" class="btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button" href="checkout.html">Become My Sponsor</a>
+                            <div class="child-search">
+                                <div class="panel panel-primary">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <p class="lead text-center">Find a Child</p>
+                                                <p class="text-center">Thousands of children are waiting for sponsorship around the globe.<br>Find your perfect match!</p>
                                             </div>
+                                        </div>
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <select selectpicker="" name="genderSearch" ng-model="search.gender" ng-change="searchChild()" class="ng-pristine ng-valid" style="display: none;">
@@ -233,29 +108,27 @@
                                                         </button>
                                                         <div class="dropdown-menu open">
                                                             <ul class="dropdown-menu inner selectpicker" role="menu">
-                                                                <li rel="0" class="selected"><a tabindex="0" class="" style="">
-                                                                    <span class="text">Gender</span>
-                                                                    <i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li rel="1">
-                                                                <a tabindex="0" class="" style="">
-                                                                    <span class="text">Boy</span>
-                                                                    <i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
-                                                                </a>
-                                                            </li>
-                                                            <li rel="2">
-                                                                <a tabindex="0" class="" style="">
-                                                                    <span class="text">Girl</span>
-                                                                    <i class="glyphicon glyphicon-ok icon-ok check-mark"></i>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
+                                                                <li rel="0" class="selected">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Gender</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="1">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Boy</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="2">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Girl</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <div class="form-group">
+                                                <div class="col-xs-6">
+                                                    <div class="form-group">
                                                     <label class="col-md-4 control-label">país</label>
                                                     <div class="col-md-8">
                                                         <select id="form-country" name="country" class="inputbox form-control validate[required]">
@@ -509,7 +382,7 @@
                                                     </div>
                                                 </div>
 
-                                            <div class="col-xs-3">
+                                                <div class="col-xs-3">
                                                 <select selectpicker="" id="ageSearch" name="ageSearch" ng-model="search.age" ng-change="searchChild()" class="ng-pristine ng-valid" style="display: none;">
                                                     <option value="">Age</option>
                                                     <option value="0">&lt; 1</option>
@@ -547,10 +420,10 @@
                                                             </a>
                                                         </li>
                                                         <li rel="2"><a tabindex="0" class="" style=""><span class="text">1</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="3"><a tabindex="0" class="" style=""><span class="text">2</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="4"><a tabindex="0" class="" style=""><span class="text">3</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="5"><a tabindex="0" class="" style=""><span class="text">4</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="6"><a tabindex="0" class="" style=""><span class="text">5</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="7"><a tabindex="0" class="" style=""><span class="text">6</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="8"><a tabindex="0" class="" style=""><span class="text">7</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="9"><a tabindex="0" class="" style=""><span class="text">8</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="10"><a tabindex="0" class="" style=""><span class="text">9</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="11"><a tabindex="0" class="" style=""><span class="text">10</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="12"><a tabindex="0" class="" style=""><span class="text">11</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="13"><a tabindex="0" class="" style=""><span class="text">12</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="14"><a tabindex="0" class="" style=""><span class="text">13</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="15"><a tabindex="0" class="" style=""><span class="text">14</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li></ul></div></div></div>
-                                            <div id="child-birth-info"><div class="col-xs-4">
+                                                <div id="child-birth-info"><div class="col-xs-4">
                                                 <select selectpicker="" id="birthmonthSearch" name="birthmonthSearch" ng-model="search.month" ng-change="searchChild()" class="ng-pristine ng-valid" style="display: none;">
                                                     <option value="">Birth Month</option><option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option><option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option><option value="09">Sept</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option> </select><div class="btn-group bootstrap-select ng-pristine ng-valid"><button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthmonthSearch"><span class="filter-option pull-left">Birth Month</span>&nbsp;<span class="caret"></span></button><div class="dropdown-menu open"><ul class="dropdown-menu inner selectpicker" role="menu"><li rel="0" class="selected"><a tabindex="0" class="" style=""><span class="text">Birth Month</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="1"><a tabindex="0" class="" style=""><span class="text">Jan</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="2"><a tabindex="0" class="" style=""><span class="text">Feb</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="3"><a tabindex="0" class="" style=""><span class="text">Mar</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="4"><a tabindex="0" class="" style=""><span class="text">Apr</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="5"><a tabindex="0" class="" style=""><span class="text">May</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="6"><a tabindex="0" class="" style=""><span class="text">Jun</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="7"><a tabindex="0" class="" style=""><span class="text">Jul</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="8"><a tabindex="0" class="" style=""><span class="text">Aug</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="9"><a tabindex="0" class="" style=""><span class="text">Sept</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="10"><a tabindex="0" class="" style=""><span class="text">Oct</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="11"><a tabindex="0" class="" style=""><span class="text">Nov</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li><li rel="12"><a tabindex="0" class="" style=""><span class="text">Dec</span><i class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li></ul></div></div></div>
-                                            <div class="col-xs-4">
+                                                <div class="col-xs-4">
                                                 <select selectpicker="" id="birthdaySearch" name="birthdaySearch" ng-model="search.day" ng-change="searchChild()" class="ng-pristine ng-valid" style="display: none;">
                                                     <option value="">Birth Day</option><option value="1">1</option><option value="2">2</option><option value="2">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
                                                 </select>
@@ -568,7 +441,34 @@
                                 </div>
         </div>
     </div>
-		 -->
+                </div>
+                <div>
+                    <img u="image" src2="../images/1920/purple.jpg" />
+                </div>
+                <div>
+                    <img u="image" src2="../images/1920/blue.jpg" />
+                </div>
+            </div>
+
+
+            <!-- bullet navigator container -->
+            <div u="navigator" class="jssorb21" style="bottom: 6px; right: 6px;">
+                <!-- bullet navigator item prototype -->
+                <div u="prototype"></div>
+            </div>
+            <!--#endregion Bullet Navigator Skin End -->
+
+            <!-- Arrow Left -->
+            <span u="arrowleft" class="jssora21l" style="top: 123px; left: 8px;">
+            </span>
+            <!-- Arrow Right -->
+            <span u="arrowright" class="jssora21r" style="top: 123px; right: 8px;">
+            </span>
+            <!--#endregion Arrow Navigator Skin End -->
+            <a style="display: none" href="http://www.jssor.com">Bootstrap Slider</a>
+        </div>
+        <!-- Jssor Slider End -->
+    </div>
 
 		<footer id="Footer" class="container-fluid bottom">
             <div class="row">
@@ -602,3 +502,77 @@
         </footer>
 	</body>
 </html>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../js/jquery-1.9.1.min.js"></script>
+<script src="bootstrap.min.js"></script>
+<script src="docs.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="ie10-viewport-bug-workaround.js"></script>
+
+<!-- jssor slider scripts-->
+<!-- use jssor.slider.debug.js for debug -->
+<script type="text/javascript" src="../js/jssor.slider.mini.js"></script>
+<script>
+    jQuery(document).ready(function ($) {
+
+        var options = {
+            $FillMode: 2,                                       //[Optional] The way to fill image in slide, 0 stretch, 1 contain (keep aspect ratio and put all inside slide), 2 cover (keep aspect ratio and cover whole slide), 4 actual size, 5 contain for large image, actual size for small image, default value is 0
+            $AutoPlay: true,                                    //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
+            $AutoPlayInterval: 4000,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
+            $PauseOnHover: 1,                                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, 4 freeze for desktop, 8 freeze for touch device, 12 freeze for desktop and touch device, default value is 1
+
+            $ArrowKeyNavigation: true,                          //[Optional] Allows keyboard (arrow key) navigation or not, default value is false
+            $SlideEasing: $JssorEasing$.$EaseOutQuint,          //[Optional] Specifies easing for right to left animation, default value is $JssorEasing$.$EaseOutQuad
+            $SlideDuration: 800,                               //[Optional] Specifies default duration (swipe) for slide in milliseconds, default value is 500
+            $MinDragOffsetToSlide: 20,                          //[Optional] Minimum drag offset to trigger slide , default value is 20
+            //$SlideWidth: 600,                                 //[Optional] Width of every slide in pixels, default value is width of 'slides' container
+            //$SlideHeight: 300,                                //[Optional] Height of every slide in pixels, default value is height of 'slides' container
+            $SlideSpacing: 0,                                   //[Optional] Space between each slide in pixels, default value is 0
+            $DisplayPieces: 1,                                  //[Optional] Number of pieces to display (the slideshow would be disabled if the value is set to greater than 1), the default value is 1
+            $ParkingPosition: 0,                                //[Optional] The offset position to park slide (this options applys only when slideshow disabled), default value is 0.
+            $UISearchMode: 1,                                   //[Optional] The way (0 parellel, 1 recursive, default value is 1) to search UI components (slides container, loading screen, navigator container, arrow navigator container, thumbnail navigator container etc).
+            $PlayOrientation: 1,                                //[Optional] Orientation to play slide (for auto play, navigation), 1 horizental, 2 vertical, 5 horizental reverse, 6 vertical reverse, default value is 1
+            $DragOrientation: 1,                                //[Optional] Orientation to drag slide, 0 no drag, 1 horizental, 2 vertical, 3 either, default value is 1 (Note that the $DragOrientation should be the same as $PlayOrientation when $DisplayPieces is greater than 1, or parking position is not 0)
+
+            $BulletNavigatorOptions: {                          //[Optional] Options to specify and enable navigator or not
+                $Class: $JssorBulletNavigator$,                 //[Required] Class to create navigator instance
+                $ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+                $AutoCenter: 1,                                 //[Optional] Auto center navigator in parent container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+                $Steps: 1,                                      //[Optional] Steps to go for each navigation request, default value is 1
+                $Lanes: 1,                                      //[Optional] Specify lanes to arrange items, default value is 1
+                $SpacingX: 8,                                   //[Optional] Horizontal space between each item in pixel, default value is 0
+                $SpacingY: 8,                                   //[Optional] Vertical space between each item in pixel, default value is 0
+                $Orientation: 1,                                //[Optional] The orientation of the navigator, 1 horizontal, 2 vertical, default value is 1
+                $Scale: false                                   //Scales bullets navigator or not while slider scale
+            },
+
+            $ArrowNavigatorOptions: {                           //[Optional] Options to specify and enable arrow navigator or not
+                $Class: $JssorArrowNavigator$,                  //[Requried] Class to create arrow navigator instance
+                $ChanceToShow: 1,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+                $AutoCenter: 2,                                 //[Optional] Auto center arrows in parent container, 0 No, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+                $Steps: 1                                       //[Optional] Steps to go for each navigation request, default value is 1
+            }
+        };
+
+        var jssor_slider1 = new $JssorSlider$("slider1_container", options);
+
+        //responsive code begin
+        //you can remove responsive code if you don't want the slider scales while window resizes
+        function ScaleSlider() {
+            var bodyWidth = document.body.clientWidth;
+            if (bodyWidth)
+                jssor_slider1.$ScaleWidth(Math.min(bodyWidth, 1920));
+            else
+                window.setTimeout(ScaleSlider, 30);
+        }
+        ScaleSlider();
+
+        $(window).bind("load", ScaleSlider);
+        $(window).bind("resize", ScaleSlider);
+        $(window).bind("orientationchange", ScaleSlider);
+        //responsive code end
+    });
+</script>
