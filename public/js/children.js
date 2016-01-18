@@ -22,8 +22,6 @@ $(document).ready(function () {
             var gender = res[id].género;
             var center = res[id].centro_de_ninos;
 
-            $(".child-name span").text("name");
-
             // create div elements
             var div = document.createElement('td');
             div.className = 'child-info-group';
