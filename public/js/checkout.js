@@ -220,9 +220,48 @@ $(document).ready(function() {
                 'país': country
             };
 
+            // insert donor, update children with sponsored flag and donor _id
             $.post('/api/v1/donors', data, function(result) {
                 if(result.n + result.ok === 2) {
-                    console.log('Donor inserted.');
+                    // get the _id of the donor just inserted.
+                    // make use of the data var
+                    $.getJSON('/api/v1/donorid/' + JSON.stringify(data),
+                        function(doc) {
+                        // TODO: for loop should always just run once, just an
+                        // easier way to get the donorId. make a check at the
+                        // end that this only ran once, and log out to admin
+                        // that a duplicate was inserted.
+                            for (var donorId in doc) {
+                                var ids = localStorage['children'].split(',');
+                                // for each child in localStorage add the donor
+                                // _id
+                                ids.forEach(function(id) {
+                                    // TODO: right now donor_id is only going to
+                                    // be a string. look into storing this as a
+                                    // real ObjectId.
+                                    var changes = {
+                                        'changes': {
+                                            'status': 'Sponsored',
+                                            'donor_id': donorId
+                                        }
+                                    };
+                                    // ajax PUT on /api/v1/children/:id with
+                                    // changes
+                                    $.ajax({
+                                        url: '/api/v1/children/' + id,
+                                        type: 'PUT',
+                                        data: changes,
+                                        // this success was happening even when
+                                        // getting a "changes = null" error from
+                                        // mongo. really need to look into http
+                                        // response error codes (401, 404, etc.)
+                                        success: function() {
+                                            alert('edit is good');
+                                        }
+                                    });
+                                });
+                            }
+                        });
                 } else {
                     console.log('Something bad happened on donor insert.');
                 }
@@ -230,13 +269,10 @@ $(document).ready(function() {
         }
     });
 
-    // get all of the unsponsored children and put in a few random ones
+    // put in three rando's
     var ids = localStorage['children'].split(',');
-    var num = Math.floor(Math.random() * (5 - 1) + 1);
-    var ran = 0;
-    for (var i = 0; i < num; i++) {
-        ran = Math.floor(Math.random() * (30 - 1) + 1);
-        createChild(ids[ran]);
+    for (var i = 0; i < 3; i++) {
+        createChild(ids[i]);
         container.appendChild(table);
     }
 
