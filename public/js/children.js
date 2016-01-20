@@ -3,7 +3,7 @@
 
 $(document).ready(function () {
     var id = '';
-    function pic(callback) {
+    function pic() {
         // get the picture and load it in
         $.ajax({
             type: 'GET',
@@ -14,7 +14,6 @@ $(document).ready(function () {
             success: function (result, textStatus, jqXHR) {
                 var data = jqXHR.responseText;
                 $('#child-picture').attr('src','data:image/image;base64,'+data);
-                callback();
             }
         });
     }
@@ -60,20 +59,19 @@ $(document).ready(function () {
 
     function insertChildIntoCarousel() {
         data(function() {
-            pic(function() {
-                console.log('done');
-            });
+            pic();
         });
     }
 
     insertChildIntoCarousel();
 
     $('#sponsor-button').click(function() {
-        if(sessionStorage.getItem('cart') != 'null') {
+        if(sessionStorage.getItem('cart') === null ||
+           sessionStorage.getItem('cart') === '') {
+            sessionStorage.setItem('cart', id);
+        } else {
             var existingStorage = sessionStorage.getItem('cart');
             sessionStorage.setItem('cart', existingStorage + ',' + id);
-        } else {
-            sessionStorage.setItem('cart', id);
         }
     });
 });

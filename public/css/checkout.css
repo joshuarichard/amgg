@@ -42,6 +42,19 @@ table {
 	/*font-weight: bold;*/
 }
 
+.empty-cart {
+	/*
+	margin-top: .1em;
+	margin-bottom: .1em;
+	*/
+	text-align: left;
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	line-height: 2rem;
+	margin: 0 auto;
+	/*width: 50%;*/
+}
+
 .dropdown {
 	display: inline-block;
 }

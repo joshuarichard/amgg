@@ -116,7 +116,7 @@ $(document).ready(function() {
                 // remove child from sessionStorage
                 var ids = sessionStorage.getItem('cart').split(',');
                 var id = button.parentNode.parentNode.id;
-                if (ids.indexOf(id)) {
+                if (ids.indexOf(id) != -1) {
                     ids.splice(ids.indexOf(id), 1);
                     sessionStorage.setItem('cart', ids.toString());
                 }
@@ -271,16 +271,14 @@ $(document).ready(function() {
     });
 
     // insert all children in session storage into the cart
-    if (sessionStorage.getItem('cart') != 'null') {
+    if (sessionStorage.getItem('cart') != null &&
+        sessionStorage.getItem('cart') != '') {
         var ids = sessionStorage.getItem('cart').split(',');
-        ids.splice(0, 1);
-        console.log('ids in checkout.js ' + ids);
         for (var i = 0; i < ids.length; i++) {
             addChildToCart(ids[i]);
             container.appendChild(table);
         }
     }
-
 
     // after all that append the 'add a child' button
     var addButton = document.createElement('button');
