@@ -46,24 +46,34 @@
                 top: 0px; left: 0px; width: 100%; height: 100%;">
                 </div>
             </div>
-            <!-- Slides Container -->
-            <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 1300px; height: 500px; overflow: hidden;">
-                <div>
-                    <img u="image" src2="../images/1920/red.jpg" />
+        </section>
+
+
+        <div style="min-height: 50px;">
+            <!-- Jssor Slider Begin -->
+            <!-- To move inline styles to css file/block, please specify a class name for each element. -->
+            <!-- ================================================== -->
+            <div id="slider1_container" class="slider1_container">
+                <!-- Loading Screen -->
+                <div class="loading" u="loading">
+                    <div class="loading1">
+                    </div>
+                    <div class="loading-gif">
+                    </div>
                 </div>
                 <!-- Slides Container -->
                 <div u="slides" class="slides">
                     <div>
                         <div class="col-xs-4">
-                            <img class="img-responsive center-block child-picture" src="../image/nino-1.png"/>
+                            <img id="child-picture" class="img-responsive center-block child-picture" src="../image/nino-1.png"/>
                         </div>
                         <div class="col-xs-6">
-                            <h1>My name is <span id="child-name"></span></h1>
+                            <h1>Hola, me llamo <span id="child-name"></span>!</h1>
                             <div class="child-description">
                                 <p class="lead">I'm a <span id="child-age"></span>-year-old <span id="child-gender"></span> from <span id="child-location"></span>, and you can change my world for good!</p>
                                 <p>Make me part of your family, and help me reach my God-given potential. $<span id="child-cost">39</span> a month can help transform my community and change my world.</p>
                             </div>
-                            <a id="sponsor-button" class="btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button" href="checkout.html">Become My Sponsor</a>
+                            <a id="sponsor-button" class="btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button" href="checkout.html">Conviértase Mi Patrocinador</a>
                             <div class="child-search">
                                 <div class="panel panel-primary">
                                     <div class="panel-body">
@@ -72,42 +82,81 @@
                                                 <p class="lead text-center">Find a Child</p>
                                                 <p class="text-center">Thousands of children are waiting for sponsorship around the globe.<br>Find your perfect match!</p>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-xs-5">
-                                                    <div class="form-group">
-                                                        <label class="col-md-4 control-label">Género</label>
-                                                        <div class="col-md-8">
-                                                            <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
-                                                                <option value="">Gender</option>
-                                                                <option value="M">Boy</option>
-                                                                <option value="F">Girl</option>
-                                                            </select>
-                                                            <div class="btn-group bootstrap-select">
-                                                                <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
-                                                                    <span class="filter-option pull-left">Gender</span>&nbsp;
-                                                                    <span class="caret"></span>
-                                                                </button>
-                                                                <div class="dropdown-menu open">
-                                                                    <ul class="dropdown-menu inner selectpicker" role="menu">
-                                                                        <li rel="0" class="selected">
-                                                                            <a tabindex="0" class="" style="">
-                                                                                <span class="text">Gender</span>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li rel="1">
-                                                                            <a tabindex="0" class="" style="">
-                                                                                <span class="text">Boy</span>
-                                                                            </a>
-                                                                        </li>
-                                                                        <li rel="2">
-                                                                            <a tabindex="0" class="" style="">
-                                                                                <span class="text">Girl</span>
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
+                                                    <option value="">Género</option>
+                                                    <option value="M">Boy</option>
+                                                    <option value="F">Girl</option>
+                                                </select>
+                                                <div class="btn-group bootstrap-select">
+                                                    <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
+                                                        <span class="filter-option pull-left">Género</span>&nbsp;
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <div class="dropdown-menu open">
+                                                        <ul class="dropdown-menu inner selectpicker" role="menu">
+                                                            <li rel="0" class="selected">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Género</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="1">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Boy</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="2">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Girl</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
+                                                    <option value="">Centro de Ninos</option>
+                                                    <option value="C1">Center 1</option>
+                                                    <option value="C2">Center 2</option>
+                                                    <option value="C3">Center 3</option>
+                                                    <option value="C4">Center 4</option>
+                                                </select>
+                                                <div id="child-center" class="btn-group bootstrap-select">
+                                                    <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
+                                                        <span class="filter-option pull-left">Centro de Ninos</span>&nbsp;
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <div class="dropdown-menu open">
+                                                        <ul class="dropdown-menu inner selectpicker" role="menu">
+                                                            <li rel="0" class="selected">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Centro de Ninos</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="1">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Center 1</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="2">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Center 2</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="2">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Center 3</span>
+                                                                </a>
+                                                            </li>
+                                                            <li rel="2">
+                                                                <a tabindex="0" class="" style="">
+                                                                    <span class="text">Center 4</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,10 +268,103 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="col-xs-3">
-                                                    <select selectpicker="" id="ageSearch" name="ageSearch" ng-model="search.age" ng-change="searchChild()" class="ng-pristine ng-valid" style="display: none;">
-                                                        <option value="">Años</option>
-                                                        <option value="0">&lt; 1</option>
+                                            </div>
+                                            <div id="child-birth-info">
+                                                <div class="col-xs-4">
+                                                    <select selectpicker="" id="birthmonthSearch" name="birthmonthSearch" style="display: none;">
+                                                        <option value="">Birth Month</option>
+                                                        <option value="01">Jan</option>
+                                                        <option value="02">Feb</option>
+                                                        <option value="03">Mar</option>
+                                                        <option value="04">Apr</option>
+                                                        <option value="05">May</option>
+                                                        <option value="06">Jun</option>
+                                                        <option value="07">Jul</option>
+                                                        <option value="08">Aug</option>
+                                                        <option value="09">Sept</option>
+                                                        <option value="10">Oct</option>
+                                                        <option value="11">Nov</option>
+                                                        <option value="12">Dec</option>
+                                                    </select>
+                                                    <div class="btn-group bootstrap-select">
+                                                        <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthmonthSearch">
+                                                            <span class="filter-option pull-left">Birth Month</span>&nbsp;
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <div class="dropdown-menu open">
+                                                            <ul class="dropdown-menu inner selectpicker" role="menu">
+                                                                <li rel="0" class="selected">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Birth Month</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="1">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Jan</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="2">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Feb</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="3">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Mar</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="4">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Apr</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="5">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">May</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="6">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Jun</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="7">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Jul</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="8">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Aug</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="9">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Sept</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="10">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Oct</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="11">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Nov</span>
+                                                                    </a>
+                                                                </li>
+                                                                <li rel="12">
+                                                                    <a tabindex="0" class="" style="">
+                                                                        <span class="text">Dec</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4">
+                                                    <select selectpicker="" id="birthdaySearch" name="birthdaySearch" style="display: none;">
+                                                        <option value="">Birth Day</option>
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
@@ -237,6 +379,23 @@
                                                         <option value="12">12</option>
                                                         <option value="13">13</option>
                                                         <option value="14">14</option>
+                                                        <option value="15">15</option>
+                                                        <option value="16">16</option>
+                                                        <option value="17">17</option>
+                                                        <option value="18">18</option>
+                                                        <option value="19">19</option>
+                                                        <option value="20">20</option>
+                                                        <option value="21">21</option>
+                                                        <option value="22">22</option>
+                                                        <option value="23">23</option>
+                                                        <option value="24">24</option>
+                                                        <option value="25">25</option>
+                                                        <option value="26">26</option>
+                                                        <option value="27">27</option>
+                                                        <option value="28">28</option>
+                                                        <option value="29">29</option>
+                                                        <option value="30">30</option>
+                                                        <option value="31">31</option>
                                                     </select>
                                                     <div class="btn-group bootstrap-select ng-pristine ng-valid">
                                                         <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="ageSearch">
@@ -393,10 +552,9 @@
             <!--#endregion Arrow Navigator Skin End -->
             <a style="display: none" href="http://www.jssor.com">Bootstrap Slider</a>
         </div>
-    </div>
-		 -->
+        <!-- Jssor Slider End -->
 
-		<footer id="Footer" class="container-fluid bottom">
+        <footer id="Footer" class="container-fluid bottom">
             <div class="row">
                <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-1">
                     <p>
@@ -438,8 +596,8 @@
 
         var options = {
             $FillMode: 2,                                       //[Optional] The way to fill image in slide, 0 stretch, 1 contain (keep aspect ratio and put all inside slide), 2 cover (keep aspect ratio and cover whole slide), 4 actual size, 5 contain for large image, actual size for small image, default value is 0
-            $AutoPlay: true,                                    //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
-            $AutoPlayInterval: 4000,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
+            $AutoPlay: false,                                    //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
+            //$AutoPlayInterval: false,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
             $PauseOnHover: 1,                                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, 4 freeze for desktop, 8 freeze for touch device, 12 freeze for desktop and touch device, default value is 1
 
             $ArrowKeyNavigation: true,                          //[Optional] Allows keyboard (arrow key) navigation or not, default value is false

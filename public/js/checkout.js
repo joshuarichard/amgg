@@ -20,7 +20,7 @@ $(document).ready(function() {
     table.appendChild(thead);
     */
 
-    function createChild(id) {
+    function addChildToCart(id) {
         // create child's table row
         var tr = document.createElement('tr');
 
@@ -113,12 +113,12 @@ $(document).ready(function() {
 
             // set on click button function
             button.onclick = function() {
-                // remove child from localStorage
-                var ids = localStorage['children'].split(',');
+                // remove child from sessionStorage
+                var ids = sessionStorage.getItem('cart').split(',');
                 var id = button.parentNode.parentNode.id;
                 if (ids.indexOf(id)) {
                     ids.splice(ids.indexOf(id), 1);
-                    localStorage['children'] = ids.toString();
+                    sessionStorage.setItem('cart', ids.toString());
                 }
 
                 // remove child from table
@@ -232,8 +232,9 @@ $(document).ready(function() {
                         // end that this only ran once, and log out to admin
                         // that a duplicate was inserted.
                             for (var donorId in doc) {
-                                var ids = localStorage['children'].split(',');
-                                // for each child in localStorage add the donor
+                                var ids = sessionStorage.getItem('cart')
+                                                        .split(',');
+                                // for each child in sessionStore add the donor
                                 // _id
                                 ids.forEach(function(id) {
                                     // TODO: right now donor_id is only going to
@@ -269,12 +270,17 @@ $(document).ready(function() {
         }
     });
 
-    // put in three rando's
-    var ids = localStorage['children'].split(',');
-    for (var i = 0; i < 3; i++) {
-        createChild(ids[i]);
-        container.appendChild(table);
+    // insert all children in session storage into the cart
+    if (sessionStorage.getItem('cart') != 'null') {
+        var ids = sessionStorage.getItem('cart').split(',');
+        ids.splice(0, 1);
+        console.log('ids in checkout.js ' + ids);
+        for (var i = 0; i < ids.length; i++) {
+            addChildToCart(ids[i]);
+            container.appendChild(table);
+        }
     }
+
 
     // after all that append the 'add a child' button
     var addButton = document.createElement('button');
