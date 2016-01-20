@@ -29,8 +29,8 @@ $(document).ready(function () {
                 }
             }
 
-            // use the resLength to randomly pic one of the unsponsored children
-            // within the bounds
+            // use the resLength to randomly pick one of the unsponsored
+            // children within the bounds
             var ran = Math.floor(Math.random() * (resLength - 1) + 1);
 
             // now iterate over the res with an index (i) and match it to the
