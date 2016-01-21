@@ -3,16 +3,6 @@
     margin-bottom: 5%;
 }
 
-.num-children {
-    margin-top: 7%;
-    text-align: right;
-}
-
-#num-children-input {
-    width: 5em;
-    text-align: center;
-}
-
 .dropdown-toggle {
 	color: black;
 }
@@ -35,7 +25,8 @@ footer {
 }
 
 #center {
-  margin: 200px 50px 100px;
+	margin-top: 10%;
+	display: block;
 }
 
 .child-picture {
@@ -69,6 +60,7 @@ footer {
 	height: 100%;
 }
 */
+
 .slider1_container {
 	visibility: hidden;
 	position: relative;
@@ -78,6 +70,30 @@ footer {
     width: 1300px;
     height: 500px;
     overflow: hidden;
+    display: inline-block;
+    margin-right: 0;
+
+}
+
+.child-search {
+	display: inline-block;
+	width: 22%;
+	/*height: 100vh;*/
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.find-child-panel {
+	padding-top: auto;
+	padding-bottom: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.child-slide {
+	margin-top: 10%;
+	margin-bottom: 10%;
+	/*height: 100vh;*/
 }
 
 .slides {
@@ -86,6 +102,6 @@ footer {
 	left: 0px;
 	top: 0px;
 	width: 1300px;
-	height: 500px;
+    height: 500px;
 	overflow: hidden;
 }
