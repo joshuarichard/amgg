@@ -12,6 +12,10 @@ $(document).ready(function () {
     }
 
     function data(slideNum) {
+        // TODO: when dynamically generating HTML tonight from javascript,
+        // need to make sure I add the child's _id to the id of the child-slide
+        // element
+
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/unsponsored', function(res) {
             if(res.err !== undefined) {
@@ -32,17 +36,17 @@ $(document).ready(function () {
                     // children within the bounds
                     var ran = Math.floor(Math.random() * (resLength - 1) + 1);
 
-                    // now iterate over the res with an index (i) and match it to the
-                    // random number.
+                    // now iterate over the res with an index (i) and match it
+                    // to the random number.
                     var i = 0;
                     for (key in res) {
                         // if index === random number then pick this child
                         if (i === ran && res.hasOwnProperty(key)) {
                             id = key;
-                            document.getElementById('child-name' + slideNum).innerHTML = res[id].nombre;
-                            document.getElementById('child-age' + slideNum).innerHTML = res[id].años;
-                            document.getElementById('child-gender' + slideNum).innerHTML = res[id].género;
-                            document.getElementById('child-location' + slideNum).innerHTML = res[id].centro_de_ninos;
+                            $('#child-name' + slideNum).text(res[id].nombre);
+                            $('#child-age' + slideNum).text(res[id].años);
+                            $('#child-gender' + slideNum).text(res[id].género);
+                            $('#child-location' + slideNum).text(res[id].centro_de_ninos);
                             break;
                         } else {
                             i++;
@@ -65,6 +69,9 @@ $(document).ready(function () {
     insertChildIntoCarousel();
 
     $('#sponsor-button').click(function() {
+        // TODO: need to fix sessionStorage by getting the ID from the
+        // child-slide and putting it into sessionStorage
+
         if(sessionStorage.getItem('cart') === null ||
            sessionStorage.getItem('cart') === '') {
             sessionStorage.setItem('cart', id);
