@@ -7,6 +7,12 @@
 	color: black;
 }
 
+.scrollable-menu {
+    height: auto;
+    max-height: 195px;
+    overflow-x: hidden;
+}
+
 #sponsor-button {
 	margin-bottom: 0.5em;
 }
