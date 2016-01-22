@@ -8,18 +8,6 @@ $(document).ready(function() {
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    // create header (leave out unless we feel like we need it. delete later)
-    /*
-    var thead = document.createElement('thead');
-    var theadTR = document.createElement('tr');
-    var imgTheadTH = document.createElement('th');
-    var infoTheadTH = document.createElement('th');
-    theadTR.appendChild(imgTheadTH);
-    theadTR.appendChild(infoTheadTH);
-    thead.appendChild(theadTR);
-    table.appendChild(thead);
-    */
-
     function addChildToCart(id) {
         // create child's table row
         var tr = document.createElement('tr');
