@@ -4,14 +4,14 @@
 $(document).ready(function () {
     var id = '';
 
-    function pic() {
+    function pic(childClass) {
         // get the picture and load it in
         $.getJSON('/api/v1/pictures/' + id, function(res) {
-            $('#child-picture').attr('src','data:image/image;base64,'+res.data);
+            $(childClass).attr('src','data:image/image;base64,' + res.data);
         });
     }
 
-    function data(slideNum, callback) {
+    function data(slideNum) {
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/unsponsored', function(res) {
             if(res.err !== undefined) {
@@ -48,21 +48,7 @@ $(document).ready(function () {
                             i++;
                         }
                     }
-
-                    // get the picture and load it in
-                    $.ajax({
-                        type: 'GET',
-                        url: '/api/v1/pictures/' + id,
-                        beforeSend: function (xhr) {
-                            xhr.overrideMimeType('text/plain; charset=x-user-defined');
-                        },
-                        success: function (result, textStatus, jqXHR) {
-                            var data = jqXHR.responseText;
-                            $('#child-picture' + slideNum).attr('src','data:image/image;base64,'+data);
-                            console.log("pic" + slideNum);
-                        }
-                    });
-                    callback(true);
+                    pic('#child-picture' + slideNum);
                 }
             }
         });
@@ -72,11 +58,7 @@ $(document).ready(function () {
     function insertChildIntoCarousel() {
         //loop through all the slides
         for (x=1; x <= $(".child-slide").length; x++) {
-            data(x, function(success) {
-                if(success === true) {
-                    // pic();
-                }
-            });
+            data(x);
         }
     }
 
