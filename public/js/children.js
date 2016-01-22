@@ -51,7 +51,7 @@ $(document).ready(function () {
                 success: function (result, textStatus, jqXHR) {
                     var data = jqXHR.responseText;
                     $('#child-picture' + slideNum).attr('src','data:image/image;base64,'+data);
-                    console.log("pic" + slideNum);
+                    $(".child-picture").show(); //show picture after they load
                 }
             });
 
