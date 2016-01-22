@@ -64,8 +64,8 @@ app.put('/api/v1/children/:id', function(req, res) {
 
 app.get('/api/v1/pictures/:id', function(req, res) {
     mongo.getPic(req.params.id, 'children', function(data) {
-        res.set('Content-Type', 'text/plain; charset=x-user-defined');
-        res.send(data);
+        var dataJSON = { 'data': data };
+        res.send(dataJSON);
     });
 });
 

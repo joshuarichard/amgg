@@ -367,17 +367,22 @@ exports.getPic = function(id, collection, callback) {
                  nconf.get('mongo:port')));
 
         db.open(function(err, db) {
-            var imageId = new mongo.ObjectID(doc.image_id);
-            var gridStore = new mongo.GridStore(db, imageId, 'r');
-            gridStore.open(function(err, gridStore) {
-                gridStore.seek(0, function() {
-                    gridStore.read(function(err, data) {
-                        db.close();
-                        log.trace('got picture for child with id ' + id);
-                        callback(data.toString('base64'));
+            if (err) {
+                log.error('Mongo connection error in getPic() ' + err);
+                callback({'err': 'cannot establish a connection.'});
+            } else {
+                var imageId = new mongo.ObjectID(doc.image_id);
+                var gridStore = new mongo.GridStore(db, imageId, 'r');
+                gridStore.open(function(err, gridStore) {
+                    gridStore.seek(0, function() {
+                        gridStore.read(function(err, data) {
+                            db.close();
+                            log.trace('got picture for child with id ' + id);
+                            callback(data.toString('base64'));
+                        });
                     });
                 });
-            });
+            }
         });
     });
 };

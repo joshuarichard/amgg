@@ -29,19 +29,15 @@ $(document).ready(function() {
             var picIMG = document.createElement('img');
             picIMG.className = 'child-img';
 
-            // get the picture and load it in
-            $.ajax({
-                type: 'GET',
-                url: '/api/v1/pictures/' + id,
-                beforeSend: function (xhr) {
-                    xhr.overrideMimeType('text/plain; charset=x-user-defined');
-                },
-                success: function (result, textStatus, jqXHR) {
-                    var data = jqXHR.responseText;
-                    picIMG.src = 'data:image/image;base64,' + data;
+            $.getJSON('/api/v1/pictures/' + id, function(res) {
+                if (res.data.hasOwnProperty('err')){
+                    console.log(res.data.err);
+                    callback(false);
+                } else if (res.data !== undefined) {
+                    picIMG.src = 'data:image/image;base64,' + res.data;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
-                    callback();
+                    callback(true);
                 }
             });
         }
@@ -49,57 +45,62 @@ $(document).ready(function() {
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/' + id, function(res) {
-                var dataTD = document.createElement('td');
-                tr.id = id;
+                if(res.hasOwnProperty('err')) {
+                    console.log(JSON.stringify(data));
+                    callback(false);
+                } else {
+                    var dataTD = document.createElement('td');
+                    tr.id = id;
 
-                // set up all child info as vars
-                var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
-                                  'Junio', 'Julio', 'Agosto', 'Septiembre',
-                                  'Octubre', 'Noviembre', 'Diciembre'];
-                var date = new Date(res[id].cumpleaños);
-                var birthday = monthNames[date.getMonth()] + ' ' +
-                                 date.getDate() + ', ' + date.getFullYear();
-                var name = res[id].nombre;
-                var age = res[id].años;
-                var gender = res[id].género;
-                var center = res[id].centro_de_ninos;
+                    // set up all child info as vars
+                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
+                                      'Junio', 'Julio', 'Agosto', 'Septiembre',
+                                      'Octubre', 'Noviembre', 'Diciembre'];
+                    var date = new Date(res[id].cumpleaños);
+                    var birthday = monthNames[date.getMonth()] + ' ' +
+                                     date.getDate() + ', ' + date.getFullYear();
+                    var name = res[id].nombre;
+                    var age = res[id].años;
+                    var gender = res[id].género;
+                    var center = res[id].centro_de_ninos;
 
-                // create elements for each piece of info
-                var dataDiv = document.createElement('td');
-                dataDiv.className = 'child-info-group';
+                    // create elements for each piece of info
+                    var dataDiv = document.createElement('td');
+                    dataDiv.className = 'child-info-group';
 
-                var nameDiv = document.createElement('div');
-                var ageDiv = document.createElement('div');
-                var birthdayDiv = document.createElement('div');
-                var genderDiv = document.createElement('div');
-                var centerDiv = document.createElement('div');
+                    var nameDiv = document.createElement('div');
+                    var ageDiv = document.createElement('div');
+                    var birthdayDiv = document.createElement('div');
+                    var genderDiv = document.createElement('div');
+                    var centerDiv = document.createElement('div');
 
-                // assign classes to those elements
-                nameDiv.className = 'child-info';
-                ageDiv.className = 'child-info';
-                birthdayDiv.className = 'child-info';
-                genderDiv.className = 'child-info';
-                centerDiv.className = 'child-info';
+                    // assign classes to those elements
+                    nameDiv.className = 'child-info';
+                    ageDiv.className = 'child-info';
+                    birthdayDiv.className = 'child-info';
+                    genderDiv.className = 'child-info';
+                    centerDiv.className = 'child-info';
 
-                // assign values
-                nameDiv.innerHTML = '<b> nombre: </b>' + name;
-                ageDiv.innerHTML = '<b> años:  </b>' + age;
-                birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
-                genderDiv.innerHTML = '<b> género:  </b>' + gender;
-                centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+                    // assign values
+                    nameDiv.innerHTML = '<b> nombre: </b>' + name;
+                    ageDiv.innerHTML = '<b> años:  </b>' + age;
+                    birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
+                    genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                    centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
 
-                // append children to div
-                dataTD.appendChild(nameDiv);
-                dataTD.appendChild(ageDiv);
-                dataTD.appendChild(birthdayDiv);
-                dataTD.appendChild(genderDiv);
-                dataTD.appendChild(centerDiv);
+                    // append children to div
+                    dataTD.appendChild(nameDiv);
+                    dataTD.appendChild(ageDiv);
+                    dataTD.appendChild(birthdayDiv);
+                    dataTD.appendChild(genderDiv);
+                    dataTD.appendChild(centerDiv);
 
-                // append dataTD to the dataDiv for styling, then append to row
-                dataDiv.appendChild(dataTD);
-                tr.appendChild(dataDiv);
+                    // append dataTD to the dataDiv for styling, then append to row
+                    dataDiv.appendChild(dataTD);
+                    tr.appendChild(dataDiv);
 
-                callback();
+                    callback(true);
+                }
             });
         }
 
@@ -129,20 +130,25 @@ $(document).ready(function() {
             buttonTD.appendChild(button);
             tr.appendChild(buttonTD);
 
-            callback();
+            callback(true);
         }
 
         // first insert pic
-        pic(function() {
-            // then append data
-            data(function()  {
-                // then append delete button
-                deleteButton(function() {
-                    // append the row to the tbody, add the tbody to the table
-                    tbody.appendChild(tr);
-                    table.appendChild(tbody);
+        pic(function(success) {
+            if(success === true) {
+                // then append data
+                data(function(success)  {
+                    if(success === true) {
+                        // then append delete button
+                        deleteButton(function() {
+                            // append the row to the tbody, and
+                            // add the tbody to the table
+                            tbody.appendChild(tr);
+                            table.appendChild(tbody);
+                        });
+                    }
                 });
-            });
+            }
         });
     }
 
