@@ -6,15 +6,16 @@
         <link href="../css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="../css/bootstrap.min.css" rel="stylesheet" />
 
-        <script src="../js/jquery-1.11.3.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="../js/bootstrap.min.js"></script>
         <script src="../js/docs.min.js"></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="../js/ie10-viewport-bug-workaround.js"></script>
 
-        <!-- flexslider assets -->
-        <script src="../js/jquery.flexslider.js"></script>
-        <link rel="stylesheet" href="../css/flexslider.css" type="text/css">
+        <!-- owl slider -->
+        <link rel="stylesheet" href="../css/owl.carousel.css">
+        <link rel="stylesheet" href="../css/owl.theme.css">
+        <script src="../js/owl.carousel.js"></script>
 
         <!-- client side code -->
         <script type="text/javascript" charset="utf-8" src="../js/children.js"></script>
@@ -43,32 +44,12 @@
             </div>
         </section>
 
-        <!-- flexslider -->
-        <div id="slider" class="flexslider carousel center mtop20">
-            <!--
-            <ul class="slides col-md-12" id="div_portion">
-            </ul>
-            -->
-            <section class="slider">
-              <div class="flexslider">
-                <ul class="slides">
-                  <!-- for some reason if you add these slides the flexslider "works". if you pull them out, it doesn't.
-                      <li>
-                        <img src="slide1.jpg" />
-                      </li>
-                      <li>
-                        <img src="slide2.jpg" />
-                      </li>
-                      <li>
-                        <img src="slide3.jpg" />
-                      </li>
-                      <li>
-                        <img src="slide4.jpg" />
-                      </li>
-                  -->
-                </ul>
-              </div>
-            </section>
+        <!-- can't get this to show up on the screen. pretty sure it's working though. -->
+        <div class='panel panel-primary center'>
+            <div class='panel-body'>
+                <div id="owl" class="owl-carousel">
+                </div>
+            </div>
         </div>
 
 
@@ -600,12 +581,7 @@
 
 <!-- initialize the flexslider on the page -->
 <script type="text/javascript" charset="utf-8">
-    $(window).load(function(){
-      $('#slider').flexslider({
-        animation: 'slide',
-        start: function(slider){
-          $('body').removeClass('loading');
-        }
-      });
+    $(document).ready(function() {
+        $("#owl").owlCarousel();
     });
 </script>

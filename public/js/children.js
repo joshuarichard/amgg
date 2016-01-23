@@ -124,27 +124,14 @@ $(document).ready(function() {
           });
     }
 
-    // flexslider options
-    $('#slider').flexslider({
-        animation: "slide",
-        controlNav: false,
-        animationLoop: false,
-        slideshow: false,
-        sync: "#carousel"
-    });
-
-    for (var x = 0; x < 6; x++) {
+    for (var x = 0; x < 1; x++) {
         // TODO: when dynamically generating HTML tonight from javascript,
         // need to make sure I add the child's _id to the id of the child-slide
         // element
-        console.log($('#slider').className);
         buildHTMLforSlide(x, function(slide) {
-            var li = document.createElement('li');
-            li.appendChild(slide);
-            console.log($('#slider').data('flexslider'));
-
-            // add the slide
-            $('#slider').data('flexslider').addSlide(slide, x);
+            var div = document.createElement('div');
+            div.appendChild(slide);
+            $('#owl').append(div);
         });
     }
 
