@@ -3,10 +3,29 @@
     margin-bottom: 5%;
 }
 
-.owl-carousel .item img{
+.owl-carousel{
 	display: inline-block;
-    width: 66%;
+    width: 100%;
     height: auto;
+}
+
+.item {
+	width: 70%;
+}
+
+
+.span8 {
+    width: 950px;
+    display: inline-block !important;
+    margin-top: 5em;
+}
+
+.span4 {
+    width: 350px;
+    display: inline-block !important;
+    margin-top: 5em;
+    margin-left: auto;
+    margin-right: 0;
 }
 
 .dropdown-toggle {
