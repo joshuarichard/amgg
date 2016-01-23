@@ -41,9 +41,10 @@ $(document).ready(function() {
                     tr.id = id;
 
                     // set up all child info as vars
-                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
-                                      'Junio', 'Julio', 'Agosto', 'Septiembre',
-                                      'Octubre', 'Noviembre', 'Diciembre'];
+                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
+                                      'Mayo', 'Junio', 'Julio', 'Agosto',
+                                      'Septiembre', 'Octubre', 'Noviembre',
+                                      'Diciembre'];
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' +
                                      date.getDate() + ', ' + date.getFullYear();

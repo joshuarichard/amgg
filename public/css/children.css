@@ -84,7 +84,11 @@ footer {
     overflow: hidden;
     display: inline-block;
     margin-right: 0;
+}
 
+.center {
+  margin: auto;
+  width: 60%;
 }
 
 .child-search {
