@@ -2,6 +2,8 @@
 /* eslint no-undef: 0 */
 
     /*
+$(document).ready(function() {
+
     function buildHTMLforSlide(slideNum, callback) {
           function pic(id, childClass, callback) {
               // get the picture and load it in
@@ -20,7 +22,6 @@ $(document).ready(function () {
         paginationSpeed : 400,
         autoWidth:true,
         singleItem:true
-
 
         // "singleItem:true" is a shortcut for:
         // items : 1,
@@ -145,16 +146,30 @@ $(document).ready(function () {
           });
     }
 
-    for (var x = 0; x < 1; x++) {
+    //add carousel functionality
+    var owl = $(".owl-carousel").owlCarousel({
+        navigation : true, // Show next and prev buttons
+        slideSpeed : 300,
+        paginationSpeed : 400,
+        autoWidth:true,
+        singleItem:true
+    });
+
+    // var carousel = document.createElement('div');
+    // carousel.className = "span8 owl-carousel owl-theme";
+    for (var x = 0; x < 3; x++) {
         // TODO: when dynamically generating HTML tonight from javascript,
         // need to make sure I add the child's _id to the id of the child-slide
         // element
         buildHTMLforSlide(x, function(slide) {
-            var div = document.createElement('div');
-            div.appendChild(slide);
-            $('#owl').append(div);
+            var item = document.createElement('div');
+            item.className = "item";
+            item.appendChild(slide);
+            owl.data('owlCarousel').addItem(item);
         });
     }
+    // $("#find-a-child").before($(carousel));
+
 
     $('#sponsor-button').click(function() {
         // TODO: need to fix sessionStorage by getting the ID from the

@@ -9,7 +9,7 @@
     height: auto;
 }
 
-.item {
+.owl-item {
 	width: 70%;
 }
 
@@ -26,6 +26,11 @@
     margin-top: 5em;
     margin-left: auto;
     margin-right: 0;
+}
+
+.btn-group {
+	margin-top: .15em;
+	margin-bottom: .15em;
 }
 
 .dropdown-toggle {
