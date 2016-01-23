@@ -155,8 +155,6 @@ $(document).ready(function () {
         singleItem:true
     });
 
-    // var carousel = document.createElement('div');
-    // carousel.className = "span8 owl-carousel owl-theme";
     for (var x = 0; x < 5; x++) {
         // TODO: when dynamically generating HTML tonight from javascript,
         // need to make sure I add the child's _id to the id of the child-slide
@@ -168,8 +166,6 @@ $(document).ready(function () {
             owl.data('owlCarousel').addItem(item);
         });
     }
-    // $("#find-a-child").before($(carousel));
-
 
     $('#sponsor-button').click(function() {
         // TODO: need to fix sessionStorage by getting the ID from the
