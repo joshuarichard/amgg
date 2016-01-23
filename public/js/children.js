@@ -157,7 +157,7 @@ $(document).ready(function () {
 
     // var carousel = document.createElement('div');
     // carousel.className = "span8 owl-carousel owl-theme";
-    for (var x = 0; x < 3; x++) {
+    for (var x = 0; x < 5; x++) {
         // TODO: when dynamically generating HTML tonight from javascript,
         // need to make sure I add the child's _id to the id of the child-slide
         // element

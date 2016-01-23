@@ -10,7 +10,7 @@
 }
 
 .owl-item {
-	width: 70%;
+	width: 75%;
 }
 
 
@@ -79,11 +79,5 @@ footer {
 	display: inline-block;
 	margin-left: 0;
 	margin-right: 0;
-}
-
-.find-child-panel {
-	padding-top: auto;
-	padding-bottom: auto;
-	margin-top: auto;
-	margin-bottom: auto;
+	margin-bottom: 2.5em;
 }
