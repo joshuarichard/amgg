@@ -98,9 +98,11 @@ $(document).ready(function() {
             var buttonTD = document.createElement('td');
 
             // create button, add classname for styling, append text
+            /* eslint-disable */
             var button = document.createElement('button');
             button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
             button.appendChild(document.createTextNode('eliminar'));
+            /* eslint-enable */
 
             // set on click button function
             button.onclick = function() {
@@ -259,7 +261,7 @@ $(document).ready(function() {
                                 });
                             }
                         });
-                        window.location = 'contribution.html';
+                    window.location = 'contribution.html';
                 } else {
                     console.log('Something bad happened on donor insert.');
                 }
@@ -278,11 +280,13 @@ $(document).ready(function() {
     }
 
     // after all that append the 'add a child' button
+    /* eslint-disable */
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
+    /* eslint-enable */
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
