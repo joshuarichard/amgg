@@ -75,4 +75,6 @@ footer {
 .nav-buttons {
   width: 50%;
   margin: 0 auto;
+  padding-left: 5em;
+  text-align: center;
 }
