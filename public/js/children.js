@@ -107,12 +107,21 @@ $(document).ready(function() {
             divDescription.appendChild(pData1);
             divDescription.appendChild(pData2);
             divData.appendChild(divDescription);
-            var aDescription = document.createElement('a');
-            aDescription.id = 'sponsor-button';
-            aDescription.className = 'btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button';
-            aDescription.href = 'checkout.html';
-            aDescription.innerHTML = 'Conviértase Mi Patrocinador';
-            divData.appendChild(aDescription);
+            var sponsorButton = document.createElement('a');
+            sponsorButton.id = 'sponsor-button';
+            sponsorButton.className = 'btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button';
+            sponsorButton.href = 'checkout.html';
+            sponsorButton.innerHTML = 'Conviértase Mi Patrocinador';
+            sponsorButton.onclick = function() {
+                if(sessionStorage.getItem('cart') === null ||
+                   sessionStorage.getItem('cart') === '') {
+                    sessionStorage.setItem('cart', this.parentNode.parentNode.id);
+                } else {
+                    var existingStorage = sessionStorage.getItem('cart');
+                    sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
+                }
+            };
+            divData.appendChild(sponsorButton);
             slide.appendChild(divData);
             /* eslint-enable*/
 
@@ -133,46 +142,40 @@ $(document).ready(function() {
 
     //add carousel functionality
     var owl = $('.owl-carousel').owlCarousel({
-        navigation : true, // Show next and prev buttons
-        slideSpeed : 300,
-        paginationSpeed : 400,
-        autoWidth:true,
-        singleItem:true
+        navigation : false, // Show next and prev buttons
+        slideSpeed : 800,
+        paginationSpeed : 800,
+        autoWidth: true,
+        singleItem: true
     });
 
-    for (var x = 0; x < 2; x++) {
-        // TODO: when dynamically generating HTML tonight from javascript,
-        // need to make sure I add the child's _id to the id of the child-slide
-        // element
+    function addSlide(slide) {
+        var item = document.createElement('div');
+        item.className = 'item';
+        item.appendChild(slide);
+        owl.data('owlCarousel').addItem(item);
+    }
+
+    // insert one child to start
+    for (var x = 0; x < 5; x++) {
         buildHTMLforSlide(x, function(slide) {
-            var item = document.createElement('div');
-            item.className = 'item';
-            item.appendChild(slide);
-            owl.data('owlCarousel').addItem(item);
+            addSlide(slide);
         });
     }
-    /* when you click the next button you should be able to generate another
-    $('.owl-next').click(function() {
-        console.log('hi hi hi');
-        buildHTMLforSlide(numOfSlides, function(slide) {
-            var item = document.createElement('div');
-            item.className = 'item';
-            item.appendChild(slide);
-            owl.data('owlCarousel').addItem(item);
-        });
+
+    // custom previous and next buttons
+    $('#prev-button').click(function() {
+        owl.trigger('owl.prev');
     });
-    */
+    $('#next-button').click(function() {
+        owl.trigger('owl.next');
+    });
 
-    $('#sponsor-button').click(function() {
-        // TODO: need to fix sessionStorage by getting the ID from the
-        // child-slide and putting it into sessionStorage
-
-        if(sessionStorage.getItem('cart') === null ||
-           sessionStorage.getItem('cart') === '') {
-            sessionStorage.setItem('cart', id);
-        } else {
-            var existingStorage = sessionStorage.getItem('cart');
-            sessionStorage.setItem('cart', existingStorage + ',' + id);
-        }
+    // add a child to the slide button
+    $('#add-button').click(function() {
+        buildHTMLforSlide(x, function(slide) {
+            addSlide(slide);
+            owl.trigger('owl.goTo',owl.data('owlCarousel').owl.owlItems.length);
+        });
     });
 });
