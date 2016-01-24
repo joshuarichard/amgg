@@ -175,7 +175,8 @@ $(document).ready(function() {
     $('#add-button').click(function() {
         buildHTMLforSlide(x, function(slide) {
             addSlide(slide);
-            owl.trigger('owl.jumpTo',owl.data('owlCarousel').owl.owlItems.length);
+            owl.trigger('owl.jumpTo',
+                        owl.data('owlCarousel').owl.owlItems.length);
         });
     });
 });
