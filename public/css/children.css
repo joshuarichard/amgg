@@ -14,7 +14,6 @@
 	margin-left: 5em;
 }
 
-
 .span8 {
     width: 950px;
     display: inline-block !important;
@@ -38,11 +37,6 @@
 	color: black;
 }
 
-/*.btn-group {
-	margin-top: 0.15em;
-	margin-bottom: 0.15em;
-}
-*/
 .scrollable-menu {
     height: auto;
     max-height: 195px;
@@ -59,14 +53,6 @@
 }
 
 footer {
-  position:fixed;
-  bottom:0px;
-  left:0px;
-  right:0px;
-  margin-bottom:0px;
-}
-
-#center {
 	margin-top: 10%;
 	display: block;
 }
