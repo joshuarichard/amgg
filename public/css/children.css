@@ -1,8 +1,3 @@
-#child-img {
-    margin-top: 5%;
-    margin-bottom: 5%;
-}
-
 .owl-carousel{
 	display: inline-block;
     width: 100%;
@@ -31,6 +26,16 @@
     margin-right: 0;
 }
 
+.nav-buttons {
+  width: 50%;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 5em;
+  text-align: center;
+}
+
 .btn-group {
 	margin-top: .15em;
 	margin-bottom: .15em;
@@ -46,18 +51,9 @@
     overflow-x: hidden;
 }
 
-#sponsor-button {
-	margin-bottom: 0.5em;
-}
-
 .form-group {
 	margin-left: 1em;
 	margin-right: 1em;
-}
-
-footer {
-	margin-top: 10%;
-	display: block;
 }
 
 .child-picture {
@@ -72,16 +68,14 @@ footer {
 	margin-bottom: 2.5em;
 }
 
-.nav-buttons {
-  width: 50%;
-  margin: 0 auto;
-  padding-left: 5em;
-  text-align: center;
-}
-
 #search-button {
 	margin-top: 1em;
 	margin-bottom: 0.15em;
 	margin-right: 0;
 	margin-left: 80%;
+}
+
+footer {
+	margin-top: 10%;
+	display: block;
 }
