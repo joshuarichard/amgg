@@ -84,7 +84,8 @@ $(document).ready(function() {
                     dataTD.appendChild(genderDiv);
                     dataTD.appendChild(centerDiv);
 
-                    // append dataTD to the dataDiv for styling, then append to row
+                    // append dataTD to the dataDiv for styling, then append to
+                    // row
                     dataDiv.appendChild(dataTD);
                     tr.appendChild(dataDiv);
 
