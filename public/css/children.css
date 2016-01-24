@@ -68,3 +68,8 @@ footer {
 	margin-right: 0;
 	margin-bottom: 2.5em;
 }
+
+.nav-buttons {
+  width: 50%;
+  margin: 0 auto;
+}
