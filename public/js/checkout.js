@@ -8,19 +8,7 @@ $(document).ready(function() {
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    // create header (leave out unless we feel like we need it. delete later)
-    /*
-    var thead = document.createElement('thead');
-    var theadTR = document.createElement('tr');
-    var imgTheadTH = document.createElement('th');
-    var infoTheadTH = document.createElement('th');
-    theadTR.appendChild(imgTheadTH);
-    theadTR.appendChild(infoTheadTH);
-    thead.appendChild(theadTR);
-    table.appendChild(thead);
-    */
-
-    function createChild(id) {
+    function addChildToCart(id) {
         // create child's table row
         var tr = document.createElement('tr');
 
@@ -29,19 +17,15 @@ $(document).ready(function() {
             var picIMG = document.createElement('img');
             picIMG.className = 'child-img';
 
-            // get the picture and load it in
-            $.ajax({
-                type: 'GET',
-                url: '/api/v1/pictures/' + id,
-                beforeSend: function (xhr) {
-                    xhr.overrideMimeType('text/plain; charset=x-user-defined');
-                },
-                success: function (result, textStatus, jqXHR) {
-                    var data = jqXHR.responseText;
-                    picIMG.src = 'data:image/image;base64,' + data;
+            $.getJSON('/api/v1/pictures/' + id, function(res) {
+                if (res.data.hasOwnProperty('err')){
+                    console.log(res.data.err);
+                    callback(false);
+                } else if (res.data !== undefined) {
+                    picIMG.src = 'data:image/image;base64,' + res.data;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
-                    callback();
+                    callback(true);
                 }
             });
         }
@@ -49,57 +33,64 @@ $(document).ready(function() {
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/' + id, function(res) {
-                var dataTD = document.createElement('td');
-                tr.id = id;
+                if(res.hasOwnProperty('err')) {
+                    console.log(JSON.stringify(data));
+                    callback(false);
+                } else {
+                    var dataTD = document.createElement('td');
+                    tr.id = id;
 
-                // set up all child info as vars
-                var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
-                                  'Junio', 'Julio', 'Agosto', 'Septiembre',
-                                  'Octubre', 'Noviembre', 'Diciembre'];
-                var date = new Date(res[id].cumpleaños);
-                var birthday = monthNames[date.getMonth()] + ' ' +
-                                 date.getDate() + ', ' + date.getFullYear();
-                var name = res[id].nombre;
-                var age = res[id].años;
-                var gender = res[id].género;
-                var center = res[id].centro_de_ninos;
+                    // set up all child info as vars
+                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
+                                      'Mayo', 'Junio', 'Julio', 'Agosto',
+                                      'Septiembre', 'Octubre', 'Noviembre',
+                                      'Diciembre'];
+                    var date = new Date(res[id].cumpleaños);
+                    var birthday = monthNames[date.getMonth()] + ' ' +
+                                     date.getDate() + ', ' + date.getFullYear();
+                    var name = res[id].nombre;
+                    var age = res[id].años;
+                    var gender = res[id].género;
+                    var center = res[id].centro_de_ninos;
 
-                // create elements for each piece of info
-                var dataDiv = document.createElement('td');
-                dataDiv.className = 'child-info-group';
+                    // create elements for each piece of info
+                    var dataDiv = document.createElement('td');
+                    dataDiv.className = 'child-info-group';
 
-                var nameDiv = document.createElement('div');
-                var ageDiv = document.createElement('div');
-                var birthdayDiv = document.createElement('div');
-                var genderDiv = document.createElement('div');
-                var centerDiv = document.createElement('div');
+                    var nameDiv = document.createElement('div');
+                    var ageDiv = document.createElement('div');
+                    var birthdayDiv = document.createElement('div');
+                    var genderDiv = document.createElement('div');
+                    var centerDiv = document.createElement('div');
 
-                // assign classes to those elements
-                nameDiv.className = 'child-info';
-                ageDiv.className = 'child-info';
-                birthdayDiv.className = 'child-info';
-                genderDiv.className = 'child-info';
-                centerDiv.className = 'child-info';
+                    // assign classes to those elements
+                    nameDiv.className = 'child-info';
+                    ageDiv.className = 'child-info';
+                    birthdayDiv.className = 'child-info';
+                    genderDiv.className = 'child-info';
+                    centerDiv.className = 'child-info';
 
-                // assign values
-                nameDiv.innerHTML = '<b> nombre: </b>' + name;
-                ageDiv.innerHTML = '<b> años:  </b>' + age;
-                birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
-                genderDiv.innerHTML = '<b> género:  </b>' + gender;
-                centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+                    // assign values
+                    nameDiv.innerHTML = '<b> nombre: </b>' + name;
+                    ageDiv.innerHTML = '<b> años:  </b>' + age;
+                    birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
+                    genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                    centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
 
-                // append children to div
-                dataTD.appendChild(nameDiv);
-                dataTD.appendChild(ageDiv);
-                dataTD.appendChild(birthdayDiv);
-                dataTD.appendChild(genderDiv);
-                dataTD.appendChild(centerDiv);
+                    // append children to div
+                    dataTD.appendChild(nameDiv);
+                    dataTD.appendChild(ageDiv);
+                    dataTD.appendChild(birthdayDiv);
+                    dataTD.appendChild(genderDiv);
+                    dataTD.appendChild(centerDiv);
 
-                // append dataTD to the dataDiv for styling, then append to row
-                dataDiv.appendChild(dataTD);
-                tr.appendChild(dataDiv);
+                    // append dataTD to the dataDiv for styling, then append to
+                    // row
+                    dataDiv.appendChild(dataTD);
+                    tr.appendChild(dataDiv);
 
-                callback();
+                    callback(true);
+                }
             });
         }
 
@@ -108,17 +99,17 @@ $(document).ready(function() {
 
             // create button, add classname for styling, append text
             var button = document.createElement('button');
-            button.className = 'btn btn-default';
+            button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
             button.appendChild(document.createTextNode('eliminar'));
 
             // set on click button function
             button.onclick = function() {
-                // remove child from localStorage
-                var ids = localStorage['children'].split(',');
+                // remove child from sessionStorage
+                var ids = sessionStorage.getItem('cart').split(',');
                 var id = button.parentNode.parentNode.id;
-                if (ids.indexOf(id)) {
+                if (ids.indexOf(id) != -1) {
                     ids.splice(ids.indexOf(id), 1);
-                    localStorage['children'] = ids.toString();
+                    sessionStorage.setItem('cart', ids.toString());
                 }
 
                 // remove child from table
@@ -129,20 +120,25 @@ $(document).ready(function() {
             buttonTD.appendChild(button);
             tr.appendChild(buttonTD);
 
-            callback();
+            callback(true);
         }
 
         // first insert pic
-        pic(function() {
-            // then append data
-            data(function()  {
-                // then append delete button
-                deleteButton(function() {
-                    // append the row to the tbody, add the tbody to the table
-                    tbody.appendChild(tr);
-                    table.appendChild(tbody);
+        pic(function(success) {
+            if(success === true) {
+                // then append data
+                data(function(success)  {
+                    if(success === true) {
+                        // then append delete button
+                        deleteButton(function() {
+                            // append the row to the tbody, and
+                            // add the tbody to the table
+                            tbody.appendChild(tr);
+                            table.appendChild(tbody);
+                        });
+                    }
                 });
-            });
+            }
         });
     }
 
@@ -232,8 +228,9 @@ $(document).ready(function() {
                         // end that this only ran once, and log out to admin
                         // that a duplicate was inserted.
                             for (var donorId in doc) {
-                                var ids = localStorage['children'].split(',');
-                                // for each child in localStorage add the donor
+                                var ids = sessionStorage.getItem('cart')
+                                                        .split(',');
+                                // for each child in sessionStore add the donor
                                 // _id
                                 ids.forEach(function(id) {
                                     // TODO: right now donor_id is only going to
@@ -262,6 +259,7 @@ $(document).ready(function() {
                                 });
                             }
                         });
+                        window.location = 'contribution.html';
                 } else {
                     console.log('Something bad happened on donor insert.');
                 }
@@ -269,16 +267,19 @@ $(document).ready(function() {
         }
     });
 
-    // put in three rando's
-    var ids = localStorage['children'].split(',');
-    for (var i = 0; i < 3; i++) {
-        createChild(ids[i]);
-        container.appendChild(table);
+    // insert all children in session storage into the cart
+    if (sessionStorage.getItem('cart') != null &&
+        sessionStorage.getItem('cart') != '') {
+        var ids = sessionStorage.getItem('cart').split(',');
+        for (var i = 0; i < ids.length; i++) {
+            addChildToCart(ids[i]);
+            container.appendChild(table);
+        }
     }
 
     // after all that append the 'add a child' button
     var addButton = document.createElement('button');
-    addButton.className = 'btn btn-default';
+    addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
