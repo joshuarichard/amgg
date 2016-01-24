@@ -78,3 +78,10 @@ footer {
   padding-left: 5em;
   text-align: center;
 }
+
+#search-button {
+	margin-top: 1em;
+	margin-bottom: 0.15em;
+	margin-right: 0;
+	margin-left: 80%;
+}
