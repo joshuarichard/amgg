@@ -99,7 +99,7 @@ $(document).ready(function() {
 
             // create button, add classname for styling, append text
             var button = document.createElement('button');
-            button.className = 'btn btn-default';
+            button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
             button.appendChild(document.createTextNode('eliminar'));
 
             // set on click button function
@@ -259,6 +259,7 @@ $(document).ready(function() {
                                 });
                             }
                         });
+                        window.location = 'contribution.html';
                 } else {
                     console.log('Something bad happened on donor insert.');
                 }
@@ -278,7 +279,7 @@ $(document).ready(function() {
 
     // after all that append the 'add a child' button
     var addButton = document.createElement('button');
-    addButton.className = 'btn btn-default';
+    addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
