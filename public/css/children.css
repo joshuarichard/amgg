@@ -3,17 +3,73 @@
     margin-bottom: 5%;
 }
 
-.num-children {
-    margin-top: 7%;
-    text-align: right;
+.owl-carousel{
+	display: inline-block;
+    width: 100%;
+    height: auto;
 }
 
-#num-children-input {
-    width: 5em;
-    text-align: center;
+.owl-item {
+	width: 75%;
+	margin-left: 5em;
+}
+
+.span8 {
+    width: 950px;
+    display: inline-block !important;
+    margin-top: 5em;
+}
+
+.span4 {
+    width: 350px;
+    display: inline-block !important;
+    margin-top: 5em;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.btn-group {
+	margin-top: .15em;
+	margin-bottom: .15em;
+}
+
+.dropdown-toggle {
+	color: black;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 195px;
+    overflow-x: hidden;
+}
+
+#sponsor-button {
+	margin-bottom: 0.5em;
 }
 
 .form-group {
 	margin-left: 1em;
 	margin-right: 1em;
+}
+
+footer {
+	margin-top: 10%;
+	display: block;
+}
+
+.child-picture {
+	margin-top:  2em;
+	display: block/none;
+}
+
+.child-search {
+	display: inline-block;
+	margin-left: 0;
+	margin-right: 0;
+	margin-bottom: 2.5em;
+}
+
+.nav-buttons {
+  width: 50%;
+  margin: 0 auto;
 }

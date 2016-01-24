@@ -56,6 +56,19 @@ app.get('/api/v1/children/:id', function(req, res) {
     });
 });
 
+app.put('/api/v1/children/:id', function(req, res) {
+    mongo.edit(req.params.id, req.body.changes, 'children', function() {
+        res.send('good');
+    });
+});
+
+app.get('/api/v1/pictures/:id', function(req, res) {
+    mongo.getPic(req.params.id, 'children', function(data) {
+        var dataJSON = { 'data': data };
+        res.send(dataJSON);
+    });
+});
+
 app.post('/api/v1/donors', function(req, res) {
     mongo.insert(req.body, 'donors', function(result) {
         res.send(result);
@@ -68,11 +81,11 @@ app.put('/api/v1/donors', function(req, res) {
     });
 });
 
-app.get('/api/v1/pictures/:id', function(req, res) {
-    mongo.getPic(req.params.id, 'children', function(data) {
-        res.set('Content-Type', 'text/plain; charset=x-user-defined');
-        res.send(data);
-    });
+app.get('/api/v1/donorid/:selector', function(req, res) {
+    mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
+        function(doc) {
+            res.send(doc);
+        });
 });
 
 app.listen(port, function () {

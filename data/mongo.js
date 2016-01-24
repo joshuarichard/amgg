@@ -94,7 +94,7 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
                 log.error('error in find().findDocs(). message: ' + err);
             }
             if (doc != null) {
-                documents[i] = doc;
+                documents[doc._id] = doc;
                 i++;
             } else {
                 callback();
@@ -290,36 +290,6 @@ exports.delete = function(selector, collection, callback) {
     });
 };
 
-/** getIds(selector, collection, limit, callback)
- *
- * get the ids of a certain set of documents and returns them as an array of
- * strings. uses the find() function above. really just here to make
- * things a little bit easier. takes the same parameters as find().
- *
- * selector     (JSON) - document selector
- * collection (string) - the collection to search for documents
- * limit         (int) - number of documents to limit the search results to
- * callback     (func) - callback function to execute after completion
- */
-exports.getIds = function(selector, collection, limit, callback) {
-    log.trace('getting ids of documents with selector ' +
-              JSON.stringify(selector) + ' collection \'' + collection +
-              '\' and limit ' + limit);
-    var ids = [];
-
-    exports.find(collection, selector, limit, function(docs) {
-        for (var i = 0; i < docs.length; i++) {
-            if (docs[i]._id) {
-                ids.push(docs[i]._id);
-            }
-        }
-        log.trace('successfully got document with selector ' +
-                  JSON.stringify(selector) + ' from collection \'' +
-                  collection + '\' and limit ' + limit);
-        callback(ids);
-    });
-};
-
 /** get(id, collection, callback)
  *
  * fetches a document with a certain _id. returns the document as a JSON object.
@@ -397,17 +367,22 @@ exports.getPic = function(id, collection, callback) {
                  nconf.get('mongo:port')));
 
         db.open(function(err, db) {
-            var imageId = new mongo.ObjectID(doc.image_id);
-            var gridStore = new mongo.GridStore(db, imageId, 'r');
-            gridStore.open(function(err, gridStore) {
-                gridStore.seek(0, function() {
-                    gridStore.read(function(err, data) {
-                        db.close();
-                        log.trace('got picture for child with id ' + id);
-                        callback(data.toString('base64'));
+            if (err) {
+                log.error('Mongo connection error in getPic() ' + err);
+                callback({'err': 'cannot establish a connection.'});
+            } else {
+                var imageId = new mongo.ObjectID(doc.image_id);
+                var gridStore = new mongo.GridStore(db, imageId, 'r');
+                gridStore.open(function(err, gridStore) {
+                    gridStore.seek(0, function() {
+                        gridStore.read(function(err, data) {
+                            db.close();
+                            log.trace('got picture for child with id ' + id);
+                            callback(data.toString('base64'));
+                        });
                     });
                 });
-            });
+            }
         });
     });
 };
