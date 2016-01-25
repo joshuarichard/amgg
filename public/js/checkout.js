@@ -255,13 +255,12 @@ $(document).ready(function() {
                                         // mongo. really need to look into http
                                         // response error codes (401, 404, etc.)
                                         success: function() {
-                                            alert('edit is good');
+                                            window.location = 'contribution.html';
                                         }
                                     });
                                 });
                             }
                         });
-                    window.location = 'contribution.html';
                 } else {
                     console.log('Something bad happened on donor insert.');
                 }
