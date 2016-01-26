@@ -3,6 +3,9 @@
 
 $(document).ready(function() {
 
+    /**
+     * carousel code
+     */
     function buildHTMLforSlide(slideNum, callback) {
         function pic(id, childClass, callback) {
             // get the picture and load it in
@@ -173,10 +176,52 @@ $(document).ready(function() {
 
     // add a child to the slide button
     $('#add-button').click(function() {
-        buildHTMLforSlide(x, function(slide) {
+        // start x back where it was and incrememnt once for every added child
+        buildHTMLforSlide(x++, function(slide) {
             addSlide(slide);
             owl.trigger('owl.jumpTo',
                         owl.data('owlCarousel').owl.owlItems.length);
         });
     });
+
+    /**
+     * find a child panel
+     */
+    $('#search-button').click(function() {
+        var selector = {'género': 'masculino'};
+        /*
+        if($('#search-gender').text() !== 'Género') {
+            selector['género'] = $('#search-gender').text();
+        }
+        if($('#search-center').text() !== 'Centro de Niño') {
+            selector['centro_de_ninos'] = $('#search-center').text();
+        }
+        if($('#search-age').text() !== 'Años') {
+            selector['años'] = $('#search-age').text();
+        }
+        if($('#search-birthmonth').text() !== 'Birth Month') {
+            selector[''] = $('#search-birthmonth').text();
+        }
+        if($('#search-birthday').text() !== 'Birth Day') {
+            selector[''] = $('#search-birthday').text();
+        }
+        */
+
+        // this is me just messing with carousel slide manipulation
+        console.log(owl.data('owlCarousel').owl.owlItems.length);
+        for (var d = owl.data('owlCarousel').owl.owlItems.length; d > 1; d--) {
+            owl.data('owlCarousel').removeItem();
+            console.log(owl.data('owlCarousel').owl.owlItems.length);
+        }
+        console.log('owl ' + owl.data('owlCarousel').owl.owlItems.length);
+        console.log('d ' + d);
+        $.getJSON('/api/v1/findchild/' + JSON.stringify(selector), function(res) {
+            for (var j = 0; j < res.length; j++) {
+                buildHTMLforSlide(j, function(slide) {
+                    addSlide(slide);
+                });
+            }
+        });
+    });
+
 });

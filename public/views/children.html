@@ -106,7 +106,7 @@
                                                 <option value="M">Boy</option>
                                                 <option value="F">Girl</option>
                                             </select>
-                                            <div class="btn-group bootstrap-select">
+                                            <div id='search-gender' class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
                                                     <span class="filter-option pull-left">Género</span>&nbsp;
                                                     <span class="caret"></span>
@@ -131,14 +131,16 @@
                                             </div>
                                         </div>
                                         <div class="col-xs-12">
-                                            <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
+                                            <select selectpicker="" name="centerSearch" class="inputbox form-control validate[required]" style="display: none;">
                                                 <option value="">Centro de Ninos</option>
-                                                <option value="C1">Center 1</option>
-                                                <option value="C2">Center 2</option>
-                                                <option value="C3">Center 3</option>
-                                                <option value="C4">Center 4</option>
+                                                <option value="C1">Filadelfia Childcare Center</option>
+                                                <option value="C2">Getsemani Childcare Center</option>
+                                                <option value="C3">Las Vistas Childcare Center</option>
+                                                <option value="C4">Matochos Childcare Center</option>
+                                                <option value="C4">Oratorio Childcare Center</option>
+                                                <option value="C4">Yalu Nim Jay Childcare Center</option>
                                             </select>
-                                            <div id="child-center" class="btn-group bootstrap-select">
+                                            <div id="search-center" class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
                                                     <span class="filter-option pull-left">Centro de Ninos</span>&nbsp;
                                                     <span class="caret"></span>
@@ -151,29 +153,39 @@
                                                     </li>
                                                     <li rel="1">
                                                         <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 1</span>
+                                                            <span class="text">Filadelfia Childcare Center</span>
                                                         </a>
                                                     </li>
                                                     <li rel="2">
                                                         <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 2</span>
+                                                            <span class="text">Getsemani Childcare Center</span>
                                                         </a>
                                                     </li>
                                                     <li rel="2">
                                                         <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 3</span>
+                                                            <span class="text">Las Vistas Childcare Center</span>
                                                         </a>
                                                     </li>
                                                     <li rel="2">
                                                         <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 4</span>
+                                                            <span class="text">Matochos Childcare Center</span>
+                                                        </a>
+                                                    </li>
+                                                    <li rel="2">
+                                                        <a tabindex="0" class="" style="">
+                                                            <span class="text">Oratorio Childcare Center</span>
+                                                        </a>
+                                                    </li>
+                                                    <li rel="2">
+                                                        <a tabindex="0" class="" style="">
+                                                            <span class="text">Yalu Nim Jay Childcare Center</span>
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="col-xs-12">
-                                            <select selectpicker="" id="ageSearch" name="ageSearch" style="display: none;">
+                                            <select selectpicker="" name="ageSearch" style="display: none;">
                                                 <option value="">Años</option>
                                                 <option value="0">&lt; 1</option>
                                                 <option value="1">1</option>
@@ -191,7 +203,7 @@
                                                 <option value="13">13</option>
                                                 <option value="14">14</option>
                                             </select>
-                                            <div class="btn-group bootstrap-select">
+                                            <div id='search-age' class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="ageSearch">
                                                     <span class="filter-option pull-left">Años</span>&nbsp;
                                                     <span class="caret"></span>
@@ -279,7 +291,6 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div id="child-birth-info">
                                             <div class="col-xs-12">
                                                 <select selectpicker="" id="birthmonthSearch" name="birthmonthSearch" style="display: none;">
                                                     <option value="">Birth Month</option>
@@ -296,7 +307,7 @@
                                                     <option value="11">Nov</option>
                                                     <option value="12">Dec</option>
                                                 </select>
-                                                <div class="btn-group bootstrap-select">
+                                                <div id='search-birthmonth' class="btn-group bootstrap-select">
                                                     <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthmonthSearch">
                                                         <span class="filter-option pull-left">Birth Month</span>&nbsp;
                                                         <span class="caret"></span>
@@ -405,7 +416,7 @@
                                                     <option value="30">30</option>
                                                     <option value="31">31</option>
                                                 </select>
-                                                <div class="btn-group bootstrap-select ng-pristine ng-valid">
+                                                <div id='search-birthday' class="btn-group bootstrap-select ng-pristine ng-valid">
                                                     <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthdaySearch">
                                                         <span class="filter-option pull-left">Birth Day</span>&nbsp;
                                                         <span class="caret"></span>
