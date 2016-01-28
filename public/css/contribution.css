@@ -1,3 +1,20 @@
+#center {
+  margin: 200px 50px 100px;
+}
+
+footer {
+  position:fixed;
+  bottom:0px;
+  left:0px;
+  right:0px;
+  margin-bottom:0px;
+}
+
+#child-img {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
 .owl-carousel{
 	display: inline-block;
     width: 100%;
@@ -6,9 +23,6 @@
 
 .owl-item {
 	width: 75%;
-}
-
-.owl-wrapper-outer {
 	margin-left: 5em;
 }
 
@@ -26,16 +40,6 @@
     margin-right: 0;
 }
 
-.nav-buttons {
-  width: 50%;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 5em;
-  text-align: center;
-}
-
 .btn-group {
 	margin-top: .15em;
 	margin-bottom: .15em;
@@ -49,6 +53,10 @@
     height: auto;
     max-height: 195px;
     overflow-x: hidden;
+}
+
+#sponsor-button {
+	margin-bottom: 0.5em;
 }
 
 .form-group {
@@ -68,14 +76,7 @@
 	margin-bottom: 2.5em;
 }
 
-#search-button {
-	margin-top: 1em;
-	margin-bottom: 0.15em;
-	margin-right: 0;
-	margin-left: 80%;
-}
-
-footer {
-	margin-top: 10%;
-	display: block;
+.nav-buttons {
+  width: 50%;
+  margin: 0 auto;
 }
