@@ -56,6 +56,13 @@ app.get('/api/v1/children/:id', function(req, res) {
     });
 });
 
+app.get('/api/v1/findchild/:selector', function(req, res) {
+    mongo.find(JSON.parse(req.params.selector), 'children', 100, true,
+        function(doc) {
+            res.send(doc);
+        });
+});
+
 app.put('/api/v1/children/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, 'children', function() {
         res.send('good');
@@ -81,7 +88,7 @@ app.put('/api/v1/donors', function(req, res) {
     });
 });
 
-app.get('/api/v1/donorid/:selector', function(req, res) {
+app.get('/api/v1/finddonor/:selector', function(req, res) {
     mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
         function(doc) {
             res.send(doc);

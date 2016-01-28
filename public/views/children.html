@@ -101,477 +101,264 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
-                                            <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
-                                                <option value="">Género</option>
-                                                <option value="M">Boy</option>
-                                                <option value="F">Girl</option>
-                                            </select>
                                             <div class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
-                                                    <span class="filter-option pull-left">Género</span>&nbsp;
+                                                    <span id="genderSearch" class="filter-option pull-left">Género</span>&nbsp;
                                                     <span class="caret"></span>
                                                 </button>
-                                                <ul class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
+                                                <ul id='search-gender' class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
                                                     <li rel="0" class="selected">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Género</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Género </a>
                                                     </li>
                                                     <li rel="1">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Boy</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Boy </a>
                                                     </li>
                                                     <li rel="2">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Girl</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Girl </a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="col-xs-12">
-                                            <select selectpicker="" name="genderSearch" class="inputbox form-control validate[required]" style="display: none;">
-                                                <option value="">Centro de Ninos</option>
-                                                <option value="C1">Center 1</option>
-                                                <option value="C2">Center 2</option>
-                                                <option value="C3">Center 3</option>
-                                                <option value="C4">Center 4</option>
-                                            </select>
-                                            <div id="child-center" class="btn-group bootstrap-select">
+                                            <div class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown">
-                                                    <span class="filter-option pull-left">Centro de Ninos</span>&nbsp;
+                                                    <span id="centerSearch" class="filter-option pull-left">Centro de Ninos</span>&nbsp;
                                                     <span class="caret"></span>
                                                 </button>
-                                                <ul class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
+                                                <ul id="search-center" class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
                                                     <li rel="0" class="selected">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Centro de Ninos</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Centro de Ninos </a>
                                                     </li>
                                                     <li rel="1">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 1</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Filadelfia Childcare Center </a>
                                                     </li>
                                                     <li rel="2">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 2</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Getsemani Childcare Center </a>
                                                     </li>
                                                     <li rel="2">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 3</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Las Vistas Childcare Center </a>
                                                     </li>
                                                     <li rel="2">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Center 4</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Matochos Childcare Center </a>
+                                                    </li>
+                                                    <li rel="2">
+                                                        <a tabindex="0" class="" style=""> Oratorio Childcare Center </a>
+                                                    </li>
+                                                    <li rel="2">
+                                                        <a tabindex="0" class="" style=""> Yalu Nim Jay Childcare Center </a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                         <div class="col-xs-12">
-                                            <select selectpicker="" id="ageSearch" name="ageSearch" style="display: none;">
-                                                <option value="">Años</option>
-                                                <option value="0">&lt; 1</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                            </select>
                                             <div class="btn-group bootstrap-select">
                                                 <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="ageSearch">
-                                                    <span class="filter-option pull-left">Años</span>&nbsp;
+                                                    <span id="ageSearch" class="filter-option pull-left">Años</span>&nbsp;
                                                     <span class="caret"></span>
                                                 </button>
-                                                <ul class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
+                                                <ul id='search-age' class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
                                                     <li rel="0" class="selected">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">Años</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> Años </a>
                                                     </li>
                                                     <li rel="1">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">&lt; 1</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> &lt; 1 </a>
                                                     </li>
                                                     <li rel="2">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">1</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 1 </a>
                                                     </li>
                                                     <li rel="3">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">2</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 2 </a>
                                                     </li>
                                                     <li rel="4">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">3</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 3 </a>
                                                     </li>
                                                     <li rel="5">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">4</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 4 </a>
                                                     </li>
                                                     <li rel="6">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">5</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 5 </a>
                                                     </li>
                                                     <li rel="7">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">6</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 6 </a>
                                                     </li>
                                                     <li rel="8">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">7</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 7 </a>
                                                     </li>
                                                     <li rel="9">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">8</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 8 </a>
                                                     </li>
                                                     <li rel="10">
-                                                        <a tabindex="0" class="" style=""><span class="text">9</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 9 </a>
                                                     </li>
                                                     <li rel="11">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">10</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 10 </a>
                                                     </li>
                                                     <li rel="12">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">11</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 11 </a>
                                                     </li>
                                                     <li rel="13">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">12</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 12 </a>
                                                     </li>
                                                     <li rel="14">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">13</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 13 </a>
                                                     </li>
                                                     <li rel="15">
-                                                        <a tabindex="0" class="" style="">
-                                                            <span class="text">14</span>
-                                                        </a>
+                                                        <a tabindex="0" class="" style=""> 14 </a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div id="child-birth-info">
                                             <div class="col-xs-12">
-                                                <select selectpicker="" id="birthmonthSearch" name="birthmonthSearch" style="display: none;">
-                                                    <option value="">Birth Month</option>
-                                                    <option value="01">Jan</option>
-                                                    <option value="02">Feb</option>
-                                                    <option value="03">Mar</option>
-                                                    <option value="04">Apr</option>
-                                                    <option value="05">May</option>
-                                                    <option value="06">Jun</option>
-                                                    <option value="07">Jul</option>
-                                                    <option value="08">Aug</option>
-                                                    <option value="09">Sept</option>
-                                                    <option value="10">Oct</option>
-                                                    <option value="11">Nov</option>
-                                                    <option value="12">Dec</option>
-                                                </select>
-                                                <div class="btn-group bootstrap-select">
-                                                    <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthmonthSearch">
-                                                        <span class="filter-option pull-left">Birth Month</span>&nbsp;
+                                                <div class="btn-group bootstrap-select" onchange="BirthMonthSelected()">
+                                                    <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" >
+                                                        <span id="birthmonthSearch" class="filter-option pull-left">Birth Month</span>&nbsp;
                                                         <span class="caret"></span>
                                                     </button>
-                                                    <ul class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
+                                                    <ul id='search-birthmonth' class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
                                                         <li rel="0" class="selected">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Birth Month</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Birth Month </a>
                                                         </li>
                                                         <li rel="1">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Jan</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Jan </a>
                                                         </li>
                                                         <li rel="2">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Feb</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Feb </a>
                                                         </li>
                                                         <li rel="3">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Mar</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Mar </a>
                                                         </li>
                                                         <li rel="4">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Apr</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Apr </a>
                                                         </li>
                                                         <li rel="5">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">May</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> May </a>
                                                         </li>
                                                         <li rel="6">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Jun</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Jun </a>
                                                         </li>
                                                         <li rel="7">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Jul</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Jul </a>
                                                         </li>
                                                         <li rel="8">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Aug</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Aug </a>
                                                         </li>
                                                         <li rel="9">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Sept</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> ept </a>
                                                         </li>
                                                         <li rel="10">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Oct</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Oct </a>
                                                         </li>
                                                         <li rel="11">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Nov</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Nov </a>
                                                         </li>
                                                         <li rel="12">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Dec</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Dec </a>
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <div class="col-xs-12">
-                                                <select selectpicker="" id="birthdaySearch" name="birthdaySearch" style="display: none;">
-                                                    <option value="">Birth Day</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="2">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                    <option value="6">6</option>
-                                                    <option value="7">7</option>
-                                                    <option value="8">8</option>
-                                                    <option value="9">9</option>
-                                                    <option value="10">10</option>
-                                                    <option value="11">11</option>
-                                                    <option value="12">12</option>
-                                                    <option value="13">13</option>
-                                                    <option value="14">14</option>
-                                                    <option value="15">15</option>
-                                                    <option value="16">16</option>
-                                                    <option value="17">17</option>
-                                                    <option value="18">18</option>
-                                                    <option value="19">19</option>
-                                                    <option value="20">20</option>
-                                                    <option value="21">21</option>
-                                                    <option value="22">22</option>
-                                                    <option value="23">23</option>
-                                                    <option value="24">24</option>
-                                                    <option value="25">25</option>
-                                                    <option value="26">26</option>
-                                                    <option value="27">27</option>
-                                                    <option value="28">28</option>
-                                                    <option value="29">29</option>
-                                                    <option value="30">30</option>
-                                                    <option value="31">31</option>
-                                                </select>
                                                 <div class="btn-group bootstrap-select ng-pristine ng-valid">
                                                     <button type="button" class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown" data-id="birthdaySearch">
-                                                        <span class="filter-option pull-left">Birth Day</span>&nbsp;
+                                                        <span id="birthdaySearch" class="filter-option pull-left">Birth Day</span>&nbsp;
                                                         <span class="caret"></span>
                                                     </button>
-                                                    <ul class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
+                                                    <ul id='search-birthday' class="dropdown-menu inner selectpicker scrollable-menu" role="menu">
                                                         <li rel="0" class="selected">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">Birth Day</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> Birth Day </a>
                                                         </li>
                                                         <li rel="1">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">1</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 1 </a>
                                                         </li>
                                                         <li rel="2">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">2</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 2 </a>
                                                         </li>
                                                         <li rel="3">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">3</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 3 </a>
                                                         </li>
                                                         <li rel="4">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">4</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 4 </a>
                                                         </li>
                                                         <li rel="5">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">5</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 5 </a>
                                                         </li>
                                                         <li rel="6">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">6</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 6 </a>
                                                         </li>
                                                         <li rel="7">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">7</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 7 </a>
                                                         </li>
                                                         <li rel="8">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">8</span>
-                                                                <i class="glyphicon">
-                                                                </i>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 8 </a>
                                                         </li>
                                                         <li rel="9">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">9</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> >9 </a>
                                                         </li>
                                                         <li rel="10">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">10</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 10 </a>
                                                         </li>
                                                         <li rel="11">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">11</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 11 </a>
                                                         </li>
                                                         <li rel="12">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">12</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 12 </a>
                                                         </li>
                                                         <li rel="13">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">13</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 13 </a>
                                                         </li>
                                                         <li rel="14">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">14</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 14 </a>
                                                         </li>
                                                         <li rel="15">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">15</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 15 </a>
                                                         </li>
                                                         <li rel="16">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">16</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 16 </a>
                                                         </li>
                                                         <li rel="17">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">17</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 17 </a>
                                                         </li>
                                                         <li rel="18">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">18</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 18 </a>
                                                         </li>
                                                         <li rel="19">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">19</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 19 </a>
                                                         </li>
                                                         <li rel="20">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">20</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 20 </a>
                                                         </li>
                                                         <li rel="21">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">21</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 21 </a>
                                                         </li>
                                                         <li rel="22">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">22</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 22 </a>
                                                         </li>
                                                         <li rel="23">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">23</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 23 </a>
                                                         </li>
                                                         <li rel="24">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">24</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 24 </a>
                                                         </li>
                                                         <li rel="25">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">25</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 25 </a>
                                                         </li>
                                                         <li rel="26">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">26</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 26 </a>
                                                         </li>
                                                         <li rel="27">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">27</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 27 </a>
                                                         </li>
                                                         <li rel="28">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">28</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 28 </a>
                                                         </li>
                                                         <li rel="29">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">29</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 29 </a>
                                                         </li>
                                                         <li rel="30">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">30</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 30 </a>
                                                         </li>
                                                         <li rel="31">
-                                                            <a tabindex="0" class="" style="">
-                                                                <span class="text">31</span>
-                                                            </a>
+                                                            <a tabindex="0" class="" style=""> 31 </a>
                                                         </li>
                                                     </ul>
                                                     <div id="search-button" class="btn btn-primary btn-sm child-intro-btn-sponsor col-xs-12">
