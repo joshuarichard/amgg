@@ -224,4 +224,31 @@ $(document).ready(function() {
         });
     });
 
+    /* Dropdown functionality, this while change the title of the 
+       dropdown to the option selected by the user */
+    $('#search-gender li > a').click(function(e){
+        $('#genderSearch').text(this.innerHTML);
+        console.log($('#genderSearch').text(this.innerHTML)):
+    });
+
+    $('#search-center li > a').click(function(e){
+        $('#centerSearch').text(this.innerHTML);
+        console.log($('#centerSearch').text(this.innerHTML)):
+    });
+
+    $('#search-age li > a').click(function(e){
+        $('#ageSearch').text(this.innerHTML);
+        console.log($('#ageSearch').text(this.innerHTML)):
+    });
+
+    $('#search-birthmonth li > a').click(function(e){
+        $('#birthmonthSearch').text(this.innerHTML);
+        console.log($('#birthmonthSearch').text(this.innerHTML)):
+    });
+    
+    $('#search-birthday li > a').click(function(e){
+        $('#birthdaySearch').text(this.innerHTML);
+        console.log($('#birthdaySearch').text(this.innerHTML)):
+    });
+
 });
