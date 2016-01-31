@@ -57,7 +57,11 @@ app.get('/api/v1/children/:id', function(req, res) {
 });
 
 app.get('/api/v1/findchild/:selector', function(req, res) {
-    mongo.find(JSON.parse(req.params.selector), 'children', 100, true,
+    var selector = JSON.parse(req.params.selector);
+    if (selector.hasOwnProperty('años')) {
+        selector['años'] = parseInt(selector['años']);
+    }
+    mongo.find(selector, 'children', 100, true,
         function(doc) {
             res.send(doc);
         });
