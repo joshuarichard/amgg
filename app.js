@@ -43,13 +43,6 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-app.get('/api/v1/unsponsored', function(req, res) {
-    mongo.find({'status': 'Waiting for Sponsor - No Prior Sponsor'}, 'children',
-        100, true, function(docs) {
-            res.send(docs);
-        });
-});
-
 app.get('/api/v1/children/:id', function(req, res) {
     mongo.get(req.params.id, 'children', true, function(doc) {
         res.send(doc);
