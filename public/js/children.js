@@ -5,6 +5,7 @@ $(document).ready(function() {
     // define a child pool to fill on an api call and reuse continuously
     var childPool = {};
 
+    // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
         selector['status'] = 'Waiting for Sponsor - No Prior Sponsor';
         // get all unsponsored kids and pick one to display in the
@@ -160,7 +161,14 @@ $(document).ready(function() {
         owl.data('owlCarousel').addItem(item);
     }
 
-    // insert a number of children into the carousel given a selector and number
+    /* 4 step process for adding a child
+     * 1. fill the child pool based on a selector  - fillChildPool()
+     * 2. select a child from that pool            - selectChild()
+     * 3. build the html for that child            - buildHTMLforSlide()
+     * 4. add the html to the slider               - addSlide()
+     *
+     * all of these are handled by insertChild()
+     */
     function insertChildren(selector, numOfChildren, callback) {
         fillChildPool(selector, function() {
             for (var x = 0; x < numOfChildren; x++) {
