@@ -223,7 +223,7 @@ $(document).ready(function() {
                 if(result.n + result.ok === 2) {
                     // get the _id of the donor just inserted.
                     // make use of the data var
-                    $.getJSON('/api/v1/donorid/' + JSON.stringify(data),
+                    $.getJSON('/api/v1/finddonor/' + JSON.stringify(data),
                         function(doc) {
                         // TODO: for loop should always just run once, just an
                         // easier way to get the donorId. make a check at the
@@ -255,7 +255,8 @@ $(document).ready(function() {
                                         // mongo. really need to look into http
                                         // response error codes (401, 404, etc.)
                                         success: function() {
-                                            window.location = 'contribution.html';
+                                            window.location =
+                                                            'contribution.html';
                                         }
                                     });
                                 });
