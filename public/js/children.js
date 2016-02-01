@@ -2,82 +2,97 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    /**
-     *  functions:
-     *  getUnsponsoredChildData() - get an unsponsored child based on a given
-     *                              selector
-     *  buildHTMLforSlide() - builds html for a carousel slide based on data
-     *                        received from getUnsponsoredChildData()
-     *  addSlide() - adds a slide from a slide received from buildHTMLforSlide()
-     *  insertFiveChildren() - uses the three above functions to insert 5 kids
-     *                         into the carousel
-     */
-    function getUnsponsoredChildData(selector, callback) {
+    // define a child pool to fill on an api call and reuse continuously
+    var childPool = {};
+
+    function fillChildPool(selector, callback) {
         selector['status'] = 'Waiting for Sponsor - No Prior Sponsor';
         // get all unsponsored kids and pick one to display in the
         // carousel
         $.getJSON('/api/v1/findchild/' + JSON.stringify(selector),function(res){
-            console.log(res);
             if(res.err !== undefined) {
                 // TODO: fix error on connection
-                callback('{}');
-            } else if (JSON.stringify(res) === '{}') {
-                callback('{}');
+                callback();
+            } else if (JSON.stringify(res) == '{}') {
+                /* eslint-disable */
+                alert('no hay niños que coincidan con sus criterios de búsqueda.');
+                /* eslint-enable */
+                callback();
             } else {
-                // calculate the resLength for random child bounds
-                var key, resLength = 0;
-                for(key in res) {
-                    if(res.hasOwnProperty(key)) {
-                        resLength++;
-                    }
-                }
-
-                // use the resLength to randomly pick one of the
-                // unsponsored children within the bounds
-                // TODO: this doesn't work when the response is a low number
-                // (años = 3 returns 2 children but only ever shows augustin)
-                var ran = Math.floor(Math.random() * (resLength - 1) + 1);
-
-                // now iterate over the res with an index (i) and match it
-                // to the random number.
-                var i = 0;
-                for (key in res) {
-                    // if index === random number then pick this child
-                    if (i === ran && res.hasOwnProperty(key)) {
-                        var id = key;
-                        var name = res[id].nombre;
-                        var age = res[id].años;
-                        var gender = res[id].género;
-                        var location = res[id].centro_de_ninos;
-                        // get the picture and load it in
-                        $.getJSON('/api/v1/pictures/' + id, function(res) {
-                            var data = {
-                                'id': id,
-                                'name': name,
-                                'age': age,
-                                'gender': gender,
-                                'location': location,
-                                'picture': res.data
-                            };
-                            callback(data);
-                        });
-                        break;
-                    } else {
-                        i++;
-                    }
-                }
+                childPool = res;
+                callback();
             }
         });
     }
 
-    function buildHTMLforSlide(data, callback) {
+    // select a child from the childPool variable
+    function selectChild(callback) {
+        // calculate the resLength for random child bounds
+        var key, resLength = 0;
+        for(key in childPool) {
+            if(childPool.hasOwnProperty(key)) {
+                resLength++;
+            }
+        }
+
+        // use the resLength to randomly pick one of the
+        // unsponsored children within the bounds
+        // ---------------------------------------------------------
+        // TODO: this doesn't work when the response is a low number
+        // (años = 3 returns 2 children from call but only ever shows augustin)
+        var ran = Math.floor(Math.random() * (resLength - 0 + 1) + 1);
+
+        // now iterate over the res with an index (i) and match it
+        // to the random number.
+        var i = 0;
+        for (key in childPool) {
+            // if index === random number then pick this child
+            if (i === ran && childPool.hasOwnProperty(key) &&
+                             $('#' + key).length === 0) {
+                var id = key;
+                var name = childPool[id].nombre;
+                var age = childPool[id].años;
+                var gender = childPool[id].género;
+                var location = childPool[id].centro_de_ninos;
+                // get the picture and load it in
+                $.getJSON('/api/v1/pictures/' + id, function(res) {
+                    var child = {
+                        'id': id,
+                        'name': name,
+                        'age': age,
+                        'gender': gender,
+                        'location': location,
+                        'picture': res.data
+                    };
+                    callback(child);
+                });
+                break;
+            } else {
+                i++;
+            }
+        }
+    }
+
+    /* build the html for a slide to insert into the carousel. takes one child
+     * object in the form:
+     *
+     * {
+     *    id: string,
+     *    name: string,
+     *    age: int,
+     *    gender: string,
+     *    location: string,
+     *    picture: base64 string
+     * }
+     */
+    function buildHTMLforSlide(child, callback) {
         // assign all of the data gathered from the api to variables
-        var id = data.id;
-        var name = data.name;
-        var age = data.age;
-        var gender = data.gender;
-        var location = data.location;
-        var picture = data.picture;
+        var id = child.id;
+        var name = child.name;
+        var age = child.age;
+        var gender = child.gender;
+        var location = child.location;
+        var picture = child.picture;
 
         // create the slide
         var slide = document.createElement('div');
@@ -133,22 +148,11 @@ $(document).ready(function() {
         slide.appendChild(divData);
         /* eslint-enable*/
 
-        // check to see if this is the first slide. if it isn't, then wrap
-        // it in an empty div for the carousel
-        /*
-        if (owl.data('owlCarousel').currentItem !== 0) {
-            var div = document.createElement('div');
-            div.appendChild(slide);
-            $('#slides').append(div);
-        } else {
-            // append the slide to the carousel directly if it's the first one
-            $('#slides').append(slide);
-        }
-        */
         $('#slides').append(slide);
         callback(slide);
     }
 
+    // add a slide to the carousel given slide html
     function addSlide(slide) {
         var item = document.createElement('div');
         item.className = 'item';
@@ -156,34 +160,29 @@ $(document).ready(function() {
         owl.data('owlCarousel').addItem(item);
     }
 
-    function insertFiveChildren() {
-        for (var x = 1; x <= 5; x++) {
-            // get the unsponsored child data
-            getUnsponsoredChildData({}, function(data) {
-                // build a slide from it
-                buildHTMLforSlide(data, function(slide) {
-                    // add the slide to the carousel
-                    addSlide(slide);
+    // insert a number of children into the carousel given a selector and number
+    function insertChildren(selector, numOfChildren, callback) {
+        fillChildPool(selector, function() {
+            for (var x = 0; x < numOfChildren; x++) {
+                selectChild(function(child) {
+                    buildHTMLforSlide(child, function(slide) {
+                        addSlide(slide);
+                        callback();
+                    });
                 });
-            });
-        }
-    }
-
-    //add carousel functionality
-    var owl = $('.owl-carousel');
-    function buildOwl() {
-        owl.owlCarousel({
-            navigation : false,
-            slideSpeed : 800,
-            paginationSpeed : 800,
-            autoWidth: true,
-            singleItem: true
+            }
         });
     }
 
-    // insert 5 child to start
-    buildOwl();
-    insertFiveChildren();
+    // add carousel functionality
+    var owl = $('.owl-carousel');
+    owl.owlCarousel({
+        navigation : false,
+        slideSpeed : 800,
+        paginationSpeed : 800,
+        autoWidth: true,
+        singleItem: true
+    });
 
     // custom previous and next buttons
     $('#prev-button').click(function() {
@@ -193,15 +192,15 @@ $(document).ready(function() {
         owl.trigger('owl.next');
     });
 
+    // initially load 5 children onto the page
+    insertChildren({}, 5, function() {
+        console.log('initially loaded one child.');
+    });
+
     // add a child to the slide button
     $('#add-button').click(function() {
-        // start x back where it was and incrememnt once for every added child
-        getUnsponsoredChildData({}, function(data) {
-            buildHTMLforSlide(data, function(slide) {
-                addSlide(slide);
-                owl.trigger('owl.jumpTo',
-                            owl.data('owlCarousel').owl.owlItems.length);
-            });
+        insertChildren({}, 1, function() {
+            console.log('inserted child.');
         });
     });
 
@@ -209,12 +208,12 @@ $(document).ready(function() {
      * find a child panel
      */
     $('#search-button').click(function() {
-        var selector = {'status': 'Waiting for Sponsor - No Prior Sponsor'};
+        var selector = {};
         if($('#genderSearch').text() !== 'Género') {
             selector['género'] = $('#genderSearch').text();
         }
         if($('#centerSearch').text() !== 'Centro de Niños') {
-            selector['centro_de_ninos'] = $('#centerSearch').text();
+            selector['centro_de_nino'] = $('#centerSearch').text();
         }
         if($('#ageSearch').text() !== 'Años') {
             selector['años'] = $('#ageSearch').text();
@@ -232,51 +231,20 @@ $(document).ready(function() {
         while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
             owl.data('owlCarousel').removeItem();
         }
-
         // owl doesn't delete the last slide for some reason, so do it manually
         if (owl.data('owlCarousel').owl.owlItems.length === 1) {
             owl.data('owlCarousel').removeItem();
         }
 
         // loop 5 times for 5 different kids
-        for (var c = 0; c < 10; c++) {
-            getUnsponsoredChildData(selector, function(data) {
-                // if there is a child returned by the selector
-                if (data !== '{}') {
-                    // then also check to make sure the child isn't already in
-                    if ($('.child-slide').length === 0) {
-                        // but first always insert the first once
-                        buildHTMLforSlide(data, function(slide) {
-                            addSlide(slide);
-                        });
-                    } else {
-                        // after that always do the check for duplicates
-                        var isDuplicate = false;
-                        $('.child-slide').each(function() {
-                            // if it isn't, then add the child
-                            if ($(this).attr('id') === data.id) {
-                                isDuplicate = true;
-                            }
-                        });
-                        if (isDuplicate === false) {
-                            buildHTMLforSlide(data, function(slide) {
-                                addSlide(slide);
-                            });
-                        }
-                    }
-                } else if ($('.child-slide').length === 0) {
-                    // check to see if the api returned a child matching the
-                    // selector. if it didn't, alert the user and insert five
-                    // new children
-                    if ($('.child-slide').length === 0) {
-                        /* eslint-disable */
-                        alert('no hay niños que coincidan con sus criterios de búsqueda.')
-                        /* eslint-enable */
-                        insertFiveChildren();
-                    }
-                }
-            });
-        }
+        insertChildren(selector, 5, function() {
+            if ($('.child-slide').length === 0) {
+                insertChildren({}, 5, function() {
+                    console.log('no children matched search criteria.');
+                });
+            }
+            console.log('inserted search children.');
+        });
     });
 
     /* Dropdown functionality, this while change the title of the
