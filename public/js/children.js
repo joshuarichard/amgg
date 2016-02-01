@@ -51,15 +51,15 @@ $(document).ready(function() {
                         var location = res[id].centro_de_ninos;
                         // get the picture and load it in
                         $.getJSON('/api/v1/pictures/' + id, function(res) {
-                              var data = {
-                                  'id': id,
-                                  'name': name,
-                                  'age': age,
-                                  'gender': gender,
-                                  'location': location,
-                                  'picture': res.data
-                              };
-                              callback(data);
+                            var data = {
+                                'id': id,
+                                'name': name,
+                                'age': age,
+                                'gender': gender,
+                                'location': location,
+                                'picture': res.data
+                            };
+                            callback(data);
                         });
                         break;
                     } else {
@@ -275,29 +275,29 @@ $(document).ready(function() {
                         insertFiveChildren();
                     }
                 }
-           });
+            });
         }
     });
 
     /* Dropdown functionality, this while change the title of the
        dropdown to the option selected by the user */
-    $('#search-gender li > a').click(function(e){
+    $('#search-gender li > a').click(function(){
         $('#genderSearch').text(this.innerHTML);
     });
 
-    $('#search-center li > a').click(function(e){
+    $('#search-center li > a').click(function(){
         $('#centerSearch').text(this.innerHTML);
     });
 
-    $('#search-age li > a').click(function(e){
+    $('#search-age li > a').click(function(){
         $('#ageSearch').text(this.innerHTML);
     });
 
-    $('#search-birthmonth li > a').click(function(e){
+    $('#search-birthmonth li > a').click(function(){
         $('#birthmonthSearch').text(this.innerHTML);
     });
 
-    $('#search-birthday li > a').click(function(e){
+    $('#search-birthday li > a').click(function(){
         $('#birthdaySearch').text(this.innerHTML);
     });
 

@@ -255,7 +255,8 @@ $(document).ready(function() {
                                         // mongo. really need to look into http
                                         // response error codes (401, 404, etc.)
                                         success: function() {
-                                            window.location = 'contribution.html';
+                                            window.location =
+                                                            'contribution.html';
                                         }
                                     });
                                 });
