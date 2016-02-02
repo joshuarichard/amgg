@@ -32,7 +32,7 @@ $(document).ready(function() {
 
         function data(callback) {
             // get child data using api
-            $.getJSON('/api/v1/children/' + id, function(res) {
+            $.getJSON('/api/v1/children/id/' + id, function(res) {
                 if(res.hasOwnProperty('err')) {
                     console.log(JSON.stringify(data));
                     callback(false);
