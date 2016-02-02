@@ -2,8 +2,8 @@
     "mongo": {
         "host": "73.227.187.84",
         "port": "27017",
-        "username": "admin",
-        "password": "testing",
+        "username": "x",
+        "password": "x",
         "db": "testing",
         "collection": "children"
     },
@@ -14,5 +14,8 @@
         "dbName": "testing",
         "collection": "children",
         "numOfDocs": "10"
+    },
+    "auth": {
+        "secret": "x"
     }
 }
