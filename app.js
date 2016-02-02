@@ -65,7 +65,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         });
 });
 
-// PUT /apiv/1/children/id/:id edit child document (mainly for donor use case)
+// PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
 app.put('/api/v1/children/id/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, 'children', function() {
         res.send('good');
@@ -82,7 +82,15 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
 
 /* donor api routes */
 
-// POST /api/v1/donor/auth for getting a json web token from donor credentials
+/* POST /api/v1/donor/auth for getting a json web token from donor credentials
+ * {
+ *   "email": "donor@email.com",
+ *   "password": "plaintext password"
+ * }
+ *
+ * - should the donor passwords be hashed on the client side? or is it ok
+ * because everything will be covered by SSL?
+ */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
     mongo.find(email, 'donors', 1, false, function(data) {
@@ -107,7 +115,11 @@ app.post('/api/v1/donor/auth', function(req, res) {
     });
 });
 
-// POST /api/v1/donor/id/:id for getting donor doc with json web token
+/* POST /api/v1/donor/id/:id for getting donor doc with json web token
+ * {
+ *   "token": "token_goes_here"
+ * }
+ */
 app.post('/api/v1/donor/id/:id', function(req, res) {
     var token = req.body.token;
     var id = req.params.id;
