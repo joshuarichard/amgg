@@ -17,5 +17,9 @@
     },
     "auth": {
         "secret": "x"
+    },
+    "keys": {
+        "key": "./keys/key.pem",
+        "cert": "./keys/cert.pem"
     }
 }

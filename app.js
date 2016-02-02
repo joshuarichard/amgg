@@ -213,8 +213,8 @@ app.get('/api/v1/donor/find/:selector', function(req, res) {
         });
 });
 
-https.createServer({ key: fs.readFileSync('./keys/key.pem'),
-                     cert: fs.readFileSync('./keys/cert.pem')}, app)
+https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
+                     cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });
