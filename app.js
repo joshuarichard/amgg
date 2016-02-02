@@ -121,7 +121,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                     message: 'Failed to authenticate token.'
                 });
             } else {
-                // if it is valid then perform the donor find
+                // if it is valid then perform the donor get
                 mongo.get(id, 'donors', false, function(data) {
                     res.send({
                         success: true,
@@ -145,11 +145,50 @@ app.post('/api/v1/donor/insert', function(req, res) {
     });
 });
 
-// PUT /api/v1/donor/edit to edit a donor - this needs to use JWT
-app.put('/api/v1/donor/edit', function(req, res) {
-    mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
-        res.send(result);
-    });
+/* PUT /api/v1/donor/id/:id to edit a donor - this needs to use JWT
+ * {
+ *   "token": "token_goes_here",
+ *   "changes": {
+ *        "name": "name_to_change_or_whatever",
+ *        "email": "what_to_change_the_email_to_or_whatever"
+ *   }
+ * }
+ */
+app.put('/api/v1/donor/id/:id', function(req, res) {
+    var token = req.body.token;
+    var id = req.params.id;
+
+    // confirm token sent in request is valid
+    if (token) {
+        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            if (err) {
+                res.status(401).send({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                // if it is valid then perform the donor get
+                mongo.edit(id, req.body.changes, 'donors', function(result) {
+                    if (result.result.ok === 1) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Donor edited.'
+                        });
+                    } else {
+                        res.status(500).send({
+                            success: false,
+                            message: 'DB error.'
+                        });
+                    }
+                });
+            }
+        });
+    } else {
+        res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
 });
 
 // GET /api/v1/donor/find/:selector to find a donor without an id - secure???
