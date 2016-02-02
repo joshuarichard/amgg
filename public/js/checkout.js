@@ -17,7 +17,7 @@ $(document).ready(function() {
             var picIMG = document.createElement('img');
             picIMG.className = 'child-img';
 
-            $.getJSON('/api/v1/pictures/' + id, function(res) {
+            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
                 if (res.data.hasOwnProperty('err')){
                     console.log(res.data.err);
                     callback(false);
@@ -219,11 +219,11 @@ $(document).ready(function() {
             };
 
             // insert donor, update children with sponsored flag and donor _id
-            $.post('/api/v1/donors', data, function(result) {
+            $.post('/api/v1/donor/insert', data, function(result) {
                 if(result.n + result.ok === 2) {
                     // get the _id of the donor just inserted.
                     // make use of the data var
-                    $.getJSON('/api/v1/finddonor/' + JSON.stringify(data),
+                    $.getJSON('/api/v1/donor/find/' + JSON.stringify(data),
                         function(doc) {
                         // TODO: for loop should always just run once, just an
                         // easier way to get the donorId. make a check at the
@@ -247,7 +247,7 @@ $(document).ready(function() {
                                     // ajax PUT on /api/v1/children/:id with
                                     // changes
                                     $.ajax({
-                                        url: '/api/v1/children/' + id,
+                                        url: '/api/v1/children/id/' + id,
                                         type: 'PUT',
                                         data: changes,
                                         // this success was happening even when

@@ -10,20 +10,21 @@ $(document).ready(function() {
         selector['status'] = 'Waiting for Sponsor - No Prior Sponsor';
         // get all unsponsored kids and pick one to display in the
         // carousel
-        $.getJSON('/api/v1/findchild/' + JSON.stringify(selector),function(res){
-            if(res.err !== undefined) {
-                // TODO: fix error on connection
-                callback();
-            } else if (JSON.stringify(res) == '{}') {
-                /* eslint-disable */
-                alert('no hay niños que coincidan con sus criterios de búsqueda.');
-                /* eslint-enable */
-                callback();
-            } else {
-                childPool = res;
-                callback();
-            }
-        });
+        $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
+            function(res){
+                if(res.err !== undefined) {
+                    // TODO: fix error on connection
+                    callback();
+                } else if (JSON.stringify(res) == '{}') {
+                    /* eslint-disable */
+                    alert('no hay niños que coincidan con sus criterios de búsqueda.');
+                    /* eslint-enable */
+                    callback();
+                } else {
+                    childPool = res;
+                    callback();
+                }
+            });
     }
 
     // select a child from the childPool variable
@@ -56,7 +57,7 @@ $(document).ready(function() {
                 var gender = childPool[id].género;
                 var location = childPool[id].centro_de_ninos;
                 // get the picture and load it in
-                $.getJSON('/api/v1/pictures/' + id, function(res) {
+                $.getJSON('/api/v1/pictures/id/' + id, function(res) {
                     var child = {
                         'id': id,
                         'name': name,
@@ -221,7 +222,7 @@ $(document).ready(function() {
             selector['género'] = $('#genderSearch').text();
         }
         if($('#centerSearch').text() !== 'Centro de Niños') {
-            selector['centro_de_nino'] = $('#centerSearch').text();
+            selector['centro_de_ninos'] = $('#centerSearch').text();
         }
         if($('#ageSearch').text() !== 'Años') {
             selector['años'] = $('#ageSearch').text();

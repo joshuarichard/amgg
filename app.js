@@ -44,13 +44,17 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-app.get('/api/v1/children/:id', function(req, res) {
+/* child api routes */
+
+// GET /api/v1/children/id/:id get a child with their id
+app.get('/api/v1/children/id/:id', function(req, res) {
     mongo.get(req.params.id, 'children', true, function(doc) {
         res.send(doc);
     });
 });
 
-app.get('/api/v1/findchild/:selector', function(req, res) {
+// GET /api/v1/children/find/:selector find a child's document without an id
+app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = JSON.parse(req.params.selector);
     if (selector.hasOwnProperty('años')) {
         selector['años'] = parseInt(selector['años']);
@@ -61,20 +65,24 @@ app.get('/api/v1/findchild/:selector', function(req, res) {
         });
 });
 
-app.put('/api/v1/children/:id', function(req, res) {
+// PUT /apiv/1/children/id/:id edit child document (mainly for donor use case)
+app.put('/api/v1/children/id/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, 'children', function() {
         res.send('good');
     });
 });
 
-app.get('/api/v1/pictures/:id', function(req, res) {
+// GET /api/v1/pictures/id/:id get and child's picture with the child's id
+app.get('/api/v1/pictures/id/:id', function(req, res) {
     mongo.getPic(req.params.id, 'children', function(data) {
         var dataJSON = { 'data': data };
         res.send(dataJSON);
     });
 });
 
-// donor api routes
+/* donor api routes */
+
+// POST /api/v1/donor/auth for getting a json web token from donor credentials
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
     mongo.find(email, 'donors', 1, false, function(data) {
@@ -99,6 +107,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
     });
 });
 
+// POST /api/v1/donor/id/:id for getting donor doc with json web token
 app.post('/api/v1/donor/id/:id', function(req, res) {
     var token = req.body.token;
     var id = req.params.id;
@@ -129,19 +138,22 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
-app.post('/api/v1/donors', function(req, res) {
+// POST /api/v1/donor/insert to insert donor
+app.post('/api/v1/donor/insert', function(req, res) {
     mongo.insert(req.body, 'donors', function(result) {
         res.send(result);
     });
 });
 
-app.put('/api/v1/donors', function(req, res) {
+// PUT /api/v1/donor/edit to edit a donor - this needs to use JWT
+app.put('/api/v1/donor/edit', function(req, res) {
     mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
         res.send(result);
     });
 });
 
-app.get('/api/v1/finddonor/:selector', function(req, res) {
+// GET /api/v1/donor/find/:selector to find a donor without an id - secure???
+app.get('/api/v1/donor/find/:selector', function(req, res) {
     mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
         function(doc) {
             res.send(doc);
