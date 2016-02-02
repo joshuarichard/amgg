@@ -145,12 +145,12 @@ app.post('/api/v1/donor/insert', function(req, res) {
     });
 });
 
-/* PUT /api/v1/donor/id/:id to edit a donor - this needs to use JWT
+/* PUT /api/v1/donor/id/:id to edit a donor
  * {
  *   "token": "token_goes_here",
  *   "changes": {
- *        "name": "name_to_change_or_whatever",
- *        "email": "what_to_change_the_email_to_or_whatever"
+ *        "name": "new_name",
+ *        "email": "new_email"
  *   }
  * }
  */
