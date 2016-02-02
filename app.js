@@ -218,7 +218,3 @@ https.createServer({ key: fs.readFileSync('./keys/key.pem'),
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });
-
-app.listen(port, function () {
-    log.info('express port listening at localhost:' + port);
-});
