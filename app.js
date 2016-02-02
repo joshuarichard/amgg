@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var mongo = require('./data/mongo.js');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
+var jwt = require('jsonwebtoken');
 
 var app = express();
 
@@ -71,6 +72,61 @@ app.get('/api/v1/pictures/:id', function(req, res) {
         var dataJSON = { 'data': data };
         res.send(dataJSON);
     });
+});
+
+// donor api routes
+app.post('/api/v1/donor/auth', function(req, res) {
+    var email = {'correo_electrónico': req.body.email};
+    mongo.find(email, 'donors', 1, false, function(data) {
+        for (var key in data) {
+            if(data[key].password !== req.body.password) {
+                res.status(401).send({
+                    success: false,
+                    message: 'Incorrect password.'
+                });
+            } else {
+                jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'},
+                    function(token) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Authenticated.',
+                            'id': key,
+                            'token': token
+                        });
+                    });
+            }
+        }
+    });
+});
+
+app.post('/api/v1/donor/id/:id', function(req, res) {
+    var token = req.body.token;
+    var id = req.params.id;
+
+    // confirm token sent in request is valid
+    if (token) {
+        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            if (err) {
+                res.status(401).send({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                // if it is valid then perform the donor find
+                mongo.get(id, 'donors', false, function(data) {
+                    res.send({
+                        success: true,
+                        'data': data
+                    });
+                });
+            }
+        });
+    } else {
+        res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
 });
 
 app.post('/api/v1/donors', function(req, res) {
