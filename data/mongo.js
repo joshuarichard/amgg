@@ -51,13 +51,11 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
+// mongodb://host:port/databasename
 var host = nconf.get('MONGO_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
-var url = 'mongodb://' +
-          host +
-          ':' +
-          nconf.get('mongo:port') +
-          '/' +
-          nconf.get('mongo:db');
+var port = nconf.get('mongo:port');
+var dbName = nconf.get('mongo:db');
+var url = 'mongodb://' + host + ':' + port + '/' + dbName;
 
 var exports = module.exports = {};
 
@@ -71,7 +69,7 @@ MongoClient.connect(url, function(err, db) {
     }
 });
 
-/** find(selector, collection, limit, callback)
+/** find(selector, collection, limit, isTrim, callback)
  *
  * find a specified number of documents that match a certain selector.
  * returns a document composed of all documents that mongo returns.
@@ -79,7 +77,7 @@ MongoClient.connect(url, function(err, db) {
  * selector    (JSON)  - document selector
  * collection (string) - the collection to search for documents
  * limit         (int) - number of documents to limit the search results to
- * trim      (boolean) - true if trim is request, false if not
+ * isTrim    (boolean) - true if trim is requested, false if not
  * callback     (func) - callback function to execute after completion
  */
 exports.find = function(selector, collection, limit, isTrim, callback) {
@@ -183,7 +181,7 @@ exports.insert = function(docs, collection, callback) {
     });
 };
 
-/** edit(docs, collection, callback)
+/** edit(id, changes, collection, callback)
  *
  * edit a document with a specific _id. returns the result as a JSON object.
  *
@@ -290,7 +288,7 @@ exports.delete = function(selector, collection, callback) {
     });
 };
 
-/** get(id, collection, callback)
+/** get(id, collection, isTrim, callback)
  *
  * fetches a document with a certain _id. returns the document as a JSON object.
  *
@@ -299,7 +297,7 @@ exports.delete = function(selector, collection, callback) {
  *
  * id         (string) - document _id
  * collection (string) - the collection to search for documents
- * trim      (boolean) - true if trim is request, false if not
+ * isTrim    (boolean) - true if trim is requested, false if not
  * callback     (func) - callback function to execute after completion
  */
 exports.get = function(id, collection, isTrim, callback) {
