@@ -65,7 +65,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         });
 });
 
-// PUT /apiv/1/children/id/:id edit child document (mainly for donor use case)
+// PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
 app.put('/api/v1/children/id/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, 'children', function() {
         res.send('good');
@@ -82,7 +82,15 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
 
 /* donor api routes */
 
-// POST /api/v1/donor/auth for getting a json web token from donor credentials
+/* POST /api/v1/donor/auth for getting a json web token from donor credentials
+ * {
+ *   "email": "donor@email.com",
+ *   "password": "plaintext password"
+ * }
+ *
+ * - should the donor passwords be hashed on the client side? or is it ok
+ * because everything will be covered by SSL?
+ */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
     mongo.find(email, 'donors', 1, false, function(data) {
@@ -107,7 +115,11 @@ app.post('/api/v1/donor/auth', function(req, res) {
     });
 });
 
-// POST /api/v1/donor/id/:id for getting donor doc with json web token
+/* POST /api/v1/donor/id/:id for getting donor doc with json web token
+ * {
+ *   "token": "token_goes_here"
+ * }
+ */
 app.post('/api/v1/donor/id/:id', function(req, res) {
     var token = req.body.token;
     var id = req.params.id;
@@ -121,7 +133,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                     message: 'Failed to authenticate token.'
                 });
             } else {
-                // if it is valid then perform the donor find
+                // if it is valid then perform the donor get
                 mongo.get(id, 'donors', false, function(data) {
                     res.send({
                         success: true,
@@ -145,11 +157,50 @@ app.post('/api/v1/donor/insert', function(req, res) {
     });
 });
 
-// PUT /api/v1/donor/edit to edit a donor - this needs to use JWT
-app.put('/api/v1/donor/edit', function(req, res) {
-    mongo.edit(req.body._id, req.body.changes, 'donors', function(result) {
-        res.send(result);
-    });
+/* PUT /api/v1/donor/id/:id to edit a donor
+ * {
+ *   "token": "token_goes_here",
+ *   "changes": {
+ *        "name": "new_name",
+ *        "email": "new_email"
+ *   }
+ * }
+ */
+app.put('/api/v1/donor/id/:id', function(req, res) {
+    var token = req.body.token;
+    var id = req.params.id;
+
+    // confirm token sent in request is valid
+    if (token) {
+        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            if (err) {
+                res.status(401).send({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                // if it is valid then perform the donor get
+                mongo.edit(id, req.body.changes, 'donors', function(result) {
+                    if (result.result.ok === 1) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Donor edited.'
+                        });
+                    } else {
+                        res.status(500).send({
+                            success: false,
+                            message: 'DB error.'
+                        });
+                    }
+                });
+            }
+        });
+    } else {
+        res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
 });
 
 // GET /api/v1/donor/find/:selector to find a donor without an id - secure???
