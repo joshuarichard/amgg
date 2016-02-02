@@ -1,14 +1,12 @@
 var express = require('express');
+var fs = require('fs');
+var https = require('https');
 var path = require('path');
 var bodyParser = require('body-parser');
 var mongo = require('./data/mongo.js');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
-
-var app = express();
-
-var port = nconf.get('app:port');
 
 var log = bunyan.createLogger({
     name: 'app',
@@ -34,6 +32,10 @@ var log = bunyan.createLogger({
         }
     ]
 });
+
+var app = express();
+
+var port = nconf.get('app:port');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -210,6 +212,12 @@ app.get('/api/v1/donor/find/:selector', function(req, res) {
             res.send(doc);
         });
 });
+
+https.createServer({ key: fs.readFileSync('./keys/key.pem'),
+                     cert: fs.readFileSync('./keys/cert.pem')}, app)
+      .listen(port, function () {
+          log.info('express port listening at localhost:' + port);
+      });
 
 app.listen(port, function () {
     log.info('express port listening at localhost:' + port);
