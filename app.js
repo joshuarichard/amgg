@@ -3,10 +3,20 @@ var fs = require('fs');
 var https = require('https');
 var path = require('path');
 var bodyParser = require('body-parser');
-var mongo = require('./data/mongo.js');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
+
+var mongo = require('./data/mongo.js');
+var password = require('./data/password.js');
+
+var app = express();
+
+nconf.file({
+    file: './config.json'
+});
+
+var port = nconf.get('app:port');
 
 var log = bunyan.createLogger({
     name: 'app',
@@ -32,10 +42,6 @@ var log = bunyan.createLogger({
         }
     ]
 });
-
-var app = express();
-
-var port = nconf.get('app:port');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -95,24 +101,33 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
  */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
+
+    // find the donor's email
     mongo.find(email, 'donors', 1, false, function(data) {
         for (var key in data) {
-            if(data[key].password !== req.body.password) {
-                res.status(401).send({
-                    success: false,
-                    message: 'Incorrect password.'
-                });
-            } else {
-                jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'},
-                    function(token) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Authenticated.',
-                            'id': key,
-                            'token': token
+            var saltDB = data[key].salt;
+            var passwordDB = data[key].password;
+
+            // encrypt the password with the salt have stored
+            password.encryptWithSalt(req.body.password, saltDB,
+                function(passwordGiven) {
+                    if(passwordGiven !== passwordDB) {
+                        res.status(401).send({
+                            success: false,
+                            message: 'Incorrect password.'
                         });
-                    });
-            }
+                    } else {
+                        jwt.sign(data, nconf.get('auth:secret'),
+                                 {expiresIn: '1h'}, function(token) {
+                                     res.status(200).send({
+                                         success: true,
+                                         message: 'Authenticated.',
+                                         'id': key,
+                                         'token': token
+                                     });
+                                 });
+                    }
+                });
         }
     });
 });
