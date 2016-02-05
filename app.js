@@ -67,6 +67,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     if (selector.hasOwnProperty('años')) {
         selector['años'] = parseInt(selector['años']);
     }
+    // TODO: birth month and birth day selector swizzling
     mongo.find(selector, 'children', 100, true,
         function(doc) {
             res.send(doc);
@@ -74,6 +75,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
 });
 
 // PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
+// TODO: only client
 app.put('/api/v1/children/id/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, 'children', function() {
         res.send('good');
@@ -95,9 +97,6 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
  *   "email": "donor@email.com",
  *   "password": "plaintext password"
  * }
- *
- * - should the donor passwords be hashed on the client side? or is it ok
- * because everything will be covered by SSL?
  */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
@@ -168,6 +167,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 });
 
 // POST /api/v1/donor/insert to insert donor
+// TODO: only client
 app.post('/api/v1/donor/insert', function(req, res) {
     mongo.insert(req.body, 'donors', function(result) {
         res.send(result);
@@ -220,7 +220,8 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
-// GET /api/v1/donor/find/:selector to find a donor without an id - secure???
+// GET /api/v1/donor/find/:selector to find a donor without an id
+// TODO: only client
 app.get('/api/v1/donor/find/:selector', function(req, res) {
     mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
         function(doc) {
