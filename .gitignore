@@ -1,4 +1,3 @@
 node_modules
 var/log/
-key.pem
-cert.pem
+keys
