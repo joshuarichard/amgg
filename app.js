@@ -8,7 +8,7 @@ var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 
 var mongo = require('./data/mongo.js');
-var password = require('./data/password.js')
+var password = require('./data/password.js');
 
 var app = express();
 
@@ -105,29 +105,33 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
  */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
+
+    // find the donor's email
     mongo.find(email, 'donors', 1, false, function(data) {
         for (var key in data) {
             var saltDB = data[key].salt;
             var passwordDB = data[key].password;
+
+            // encrypt the password with the salt have stored
             password.encryptWithSalt(req.body.password, saltDB,
-                function(passwordEntered, salt) {
-                    if(passwordDB !== passwordEntered) {
+                function(passwordGiven) {
+                    if(passwordGiven !== passwordDB) {
                         res.status(401).send({
                             success: false,
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'},
-                            function(token) {
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Authenticated.',
-                                    'id': key,
-                                    'token': token
-                                });
-                            });
+                        jwt.sign(data, nconf.get('auth:secret'),
+                                 {expiresIn: '1h'}, function(token) {
+                                     res.status(200).send({
+                                         success: true,
+                                         message: 'Authenticated.',
+                                         'id': key,
+                                         'token': token
+                                     });
+                                 });
                     }
-            });
+                });
         }
     });
 });

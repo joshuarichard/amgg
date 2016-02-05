@@ -14,5 +14,5 @@ exports.encryptWithSalt = function(plaintext, salt, callback) {
     var hash = crypto.createHmac('sha256', salt)
                      .update(plaintext)
                      .digest('hex').toString('base64');
-    callback(hash, salt);
+    callback(hash);
 };
