@@ -10,7 +10,10 @@ Node and npm are required to build this system.
 
 ```shell
 $ sudo apt-get install nodejs
+$ brew install nodejs
 ```
+
+or just go here and run an installer: https://nodejs.org/en/download/
 
 ### Building
 Run `npm install` to install all dependencies.
