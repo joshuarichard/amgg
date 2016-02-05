@@ -43,10 +43,6 @@ var log = bunyan.createLogger({
     ]
 });
 
-var app = express();
-
-var port = nconf.get('app:port');
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
