@@ -7,8 +7,8 @@ var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 
-var password = require('./data/password.js')
 var mongo = require('./data/mongo.js');
+var password = require('./data/password.js')
 
 var app = express();
 
