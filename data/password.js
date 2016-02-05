@@ -1,3 +1,5 @@
+/* eslint-env node */
+
 var crypto = require('crypto');
 
 var exports = module.exports = {};
