@@ -3,6 +3,8 @@
 
 Jake Buettner, Joshua Richard, and Dane Vanden Berg
 
+ Preliminary system documentation for this project can be found in `planning/`
+
 ### Dependencies
 Node and npm are required to build this system.
 
