@@ -2,7 +2,7 @@
 
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-var password = require('../data/password.js')
+var password = require('../data/password.js');
 
 var nconf = require('nconf');
 nconf.env()
