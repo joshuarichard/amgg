@@ -52,11 +52,14 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
+var childCollection = nconf.get('mongo:childCollection');
+var donorCollection = nconf.get('mongo:donorCollection');
+
 /* child api routes */
 
 // GET /api/v1/children/id/:id get a child with their id
 app.get('/api/v1/children/id/:id', function(req, res) {
-    mongo.get(req.params.id, 'children', true, function(doc) {
+    mongo.get(req.params.id, childCollection, true, function(doc) {
         res.send(doc);
     });
 });
@@ -68,7 +71,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         selector['años'] = parseInt(selector['años']);
     }
     // TODO: birth month and birth day selector swizzling
-    mongo.find(selector, 'children', 100, true,
+    mongo.find(selector, childCollection, 100, true,
         function(doc) {
             res.send(doc);
         });
@@ -77,14 +80,14 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
 // PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
 // TODO: only client
 app.put('/api/v1/children/id/:id', function(req, res) {
-    mongo.edit(req.params.id, req.body.changes, 'children', function() {
+    mongo.edit(req.params.id, req.body.changes, childCollection, function() {
         res.send('good');
     });
 });
 
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, 'children', function(data) {
+    mongo.getPic(req.params.id, childCollection, function(data) {
         var dataJSON = { 'data': data };
         res.send(dataJSON);
     });
@@ -102,7 +105,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
 
     // find the donor's email
-    mongo.find(email, 'donors', 1, false, function(data) {
+    mongo.find(email, donorCollection, 1, false, function(data) {
         for (var key in data) {
             var saltDB = data[key].salt;
             var passwordDB = data[key].password;
@@ -150,7 +153,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.get(id, 'donors', false, function(data) {
+                mongo.get(id, donorCollection, false, function(data) {
                     res.send({
                         success: true,
                         'data': data
@@ -169,7 +172,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 // POST /api/v1/donor/insert to insert donor
 // TODO: only client
 app.post('/api/v1/donor/insert', function(req, res) {
-    mongo.insert(req.body, 'donors', function(result) {
+    mongo.insert(req.body, donorCollection, function(result) {
         res.send(result);
     });
 });
@@ -197,7 +200,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.edit(id, req.body.changes, 'donors', function(result) {
+                mongo.edit(id, req.body.changes, donorCollection, function(result) {
                     if (result.result.ok === 1) {
                         res.status(200).send({
                             success: true,
@@ -223,7 +226,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
 // GET /api/v1/donor/find/:selector to find a donor without an id
 // TODO: only client
 app.get('/api/v1/donor/find/:selector', function(req, res) {
-    mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
+    mongo.find(JSON.parse(req.params.selector), donorCollection, 1, false,
         function(doc) {
             res.send(doc);
         });
