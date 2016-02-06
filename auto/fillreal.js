@@ -26,7 +26,7 @@ var centro_de_ninos = [
 var status = [
     'New Child - In Process', 'Sponsored',
     'Waiting for Sponsor - No Prior Sponsor',
-    'Waiting for Sponsor - Discontinued', 'Additional Sponsor Needed',
+    'Waiting for Sponsor - Discontinued', 'Additional Sponsor Needed'
 ];
 
 var nombre = [
@@ -143,7 +143,7 @@ function generateDocument(callback) {
             'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
             'provincia': provincia[Math.floor(Math.random() *
                                    provincia.length)],
-            'código_postal': Math.floor((Math.random() * (99999) + 1)),
+            'código_postal': Math.floor((Math.random() * (99999) + 1))
         };
         callback(doc);
     });

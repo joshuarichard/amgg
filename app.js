@@ -200,19 +200,20 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.edit(id, req.body.changes, donorCollection, function(result) {
-                    if (result.result.ok === 1) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Donor edited.'
-                        });
-                    } else {
-                        res.status(500).send({
-                            success: false,
-                            message: 'DB error.'
-                        });
-                    }
-                });
+                mongo.edit(id, req.body.changes, donorCollection,
+                    function(result) {
+                        if (result.result.ok === 1) {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Donor edited.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
+                            });
+                        }
+                    });
             }
         });
     } else {
