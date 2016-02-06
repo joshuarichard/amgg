@@ -5,14 +5,15 @@
         "username": "x",
         "password": "x",
         "db": "testing",
-        "collection": "children"
+        "childCollection": "childrenreal",
+        "donorCollection": "donors"
     },
     "app": {
         "port": 3000
     },
     "autofill": {
         "dbName": "testing",
-        "collection": "children",
+        "collection": "childrenreal",
         "numOfDocs": "10"
     },
     "auth": {
