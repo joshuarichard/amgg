@@ -1,12 +1,20 @@
 var express = require('express');
+var fs = require('fs');
+var https = require('https');
 var path = require('path');
 var bodyParser = require('body-parser');
-var mongo = require('./data/mongo.js');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 
+var mongo = require('./data/mongo.js');
+var password = require('./data/password.js');
+
 var app = express();
+
+nconf.file({
+    file: './config.json'
+});
 
 var port = nconf.get('app:port');
 
@@ -44,11 +52,14 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
+var childCollection = nconf.get('mongo:childCollection');
+var donorCollection = nconf.get('mongo:donorCollection');
+
 /* child api routes */
 
 // GET /api/v1/children/id/:id get a child with their id
 app.get('/api/v1/children/id/:id', function(req, res) {
-    mongo.get(req.params.id, 'children', true, function(doc) {
+    mongo.get(req.params.id, childCollection, true, function(doc) {
         res.send(doc);
     });
 });
@@ -59,22 +70,24 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     if (selector.hasOwnProperty('años')) {
         selector['años'] = parseInt(selector['años']);
     }
-    mongo.find(selector, 'children', 100, true,
+    // TODO: birth month and birth day selector swizzling
+    mongo.find(selector, childCollection, 100, true,
         function(doc) {
             res.send(doc);
         });
 });
 
 // PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
+// TODO: only client
 app.put('/api/v1/children/id/:id', function(req, res) {
-    mongo.edit(req.params.id, req.body.changes, 'children', function() {
+    mongo.edit(req.params.id, req.body.changes, childCollection, function() {
         res.send('good');
     });
 });
 
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, 'children', function(data) {
+    mongo.getPic(req.params.id, childCollection, function(data) {
         var dataJSON = { 'data': data };
         res.send(dataJSON);
     });
@@ -87,30 +100,36 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
  *   "email": "donor@email.com",
  *   "password": "plaintext password"
  * }
- *
- * - should the donor passwords be hashed on the client side? or is it ok
- * because everything will be covered by SSL?
  */
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body.email};
-    mongo.find(email, 'donors', 1, false, function(data) {
+
+    // find the donor's email
+    mongo.find(email, donorCollection, 1, false, function(data) {
         for (var key in data) {
-            if(data[key].password !== req.body.password) {
-                res.status(401).send({
-                    success: false,
-                    message: 'Incorrect password.'
-                });
-            } else {
-                jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'},
-                    function(token) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Authenticated.',
-                            'id': key,
-                            'token': token
+            var saltDB = data[key].salt;
+            var passwordDB = data[key].password;
+
+            // encrypt the password with the salt have stored
+            password.encryptWithSalt(req.body.password, saltDB,
+                function(passwordGiven) {
+                    if(passwordGiven !== passwordDB) {
+                        res.status(401).send({
+                            success: false,
+                            message: 'Incorrect password.'
                         });
-                    });
-            }
+                    } else {
+                        jwt.sign(data, nconf.get('auth:secret'),
+                                 {expiresIn: '1h'}, function(token) {
+                                     res.status(200).send({
+                                         success: true,
+                                         message: 'Authenticated.',
+                                         'id': key,
+                                         'token': token
+                                     });
+                                 });
+                    }
+                });
         }
     });
 });
@@ -134,7 +153,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.get(id, 'donors', false, function(data) {
+                mongo.get(id, donorCollection, false, function(data) {
                     res.send({
                         success: true,
                         'data': data
@@ -151,8 +170,9 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 });
 
 // POST /api/v1/donor/insert to insert donor
+// TODO: only client
 app.post('/api/v1/donor/insert', function(req, res) {
-    mongo.insert(req.body, 'donors', function(result) {
+    mongo.insert(req.body, donorCollection, function(result) {
         res.send(result);
     });
 });
@@ -180,19 +200,20 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.edit(id, req.body.changes, 'donors', function(result) {
-                    if (result.result.ok === 1) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Donor edited.'
-                        });
-                    } else {
-                        res.status(500).send({
-                            success: false,
-                            message: 'DB error.'
-                        });
-                    }
-                });
+                mongo.edit(id, req.body.changes, donorCollection,
+                    function(result) {
+                        if (result.result.ok === 1) {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Donor edited.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
+                            });
+                        }
+                    });
             }
         });
     } else {
@@ -203,14 +224,17 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
-// GET /api/v1/donor/find/:selector to find a donor without an id - secure???
+// GET /api/v1/donor/find/:selector to find a donor without an id
+// TODO: only client
 app.get('/api/v1/donor/find/:selector', function(req, res) {
-    mongo.find(JSON.parse(req.params.selector), 'donors', 1, false,
+    mongo.find(JSON.parse(req.params.selector), donorCollection, 1, false,
         function(doc) {
             res.send(doc);
         });
 });
 
-app.listen(port, function () {
-    log.info('express port listening at localhost:' + port);
-});
+https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
+                     cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
+      .listen(port, function () {
+          log.info('express port listening at localhost:' + port);
+      });

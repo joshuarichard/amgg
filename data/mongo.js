@@ -8,6 +8,7 @@ var bunyan = require('bunyan');
 // TODO: need to take care of making this more robust. don't log.trace(success)
 // when there's failure. know this is happening for edit() with undefined ID
 // need to assert on mongo res's. need to know structure of the res's.
+// need to figure out how to format errors to then send to app.js for 401's
 
 var log = bunyan.createLogger({
     name: 'mongo',
@@ -29,13 +30,14 @@ var log = bunyan.createLogger({
             level: 'error',
             path: './var/log/mongo_error.log',
             period: '1d',   // daily rotation
-            count: 10
+            count: 3
         }
     ]
 });
 
-nconf.env()
-     .file({ file: 'config.json' });
+nconf.file({
+    file: 'config.json'
+});
 
 // mongodb://username:password@host:port/databasename
 /*
@@ -51,15 +53,17 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
-// mongodb://host:port/databasename
+// MONGO_PORT_27017_TCP_ADDR is the linked container's IP address (for deploy)
 var host = nconf.get('MONGO_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
 var port = nconf.get('mongo:port');
 var dbName = nconf.get('mongo:db');
+
+// mongodb://host:port/databasename
 var url = 'mongodb://' + host + ':' + port + '/' + dbName;
 
-var exports = module.exports = {};
-
-// this assertion doesnt work and the error never gets thrown. look into this
+// TODO: this test works if connected or unconnected to the internet, but if the
+// IP is wrong, it will take a million years to timeout. look into a MongoClient
+// connect() timeout option to shorten the timeout if possible
 MongoClient.connect(url, function(err, db) {
     if (err) {
         log.error('test connection to Mongo unsuccessful.');
@@ -68,6 +72,8 @@ MongoClient.connect(url, function(err, db) {
         db.close();
     }
 });
+
+var exports = module.exports = {};
 
 /** find(selector, collection, limit, isTrim, callback)
  *
@@ -90,6 +96,7 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
         cursor.each(function(err, doc) {
             if (err) {
                 log.error('error in find().findDocs(). message: ' + err);
+                // TODO: callback with error in JSON
             }
             if (doc != null) {
                 documents[doc._id] = doc;
@@ -103,7 +110,7 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
     MongoClient.connect(url, function(err, db) {
         if (err) {
             log.error('Mongo connection error in find() ' + err);
-            callback({'err': 'cannot establish a connection'});
+            callback({'err': 'cannot establish a connection'}); // good start
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
@@ -136,6 +143,7 @@ exports.insert = function(docs, collection, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
                 log.error('error in insert().insertDoc() message: ' + err);
+                // TODO: callback with error in JSON
             }
             callback(result);
         });
@@ -150,6 +158,7 @@ exports.insert = function(docs, collection, callback) {
         bulk.execute(function(err, result) {
             if (err) {
                 log.error('error in insert().bulkInsert() message: ' + err);
+                // TODO: callback with error in JSON
             }
             callback(result);
         });
@@ -158,7 +167,7 @@ exports.insert = function(docs, collection, callback) {
     MongoClient.connect(url, function(err, db) {
         if (err) {
             log.error('Mongo connection error in insert() ' + err);
-            callback({'err': 'cannot establish a connection'});
+            callback({'err': 'cannot establish a connection'}); // good start
         } else {
             if(docs instanceof Array) {
                 bulkInsert(db, collection, docs, function(result) {
@@ -204,6 +213,7 @@ exports.edit = function(id, changes, collection, callback) {
         function(err, res) {
             if (err) {
                 log.error('error in edit().editDoc(). message: ' + err);
+                // TODO: callback with error in JSON
             }
             callback(res);
         });
@@ -243,6 +253,7 @@ exports.delete = function(selector, collection, callback) {
         db.collection(collection).deleteOne(selector, function(err, res) {
             if (err) {
                 log.error('error in deleteDoc(). message: ' + err);
+                // TODO: callback with error in JSON
             }
             callback(res);
         });
@@ -257,6 +268,7 @@ exports.delete = function(selector, collection, callback) {
         bulk.execute(function(err, res) {
             if (err) {
                 log.error('error in bulkDelete(). message: ' + err);
+                // TODO: callback with error in JSON
             }
             callback(res);
         });
@@ -312,16 +324,17 @@ exports.get = function(id, collection, isTrim, callback) {
         cursor.each(function(err, doc) {
             if (err) {
                 log.error('error in getDoc(). message: ' + err);
+                // TODO: callback with error in JSON
             }
             if (doc != null) {
                 foundOne = true;
                 callback(doc);
             }
             // cursor.each() is always going to hit a null value so keep track
-            // of whether or not we've found one. console out on lookup failure
+            // of whether or not we've found one. callback error on lookup fail
             if (!foundOne){
                 log.error('document not found with id: \'' + id + '\'');
-                callback({'err' : 'not found'});
+                callback({'err': 'not found'});
             }
         });
     };
@@ -329,7 +342,7 @@ exports.get = function(id, collection, isTrim, callback) {
     MongoClient.connect(url, function(err, db) {
         if (err) {
             log.error('Mongo connection error in get() ' + err);
-            callback({'err': 'cannot establish a connection.'});
+            callback({'err': 'cannot establish a connection.'}); // good start
         } else {
             getDoc(db, id, collection, function(doc) {
                 db.close();
@@ -393,7 +406,7 @@ exports.getPic = function(id, collection, callback) {
  * doc  (JSON) - document to be trimmed
  */
 function trim(doc) {
-    var trimmedDoc = {}, i = 0;
+    var trimmedDoc = {};
 
     for (var miniDoc in doc) {
         // if this is multiple documents
@@ -416,7 +429,6 @@ function trim(doc) {
             };
             break;
         }
-        i++;
     }
     return(trimmedDoc);
 }

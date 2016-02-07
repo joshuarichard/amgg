@@ -33,8 +33,8 @@ function insertPic(fileName, filePath, metaData, callback) {
 }
 
 exports.insert = function(fileName, metaData, callback) {
-    var filePath = './auto/pics/flowers/flower_' +
-                   Math.floor(Math.random() * (22 - 1) + 1) + '.jpeg';
+    var filePath = './auto/pics/birds/bird_' +
+                   Math.floor(Math.random() * (30 - 1) + 1) + '.jpg';
 
     insertPic(fileName, filePath, metaData, function(fileId) {
         callback(fileId);
