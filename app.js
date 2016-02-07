@@ -228,15 +228,6 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
-// GET /api/v1/donor/find/:selector to find a donor without an id
-// TODO: only client
-app.get('/api/v1/donor/find/:selector', function(req, res) {
-    mongo.find(JSON.parse(req.params.selector), donorCollection, 1, false,
-        function(doc) {
-            res.send(doc);
-        });
-});
-
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
                      cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
       .listen(port, function () {
