@@ -271,14 +271,6 @@ $(document).ready(function() {
                                 });
                             }
                         });
-                        $.getJSON('/api/v1/donor/find/' + JSON.stringify(data),
-                            function(doc) {
-                            // TODO: for loop should always just run once, just
-                            // an easier way to get the donorId. make a check at
-                            // the end that this only ran once, and log out to
-                            // admin that a duplicate was inserted.
-
-                            });
                     } else {
                         console.log('Something bad happened on donor insert.');
                     }
