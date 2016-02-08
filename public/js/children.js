@@ -7,7 +7,9 @@ $(document).ready(function() {
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
-        selector['status'] = 'Waiting for Sponsor - No Prior Sponsor';
+        selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                           {'status': 'Waiting for Sponsor - Discontinued'},
+                           {'status': 'Additional Sponsor Needed'}];
         // get all unsponsored kids and pick one to display in the
         // carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
