@@ -223,8 +223,8 @@ $(document).ready(function() {
         if($('#genderSearch').text() !== 'Género') {
             selector['género'] = $('#genderSearch').text();
         }
-        if($('#centerSearch').text() !== 'Centro de Niños') {
-            selector['centro_de_ninos'] = $('#centerSearch').text();
+        if($('#locationSearch').text() !== 'Provincia') {
+            selector['provincia'] = $('#locationSearch').text();
         }
         if($('#ageSearch').text() !== 'Años') {
             selector['años'] = $('#ageSearch').text();
@@ -265,7 +265,7 @@ $(document).ready(function() {
     });
 
     $('#search-center li > a').click(function(){
-        $('#centerSearch').text(this.innerHTML);
+        $('#locationSearch').text(this.innerHTML);
     });
 
     $('#search-age li > a').click(function(){
