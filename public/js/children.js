@@ -299,25 +299,28 @@ $(document).ready(function() {
 
     function Login () {
         // e.preventDefault();
+        var email = $('.donor-email').val();
+        var password = $('.donor-password').val();
         $.ajax({
             url: '/api/v1/donor/auth',
             type: 'POST',
-            data: '{"correo_electrónico": $(".donor-email").val(), "password": $(".donor-password").val()}',
+            data: {
+                'email': email,
+                'password': password
+            },
             success: function(res) {
                 //save login token to session storage
                 sessionStorage.setItem('token', res.token);
-                console.log(res);
-                console.log("yay server stuff");
             }
         })
         .done(function() {
-          alert( "success" );
+            alert( "success" );
         })
         .fail(function() {
             alert( "error" );
         })
         .always(function() {
-          alert( "complete" );
+            alert( "complete" );
         });
     };
 
