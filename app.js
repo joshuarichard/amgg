@@ -104,6 +104,7 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body['correo_electrónico']};
     // find the donor's email
+    // if email === null, send res no email
     mongo.find(email, donorCollection, 1, false, function(data) {
         for (var key in data) {
             var saltDB = data[key].salt;
