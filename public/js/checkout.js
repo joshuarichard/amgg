@@ -302,4 +302,15 @@ $(document).ready(function() {
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
+
+    /* Toggle the login box when login link is clicked */
+    function toggleLogin () {
+        if ($('.login').css('display') == 'none') {
+            $('.login').show();
+        }
+        else {
+            $('.login').hide();
+        }
+    };
+    $('#toggle-login').click(toggleLogin);
 });

@@ -1,3 +1,85 @@
+/* Begin Login overlay */
+body {
+    z-index: 10;
+}
+
+.login{
+	position: fixed;
+	display: none;
+	width:400px;
+	margin-left: 68%;
+	margin-right: 0.5em;
+	margin-top: 0;
+	padding-top: 0.55em;
+	margin-top:8px;
+	margin-bottom:2%;
+  z-index: 11; /* 1px higher than the overlay layer */
+}
+
+.login-triangle {
+  width: 0;
+  margin-right: 0.75em;
+  margin-left: auto;
+  border: 12px solid transparent;
+  border-bottom-color: #28d;
+}
+
+.login h1{
+  background:#3399cc;
+  padding:10px 0;
+  font-size:140%;
+  font-weight:300;
+  text-align:center;
+  color:#fff;
+  margin: 0;
+}
+
+form{
+  background:#f0f0f0;
+  padding: 6% 4%;
+}
+
+input[type="email"],input[type="password"] {
+  width:92%;
+  background:#fff;
+  margin-left: 1em;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:95%;
+  color:#555;
+}
+
+.login-submit {
+  width:100%;
+  background:#3399cc;
+  border:0;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:100%;
+  color:#fff;
+  cursor:pointer;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+.login-submit a {
+  color: #FFFFFF;
+}
+
+.login-submit a:hover {
+  background:#2288bb;
+}
+/* End Login overlay */
+
+#child-img {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
 .owl-carousel{
 	display: inline-block;
     width: 100%;
@@ -6,9 +88,6 @@
 
 .owl-item {
 	width: 75%;
-}
-
-.owl-wrapper-outer {
 	margin-left: 5em;
 }
 
@@ -26,16 +105,6 @@
     margin-right: 0;
 }
 
-.nav-buttons {
-  width: 50%;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 5em;
-  text-align: center;
-}
-
 .btn-group {
 	margin-top: .15em;
 	margin-bottom: .15em;
@@ -51,9 +120,18 @@
     overflow-x: hidden;
 }
 
+#sponsor-button {
+	margin-bottom: 0.5em;
+}
+
 .form-group {
 	margin-left: 1em;
 	margin-right: 1em;
+}
+
+footer {
+	margin-top: 10%;
+	display: block;
 }
 
 .child-picture {
@@ -68,14 +146,7 @@
 	margin-bottom: 2.5em;
 }
 
-#search-button {
-	margin-top: 1em;
-	margin-bottom: 0.15em;
-	margin-right: 0;
-	margin-left: 80%;
-}
-
-footer {
-	margin-top: 10%;
-	display: block;
+.nav-buttons {
+  width: 50%;
+  margin: 0 auto;
 }
