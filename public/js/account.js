@@ -2,13 +2,33 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    // get the element to put the table and create the table
-    var container = document.getElementById('children-to-sponsor');
+    /* get the element to put the tabs in */
+    var container = document.getElementsByClassName('tab-content');
+
+    /* create the tabs */
+    var tabA = document.createElement('div');
+    tabA.id = 'sectionA';
+    tabA.className = 'tab-pane fade in active';
+    var tabB = document.createElement('div');
+    tabB.id = 'sectionB';
+    tabB.className = 'tab-pane fade in';
+    var tabC = document.createElement('div');
+    tabC.id = 'sectionC';
+    tabC.className = 'tab-pane fade in';
+
+    /* create the content for tabA */
+    //create the heading for tabA
+    var tabAHeader = document.createElement('span');
+    tabAHeader.className = 'header';
+    tabAHeader.innerHTML = 'niños apadrinados';
+    var tabAHeaderhr = document.createElement('hr');
+    tabAHeader.appendChild('tabAHeaderhr');
+    //create table that will contain a child
     var table = document.createElement('table');
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    function addChildToCart(id) {
+    function addChildToTable(id) {
         // create child's table row
         var tr = document.createElement('tr');
 
@@ -17,7 +37,7 @@ $(document).ready(function() {
             var picIMG = document.createElement('img');
             picIMG.className = 'child-img';
 
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+            $.getJSON('/api/v1/pictures/' + id, function(res) {
                 if (res.data.hasOwnProperty('err')){
                     console.log(res.data.err);
                     callback(false);
@@ -32,7 +52,7 @@ $(document).ready(function() {
 
         function data(callback) {
             // get child data using api
-            $.getJSON('/api/v1/children/id/' + id, function(res) {
+            $.getJSON('/api/v1/children/' + id, function(res) {
                 if(res.hasOwnProperty('err')) {
                     console.log(JSON.stringify(data));
                     callback(false);
@@ -98,11 +118,9 @@ $(document).ready(function() {
             var buttonTD = document.createElement('td');
 
             // create button, add classname for styling, append text
-            /* eslint-disable */
             var button = document.createElement('button');
             button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
             button.appendChild(document.createTextNode('eliminar'));
-            /* eslint-enable */
 
             // set on click button function
             button.onclick = function() {
@@ -144,161 +162,23 @@ $(document).ready(function() {
         });
     }
 
-    $('#checkout-submit').click(function() {
-        // get all form info
-        var firstName = document.getElementById('form-first-name').value;
-        var lastName = document.getElementById('form-last-name').value;
-        var phone = document.getElementById('form-phone').value;
-        var email = document.getElementById('form-email').value;
-        var street = document.getElementById('form-address-street').value;
-        var city = document.getElementById('form-address-city').value;
-        var country = document.getElementById('form-country').value;
-
-        /* credit information - need to fix expiration so leaving out for now
-        var credit = document.getElementById('form-credit').value;
-        // expiration doesn't work? - jake any ideas?
-        var expiration = document.getElementById('form-expiration-1').value +
-                         '/' +
-                         document.getElementById('form-expiration-2').value;
-        var nameOnCard = document.getElementById('form-name-on-card').value;
-        */
-
-        // manage any null fields and throw errors accordingly
-        var nullFields = [];
-
-        if(firstName === '') {
-            nullFields.push('First name field empty.');
-        }
-        if (lastName === '') {
-            nullFields.push('Last name field empty.');
-        }
-        if (phone === '') {
-            nullFields.push('Phone number field empty.');
-        }
-        if (email === '') {
-            nullFields.push('Email field empty.');
-        }
-        if (street === '') {
-            nullFields.push('Street field empty.');
-        }
-        if (city === '') {
-            nullFields.push('City field empty.');
-        }
-        if (country === '') {
-            nullFields.push('Country field empty.');
-        }
-        /*
-        if (credit === '') {
-            nullFields.push('Credit field empty.');
-        }
-        if (expiration === '/') {
-            nullFields.push('Expiration field is empty.');
-        }
-        if (nameOnCard === '') {
-            nullFields.push('Name on card field empty.');
-        }
-        */
-
-        // if anything is null then alert, else submit a post with donor info
-        if (nullFields.length > 0) {
-            var alertMessage = 'You are missing some fields: \n';
-            for (var i = 0; i < nullFields.length; i++) {
-                alertMessage += nullFields[i];
-                alertMessage += '\n';
-            }
-            alert(alertMessage);
-        } else {
-            var data = {
-                'nombre': firstName,
-                'apellido': lastName,
-                'teléfono': phone,
-                'correo_electrónico': email,
-                'calle': street,
-                'ciudad': city,
-                'país': country
-            };
-
-            // insert donor, update children with sponsored flag and donor _id
-            $.post('/api/v1/donor/insert', data, function(result) {
-                if(result.n + result.ok === 2) {
-                    // get the _id of the donor just inserted.
-                    // make use of the data var
-                    $.getJSON('/api/v1/donor/find/' + JSON.stringify(data),
-                        function(doc) {
-                        // TODO: for loop should always just run once, just an
-                        // easier way to get the donorId. make a check at the
-                        // end that this only ran once, and log out to admin
-                        // that a duplicate was inserted.
-                            for (var donorId in doc) {
-                                var ids = sessionStorage.getItem('cart')
-                                                        .split(',');
-                                // for each child in sessionStore add the donor
-                                // _id
-                                ids.forEach(function(id) {
-                                    // TODO: right now donor_id is only going to
-                                    // be a string. look into storing this as a
-                                    // real ObjectId.
-                                    var changes = {
-                                        'changes': {
-                                            'status': 'Sponsored',
-                                            'donor_id': donorId
-                                        }
-                                    };
-                                    // ajax PUT on /api/v1/children/:id with
-                                    // changes
-                                    $.ajax({
-                                        url: '/api/v1/children/id/' + id,
-                                        type: 'PUT',
-                                        data: changes,
-                                        // this success was happening even when
-                                        // getting a "changes = null" error from
-                                        // mongo. really need to look into http
-                                        // response error codes (401, 404, etc.)
-                                        success: function() {
-                                            window.location =
-                                                            'contribution.html';
-                                        }
-                                    });
-                                });
-                            }
-                        });
-                } else {
-                    console.log('Something bad happened on donor insert.');
-                }
-            });
-        }
-    });
-
     // insert all children in session storage into the cart
     if (sessionStorage.getItem('cart') != null &&
         sessionStorage.getItem('cart') != '') {
         var ids = sessionStorage.getItem('cart').split(',');
         for (var i = 0; i < ids.length; i++) {
-            addChildToCart(ids[i]);
+            addChildToTable(ids[i]);
             container.appendChild(table);
         }
     }
 
     // after all that append the 'add a child' button
-    /* eslint-disable */
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
-    /* eslint-enable */
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
-
-    /* Toggle the login box when login link is clicked */
-    function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').show();
-        }
-        else {
-            $('.login').hide();
-        }
-    };
-    $('#toggle-login').click(toggleLogin);
 });

@@ -278,4 +278,46 @@ $(document).ready(function() {
         $('#birthdaySearch').text(this.innerHTML);
     });
 
+    /* Toggle the login box when login link is clicked */
+    function toggleLogin () {
+        if ($('.login').css('display') == 'none') {
+            $('.login').show();
+        }
+        else {
+            $('.login').hide();
+        }
+    };
+    /* When login link is clicked, call toggleLogin */
+    $('#toggle-login').click(toggleLogin);
+
+    /* When the log in button is clicked, validate credentials and if valid
+       send the user to account.html and but the token returned by server into
+       session storage */
+    $(".login-submit").click(Login);
+
+    function Login () {
+        // e.preventDefault();
+        $.ajax({
+            url: '/api/v1/donor/auth',
+            type: 'POST',
+            data: '{"correo_electrónico": $(".donor-email").val(), "password": $(".donor-password").val()}',
+            success: function(res) {
+                //save login token to session storage
+                sessionStorage.setItem('token', res.token);
+                console.log(res);
+                console.log("yay server stuff");
+            }
+        })
+        .done(function() {
+          alert( "success" );
+        })
+        .fail(function() {
+            alert( "error" );
+        })
+        .always(function() {
+          alert( "complete" );
+        });
+    };
+
+
 });
