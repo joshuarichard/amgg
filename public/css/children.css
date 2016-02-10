@@ -82,27 +82,31 @@ input[type="email"],input[type="password"] {
 
 .owl-carousel{
 	display: inline-block;
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
+  margin-left: 5em;
 }
 
 .owl-item {
 	width: 75%;
-	margin-left: 5em;
+}
+
+.owl-pagination {
+  margin-right: 7em;
 }
 
 .span8 {
-    width: 950px;
-    display: inline-block !important;
-    margin-top: 5em;
+  width: 950px;
+  display: inline-block !important;
+  margin-top: 5em;
 }
 
 .span4 {
-    width: 350px;
-    display: inline-block !important;
-    margin-top: 5em;
-    margin-left: auto;
-    margin-right: 0;
+  width: 350px;
+  display: inline-block !important;
+  margin-top: 5em;
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .btn-group {
@@ -115,9 +119,9 @@ input[type="email"],input[type="password"] {
 }
 
 .scrollable-menu {
-    height: auto;
-    max-height: 195px;
-    overflow-x: hidden;
+  height: auto;
+  max-height: 195px;
+  overflow-x: hidden;
 }
 
 #sponsor-button {
@@ -146,7 +150,14 @@ footer {
 	margin-bottom: 2.5em;
 }
 
+#search-button {
+  width: 38%;
+  margin-right: 0;
+  margin-left: 57%;
+}
+
 .nav-buttons {
   width: 50%;
+  padding-left: 10em;
   margin: 0 auto;
 }
