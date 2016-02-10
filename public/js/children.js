@@ -295,26 +295,40 @@ $(document).ready(function() {
     /* When the log in button is clicked, validate credentials and if valid
        send the user to account.html and but the token returned by server into
        session storage */
-    $(".login-submit").click(Login);
+    $(".login-submit").click(login);
 
-    function Login () {
+    function login () {
         // e.preventDefault();
         var email = $('.donor-email').val();
         var password = $('.donor-password').val();
-        $.ajax({
+
+        // define the request
+        var loginRequest = $.ajax({
             url: '/api/v1/donor/auth',
             type: 'POST',
             data: {
-                'email': email,
+                'correo_electrónico': email,
                 'password': password
-            },
-            success: function(res) {
-                //save login token to session storage
-                sessionStorage.setItem('token', res.token);
             }
-        })
-        .done(function() {
-            alert( "success" );
+        });
+
+        // on successful login, save token in session storage and
+        // go to the donor portal
+        loginRequest.success(function(res) {
+              //save login token to session storage
+              sessionStorage.setItem('token', res.token);
+              window.location = 'account.html';
+        });
+
+        // on login error, check error and inform user accordingly
+        loginRequest.error(function(httpObj, textStatus) {
+            if (httpObj.status !== 200) {
+                if(httpObj.status === 401) {
+                    alert('contraseña incorrecta');
+                } else {
+                    alert('internal server error');
+                }
+            }
         });
     };
 
