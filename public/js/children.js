@@ -312,11 +312,12 @@ $(document).ready(function() {
             }
         });
 
-        // on successful login, save token in session storage and
+        // on successful login, save token and donor id in session storage and
         // go to the donor portal
         loginRequest.success(function(res) {
               //save login token to session storage
               sessionStorage.setItem('token', res.token);
+              sessionStorage.setItem('id', res.id);
               window.location = 'account.html';
         });
 
