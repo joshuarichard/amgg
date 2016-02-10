@@ -7,7 +7,9 @@ $(document).ready(function() {
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
-        selector['status'] = 'Waiting for Sponsor - No Prior Sponsor';
+        selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                           {'status': 'Waiting for Sponsor - Discontinued'},
+                           {'status': 'Additional Sponsor Needed'}];
         // get all unsponsored kids and pick one to display in the
         // carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
@@ -221,8 +223,8 @@ $(document).ready(function() {
         if($('#genderSearch').text() !== 'Género') {
             selector['género'] = $('#genderSearch').text();
         }
-        if($('#centerSearch').text() !== 'Centro de Niños') {
-            selector['centro_de_ninos'] = $('#centerSearch').text();
+        if($('#locationSearch').text() !== 'Provincia') {
+            selector['provincia'] = $('#locationSearch').text();
         }
         if($('#ageSearch').text() !== 'Años') {
             selector['años'] = $('#ageSearch').text();
@@ -263,7 +265,7 @@ $(document).ready(function() {
     });
 
     $('#search-center li > a').click(function(){
-        $('#centerSearch').text(this.innerHTML);
+        $('#locationSearch').text(this.innerHTML);
     });
 
     $('#search-age li > a').click(function(){
@@ -297,27 +299,23 @@ $(document).ready(function() {
 
     function Login () {
         // e.preventDefault();
+        var email = $('.donor-email').val();
+        var password = $('.donor-password').val();
         $.ajax({
             url: '/api/v1/donor/auth',
             type: 'POST',
-            data: '{"correo_electrónico": $(".donor-email").val(), "password": $(".donor-password").val()}',
+            data: {
+                'email': email,
+                'password': password
+            },
             success: function(res) {
                 //save login token to session storage
                 sessionStorage.setItem('token', res.token);
-                console.log(res);
-                console.log("yay server stuff");
             }
         })
         .done(function() {
-          alert( "success" );
-        })
-        .fail(function() {
-            alert( "error" );
-        })
-        .always(function() {
-          alert( "complete" );
+            alert( "success" );
         });
     };
-
 
 });

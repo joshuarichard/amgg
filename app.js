@@ -102,8 +102,7 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
  * }
  */
 app.post('/api/v1/donor/auth', function(req, res) {
-    var email = {'correo_electrónico': req.body.email};
-
+    var email = {'correo_electrónico': req.body['correo_electrónico']};
     // find the donor's email
     mongo.find(email, donorCollection, 1, false, function(data) {
         for (var key in data) {
@@ -172,8 +171,13 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 // POST /api/v1/donor/insert to insert donor
 // TODO: only client
 app.post('/api/v1/donor/insert', function(req, res) {
-    mongo.insert(req.body, donorCollection, function(result) {
-        res.send(result);
+    var donor = req.body;
+    password.encrypt(donor['password'], function(hash, salt) {
+        donor['password'] = hash;
+        donor['salt'] = salt;
+        mongo.insert(donor, donorCollection, function(result) {
+            res.send(result);
+        });
     });
 });
 
@@ -222,15 +226,6 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
             message: 'No token provided.'
         });
     }
-});
-
-// GET /api/v1/donor/find/:selector to find a donor without an id
-// TODO: only client
-app.get('/api/v1/donor/find/:selector', function(req, res) {
-    mongo.find(JSON.parse(req.params.selector), donorCollection, 1, false,
-        function(doc) {
-            res.send(doc);
-        });
 });
 
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),

@@ -149,10 +149,13 @@ $(document).ready(function() {
         var firstName = document.getElementById('form-first-name').value;
         var lastName = document.getElementById('form-last-name').value;
         var phone = document.getElementById('form-phone').value;
-        var email = document.getElementById('form-email').value;
         var street = document.getElementById('form-address-street').value;
         var city = document.getElementById('form-address-city').value;
         var country = document.getElementById('form-country').value;
+        var email = document.getElementById('form-email').value;
+        var password = document.getElementById('form-password').value;
+        var confirmPassword = document.getElementById('form-password-confirm')
+                                      .value;
 
         /* credit information - need to fix expiration so leaving out for now
         var credit = document.getElementById('form-credit').value;
@@ -208,64 +211,73 @@ $(document).ready(function() {
             }
             alert(alertMessage);
         } else {
-            var data = {
-                'nombre': firstName,
-                'apellido': lastName,
-                'teléfono': phone,
-                'correo_electrónico': email,
-                'calle': street,
-                'ciudad': city,
-                'país': country
-            };
+            if (password === confirmPassword) {
+                var donor = {
+                    'nombre': firstName,
+                    'apellido': lastName,
+                    'teléfono': phone,
+                    'calle': street,
+                    'ciudad': city,
+                    'país': country,
+                    'correo_electrónico': email,
+                    'password': password
+                };
 
-            // insert donor, update children with sponsored flag and donor _id
-            $.post('/api/v1/donor/insert', data, function(result) {
-                if(result.n + result.ok === 2) {
-                    // get the _id of the donor just inserted.
-                    // make use of the data var
-                    $.getJSON('/api/v1/donor/find/' + JSON.stringify(data),
-                        function(doc) {
-                        // TODO: for loop should always just run once, just an
-                        // easier way to get the donorId. make a check at the
-                        // end that this only ran once, and log out to admin
-                        // that a duplicate was inserted.
-                            for (var donorId in doc) {
+                // insert donor, update children with sponsored flag and donor
+                // _id
+                $.post('/api/v1/donor/insert', donor, function(result) {
+                    var body = {
+                        'correo_electrónico': email,
+                        'password': password
+                    };
+                    if(result.n + result.ok === 2) {
+                        // get the _id of the donor just inserted using
+                        // /api/v1/donor/auth
+                        $.ajax({
+                            url: '/api/v1/donor/auth',
+                            type: 'POST',
+                            data: body,
+                            success: function(res) {
                                 var ids = sessionStorage.getItem('cart')
                                                         .split(',');
-                                // for each child in sessionStore add the donor
-                                // _id
+                                // for each child in sessionStore add the
+                                // donor _id
                                 ids.forEach(function(id) {
-                                    // TODO: right now donor_id is only going to
-                                    // be a string. look into storing this as a
-                                    // real ObjectId.
+                                    // TODO: right now donor_id is only
+                                    // going to be a string. look into
+                                    // storing this as a real ObjectId.
                                     var changes = {
                                         'changes': {
                                             'status': 'Sponsored',
-                                            'donor_id': donorId
+                                            'donor_id': res['id']
                                         }
                                     };
-                                    // ajax PUT on /api/v1/children/:id with
+                                    // ajax PUT on /api/v1/children/id/:id with
                                     // changes
                                     $.ajax({
                                         url: '/api/v1/children/id/' + id,
                                         type: 'PUT',
                                         data: changes,
-                                        // this success was happening even when
-                                        // getting a "changes = null" error from
-                                        // mongo. really need to look into http
-                                        // response error codes (401, 404, etc.)
+                                        // this success was happening even
+                                        // when getting a "changes = null"
+                                        // error from mongo. really need to
+                                        // look into http response error
+                                        // codes (401, 404, etc.)
                                         success: function() {
                                             window.location =
-                                                            'contribution.html';
+                                                        'contribution.html';
                                         }
                                     });
                                 });
                             }
                         });
-                } else {
-                    console.log('Something bad happened on donor insert.');
-                }
-            });
+                    } else {
+                        console.log('Something bad happened on donor insert.');
+                    }
+                });
+            } else {
+                alert('las contraseñas no coinciden.');
+            }
         }
     });
 
