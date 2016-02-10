@@ -3,7 +3,7 @@
 
 $(document).ready(function() {
     // define a child pool to fill on an api call and reuse continuously
-    var childPool = {};
+    //var childPool = {};
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
@@ -24,7 +24,7 @@ $(document).ready(function() {
                     callback();
                 } else {
                     childPool = res;
-                    callback();
+                    callback(childPool);
                 }
             });
     }
@@ -61,7 +61,7 @@ $(document).ready(function() {
             }*/
 
             // then for each child requested
-            var ran = 0;
+            var ran = 0, i = 0;
             while (childIds !== numOfChildren) {
                 for (key in childPool) {
                     ran = Math.floor(Math.random() * childPoolLength);
@@ -71,41 +71,49 @@ $(document).ready(function() {
                             childIds.push(key);
                             break;
                         } else {
-                            if (sessionStorage.getItem('cart') === null) {
-                                console.log('it\'s null');
-                            } else if (sessionStorage.getItem('cart').indexOf(key) === -1) {
-                                console.log('it\'s got something in it but it\'s not there');
-                            }
-                            console.log(childIds);
-                            console.log('2 ' + childIds.indexOf(key) === -1);
-                            console.log('3 ' + childPool.hasOwnProperty(key));
                             ran = Math.floor(Math.random() * childPoolLength);
                         }
+                    i++;
                 }
             }
-            console.log(childIds);
             callback(childIds);
         }
     }
 
-    function getChild(id, callback) {
-            console.log(id);
-            var name = childPool[id].nombre;
-            var age = childPool[id].años;
-            var gender = childPool[id].género;
-            var location = childPool[id].centro_de_ninos;
-            // get the picture and load it in
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                var child = {
-                    'id': id,
-                    'name': name,
-                    'age': age,
-                    'gender': gender,
-                    'location': location,
-                    'picture': res.data
-                };
-                callback(child);
+    function getChild(childPool, callback) {
+            var ids = $.map(childPool, function (value, key) {
+                return key;
             });
+
+            var id = ids[Math.floor(Math.random() * ids.length)];
+
+            if ((sessionStorage.getItem('cart') === null ||
+                 sessionStorage.getItem('cart').indexOf(id) === -1) &&
+                 $('#' + id).length === 0) {
+                     console.log($('#' + id).length);
+                     var name = childPool[id].nombre;
+                     var age = childPool[id].años;
+                     var gender = childPool[id].género;
+                     var location = childPool[id].centro_de_ninos;
+                     // get the picture and load it in
+                     $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+                         var child = {
+                             'id': id,
+                             'name': name,
+                             'age': age,
+                             'gender': gender,
+                             'location': location,
+                             'picture': res.data
+                         };
+                         callback(child);
+                     });
+                 } else {
+                     getChild(childPool, function(child) {
+                         callback(child);
+                     });
+                 }
+
+
     }
 
     /* build the html for a slide to insert into the carousel. takes one child
@@ -204,18 +212,24 @@ $(document).ready(function() {
      * all of these are handled by insertChild()
      */
     function insertChildren(selector, numOfChildren, callback) {
-        fillChildPool(selector, function() {
-            pickChildren(numOfChildren, function(childIds) {
-                console.log(childIds);
-                for (var id in childIds) {
-                    getChild(id, function(child) {
-                        buildHTMLforSlide(child, function(slide) {
-                            addSlide(slide);
-                            callback();
-                        });
-                    });
-                }
+        fillChildPool(selector, function(childPool) {
+            var ids = $.map(childPool, function (value, key) {
+                return key;
             });
+
+            if (ids.length < numOfChildren) {
+                var actuallyInsert = ids.length;
+            } else {
+                var actuallyInsert = numOfChildren;
+            }
+            for (var r = 0; r < actuallyInsert; r++) {
+                getChild(childPool, function(child) {
+                    buildHTMLforSlide(child, function(slide) {
+                        addSlide(slide);
+                        callback();
+                    });
+                });
+            }
         });
     }
 
