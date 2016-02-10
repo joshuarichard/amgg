@@ -17,7 +17,7 @@ $(document).ready(function() {
                 if(res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
-                } else if (JSON.stringify(res) == '{}') {
+                } else if (JSON.stringify(res) === '{}') {
                     /* eslint-disable */
                     alert('no hay niños que coincidan con sus criterios de búsqueda.');
                     /* eslint-enable */
@@ -324,9 +324,10 @@ $(document).ready(function() {
         loginRequest.error(function(httpObj, textStatus) {
             if (httpObj.status !== 200) {
                 if(httpObj.status === 401) {
-                    alert('contraseña incorrecta');
+                    alert('correo o contraseña incorrectos');
                 } else {
-                    alert('internal server error');
+                    console.log(httpObj);
+                    alert('internal server error. see console for error info.');
                 }
             }
         });

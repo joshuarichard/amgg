@@ -114,13 +114,21 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
         } else {
             findDocs(db, collection, selector, function() {
                 db.close();
-                if(isTrim) {
-                    documents = trim(documents);
+                if (JSON.stringify(documents) !== '{}') {
+                    if(isTrim) {
+                        documents = trim(documents);
+                    }
+                    log.trace('successfully found document(s) with selector ' +
+                              JSON.stringify(selector) + ' in collection \'' +
+                              collection + '\'' + ' with limit ' + limit +
+                              '. document: ' + JSON.stringify(documents));
+                } else {
+                    log.trace('document not found with selector ' +
+                              JSON.stringify(selector) + ' in collection \'' +
+                              collection + '\'' + ' with limit ' + limit +
+                              '. document: ' + JSON.stringify(documents));
                 }
-                log.trace('successfully found document(s) with selector ' +
-                          JSON.stringify(selector) + ' in collection \'' +
-                          collection + '\'' + ' with limit ' + limit +
-                          '. document: ' + JSON.stringify(documents));
+
                 callback(documents);
             });
         }
