@@ -53,8 +53,8 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
-// MONGO_PORT_27017_TCP_ADDR is the linked container's IP address (for deploy)
-var host = nconf.get('MONGO_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
+// MONGODB_PORT_27017_TCP_ADDR is the linked container's IP address (for deploy)
+var host = nconf.get('MONGODB_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
 var port = nconf.get('mongo:port');
 var dbName = nconf.get('mongo:db');
 
