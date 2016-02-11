@@ -315,7 +315,7 @@ $(document).ready(function() {
         });
     });
 
-    /* Dropdown functionality, this while change the title of the
+    /* Dropdown functionality, this will change the title of the
        dropdown to the option selected by the user */
     $('#search-gender li > a').click(function(){
         $('#genderSearch').text(this.innerHTML);
