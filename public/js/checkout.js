@@ -264,11 +264,10 @@ $(document).ready(function() {
                                         // look into http response error
                                         // codes (401, 404, etc.)
                                         success: function() {
-                                          if (displayed === false){
-                                            displayed = true;
-                                            displaySuccess();
-                                          }
-
+                                            if (displayed === false){
+                                                displayed = true;
+                                                displaySuccess();
+                                            }
                                         }
                                     });
                                 });
@@ -308,20 +307,22 @@ $(document).ready(function() {
 
     var displayed = false;
     // Displays Success Page after ajax call
-        function displaySuccess (){
-            $('#children-to-sponsor').remove();
-            $('#donor-info').remove();
+    function displaySuccess (){
+        $('#children-to-sponsor').remove();
+        $('#donor-info').remove();
 
-            var centerDiv = document.createElement('div');
-            var h1Thing = document.createElement('h1');
-            var pThing = document.createElement('p');
+        var centerDiv = document.createElement('div');
+        var h1Thing = document.createElement('h1');
+        var pThing = document.createElement('p');
 
-            centerDiv.className = 'center';
-            h1Thing.innerHTML = "Se lo agradezco!(Formal form for 'Thank you' in spanish)";
-            pThing.innerHTML = "Usted ha cambiado la vida de un niño hoy";
-            h1Thing.appendChild(pThing);
-            centerDiv.appendChild(h1Thing);
+        centerDiv.className = 'center';
+        /* eslint-disable */
+        h1Thing.innerHTML = "Se lo agradezco!(Formal form for 'Thank you' in spanish)";
+        /* eslint-enable */
+        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy';
+        h1Thing.appendChild(pThing);
+        centerDiv.appendChild(h1Thing);
 
-            $('.content').append(centerDiv);
-        }
+        $('.content').append(centerDiv);
+    }
 });
