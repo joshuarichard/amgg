@@ -264,8 +264,10 @@ $(document).ready(function() {
                                         // look into http response error
                                         // codes (401, 404, etc.)
                                         success: function() {
-                                            window.location =
-                                                        'contribution.html';
+                                            if (displayed === false){
+                                                displayed = true;
+                                                displaySuccess();
+                                            }
                                         }
                                     });
                                 });
@@ -296,10 +298,31 @@ $(document).ready(function() {
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     addButton.onclick = function() {
-        window.location = 'children.html';
+      window.location = 'children.html';
     };
     /* eslint-enable */
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
+
+    var displayed = false;
+    // Displays Success Page after ajax call
+    function displaySuccess (){
+        $('#children-to-sponsor').remove();
+        $('#donor-info').remove();
+
+        var centerDiv = document.createElement('div');
+        var h1Thing = document.createElement('h1');
+        var pThing = document.createElement('p');
+
+        centerDiv.className = 'center';
+        /* eslint-disable */
+        h1Thing.innerHTML = "Se lo agradezco!(Formal form for 'Thank you' in spanish)";
+        /* eslint-enable */
+        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy';
+        h1Thing.appendChild(pThing);
+        centerDiv.appendChild(h1Thing);
+
+        $('.content').append(centerDiv);
+    }
 });
