@@ -416,7 +416,8 @@ function trim(doc) {
                 'años': doc[miniDoc].años,
                 'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
-                'centro_de_ninos': doc[miniDoc].centro_de_ninos
+                'centro_de_ninos': doc[miniDoc].centro_de_ninos,
+                'provincia': doc[miniDoc].provincia
             };
         // else this is only one document
         } else {
@@ -425,7 +426,8 @@ function trim(doc) {
                 'años': doc.años,
                 'cumpleaños': doc.cumpleaños,
                 'género': doc.género,
-                'centro_de_ninos': doc.centro_de_ninos
+                'centro_de_ninos': doc.centro_de_ninos,
+                'provincia': doc.provincia
             };
             break;
         }

@@ -26,7 +26,17 @@ $(document).ready(function() {
             });
     }
 
-    // get a child from the child pool
+    /* get a child from the child pool. returns the child as a json object that
+     * looks like this.
+     * {
+     *    id: string,
+     *    name: string,
+     *    age: int,
+     *    gender: string,
+     *    location: string,
+     *    picture: base64 string
+     * }
+     */
     function getChild(childPool, callback) {
             // get an array of child ids by mapping the keys in the child pool
             // to an array called 'ids'
@@ -47,14 +57,11 @@ $(document).ready(function() {
             // if the child isn't in the cart and also isn't in the slider
             if (cart.indexOf(id) === -1 &&
                 childrenCurrentlyInSlider.indexOf(id) === -1) {
-                     console.log('pool: ' + ids);
-                     console.log('cart: ' + cart);
-                     console.log('slider: ' + childrenCurrentlyInSlider);
                      // then add the child to the slider
                      var name = childPool[id].nombre;
                      var age = childPool[id].años;
                      var gender = childPool[id].género;
-                     var location = childPool[id].centro_de_ninos;
+                     var location = childPool[id].provincia;
                      // get the picture and load it in
                      $.getJSON('/api/v1/pictures/id/' + id, function(res) {
                          var child = {
@@ -69,9 +76,6 @@ $(document).ready(function() {
                          callback(child);
                      });
                  } else {
-                     console.log('pool: ' + ids);
-                     console.log('cart: ' + cart);
-                     console.log('slider: ' + childrenCurrentlyInSlider);
                      // if the child is already in the slider or cart but there
                      // are more children in the child pool
                      if (childrenCurrentlyInSlider.length !== ids.length &&
@@ -177,7 +181,7 @@ $(document).ready(function() {
 
     /* 4 step process for adding a child
      * 1. fill the child pool based on a selector  - fillChildPool()
-     * 2. select a child from that pool            - selectChild()
+     * 2. select a child from that pool            - getChild()
      * 3. build the html for that child            - buildHTMLforSlide()
      * 4. add the html to the slider               - addSlide()
      *
@@ -189,10 +193,6 @@ $(document).ready(function() {
             if (childPool.hasOwnProperty('err')) {
                 callback({success: 'false'});
             } else {
-                var ids = $.map(childPool, function (value, key) {
-                    return key;
-                });
-
                 getChild(childPool, function(child) {
                     // if there's an err in the response that means the child is
                     // in the cart but there are no more children to display
