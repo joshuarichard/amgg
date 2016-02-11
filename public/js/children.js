@@ -38,58 +38,58 @@ $(document).ready(function() {
      * }
      */
     function getChild(childPool, callback) {
-            // get an array of child ids by mapping the keys in the child pool
-            // to an array called 'ids'
-            var ids = $.map(childPool, function (value, key) {
-                return key;
+        // get an array of child ids by mapping the keys in the child pool
+        // to an array called 'ids'
+        var ids = $.map(childPool, function (value, key) {
+            return key;
+        });
+
+        // randomly pick one of those ids
+        var id = ids[Math.floor(Math.random() * ids.length)];
+
+        // init the cart as an array from sessionStorage
+        var cart = [];
+        if (sessionStorage.getItem('cart') != null &&
+            sessionStorage.getItem('cart') != '') {
+            cart = sessionStorage.getItem('cart').split(',');
+        }
+
+        // if the child isn't in the cart and also isn't in the slider
+        if (cart.indexOf(id) === -1 &&
+            childrenCurrentlyInSlider.indexOf(id) === -1) {
+
+            // then add the child to the slider
+            var name = childPool[id].nombre;
+            var age = childPool[id].años;
+            var gender = childPool[id].género;
+            var location = childPool[id].provincia;
+
+            // get the picture and load it in
+            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+                var child = {
+                    'id': id,
+                    'name': name,
+                    'age': age,
+                    'gender': gender,
+                    'location': location,
+                    'picture': res.data
+                };
+                childrenCurrentlyInSlider.push(id);
+                callback(child);
             });
-
-            // randomly pick one of those ids
-            var id = ids[Math.floor(Math.random() * ids.length)];
-
-            // init the cart as an array from sessionStorage
-            var cart = [];
-            if (sessionStorage.getItem('cart') != null &&
-                sessionStorage.getItem('cart') != '') {
-                cart = sessionStorage.getItem('cart').split(',');
+        } else {
+             // if the child is already in the slider or cart but there
+             // are more children in the child pool
+            if (childrenCurrentlyInSlider.length !== ids.length &&
+               childrenCurrentlyInSlider.length < ids.length &&
+               cart.indexOf(id) === -1) {
+                getChild(childPool, function(child) {
+                    callback(child);
+                });
+            } else {
+                callback({'err': 'no more children available.'});
             }
-
-            // if the child isn't in the cart and also isn't in the slider
-            if (cart.indexOf(id) === -1 &&
-                childrenCurrentlyInSlider.indexOf(id) === -1) {
-                     // then add the child to the slider
-                     var name = childPool[id].nombre;
-                     var age = childPool[id].años;
-                     var gender = childPool[id].género;
-                     var location = childPool[id].provincia;
-                     // get the picture and load it in
-                     $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                         var child = {
-                             'id': id,
-                             'name': name,
-                             'age': age,
-                             'gender': gender,
-                             'location': location,
-                             'picture': res.data
-                         };
-                         childrenCurrentlyInSlider.push(id);
-                         callback(child);
-                     });
-                 } else {
-                     // if the child is already in the slider or cart but there
-                     // are more children in the child pool
-                     if (childrenCurrentlyInSlider.length !== ids.length &&
-                         childrenCurrentlyInSlider.length < ids.length &&
-                         cart.indexOf(id) === -1) {
-                         getChild(childPool, function(child) {
-                             callback(child);
-                         });
-                     } else {
-                         callback({'err': 'no more children available.'});
-                     }
-                 }
-
-
+        }
     }
 
     /* build the html for a slide to insert into the carousel. takes one child
@@ -308,7 +308,11 @@ $(document).ready(function() {
                     singleItem: true
                 });
                 insertChildren({}, function(res) {
-                    console.log('inserted child because search came up empty.');
+                    if (res.success === true) {
+                        console.log('inserted child. search came up empty.');
+                    } else {
+                        console.log('general unsponsored child not inserted.');
+                    }
                 });
                 console.log('did not insert a child.');
             }
