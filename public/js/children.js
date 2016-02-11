@@ -2,8 +2,7 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    // define a child pool to fill on an api call and reuse continuously
-    //var childPool = {};
+    var childrenCurrentlyInSlider = [];
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
@@ -18,9 +17,7 @@ $(document).ready(function() {
                     // TODO: fix error on connection
                     callback();
                 } else if (JSON.stringify(res) == '{}') {
-                    /* eslint-disable */
-                    alert('no hay niños que coincidan con sus criterios de búsqueda.');
-                    /* eslint-enable */
+                    alert('no hay niños de la búsqueda');
                     callback();
                 } else {
                     childPool = res;
@@ -29,68 +26,31 @@ $(document).ready(function() {
             });
     }
 
-    function pickChildren(numOfChildren, callback) {
-        // calculate the childPoolLength for random child bounds
-        var key, childPoolLength = 0;
-        for (key in childPool) {
-            if(childPool.hasOwnProperty(key)) {
-                childPoolLength++;
-            }
-        }
-
-        var childIds = [];
-        // if the number of children returned is <= the number requested
-        if (childPoolLength <= numOfChildren) {
-            // then just put all of the children returned into the carousel
-            for (key in childPool) {
-                if (childPool.hasOwnProperty(key)) {
-                    childIds.push(key);
-                }
-                callback(childIds);
-            }
-        // else the number of children returned is greater than that requested
-        } else {
-            /*
-            var ran = 0, randoms = [];
-            while (randoms.length !== numOfChildren) {
-                ran = Math.floor(Math.random() * (childPoolLength - 0 + 1) + 1);
-                if (randoms.indexOf(ran) === -1) {
-                    console.log('random: ' + ran);
-                    randoms.push(ran);
-                }
-            }*/
-
-            // then for each child requested
-            var ran = 0, i = 0;
-            while (childIds !== numOfChildren) {
-                for (key in childPool) {
-                    ran = Math.floor(Math.random() * childPoolLength);
-                    if (childIds.indexOf(key) === -1 &&
-                        childPool.hasOwnProperty(key)) {
-                            console.log('adding a key');
-                            childIds.push(key);
-                            break;
-                        } else {
-                            ran = Math.floor(Math.random() * childPoolLength);
-                        }
-                    i++;
-                }
-            }
-            callback(childIds);
-        }
-    }
-
+    // get a child from the child pool
     function getChild(childPool, callback) {
+            // get an array of child ids by mapping the keys in the child pool
+            // to an array called 'ids'
             var ids = $.map(childPool, function (value, key) {
                 return key;
             });
 
+            // randomly pick one of those ids
             var id = ids[Math.floor(Math.random() * ids.length)];
 
-            if ((sessionStorage.getItem('cart') === null ||
-                 sessionStorage.getItem('cart').indexOf(id) === -1) &&
-                 $('#' + id).length === 0) {
-                     console.log($('#' + id).length);
+            // init the cart as an array from sessionStorage
+            var cart = [];
+            if (sessionStorage.getItem('cart') != null &&
+                sessionStorage.getItem('cart') != '') {
+                cart = sessionStorage.getItem('cart').split(',');
+            }
+
+            // if the child isn't in the cart and also isn't in the slider
+            if (cart.indexOf(id) === -1 &&
+                childrenCurrentlyInSlider.indexOf(id) === -1) {
+                     console.log('pool: ' + ids);
+                     console.log('cart: ' + cart);
+                     console.log('slider: ' + childrenCurrentlyInSlider);
+                     // then add the child to the slider
                      var name = childPool[id].nombre;
                      var age = childPool[id].años;
                      var gender = childPool[id].género;
@@ -105,12 +65,24 @@ $(document).ready(function() {
                              'location': location,
                              'picture': res.data
                          };
+                         childrenCurrentlyInSlider.push(id);
                          callback(child);
                      });
                  } else {
-                     getChild(childPool, function(child) {
-                         callback(child);
-                     });
+                     console.log('pool: ' + ids);
+                     console.log('cart: ' + cart);
+                     console.log('slider: ' + childrenCurrentlyInSlider);
+                     // if the child is already in the slider or cart but there
+                     // are more children in the child pool
+                     if (childrenCurrentlyInSlider.length !== ids.length &&
+                         childrenCurrentlyInSlider.length < ids.length &&
+                         cart.indexOf(id) === -1) {
+                         getChild(childPool, function(child) {
+                             callback(child);
+                         });
+                     } else {
+                         callback({'err': 'no more children available.'});
+                     }
                  }
 
 
@@ -211,25 +183,25 @@ $(document).ready(function() {
      *
      * all of these are handled by insertChild()
      */
-    function insertChildren(selector, numOfChildren, callback) {
+    function insertChildren(selector, callback) {
         fillChildPool(selector, function(childPool) {
             var ids = $.map(childPool, function (value, key) {
                 return key;
             });
 
-            if (ids.length < numOfChildren) {
-                var actuallyInsert = ids.length;
-            } else {
-                var actuallyInsert = numOfChildren;
-            }
-            for (var r = 0; r < actuallyInsert; r++) {
-                getChild(childPool, function(child) {
+            getChild(childPool, function(child) {
+                // if there's an err in the response that means the child is in
+                // the cart but there are no more children to display
+                if (child.hasOwnProperty('err')) {
+                    alert('no hay niños de la búsqueda');
+                    callback({success: 'false'});
+                } else {
                     buildHTMLforSlide(child, function(slide) {
                         addSlide(slide);
-                        callback();
+                        callback({success: 'true'});
                     });
-                });
-            }
+                }
+            });
         });
     }
 
@@ -251,15 +223,37 @@ $(document).ready(function() {
         owl.trigger('owl.next');
     });
 
-    // initially load 5 children onto the page
-    insertChildren({}, 5, function() {
+    // initially load a child onto the page
+    insertChildren({}, function() {
         console.log('initially loaded one child.');
     });
 
     // add a child to the slide button
     $('#add-button').click(function() {
-        insertChildren({}, 1, function() {
-            console.log('inserted child.');
+        var selector = {};
+        if($('#genderSearch').text() !== 'Género') {
+            selector['género'] = $('#genderSearch').text();
+        }
+        if($('#locationSearch').text() !== 'Provincia') {
+            selector['provincia'] = $('#locationSearch').text();
+        }
+        if($('#ageSearch').text() !== 'Años') {
+            selector['años'] = $('#ageSearch').text();
+        }
+        /*
+        if($('#search-birthmonth').text() !== 'Birth Month') {
+            selector[''] = $('#search-birthmonth').text();
+        }
+        if($('#search-birthday').text() !== 'Birth Day') {
+            selector[''] = $('#search-birthday').text();
+        }
+        */
+        insertChildren(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted child.');
+            } else {
+                console.log('did not insert a child.');
+            }
         });
     });
 
@@ -295,14 +289,24 @@ $(document).ready(function() {
             owl.data('owlCarousel').removeItem();
         }
 
-        // loop 5 times for 5 different kids
-        insertChildren(selector, 5, function() {
-            if ($('.child-slide').length === 0) {
-                insertChildren({}, 5, function() {
-                    console.log('no children matched search criteria.');
+        childrenCurrentlyInSlider = [];
+
+        insertChildren(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted search child.');
+            } else {
+                owl.owlCarousel({
+                    navigation : false,
+                    slideSpeed : 800,
+                    paginationSpeed : 800,
+                    autoWidth: true,
+                    singleItem: true
                 });
+                insertChildren({}, function(res) {
+                    console.log('inserted child because search came up empty.');
+                });
+                console.log('did not insert a child.');
             }
-            console.log('inserted search children.');
         });
     });
 
