@@ -2,6 +2,7 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
+    // global variable to keep track of the kids in the carousel
     var childrenCurrentlyInSlider = [];
 
     // fill the child pool based on a given selector
@@ -9,16 +10,15 @@ $(document).ready(function() {
         selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
                            {'status': 'Waiting for Sponsor - Discontinued'},
                            {'status': 'Additional Sponsor Needed'}];
-        // get all unsponsored kids and pick one to display in the
-        // carousel
+
+        // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
             function(res){
                 if(res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
-                } else if (JSON.stringify(res) == '{}') {
-                    alert('no hay niños de la búsqueda');
-                    callback();
+                } else if (JSON.stringify(res) === '{}') {
+                    callback({'err': 'no children match that selector'});
                 } else {
                     childPool = res;
                     callback(childPool);
@@ -185,23 +185,28 @@ $(document).ready(function() {
      */
     function insertChildren(selector, callback) {
         fillChildPool(selector, function(childPool) {
-            var ids = $.map(childPool, function (value, key) {
-                return key;
-            });
+            // if the child pool is empty, return false
+            if (childPool.hasOwnProperty('err')) {
+                callback({success: 'false'});
+            } else {
+                var ids = $.map(childPool, function (value, key) {
+                    return key;
+                });
 
-            getChild(childPool, function(child) {
-                // if there's an err in the response that means the child is in
-                // the cart but there are no more children to display
-                if (child.hasOwnProperty('err')) {
-                    alert('no hay niños de la búsqueda');
-                    callback({success: 'false'});
-                } else {
-                    buildHTMLforSlide(child, function(slide) {
-                        addSlide(slide);
-                        callback({success: 'true'});
-                    });
-                }
-            });
+                getChild(childPool, function(child) {
+                    // if there's an err in the response that means the child is
+                    // in the cart but there are no more children to display
+                    if (child.hasOwnProperty('err')) {
+                        alert('no hay niños de la búsqueda');
+                        callback({success: 'false'});
+                    } else {
+                        buildHTMLforSlide(child, function(slide) {
+                            addSlide(slide);
+                            callback({success: 'true'});
+                        });
+                    }
+                });
+            }
         });
     }
 
