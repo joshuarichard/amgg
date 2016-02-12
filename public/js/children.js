@@ -173,36 +173,40 @@ $(document).ready(function() {
 
     // add a slide to the carousel given slide html
     function addSlide(slide) {
+        // remove the pending spinner
+        $('.spinner').remove();
+
+        // create the item div
         var item = document.createElement('div');
         item.className = 'item';
         item.appendChild(slide);
+
+        // add the item to the carousel
         owl.data('owlCarousel').addItem(item);
     }
 
-    /* 4 step process for adding a child
+    /* insertChild()
+     * 4 step process for adding a child
+     * ---------------------------------
      * 1. fill the child pool based on a selector  - fillChildPool()
      * 2. select a child from that pool            - getChild()
      * 3. build the html for that child            - buildHTMLforSlide()
      * 4. add the html to the slider               - addSlide()
-     *
-     * all of these are handled by insertChild()
      */
-    function insertChildren(selector, callback) {
+    function insertChild(selector) {
         fillChildPool(selector, function(childPool) {
             // if the child pool is empty, return false
             if (childPool.hasOwnProperty('err')) {
-                callback({success: 'false'});
+                alert('no hay niños de la búsqueda');
             } else {
                 getChild(childPool, function(child) {
                     // if there's an err in the response that means the child is
                     // in the cart but there are no more children to display
                     if (child.hasOwnProperty('err')) {
                         alert('no hay niños de la búsqueda');
-                        callback({success: 'false'});
                     } else {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
-                            callback({success: 'true'});
                         });
                     }
                 });
@@ -229,9 +233,7 @@ $(document).ready(function() {
     });
 
     // initially load a child onto the page
-    insertChildren({}, function() {
-        console.log('initially loaded one child.');
-    });
+    insertChild({});
 
     // add a child to the slide button
     $('#add-button').click(function() {
@@ -253,13 +255,7 @@ $(document).ready(function() {
             selector[''] = $('#search-birthday').text();
         }
         */
-        insertChildren(selector, function(res) {
-            if (res.success === true) {
-                console.log('inserted child.');
-            } else {
-                console.log('did not insert a child.');
-            }
-        });
+        insertChild(selector);
     });
 
     /**
@@ -294,29 +290,29 @@ $(document).ready(function() {
             owl.data('owlCarousel').removeItem();
         }
 
+        // recreate pending spinner and add to page
+        spinnerDiv = document.createElement('div');
+        bounceDiv1 = document.createElement('div');
+        bounceDiv2 = document.createElement('div');
+        bounceDiv3 = document.createElement('div');
+
+        spinnerDiv.className = 'spinner';
+        bounceDiv1.className = 'bounce1';
+        bounceDiv2.className = 'bounce2';
+        bounceDiv3.className = 'bounce3';
+
+        spinnerDiv.appendChild(bounceDiv1);
+        spinnerDiv.appendChild(bounceDiv2);
+        spinnerDiv.appendChild(bounceDiv3);
+
+        var container = document.getElementById('spinner-and-slider');
+        container.insertBefore(spinnerDiv, container.childNodes[0]);
+
+        // empty the array that keeps track of the children in the slider
         childrenCurrentlyInSlider = [];
 
-        insertChildren(selector, function(res) {
-            if (res.success === true) {
-                console.log('inserted search child.');
-            } else {
-                owl.owlCarousel({
-                    navigation : false,
-                    slideSpeed : 800,
-                    paginationSpeed : 800,
-                    autoWidth: true,
-                    singleItem: true
-                });
-                insertChildren({}, function(res) {
-                    if (res.success === true) {
-                        console.log('inserted child. search came up empty.');
-                    } else {
-                        console.log('general unsponsored child not inserted.');
-                    }
-                });
-                console.log('did not insert a child.');
-            }
-        });
+        // insert a child matching the selector
+        insertChild(selector);
     });
 
     /* Dropdown functionality, this will change the title of the
