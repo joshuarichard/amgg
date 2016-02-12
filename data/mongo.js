@@ -37,8 +37,8 @@ var log = bunyan.createLogger({
 
 nconf.env()
      .file({
-        file: 'config.json'
-    });
+         file: 'config.json'
+     });
 
 // mongodb://username:password@host:port/databasename
 /*
