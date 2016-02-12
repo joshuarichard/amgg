@@ -7,9 +7,13 @@ $(document).ready(function() {
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
-        selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                           {'status': 'Waiting for Sponsor - Discontinued'},
-                           {'status': 'Additional Sponsor Needed'}];
+        var ors = [{
+            '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                               {'status': 'Waiting for Sponsor - Discontinued'},
+                               {'status': 'Additional Sponsor Needed'}]
+        }];
+
+        selector['$and'] = ors;
 
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
@@ -217,6 +221,46 @@ $(document).ready(function() {
         });
     }
 
+    // checks the search panel for queries
+    function checkSearchPanel() {
+        var selector = {};
+        if($('#genderSearch').text() !== 'género') {
+            selector['género'] = $('#genderSearch').text();
+        }
+        if($('#locationSearch').text() !== 'provincia') {
+            selector['provincia'] = $('#locationSearch').text();
+        }
+        if($('#ageSearch').text() !== 'años') {
+            selector['años'] = $('#ageSearch').text();
+        }
+        if($('#birthmonthSearch').text() !== 'mes de nacimiento') {
+            var month = $('#birthmonthSearch').text();
+            var months = {
+                             'enero': '0',
+                             'febrero': '1',
+                             'marzo': '2',
+                             'abril': '3',
+                             'mayo': '4',
+                             'junio': '5',
+                             'julio': '6',
+                             'agosto': '7',
+                             'septiembre': '8',
+                             'octubre': '9',
+                             'noviembre': '10',
+                             'diciembre': '11'
+                         };
+             if (months.hasOwnProperty(month)) {
+                 var monthInt = months[month];
+                 selector['mes_de_nacimiento'] = monthInt;
+             }
+        }
+        if($('#birthdaySearch').text() !== 'día del nacimiento') {
+            selector['día_del_nacimiento'] = $('#birthdaySearch').text();
+        }
+
+        return selector;
+    }
+
     // add carousel functionality
     var owl = $('.owl-carousel');
     owl.owlCarousel({
@@ -242,24 +286,8 @@ $(document).ready(function() {
 
     // add a child to the slide button
     $('#add-button').click(function() {
-        var selector = {};
-        if($('#genderSearch').text() !== 'Género') {
-            selector['género'] = $('#genderSearch').text();
-        }
-        if($('#locationSearch').text() !== 'Provincia') {
-            selector['provincia'] = $('#locationSearch').text();
-        }
-        if($('#ageSearch').text() !== 'Años') {
-            selector['años'] = $('#ageSearch').text();
-        }
-        /*
-        if($('#search-birthmonth').text() !== 'Birth Month') {
-            selector[''] = $('#search-birthmonth').text();
-        }
-        if($('#search-birthday').text() !== 'Birth Day') {
-            selector[''] = $('#search-birthday').text();
-        }
-        */
+        var selector = checkSearchPanel();
+
         insertChild(selector, function(res) {
             if (res.success === true) {
                 console.log('inserted child.');
@@ -273,24 +301,7 @@ $(document).ready(function() {
      * find a child panel
      */
     $('#search-button').click(function() {
-        var selector = {};
-        if($('#genderSearch').text() !== 'Género') {
-            selector['género'] = $('#genderSearch').text();
-        }
-        if($('#locationSearch').text() !== 'Provincia') {
-            selector['provincia'] = $('#locationSearch').text();
-        }
-        if($('#ageSearch').text() !== 'Años') {
-            selector['años'] = $('#ageSearch').text();
-        }
-        /*
-        if($('#search-birthmonth').text() !== 'Birth Month') {
-            selector[''] = $('#search-birthmonth').text();
-        }
-        if($('#search-birthday').text() !== 'Birth Day') {
-            selector[''] = $('#search-birthday').text();
-        }
-        */
+        var selector = checkSearchPanel();
 
         // empty the owl carousel (minus the last slide...)
         while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
@@ -321,6 +332,8 @@ $(document).ready(function() {
 
         // empty the array that keeps track of the children in the slider
         childrenCurrentlyInSlider = [];
+
+        console.log(childPool);
 
         // insert a child matching the selector
         insertChild(selector, function(res) {
