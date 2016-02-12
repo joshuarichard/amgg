@@ -335,8 +335,6 @@ $(document).ready(function() {
         // empty the array that keeps track of the children in the slider
         childrenCurrentlyInSlider = [];
 
-        console.log(childPool);
-
         // insert a child matching the selector
         insertChild(selector, function(res) {
             if (res.success === true) {
