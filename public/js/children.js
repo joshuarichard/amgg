@@ -195,20 +195,23 @@ $(document).ready(function() {
      * 3. build the html for that child            - buildHTMLforSlide()
      * 4. add the html to the slider               - addSlide()
      */
-    function insertChild(selector) {
+    function insertChild(selector, callback) {
         fillChildPool(selector, function(childPool) {
             // if the child pool is empty, return false
             if (childPool.hasOwnProperty('err')) {
                 alert('no hay niños de la búsqueda');
+                callback({success: false});
             } else {
                 getChild(childPool, function(child) {
                     // if there's an err in the response that means the child is
                     // in the cart but there are no more children to display
                     if (child.hasOwnProperty('err')) {
                         alert('no hay niños de la búsqueda');
+                        callback({success: false});
                     } else {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
+                            callback({success: true});
                         });
                     }
                 });
@@ -235,7 +238,9 @@ $(document).ready(function() {
     });
 
     // initially load a child onto the page
-    insertChild({});
+    insertChild({}, function() {
+        console.log('initially loaded one child.');
+    });
 
     // add a child to the slide button
     $('#add-button').click(function() {
@@ -257,7 +262,13 @@ $(document).ready(function() {
             selector[''] = $('#search-birthday').text();
         }
         */
-        insertChild(selector);
+        insertChild(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted child.');
+            } else {
+                console.log('did not insert a child.');
+            }
+        });
     });
 
     /**
@@ -314,7 +325,27 @@ $(document).ready(function() {
         childrenCurrentlyInSlider = [];
 
         // insert a child matching the selector
-        insertChild(selector);
+        insertChild(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted search child.');
+            } else {
+                owl.owlCarousel({
+                    navigation : false,
+                    slideSpeed : 800,
+                    paginationSpeed : 800,
+                    autoWidth: true,
+                    singleItem: true
+                });
+                insertChild({}, function(res) {
+                    if (res.success === true) {
+                        console.log('inserted child. search came up empty.');
+                    } else {
+                        console.log('general unsponsored child not inserted.');
+                    }
+                });
+                console.log('did not insert a child.');
+            }
+        });
     });
 
     /* Dropdown functionality, this will change the title of the
