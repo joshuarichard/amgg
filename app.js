@@ -64,7 +64,8 @@ app.get('/api/v1/children/id/:id', function(req, res) {
     });
 });
 
-// GET /api/v1/children/find/:selector find a child's document without an id
+// GET /api/v1/children/find/:selector find a child's document
+// without an id
 app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = JSON.parse(req.params.selector);
     if (selector.hasOwnProperty('años')) {
@@ -77,7 +78,8 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         });
 });
 
-// PUT /api/v1/children/id/:id edit child document (mainly for donor use case)
+// PUT /api/v1/children/id/:id edit child document (mainly for
+// donor use case)
 // TODO: only client
 app.put('/api/v1/children/id/:id', function(req, res) {
     mongo.edit(req.params.id, req.body.changes, childCollection, function() {
@@ -176,7 +178,20 @@ app.post('/api/v1/donor/insert', function(req, res) {
         donor['password'] = hash;
         donor['salt'] = salt;
         mongo.insert(donor, donorCollection, function(result) {
-            res.send(result);
+            if (result.success === true) {
+                res.status(200).send({
+                    success: true,
+                    code: 7,
+                    message: 'Donor successfully inserted.'
+                });
+            } else if (result.code === 11000) {
+                res.status(409).send({
+                    success: false,
+                    code: result.code,
+                    errmsg: result.errmsg,
+                    message: 'Email already exists.'
+                });
+            }
         });
     });
 });

@@ -144,9 +144,15 @@ exports.insert = function(docs, collection, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
                 log.error('error in insert().insertDoc() message: ' + err);
-                // TODO: callback with error in JSON
+                callback({
+                    success: false,
+                    code: err.code,
+                    message: err.errmsg
+                });
+            } else {
+                console.log(result);
+                callback(result);
             }
-            callback(result);
         });
     };
 
@@ -159,9 +165,10 @@ exports.insert = function(docs, collection, callback) {
         bulk.execute(function(err, result) {
             if (err) {
                 log.error('error in insert().bulkInsert() message: ' + err);
-                // TODO: callback with error in JSON
+                callback(err);
+            } else {
+                callback(result);
             }
-            callback(result);
         });
     };
 
