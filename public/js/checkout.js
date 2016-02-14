@@ -214,7 +214,7 @@ $(document).ready(function() {
             if (password !== confirmPassword) {
                 alert('las contraseñas no coinciden.');
             } else {
-                // insert donor, update children with sponsored flag and donor _id
+                // insert donor, update child status and donor_id
                 var insert = $.ajax({
                     url: '/api/v1/donor/insert',
                     type: 'POST',
@@ -233,7 +233,7 @@ $(document).ready(function() {
                 insert.success(function(res) {
                     console.log(res);
                     if(res.success === true) {
-                        // get the _id of the donor just inserted using /donor/auth
+                        // get the _id of the donor just inserted
                         var auth = $.ajax({
                             url: '/api/v1/donor/auth',
                             type: 'POST',
@@ -244,13 +244,13 @@ $(document).ready(function() {
                         });
 
                         auth.success(function(res) {
-                            console.log(res);
                             if (res.success === true) {
-                                var ids = sessionStorage.getItem('cart').split(',');
+                                var ids = sessionStorage.getItem('cart')
+                                                        .split(',');
                                 // for each child in sessionStore and the new
                                 // donor's _id
                                 ids.forEach(function(id) {
-                                    // TODO: donor_id is string. store as ObjectId.
+                                    // TODO: donor_id is string. ObjectId?
                                     var editChildren = $.ajax({
                                         url: '/api/v1/children/id/' + id,
                                         type: 'PUT',
@@ -265,21 +265,32 @@ $(document).ready(function() {
                                     editChildren.success(function() {
                                         if (displayed === false) {
                                             displayed = true;
+                                            sessionStorage.setItem('cart', '');
                                             displaySuccess();
                                         }
+                                    });
+
+                                    editChildren.error(function(httpObj,
+                                                                textStatus) {
+                                        alert('something bad happened');
                                     });
                                 });
                             }
                         });
+
+                        auth.error(function(httpObj, textStatus) {
+                            alert('something really bad happened.');
+                        });
                     }
                 });
 
-                insert.error(function(httpObj, textStatus) {httpObj.responseText.code);
+                insert.error(function(httpObj, textStatus) {
+                    var mongoError = JSON.parse(httpObj.responseText);
                     // email already exists exeption
                     if (httpObj.status === 409 && mongoError.code === 11000) {
+                        /* eslint-disable */
                         alert('el correo electrónico ya está asociada a una cuenta.');
-                    } else {
-
+                        /* eslint-enable */
                     }
                 });
             }
@@ -297,13 +308,13 @@ $(document).ready(function() {
     }
 
     // after all that append the 'add a child' button
-    /* eslint-disable */
     var addButton = document.createElement('button');
+    /* eslint-disable */
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
+    /* eslint-enable */
     addButton.onclick = function() {
       window.location = 'children.html';
     };
-    /* eslint-enable */
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);

@@ -150,7 +150,6 @@ exports.insert = function(docs, collection, callback) {
                     message: err.errmsg
                 });
             } else {
-                console.log(result);
                 callback(result);
             }
         });
