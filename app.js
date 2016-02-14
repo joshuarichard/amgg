@@ -180,27 +180,27 @@ app.post('/api/v1/donor/insert', function(req, res) {
         mongo.insert(donor, donorCollection, function(result) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
-                    if (result.insertedCount === 1) {
-                        res.status(200).send({
-                            success: true,
-                            code: 7,
-                            message: 'Donor successfully inserted.'
-                        });
-                    }
-                } else if (result.code === 11000) {
-                    res.status(409).send({
-                        success: false,
-                        code: result.code,
-                        errmsg: result.errmsg,
-                        message: 'Email already exists.'
-                    });
-                } else {
-                    res.status(500).send({
-                        success: false,
-                        code: result.code,
-                        errmsg: result.errmsg
+                if (result.insertedCount === 1) {
+                    res.status(200).send({
+                        success: true,
+                        code: 7,
+                        message: 'Donor successfully inserted.'
                     });
                 }
+            } else if (result.code === 11000) {
+                res.status(409).send({
+                    success: false,
+                    code: result.code,
+                    errmsg: result.errmsg,
+                    message: 'Email already exists.'
+                });
+            } else {
+                res.status(500).send({
+                    success: false,
+                    code: result.code,
+                    errmsg: result.errmsg
+                });
+            }
         });
     });
 });

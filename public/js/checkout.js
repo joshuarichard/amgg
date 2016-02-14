@@ -272,6 +272,8 @@ $(document).ready(function() {
 
                                     editChildren.error(function(httpObj,
                                                                 textStatus) {
+                                        console.log(httpObj);
+                                        console.log(textStatus);
                                         alert('something bad happened');
                                     });
                                 });
@@ -279,12 +281,14 @@ $(document).ready(function() {
                         });
 
                         auth.error(function(httpObj, textStatus) {
+                            console.log(httpObj);
+                            console.log(textStatus);
                             alert('something really bad happened.');
                         });
                     }
                 });
 
-                insert.error(function(httpObj, textStatus) {
+                insert.error(function(httpObj) {
                     var mongoError = JSON.parse(httpObj.responseText);
                     // email already exists exeption
                     if (httpObj.status === 409 && mongoError.code === 11000) {
@@ -313,7 +317,7 @@ $(document).ready(function() {
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
     /* eslint-enable */
     addButton.onclick = function() {
-      window.location = 'children.html';
+        window.location = 'children.html';
     };
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
