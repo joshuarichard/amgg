@@ -298,7 +298,6 @@ $(document).ready(function() {
     $(".login-submit").click(login);
 
     function login () {
-        // e.preventDefault();
         var email = $('.donor-email').val();
         var password = $('.donor-password').val();
 
