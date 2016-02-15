@@ -122,3 +122,12 @@ footer {
     transform: scale(1.0);
   }
 }
+
+footer {
+	margin-top: auto;
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	margin-bottom:0px;
+}

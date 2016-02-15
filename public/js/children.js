@@ -2,6 +2,8 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
+
+
     // global variable to keep track of the kids in the carousel
     var childrenCurrentlyInSlider = [];
 
@@ -125,6 +127,8 @@ $(document).ready(function() {
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
         img.src = 'data:image/image;base64,' + picture;
+        img.alt = "Picture of Child";
+        img.title = "Picture of Child";
         divImg.appendChild(img);
         slide.appendChild(divImg);
 
