@@ -2,8 +2,6 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-
-
     // global variable to keep track of the kids in the carousel
     var childrenCurrentlyInSlider = [];
 

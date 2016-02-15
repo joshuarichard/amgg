@@ -325,7 +325,4 @@ $(document).ready(function() {
 
         $('.content').append(centerDiv);
     };
-
-
-
 });
