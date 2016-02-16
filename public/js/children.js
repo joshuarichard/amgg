@@ -125,8 +125,8 @@ $(document).ready(function() {
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
         img.src = 'data:image/image;base64,' + picture;
-        img.alt = "Picture of Child";
-        img.title = "Picture of Child";
+        img.alt = 'foto de niño';
+        img.title = 'foto de niño';
         divImg.appendChild(img);
         slide.appendChild(divImg);
 
