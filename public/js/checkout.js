@@ -324,5 +324,5 @@ $(document).ready(function() {
         centerDiv.appendChild(h1Thing);
 
         $('.content').append(centerDiv);
-    }
+    };
 });
