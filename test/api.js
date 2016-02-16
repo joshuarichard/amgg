@@ -36,7 +36,8 @@ describe('child api should', function() {
                    expect(kids[id].hasOwnProperty('nombre')).to.be.true;
                    expect(kids[id].hasOwnProperty('años')).to.be.true;
                    expect(kids[id].hasOwnProperty('cumpleaños')).to.be.true;
-                   expect(kids[id].hasOwnProperty('centro_de_ninos')).to.be.true;
+                   expect(kids[id].hasOwnProperty('centro_de_ninos'))
+                                                                    .to.be.true;
                    expect(kids[id].hasOwnProperty('provincia')).to.be.true;
                    ids.push(id);
                }
