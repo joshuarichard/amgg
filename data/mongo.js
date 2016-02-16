@@ -37,8 +37,8 @@ var log = bunyan.createLogger({
 
 nconf.env()
      .file({
-        file: 'config.json'
-    });
+         file: 'config.json'
+     });
 
 // mongodb://username:password@host:port/databasename
 /*
@@ -150,7 +150,6 @@ exports.insert = function(docs, collection, callback) {
                     message: err.errmsg
                 });
             } else {
-                console.log(result);
                 callback(result);
             }
         });
