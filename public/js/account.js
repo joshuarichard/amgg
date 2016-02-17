@@ -6,10 +6,10 @@ $(document).ready(function() {
     var container = document.getElementById('tab-content');
 
     /* check to see that there is a login token
-     *   if not, prompt user to login 
+     *   if not, prompt user to login
      */
     if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-
+        
         /* create the tabs */
         var tabA = document.createElement('div');
         tabA.id = 'sectionA';
@@ -43,8 +43,7 @@ $(document).ready(function() {
             url: '/api/v1/children/find/' + JSON.stringify(selector),
             type: 'GET',
             success: function(res) {
-                console.log(res);
-                 for (var key in res) {
+                for (var key in res) {
                     var id = key;
 
                     // create child's table row
@@ -62,7 +61,6 @@ $(document).ready(function() {
                         } else if (res.data !== undefined) {
                             picIMG.src = 'data:image/image;base64,' + res.data;
                             picTD.appendChild(picIMG);
-                            
                         }
                     });
 
@@ -126,15 +124,13 @@ $(document).ready(function() {
             }
         });
 
-        var donorInfo = {
-                            'token' : sessionStorage.getItem('token'),
-                            'id' : sessionStorage.getItem('id')
-                        }
         /* Create content for tabB */
         $.ajax({
             url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
             type: 'POST',
-            data: donorInfo,
+            data: {
+                'token' : sessionStorage.getItem('token'),
+                'id' : sessionStorage.getItem('id')},
             success: function(res) {
                 var id = res.key;
 
@@ -248,11 +244,10 @@ $(document).ready(function() {
 
         /* create content for tabC */
 
-        
         table.appendChild(tbody);
         tabA.appendChild(table);
 
-        
+
         //append tabs to the page
         container.appendChild(tabA);
         container.appendChild(tabB);
