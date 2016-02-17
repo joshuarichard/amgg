@@ -45,3 +45,7 @@ table {
 	margin-top: 0;
 	margin-bottom: 0;
 }
+
+.child-img {
+	max-width: 15em;
+}

@@ -324,7 +324,7 @@ $(document).ready(function() {
         loginRequest.error(function(httpObj, textStatus) {
             if (httpObj.status !== 200) {
                 if(httpObj.status === 401) {
-                    alert('correo o contraseña incorrectos');
+                    alert('correo o contraseña incorrectos - email or password incorrect');
                 } else {
                     console.log(httpObj);
                     alert('internal server error. see console for error info.');
