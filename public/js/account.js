@@ -146,13 +146,13 @@ $(document).ready(function() {
 
         /* get children using donor id */
         selector = {'donor_id': sessionStorage.getItem('id')};
-        console.log(selector);
         $.ajax({
             url: '/api/v1/children/find/' + JSON.stringify(selector),
             type: 'GET',
             success: function(res) {
                 console.log("valid login credentials");
                 console.log(res);
+
                 // create child's table row
                 var tr = document.createElement('tr');
 
@@ -172,23 +172,21 @@ $(document).ready(function() {
                     }
                 });
 
-
-
                 var dataTD = document.createElement('td');
-                tr.id = id;
+                tr.id = res.id;
 
                 // set up all child info as vars
                 var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
                                   'Mayo', 'Junio', 'Julio', 'Agosto',
                                   'Septiembre', 'Octubre', 'Noviembre',
                                   'Diciembre'];
-                var date = new Date(res[id].cumpleaños);
+                var date = new Date(res.cumpleaños);
                 var birthday = monthNames[date.getMonth()] + ' ' +
                                  date.getDate() + ', ' + date.getFullYear();
-                var name = res[id].nombre;
-                var age = res[id].años;
-                var gender = res[id].género;
-                var center = res[id].centro_de_ninos;
+                var name = res.nombre;
+                var age = res.años;
+                var gender = res.género;
+                var center = res.centro_de_ninos;
 
                 // create elements for each piece of info
                 var dataDiv = document.createElement('td');
@@ -225,57 +223,11 @@ $(document).ready(function() {
                 // row
                 dataDiv.appendChild(dataTD);
                 tr.appendChild(dataDiv);
-                            
 
-                function deleteButton(callback) {
-                    var buttonTD = document.createElement('td');
-
-                    // create button, add classname for styling, append text
-                    var button = document.createElement('button');
-                    button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
-                    button.appendChild(document.createTextNode('eliminar'));
-
-                    // set on click button function
-                    button.onclick = function() {
-                        // remove child from sessionStorage
-                        var ids = sessionStorage.getItem('cart').split(',');
-                        var id = button.parentNode.parentNode.id;
-                        if (ids.indexOf(id) != -1) {
-                            ids.splice(ids.indexOf(id), 1);
-                            sessionStorage.setItem('cart', ids.toString());
-                        }
-
-                        // remove child from table
-                        button.parentNode.parentNode.remove();
-                    };
-
-                    // add button to table entry and add table entry to row
-                    buttonTD.appendChild(button);
-                    tr.appendChild(buttonTD);
-
-                    callback(true);
-                }
-
-                // first insert pic
-                pic(function(success) {
-                    if(success === true) {
-                        // then append data
-                        data(function(success)  {
-                            if(success === true) {
-                                // then append delete button
-                                deleteButton(function() {
-                                    // append the row to the tbody, and
-                                    // add the tbody to the table
-                                    tbody.appendChild(tr);
-                                    table.appendChild(tbody);
-                                });
-                            }
-                        });
-                    }
-                });
-
-                //append child picture
+                // append the row to the tbody, and
+                // add the tbody to the table
                 tbody.appendChild(tr);
+                table.appendChild(tbody);
             }
 
         });
