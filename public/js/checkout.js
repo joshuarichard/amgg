@@ -428,6 +428,15 @@ $(document).ready(function() {
         if (country === '') {
             nullFields.push('Country field empty.');
         }
+            if (email == '') {
+            nullFields.push('Please enter a email address');
+        }
+        if (password == '') {
+            nullFields.push('Please enter a password');
+        }
+        if (confirmPassword == '') {
+            nullFields.push('Please confirm your password');
+        }
         /*
         if (credit === '') {
             nullFields.push('Credit field empty.');
