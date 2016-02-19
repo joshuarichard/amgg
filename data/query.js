@@ -109,6 +109,7 @@ exports.format = function(selector) {
                     // the month for that year
                     if (j !== 2 && j !== 4 && j !== 6 && j !== 11) {
                         if (j === 12) {
+                            /* eslint-disable */
                             var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
                             var ltDateStr = i + '-' + pad(1, 2) + '-01T00:00:00';
                             gteDate = new Date(gteDateStr);
@@ -158,6 +159,7 @@ exports.format = function(selector) {
                         console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
                         console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
 */
+                        /* eslint-enable */
                         birthday = {
                             'cumpleaños': {
                                 $gte: gteDate,
