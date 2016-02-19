@@ -37,23 +37,42 @@ exports.format = function(selector) {
 
         // for every year in the range
         for (i = startYear; i < endYear; i++) {
-            gteDate = new Date(i + '-' +
-                               pad(parseInt(selector['mes_de_nacimiento']) + 1,
-                               2) + '-01T00:00:00');
-            ltDate = new Date(i + '-' +
-                               pad(parseInt(selector['mes_de_nacimiento']) + 2,
-                               2) +'-01T00:00:00');
+            // if december
+            if (parseInt(selector['mes_de_nacimiento']) + 1 === 12) {
+                gteDate = new Date(i + '-' +
+                                   pad(parseInt(selector['mes_de_nacimiento'])
+                                   + 1, 2) + '-01T00:00:00');
+                ltDate = new Date((i + 1) + '-' + '01-01T00:00:00');
 
-            // create a birthday json object with the month for that year
-            birthday = {
-                'cumpleaños': {
-                    $gte: gteDate,
-                    $lt: ltDate
-                }
-            };
+                // create a birthday json object with the month for that year
+                birthday = {
+                    'cumpleaños': {
+                        $gte: gteDate,
+                        $lt: ltDate
+                    }
+                };
 
-            // and push it to the ranges array
-            ranges.push(birthday);
+                // and push it to the ranges array
+                ranges.push(birthday);
+            } else {
+                gteDate = new Date(i + '-' +
+                                   pad(parseInt(selector['mes_de_nacimiento'])
+                                   + 1, 2) + '-01T00:00:00');
+                ltDate = new Date(i + '-' +
+                                   pad(parseInt(selector['mes_de_nacimiento'])
+                                   + 2, 2) +'-01T00:00:00');
+
+                // create a birthday json object with the month for that year
+                birthday = {
+                    'cumpleaños': {
+                        $gte: gteDate,
+                        $lt: ltDate
+                    }
+                };
+
+                // and push it to the ranges array
+                ranges.push(birthday);
+            }
         }
 
         // delete mes_de_nacimiento from the selector. we don't need it anymore
@@ -69,7 +88,7 @@ exports.format = function(selector) {
         currentOrs = selector['$and'];
         currentOrs.push(orMonths);
         selector['$and'] = currentOrs;
-
+        console.log(JSON.stringify(selector));
     }
 
     // if looking for the birth day...
@@ -85,23 +104,48 @@ exports.format = function(selector) {
         // for every year in the range
         for (i = startYear; i < endYear; i++) {
             for (j = 1; j < 13; j++) {
-                // create a birthday json object with the month for that year
-                gteDate = new Date(i + '-' + pad(j, 2) + '-' +
+                if (parseInt(selector['día_del_nacimiento']) === 31) {
+                    // create a birthday json object with
+                    // the month for that year
+                    if (j !== 2 && j !== 4 && j !== 6 && j !== 11) {
+                        var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
+                        var ltDateStr = i + '-' + pad(j+1, 2) + '-01T00:00:00';
+                        gteDate = new Date(gteDateStr);
+                        ltDate = new Date(ltDateStr);
+
+                        console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
+                        console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
+
+                        birthday = {
+                            'cumpleaños': {
+                                $gte: gteDate,
+                                $lt: ltDate
+                            }
+                        };
+
+                        // and push it to the ranges array
+                        ranges.push(birthday);
+                    }
+                } else {
+                    // create a birthday json object with
+                    // the month for that year
+                    gteDate = new Date(i + '-' + pad(j, 2) + '-' +
                                    pad(parseInt(selector['día_del_nacimiento']),
                                    2) + 'T00:00:00');
-                ltDate = new Date(i + '-' + pad(j, 2) + '-' +
+                    ltDate = new Date(i + '-' + pad(j, 2) + '-' +
                                     pad(parseInt(selector['día_del_nacimiento'])
                                     + 1, 2) +'T00:00:00');
 
-                birthday = {
-                    'cumpleaños': {
-                        $gte: gteDate,
-                        $lt: ltDate
-                    }
-                };
+                    birthday = {
+                        'cumpleaños': {
+                            $gte: gteDate,
+                            $lt: ltDate
+                        }
+                    };
 
-                // and push it to the ranges array
-                ranges.push(birthday);
+                    // and push it to the ranges array
+                    ranges.push(birthday);
+                }
             }
         }
 
