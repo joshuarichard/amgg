@@ -9,6 +9,7 @@ var jwt = require('jsonwebtoken');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
+var query = require('./data/query.js');
 
 var app = express();
 
@@ -67,11 +68,8 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 // GET /api/v1/children/find/:selector find a child's document
 // without an id
 app.get('/api/v1/children/find/:selector', function(req, res) {
-    var selector = JSON.parse(req.params.selector);
-    if (selector.hasOwnProperty('años')) {
-        selector['años'] = parseInt(selector['años']);
-    }
-    // TODO: birth month and birth day selector swizzling
+    var selector = query.format(JSON.parse(req.params.selector));
+
     mongo.find(selector, childCollection, 100, true,
         function(doc) {
             res.send(doc);
