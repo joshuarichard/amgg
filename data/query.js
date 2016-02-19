@@ -108,14 +108,56 @@ exports.format = function(selector) {
                     // create a birthday json object with
                     // the month for that year
                     if (j !== 2 && j !== 4 && j !== 6 && j !== 11) {
+                        if (j === 12) {
+                            var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
+                            var ltDateStr = i + '-' + pad(1, 2) + '-01T00:00:00';
+                            gteDate = new Date(gteDateStr);
+                            ltDate = new Date(ltDateStr);
+/*
+                            console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
+                            console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
+*/
+                            birthday = {
+                                'cumpleaños': {
+                                    $gte: new Date(i, j, 31, 0, 0, 0, 0),
+                                    $lt: new Date(i, 1, 1, 0, 0, 0, 0)
+                                }
+                            };
+
+                            // and push it to the ranges array
+                            ranges.push(birthday);
+                        }
+                    } else {
                         var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
                         var ltDateStr = i + '-' + pad(j+1, 2) + '-01T00:00:00';
                         gteDate = new Date(gteDateStr);
                         ltDate = new Date(ltDateStr);
+/*
+                        console.log('this one');
+                        console.log('this gteq string ' + gteDateStr + ' produces this date ' + new Date(gteDateStr));
+                        console.log('this less string ' + ltDateStr + ' produces this date ' + new Date(ltDateStr));
+                        console.log('this two');
+*/
+                        birthday = {
+                            'cumpleaños': {
+                                $gte: new Date(i, j, 31, 0, 0, 0, 0),
+                                $lt: new Date(i, 1, 1, 0, 0, 0, 0)
+                            }
+                        };
 
+                        // and push it to the ranges array
+                        ranges.push(birthday);
+                    }
+                } else if (parseInt(selector['día_del_nacimiento']) > 28) {
+                    if (j!== 2) {
+                        var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
+                        var ltDateStr = i + '-' + pad(j+1, 2) + '-01T00:00:00';
+                        gteDate = new Date(gteDateStr);
+                        ltDate = new Date(ltDateStr);
+/*
                         console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
                         console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
-
+*/
                         birthday = {
                             'cumpleaños': {
                                 $gte: gteDate,
@@ -126,8 +168,6 @@ exports.format = function(selector) {
                         // and push it to the ranges array
                         ranges.push(birthday);
                     }
-                } else if (date is 28th or 29th?) {
-
                 } else {
                     // create a birthday json object with
                     // the month for that year
@@ -166,5 +206,6 @@ exports.format = function(selector) {
         selector['$and'] = currentOrs;
     }
 
+    console.log(JSON.stringify(selector));
     return selector;
 };
