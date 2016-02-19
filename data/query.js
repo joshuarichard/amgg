@@ -126,6 +126,8 @@ exports.format = function(selector) {
                         // and push it to the ranges array
                         ranges.push(birthday);
                     }
+                } else if (date is 28th or 29th?) {
+
                 } else {
                     // create a birthday json object with
                     // the month for that year
