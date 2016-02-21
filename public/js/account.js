@@ -34,38 +34,43 @@ $(document).ready(function() {
         //create table that will contain a child
         var table = document.createElement('table');
         table.className = 'table table-hover child-selections';
-
         var tbody = document.createElement('tbody');
 
-        /* get children using donor id */
-        selector = {'donor_id': sessionStorage.getItem('id')};
-        $.ajax({
-            url: '/api/v1/children/find/' + JSON.stringify(selector),
-            type: 'GET',
-            success: function(res) {
-                for (var key in res) {
-                    var id = key;
+        function addChildToDonorList(id) {
+            var tr = document.createElement('tr');
 
-                    // create child's table row
-                    var tr = document.createElement('tr');
+            // create child's table row
+            console.log("addChildToDonorList");
+                
+            function pic(id, callback) {
+                //create elements for child picture
+                var picTD = document.createElement('td');
+                var picIMG = document.createElement('img');
+                picIMG.className = 'child-img';
 
-                    //create elements for child picture
-                    var picTD = document.createElement('td');
-                    var picIMG = document.createElement('img');
-                    picIMG.className = 'child-img';
+                //get child picture
+                $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+                    if (res.data.hasOwnProperty('err')){
+                        console.log(res.data.err);
+                    } else if (res.data !== undefined) {
+                        picIMG.src = 'data:image/image;base64,' + res.data;
+                        picTD.appendChild(picIMG);
+                        tr.appendChild(picTD);
+                        console.log(res);
+                        callback(true);
+                    }
+                });
+            }
 
-                    //get child picture
-                    $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                        if (res.data.hasOwnProperty('err')){
-                            console.log(res.data.err);
-                        } else if (res.data !== undefined) {
-                            picIMG.src = 'data:image/image;base64,' + res.data;
-                            picTD.appendChild(picIMG);
-                        }
-                    });
+            function data(id, callback) {
+                // get child data using api
+                $.getJSON('/api/v1/children/id/' + id, function(res) {
+                    if(res.hasOwnProperty('err')) {
+                        console.log(JSON.stringify(data));
+                        callback(false);
+                    } else {
 
                     var dataTD = document.createElement('td');
-                    tr.id = id;
 
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
@@ -111,16 +116,45 @@ $(document).ready(function() {
                     dataTD.appendChild(genderDiv);
                     dataTD.appendChild(centerDiv);
                     dataDiv.appendChild(dataTD);
-                    //append picture
-                    tr.appendChild(picTD);
+                    
                     //append child info
                     tr.appendChild(dataDiv);
 
-                    // append the row to the tbody, and
-                    // add the tbody to the table
-                    tbody.appendChild(tr);
-                    table.appendChild(tbody);
+                    callback(true);
+                    }
+                });
+            }
+
+            pic(id, function(success) {
+                console.log("pic success");
+                if(success === true) {
+                    // then append data
+                    data(id, function(success)  {
+                        console.log("data succes");
+                        if(success === true) {
+                            console.log("append stuff");
+                            tbody.appendChild(tr);
+                            table.appendChild(tbody);
+                        }
+                    });
                 }
+            });
+
+        }
+
+        /* get children using donor id */
+        selector = {'donor_id': sessionStorage.getItem('id')};
+        $.ajax({
+            url: '/api/v1/children/find/' + JSON.stringify(selector),
+            type: 'GET',
+            success: function(res) {
+                console.log(res);
+                for (var key in res) {
+                    var id = key;
+                    addChildToDonorList(id);
+                    tabA.appendChild(table);
+                }
+                
             }
         });
 
@@ -130,7 +164,8 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 'token' : sessionStorage.getItem('token'),
-                'id' : sessionStorage.getItem('id')},
+                'id' : sessionStorage.getItem('id') 
+            },
             success: function(res) {
                 var id = res.key;
 
@@ -149,16 +184,25 @@ $(document).ready(function() {
                 firstNameLabel.className = 'col-md-4 control-label';
                 firstNameLabel.innerHTML = 'Nombre';
                 var firstNameWrapper = document.createElement('div');
-                firstNameWrapper.className = 'col-md-8';
+                firstNameWrapper.className = 'col-md-6';
                 var firstName = document.createElement('span');
                 firstName.id = 'form-first-name';
                 firstName.className = 'form-control';
                 firstName.type = 'text';
                 firstName.name = 'first-name';
                 firstName.innerHTML = res.data.nombre;
+                //create edit button for first name
+                var editFirstNameContainer = document.createElement('div');
+                editFirstNameContainer.className = "edit-button-container";
+                var editFirstName = document.createElement('button');
+                editFirstName.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                editFirstName.id = 'editFirstName';
+                //combine everything into one element
+                editFirstNameContainer.appendChild(editFirstName);
                 firstNameWrapper.appendChild(firstName);      
                 firstNameGroup.appendChild(firstNameLabel);
                 firstNameGroup.appendChild(firstNameWrapper);  
+                firstNameGroup.appendChild(editFirstNameContainer);
                 //create last name
                 var lastNameGroup = document.createElement('div');
                 lastNameGroup.className = 'form-group';
@@ -166,13 +210,21 @@ $(document).ready(function() {
                 lastNameLabel.className = 'col-md-4 control-label';
                 lastNameLabel.innerHTML = 'Apellido';
                 var lastNameWrapper = document.createElement('div');
-                lastNameWrapper.className = 'col-md-8';
+                lastNameWrapper.className = 'col-md-6';
                 var lastName = document.createElement('span');
                 lastName.className = 'form-control';
                 lastName.innerHTML = res.data.apellido;
+                //create edit button for last name
+                var editLastNameContainer = document.createElement('div');
+                editLastNameContainer.className = "edit-button-container";
+                var editLastName = document.createElement('button');
+                editLastName.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                //combine everything into one element
+                editLastNameContainer.appendChild(editLastName);
                 lastNameWrapper.appendChild(lastName);      
                 lastNameGroup.appendChild(lastNameLabel);
-                lastNameGroup.appendChild(lastNameWrapper); 
+                lastNameGroup.appendChild(lastNameWrapper);
+                lastNameGroup.appendChild(editLastNameContainer);
                 //create phone number
                 var phoneGroup = document.createElement('div');
                 phoneGroup.className = 'form-group';
@@ -180,13 +232,21 @@ $(document).ready(function() {
                 phoneLabel.className = 'col-md-4 control-label';
                 phoneLabel.innerHTML = 'Tel&#233;fono';
                 var phoneWrapper = document.createElement('div');
-                phoneWrapper.className = 'col-md-8';
+                phoneWrapper.className = 'col-md-6';
                 var phone = document.createElement('span');
                 phone.className = 'form-control';
                 phone.innerHTML = res.data.teléfono;
+                //create edit button for phone number
+                var editPhoneContainer = document.createElement('div');
+                editPhoneContainer.className = "edit-button-container";
+                var editPhone = document.createElement('button');
+                editPhone.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                //combine everything into one element
+                editPhoneContainer.appendChild(editPhone);
                 phoneWrapper.appendChild(phone);      
                 phoneGroup.appendChild(phoneLabel);
-                phoneGroup.appendChild(phoneWrapper); 
+                phoneGroup.appendChild(phoneWrapper);
+                phoneGroup.appendChild(editPhoneContainer);
                 //create email
                 var emailGroup = document.createElement('div');
                 emailGroup.className = 'form-group';
@@ -194,13 +254,21 @@ $(document).ready(function() {
                 emailLabel.className = 'col-md-4 control-label';
                 emailLabel.innerHTML = 'Correo Electrónico';
                 var emailWrapper = document.createElement('div');
-                emailWrapper.className = 'col-md-8';
+                emailWrapper.className = 'col-md-6';
                 var email = document.createElement('span');
                 email.className = 'form-control';
                 email.innerHTML = res.data.correo_electrónico;
+                //create edit button for email
+                var editEmailContainer = document.createElement('div');
+                editEmailContainer.className = "edit-button-container";
+                var editEmail = document.createElement('button');
+                editEmail.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                //combine everything into one element
+                editEmailContainer.appendChild(editEmail);
                 emailWrapper.appendChild(email);      
                 emailGroup.appendChild(emailLabel);
-                emailGroup.appendChild(emailWrapper); 
+                emailGroup.appendChild(emailWrapper);
+                emailGroup.appendChild(editEmailContainer);
                 //create street
                 var streetGroup = document.createElement('div');
                 streetGroup.className = 'form-group';
@@ -208,20 +276,28 @@ $(document).ready(function() {
                 streetLabel.className = 'col-md-4 control-label';
                 streetLabel.innerHTML = 'Dirección';
                 var streetWrapper = document.createElement('div');
-                streetWrapper.className = 'col-md-8';
+                streetWrapper.className = 'col-md-6';
                 var street = document.createElement('span');
                 street.className = 'form-control';
                 street.innerHTML = res.data.calle;
+                //create edit button for address, this will control street and city
+                var editAddressContainer = document.createElement('div');
+                editAddressContainer.className = "edit-button-container";
+                var editAddress = document.createElement('button');
+                editAddress.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                //combine everything into one element
                 streetWrapper.appendChild(street);      
+                editAddressContainer.appendChild(editAddress);
                 streetGroup.appendChild(streetLabel);
-                streetGroup.appendChild(streetWrapper); 
+                streetGroup.appendChild(streetWrapper);
+                streetGroup.appendChild(editAddressContainer);
                 //create city
                 var cityGroup = document.createElement('div');
                 cityGroup.className = 'form-group';
                 var cityLabel = document.createElement('label');
                 cityLabel.className = 'col-md-4 control-label';
                 var cityWrapper = document.createElement('div');
-                cityWrapper.className = 'col-md-8';
+                cityWrapper.className = 'col-md-6';
                 var city = document.createElement('span');
                 city.className = 'form-control';
                 city.innerHTML = res.data.ciudad;
@@ -243,9 +319,6 @@ $(document).ready(function() {
         });
 
         /* create content for tabC */
-
-        table.appendChild(tbody);
-        tabA.appendChild(table);
 
 
         //append tabs to the page

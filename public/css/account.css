@@ -49,3 +49,8 @@ table {
 .child-img {
 	max-width: 15em;
 }
+
+.edit-button {
+	width: 3.5em;
+    height: 2em;
+}
