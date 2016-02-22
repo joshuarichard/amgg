@@ -311,6 +311,6 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-    };
+    }
     $('#toggle-login').click(toggleLogin);
 });

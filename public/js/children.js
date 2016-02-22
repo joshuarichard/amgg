@@ -288,14 +288,14 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-    };
+    }
     /* When login link is clicked, call toggleLogin */
     $('#toggle-login').click(toggleLogin);
 
     /* When the log in button is clicked, validate credentials and if valid
        send the user to account.html and but the token returned by server into
        session storage */
-    $(".login-submit").click(login);
+    $('.login-submit').click(login);
 
     function login () {
         var email = $('.donor-email').val();
@@ -315,22 +315,23 @@ $(document).ready(function() {
         // go to the donor portal
         loginRequest.success(function(res) {
               //save login token to session storage
-              sessionStorage.setItem('token', res.token);
-              sessionStorage.setItem('id', res.id);
-              window.location = 'account.html';
+            sessionStorage.setItem('token', res.token);
+            sessionStorage.setItem('id', res.id);
+            window.location = 'account.html';
         });
 
         // on login error, check error and inform user accordingly
         loginRequest.error(function(httpObj, textStatus) {
             if (httpObj.status !== 200) {
                 if(httpObj.status === 401) {
+                    /* eslint-disable */
                     alert('correo o contraseña incorrectos - email or password incorrect');
+                    /* eslint-enable */
                 } else {
-                    console.log(httpObj);
+                    console.log(httpObj + ' ' + textStatus);
                     alert('internal server error. see console for error info.');
                 }
             }
         });
-    };
-
+    }
 });
