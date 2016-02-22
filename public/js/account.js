@@ -56,7 +56,6 @@ $(document).ready(function() {
                         picIMG.src = 'data:image/image;base64,' + res.data;
                         picTD.appendChild(picIMG);
                         tr.appendChild(picTD);
-                        console.log(res);
                         callback(true);
                     }
                 });
@@ -139,7 +138,6 @@ $(document).ready(function() {
                     });
                 }
             });
-
         }
 
         /* get children using donor id */
@@ -320,12 +318,10 @@ $(document).ready(function() {
 
         /* create content for tabC */
 
-
         //append tabs to the page
         container.appendChild(tabA);
         container.appendChild(tabB);
         container.appendChild(tabC);
-
     }
     else {
         alert('No login information found, please login');
