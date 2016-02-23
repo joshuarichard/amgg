@@ -178,8 +178,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 });
 
 // POST /api/v1/donor/insert to insert donor
-// TODO: only client
-app.post('/api/v1/donor/insert', function(req, res) {
+app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
     password.encrypt(donor['password'], function(hash, salt) {
         donor['password'] = hash;
@@ -188,10 +187,12 @@ app.post('/api/v1/donor/insert', function(req, res) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
+                    // /api/v1/children/id/id_from_req.body
+                    // and change status to sponsored
+                    // TODO: then delete cart collection entry?
                     res.status(200).send({
                         success: true,
-                        code: 7,
-                        message: 'Donor successfully inserted.'
+                        message: 'Donor inserted and child sponsored.'
                     });
                 }
             } else if (result.code === 11000) {
@@ -212,6 +213,25 @@ app.post('/api/v1/donor/insert', function(req, res) {
     });
 });
 
+/*
+var insert = $.ajax({
+    url: '/api/v1/donor/sponsor',
+    type: 'POST',
+    data: {
+        'donor': {
+            'nombre': firstName,
+            'apellido': lastName,
+            'teléfono': phone,
+            'calle': street,
+            'ciudad': city,
+            'país': country,
+            'correo_electrónico': email,
+            'password': password
+        },
+        'children': sessionStorage.getItem('cart').split(',')
+    }
+});
+*/
 /* PUT /api/v1/donor/id/:id to edit a donor
  * {
  *   "token": "token_goes_here",

@@ -26,8 +26,7 @@ var centro_de_ninos = [
 var status = [
     'New Child - In Process', 'Sponsored',
     'Waiting for Sponsor - No Prior Sponsor',
-    'Waiting for Sponsor - Discontinued', 'Additional Sponsor Needed',
-    'No Longer in the Program - Deleted', 'Review Requested', 'Duplicate'
+    'Waiting for Sponsor - Discontinued', 'Additional Sponsor Needed'
 ];
 
 var nombre = [
@@ -79,56 +78,6 @@ var provincia = [
     'Zacapa'
 ];
 
-var ocupacion = [
-    'plumber', 'mailman', 'firefighter', 'computer programmer', 'dogwatcher',
-    'police officer', 'carpenter', 'accountant', 'writer', 'poet', 'musician',
-    'detective', 'circus clown', 'dentist', 'vet', 'zookeeper',
-    'animal trainer', 'nanny', 'maid', 'gardener', 'butler', 'contracter',
-    'actor', 'director', 'producer', 'editor', 'teacher', 'principal',
-    'janitor', 'car salesman', 'manager', 'president'
-];
-
-var padres = [
-    'padre',
-    'madre',
-    'abuelo',
-    'abuela',
-    'tio',
-    'tia',
-    'hermano',
-    'hermana'
-];
-
-var abscent = [
-    'true',
-    'false'
-];
-
-var religion_de_la_familia = [
-    'Christianity',
-    'Buddhism',
-    'Islam',
-    'Hinduism',
-    'Atheism',
-    'Baha\'i'
-];
-
-var church = [
-    'Red Church',
-    'Blue Church',
-    'Green Church',
-    'Orange Church',
-    'Black Church',
-    'White Church',
-    'Brown Church',
-    'Purple Church'
-];
-
-var estado_civil_de_los_padres = [
-    'Married',
-    'Divorced'
-];
-
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() *
                    (end.getTime() - start.getTime()));
@@ -165,46 +114,6 @@ function generateAddress() {
     return address;
 }
 
-// generate random number of guardian mini-documents
-function generateGuardians() {
-    var guardians = {};
-    var numOfGuardians = randomNumber(1, 4);
-    for(var x = 0; x < numOfGuardians; x++) {
-        var guardian = {
-            'relacion': padres[Math.floor(Math.random() * padres.length)],
-            'nombre': nombre[Math.floor(Math.random() * nombre.length)],
-            'apellido': apellido[Math.floor(Math.random() * apellido.length)],
-            'ocupación': ocupacion[Math.floor(Math.random() *
-                         ocupacion.length)],
-            'ingreso_mensual_en_usd': Math.floor((Math.random() * 100000) + 1),
-            'cumpleaños': randomDate(new Date(1950, 00, 01),
-                                     new Date(2000, 00, 01))
-        };
-        guardians['guardian_' + x] = guardian;
-    }
-    return guardians;
-}
-
-// generate random number of hermanos mini-documents
-function generateHermanos() {
-    var hermanos = {};
-    var numOfHermanos = randomNumber(1, 4);
-    for(var x = 0; x < numOfHermanos; x++) {
-        var hermano = {
-            'nombre': nombre[Math.floor(Math.random() * nombre.length)],
-            'apellido': apellido[Math.floor(Math.random() * apellido.length)],
-            'cumpleaños': randomDate(new Date(1990, 00, 01), new Date()),
-            'grado_u_ocupación': randomNumber(0, 12),
-            'género': genero[Math.floor(Math.random() * genero.length)],
-            'status': status[Math.floor(Math.random() * status.length)],
-            'amg_id':  Math.floor((Math.random() * 99999999) + 1),
-            'alt_id': Math.floor((Math.random() * 99999999) + 1)
-        };
-        hermanos['hermanos_' + x] = hermano;
-    }
-    return hermanos;
-}
-
 function generateDocument(callback) {
     var birthday = randomDate(new Date(2000, 0, 1), new Date());
     var amgId = Math.floor((Math.random() * 99999999) + 1);
@@ -215,13 +124,11 @@ function generateDocument(callback) {
                 ' with amg_id ' + amgId);
 
     // insert picture for this child and get the image_id
-    pics.insert(name + '_' + lastName, { amg_id: amgId}, function(fileId) {
+    pics.insert(name + '_' + lastName, {}, function(fileId) {
         var doc = {
             'amg_id':  amgId,
-            'alt_id': Math.floor((Math.random() * 99999999) + 1),
             'image_id': fileId,
             'status': status[Math.floor(Math.random() * status.length)],
-            'patrocinado_por': randomDate(new Date(2005, 00, 01), new Date()),
             'nombre': name,
             'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
             'apellido': lastName,
@@ -236,26 +143,8 @@ function generateDocument(callback) {
             'provincia': provincia[Math.floor(Math.random() *
                                    provincia.length)],
             'código_postal': Math.floor((Math.random() * (99999) + 1)),
-            'patrocinador_id': Math.floor((Math.random() * (99999) + 1)),
-            'patrocinador_nombre': nombre[Math.floor(Math.random() *
-                                   nombre.length)],
-            'última_actualización': randomDate(new Date(2013, 00, 01),
-                                               new Date()),
-            'abscent_padre': abscent[Math.floor(Math.random() *
-                                     abscent.length)],
-            'abscent_madre': abscent[Math.floor(Math.random() *
-                                     abscent.length)],
-            'religión_de_la_familia': religion_de_la_familia[Math.floor(
-                                      Math.random() *
-                                      religion_de_la_familia.length)],
-            'iglesia_de_la_familia': church[Math.floor(Math.random() *
-                                     church.length)],
-            'estado_civil_de_los_padres': estado_civil_de_los_padres[
-                                          Math.floor(Math.random() *
-                                          estado_civil_de_los_padres.length)],
-            'comidas_al_día_en_el_hogar': randomNumber(0, 3),
-            'guardians': generateGuardians(),
-            'hermanos': generateHermanos()
+            'aficiones': 'Reading, playing baseball, and swinging.',
+            'biodata': 'He/she needs help because...'
         };
         callback(doc);
     });
