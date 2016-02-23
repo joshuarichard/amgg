@@ -10,12 +10,11 @@ exports.format = function(selector) {
 
     function pad(n, width) {
         n = n + '';
-        return n.length >= width ? n : new Array(width - n.length + 1).join(0)
-               + n;
+        return n.length >= width ? n : new Array(width-n.length + 1).join(0)+n;
     }
 
     // variables up here to make eslint happy
-    var currentYear, startYear, endYear, i, j,
+    var currentYear, startYear, endYear, i, /*j,*/
         gteDate, ltDate, birthday, currentOrs = [], ranges = [];
 
     // selector swizzingly here we go......
@@ -92,6 +91,7 @@ exports.format = function(selector) {
 
     // if looking for the birth day...
     if (selector.hasOwnProperty('día_del_nacimiento')) {
+        /* eslint-disable */
         /*
         // AMGG only takes in kids 3-18. do 1-18 just in case.
         currentYear = new Date().getFullYear();
@@ -193,6 +193,7 @@ exports.format = function(selector) {
             }
         }
         */
+        /* eslint-enable */
 
         // delete día_del_nacimiento from the selector. we don't need it anymore
         // and it's not in the child docs

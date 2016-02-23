@@ -173,6 +173,30 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 // POST /api/v1/donor/insert to insert donor
 app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
+
+    // editEachChild function to add the 'status': 'sponsored' flag to each kid
+    function editEachChild(array, callback) {
+        array = array.slice(0);
+
+        function editChild() {
+            var id = array.pop();
+            mongo.edit(id, {'status': 'Sponsored'},
+                       childCollection, function() {
+                           if(array.length > 0) {
+                               editChild();
+                           } else {
+                               callback();
+                           }
+                       });
+        }
+
+        if(array.length > 0) {
+            editChild();
+        } else {
+            callback();
+        }
+    }
+
     password.encrypt(donor['password'], function(hash, salt) {
         donor['password'] = hash;
         donor['salt'] = salt;
@@ -183,28 +207,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     // TODO: then delete cart collection entry?
 
                     // recursive function to manage asynch for each id
-                    function editEachChild(array, callback) {
-                        array = array.slice(0);
-
-                        function editChild() {
-                            var id = array.pop();
-                            mongo.edit(id, {'status': 'Sponsored'},
-                                       childCollection, function() {
-                                if(array.length > 0) {
-                                     editChild();
-                                } else {
-                                     callback();
-                                }
-                            });
-                        }
-
-                        if(array.length > 0) {
-                            editChild();
-                        } else {
-                            callback();
-                        }
-                    };
-
                     editEachChild(donor['niños_patrocinadoras'], function() {
                         res.status(200).send({
                             success: true,
