@@ -88,11 +88,11 @@ exports.format = function(selector) {
         currentOrs = selector['$and'];
         currentOrs.push(orMonths);
         selector['$and'] = currentOrs;
-        console.log(JSON.stringify(selector));
     }
 
     // if looking for the birth day...
     if (selector.hasOwnProperty('día_del_nacimiento')) {
+        /*
         // AMGG only takes in kids 3-18. do 1-18 just in case.
         currentYear = new Date().getFullYear();
         startYear = currentYear - 18;
@@ -109,15 +109,15 @@ exports.format = function(selector) {
                     // the month for that year
                     if (j !== 2 && j !== 4 && j !== 6 && j !== 11) {
                         if (j === 12) {
-                            /* eslint-disable */
+                            // eslint-disable
                             var gteDateStr = i + '-' + pad(j, 2) + '-31T00:00:00';
                             var ltDateStr = i + '-' + pad(1, 2) + '-01T00:00:00';
                             gteDate = new Date(gteDateStr);
                             ltDate = new Date(ltDateStr);
-/*
+
                             console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
                             console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
-*/
+
                             birthday = {
                                 'cumpleaños': {
                                     $gte: new Date(i, j, 31, 0, 0, 0, 0),
@@ -133,12 +133,12 @@ exports.format = function(selector) {
                         var ltDateStr = i + '-' + pad(j+1, 2) + '-01T00:00:00';
                         gteDate = new Date(gteDateStr);
                         ltDate = new Date(ltDateStr);
-/*
+
                         console.log('this one');
                         console.log('this gteq string ' + gteDateStr + ' produces this date ' + new Date(gteDateStr));
                         console.log('this less string ' + ltDateStr + ' produces this date ' + new Date(ltDateStr));
                         console.log('this two');
-*/
+
                         birthday = {
                             'cumpleaños': {
                                 $gte: new Date(i, j, 31, 0, 0, 0, 0),
@@ -155,11 +155,11 @@ exports.format = function(selector) {
                         var ltDateStr = i + '-' + pad(j+1, 2) + '-01T00:00:00';
                         gteDate = new Date(gteDateStr);
                         ltDate = new Date(ltDateStr);
-/*
+
                         console.log('this gteq string ' + gteDateStr + ' produces this date ' + gteDate);
                         console.log('this less string ' + ltDateStr + ' produces this date ' + ltDate);
-*/
-                        /* eslint-enable */
+
+                        // eslint-enable
                         birthday = {
                             'cumpleaños': {
                                 $gte: gteDate,
@@ -192,12 +192,14 @@ exports.format = function(selector) {
                 }
             }
         }
+        */
 
         // delete día_del_nacimiento from the selector. we don't need it anymore
         // and it's not in the child docs
         delete selector['día_del_nacimiento'];
 
         // then put all of the ranges into an or
+        /*
         var orDays = {
             '$or': ranges
         };
@@ -206,8 +208,8 @@ exports.format = function(selector) {
         currentOrs = selector['$and'];
         currentOrs.push(orDays);
         selector['$and'] = currentOrs;
+        */
     }
 
-    console.log(JSON.stringify(selector));
     return selector;
 };
