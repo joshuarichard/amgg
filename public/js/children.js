@@ -2,77 +2,92 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    // define a child pool to fill on an api call and reuse continuously
-    var childPool = {};
+    // global variable to keep track of the kids in the carousel
+    var childrenCurrentlyInSlider = [];
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
         selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
                            {'status': 'Waiting for Sponsor - Discontinued'},
                            {'status': 'Additional Sponsor Needed'}];
-        // get all unsponsored kids and pick one to display in the
-        // carousel
+
+        // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
             function(res){
                 if(res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
                 } else if (JSON.stringify(res) === '{}') {
-                    /* eslint-disable */
-                    alert('no hay niños que coincidan con sus criterios de búsqueda.');
-                    /* eslint-enable */
-                    callback();
+                    callback({'err': 'no children match that selector'});
                 } else {
                     childPool = res;
-                    callback();
+                    callback(childPool);
                 }
             });
     }
 
-    // select a child from the childPool variable
-    function selectChild(callback) {
-        // calculate the resLength for random child bounds
-        var key, resLength = 0;
-        for(key in childPool) {
-            if(childPool.hasOwnProperty(key)) {
-                resLength++;
-            }
+    /* get a child from the child pool. returns the child as a json object that
+     * looks like this.
+     * {
+     *    id: string,
+     *    name: string,
+     *    age: int,
+     *    gender: string,
+     *    location: string,
+     *    picture: base64 string
+     * }
+     */
+    function getChild(childPool, callback) {
+        // get an array of child ids by mapping the keys in the child pool
+        // to an array called 'ids'
+        var ids = $.map(childPool, function (value, key) {
+            return key;
+        });
+
+        // randomly pick one of those ids
+        var id = ids[Math.floor(Math.random() * ids.length)];
+
+        // init the cart as an array from sessionStorage
+        var cart = [];
+        if (sessionStorage.getItem('cart') != null &&
+            sessionStorage.getItem('cart') != '') {
+            cart = sessionStorage.getItem('cart').split(',');
         }
 
-        // use the resLength to randomly pick one of the
-        // unsponsored children within the bounds
-        // ---------------------------------------------------------
-        // TODO: this doesn't work when the response is a low number
-        // (años = 3 returns 2 children from call but only ever shows augustin)
-        var ran = Math.floor(Math.random() * (resLength - 0 + 1) + 1);
+        // if the child isn't in the cart and also isn't in the slider
+        if (cart.indexOf(id) === -1 &&
+            childrenCurrentlyInSlider.indexOf(id) === -1) {
 
-        // now iterate over the res with an index (i) and match it
-        // to the random number.
-        var i = 0;
-        for (key in childPool) {
-            // if index === random number then pick this child
-            if (i === ran && childPool.hasOwnProperty(key) &&
-                             $('#' + key).length === 0) {
-                var id = key;
-                var name = childPool[id].nombre;
-                var age = childPool[id].años;
-                var gender = childPool[id].género;
-                var location = childPool[id].centro_de_ninos;
-                // get the picture and load it in
-                $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                    var child = {
-                        'id': id,
-                        'name': name,
-                        'age': age,
-                        'gender': gender,
-                        'location': location,
-                        'picture': res.data
-                    };
+            // then add the child to the slider
+            var name = childPool[id].nombre;
+            var age = childPool[id].años;
+            var gender = childPool[id].género;
+            var location = childPool[id].provincia;
+
+            // get the picture and load it in
+            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+                var child = {
+                    'id': id,
+                    'name': name,
+                    'age': age,
+                    'gender': gender,
+                    'location': location,
+                    'picture': res.data
+                };
+                childrenCurrentlyInSlider.push(id);
+                callback(child);
+            });
+        } else {
+             // if the child is already in the slider or cart but there
+             // are more children in the child pool
+            if (childrenCurrentlyInSlider.length !== ids.length &&
+               childrenCurrentlyInSlider.length < ids.length &&
+               cart.indexOf(id) === -1) {
+                getChild(childPool, function(child) {
                     callback(child);
                 });
-                break;
             } else {
-                i++;
+                callback({'err': 'no more children available.'});
             }
         }
     }
@@ -110,6 +125,8 @@ $(document).ready(function() {
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
         img.src = 'data:image/image;base64,' + picture;
+        img.alt = 'foto de niño';
+        img.title = 'foto de niño';
         divImg.appendChild(img);
         slide.appendChild(divImg);
 
@@ -158,28 +175,42 @@ $(document).ready(function() {
 
     // add a slide to the carousel given slide html
     function addSlide(slide) {
+        // remove the pending spinner
+        $('.spinner').remove();
+
+        // create the item div
         var item = document.createElement('div');
         item.className = 'item';
         item.appendChild(slide);
+
+        // add the item to the carousel
         owl.data('owlCarousel').addItem(item);
     }
 
-    /* 4 step process for adding a child
+    /* insertChild()
+     * 4 step process for adding a child
+     * ---------------------------------
      * 1. fill the child pool based on a selector  - fillChildPool()
-     * 2. select a child from that pool            - selectChild()
+     * 2. select a child from that pool            - getChild()
      * 3. build the html for that child            - buildHTMLforSlide()
      * 4. add the html to the slider               - addSlide()
-     *
-     * all of these are handled by insertChild()
      */
-    function insertChildren(selector, numOfChildren, callback) {
-        fillChildPool(selector, function() {
-            for (var x = 0; x < numOfChildren; x++) {
-                selectChild(function(child) {
-                    buildHTMLforSlide(child, function(slide) {
-                        addSlide(slide);
-                        callback();
-                    });
+    function insertChild(selector) {
+        fillChildPool(selector, function(childPool) {
+            // if the child pool is empty, return false
+            if (childPool.hasOwnProperty('err')) {
+                alert('no hay niños de la búsqueda');
+            } else {
+                getChild(childPool, function(child) {
+                    // if there's an err in the response that means the child is
+                    // in the cart but there are no more children to display
+                    if (child.hasOwnProperty('err')) {
+                        alert('no hay niños de la búsqueda');
+                    } else {
+                        buildHTMLforSlide(child, function(slide) {
+                            addSlide(slide);
+                        });
+                    }
                 });
             }
         });
@@ -203,16 +234,30 @@ $(document).ready(function() {
         owl.trigger('owl.next');
     });
 
-    // initially load 5 children onto the page
-    insertChildren({}, 5, function() {
-        console.log('initially loaded one child.');
-    });
+    // initially load a child onto the page
+    insertChild({});
 
     // add a child to the slide button
     $('#add-button').click(function() {
-        insertChildren({}, 1, function() {
-            console.log('inserted child.');
-        });
+        var selector = {};
+        if($('#genderSearch').text() !== 'Género') {
+            selector['género'] = $('#genderSearch').text();
+        }
+        if($('#locationSearch').text() !== 'Provincia') {
+            selector['provincia'] = $('#locationSearch').text();
+        }
+        if($('#ageSearch').text() !== 'Años') {
+            selector['años'] = $('#ageSearch').text();
+        }
+        /*
+        if($('#search-birthmonth').text() !== 'Birth Month') {
+            selector[''] = $('#search-birthmonth').text();
+        }
+        if($('#search-birthday').text() !== 'Birth Day') {
+            selector[''] = $('#search-birthday').text();
+        }
+        */
+        insertChild(selector);
     });
 
     /**
@@ -247,18 +292,32 @@ $(document).ready(function() {
             owl.data('owlCarousel').removeItem();
         }
 
-        // loop 5 times for 5 different kids
-        insertChildren(selector, 5, function() {
-            if ($('.child-slide').length === 0) {
-                insertChildren({}, 5, function() {
-                    console.log('no children matched search criteria.');
-                });
-            }
-            console.log('inserted search children.');
-        });
+        // recreate pending spinner and add to page
+        spinnerDiv = document.createElement('div');
+        bounceDiv1 = document.createElement('div');
+        bounceDiv2 = document.createElement('div');
+        bounceDiv3 = document.createElement('div');
+
+        spinnerDiv.className = 'spinner';
+        bounceDiv1.className = 'bounce1';
+        bounceDiv2.className = 'bounce2';
+        bounceDiv3.className = 'bounce3';
+
+        spinnerDiv.appendChild(bounceDiv1);
+        spinnerDiv.appendChild(bounceDiv2);
+        spinnerDiv.appendChild(bounceDiv3);
+
+        var container = document.getElementById('spinner-and-slider');
+        container.insertBefore(spinnerDiv, container.childNodes[0]);
+
+        // empty the array that keeps track of the children in the slider
+        childrenCurrentlyInSlider = [];
+
+        // insert a child matching the selector
+        insertChild(selector);
     });
 
-    /* Dropdown functionality, this while change the title of the
+    /* Dropdown functionality, this will change the title of the
        dropdown to the option selected by the user */
     $('#search-gender li > a').click(function(){
         $('#genderSearch').text(this.innerHTML);

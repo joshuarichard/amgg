@@ -17,6 +17,19 @@ table {
 	display: table;
 }
 
+footer {
+	margin-top: auto;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	margin-bottom:0px;
+}
+
+.center {
+  margin: 200px 50px 100px;
+	text-align: center;
+}
+
 /*Class Styles*/
 .header {
 	text-align: left;

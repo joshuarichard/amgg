@@ -35,9 +35,10 @@ var log = bunyan.createLogger({
     ]
 });
 
-nconf.file({
-    file: 'config.json'
-});
+nconf.env()
+     .file({
+         file: 'config.json'
+     });
 
 // mongodb://username:password@host:port/databasename
 /*
@@ -53,8 +54,8 @@ var url = 'mongodb://' +
           nconf.get('mongo:db');
 */
 
-// MONGO_PORT_27017_TCP_ADDR is the linked container's IP address (for deploy)
-var host = nconf.get('MONGO_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
+// MONGODB_PORT_27017_TCP_ADDR is the linked container's IP address (for deploy)
+var host = nconf.get('MONGODB_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
 var port = nconf.get('mongo:port');
 var dbName = nconf.get('mongo:db');
 
@@ -151,9 +152,14 @@ exports.insert = function(docs, collection, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
                 log.error('error in insert().insertDoc() message: ' + err);
-                // TODO: callback with error in JSON
+                callback({
+                    success: false,
+                    code: err.code,
+                    message: err.errmsg
+                });
+            } else {
+                callback(result);
             }
-            callback(result);
         });
     };
 
@@ -166,9 +172,10 @@ exports.insert = function(docs, collection, callback) {
         bulk.execute(function(err, result) {
             if (err) {
                 log.error('error in insert().bulkInsert() message: ' + err);
-                // TODO: callback with error in JSON
+                callback(err);
+            } else {
+                callback(result);
             }
-            callback(result);
         });
     };
 
@@ -424,7 +431,8 @@ function trim(doc) {
                 'años': doc[miniDoc].años,
                 'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
-                'centro_de_ninos': doc[miniDoc].centro_de_ninos
+                'centro_de_ninos': doc[miniDoc].centro_de_ninos,
+                'provincia': doc[miniDoc].provincia
             };
         // else this is only one document
         } else {
@@ -433,7 +441,8 @@ function trim(doc) {
                 'años': doc.años,
                 'cumpleaños': doc.cumpleaños,
                 'género': doc.género,
-                'centro_de_ninos': doc.centro_de_ninos
+                'centro_de_ninos': doc.centro_de_ninos,
+                'provincia': doc.provincia
             };
             break;
         }

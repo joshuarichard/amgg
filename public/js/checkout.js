@@ -211,72 +211,92 @@ $(document).ready(function() {
             }
             alert(alertMessage);
         } else {
-            if (password === confirmPassword) {
-                var donor = {
-                    'nombre': firstName,
-                    'apellido': lastName,
-                    'teléfono': phone,
-                    'calle': street,
-                    'ciudad': city,
-                    'país': country,
-                    'correo_electrónico': email,
-                    'password': password
-                };
-
-                // insert donor, update children with sponsored flag and donor
-                // _id
-                $.post('/api/v1/donor/insert', donor, function(result) {
-                    var body = {
+            if (password !== confirmPassword) {
+                alert('las contraseñas no coinciden.');
+            } else {
+                // insert donor, update child status and donor_id
+                var insert = $.ajax({
+                    url: '/api/v1/donor/insert',
+                    type: 'POST',
+                    data: {
+                        'nombre': firstName,
+                        'apellido': lastName,
+                        'teléfono': phone,
+                        'calle': street,
+                        'ciudad': city,
+                        'país': country,
                         'correo_electrónico': email,
                         'password': password
-                    };
-                    if(result.n + result.ok === 2) {
-                        // get the _id of the donor just inserted using
-                        // /api/v1/donor/auth
-                        $.ajax({
+                    }
+                });
+
+                insert.success(function(res) {
+                    console.log(res);
+                    if(res.success === true) {
+                        // get the _id of the donor just inserted
+                        var auth = $.ajax({
                             url: '/api/v1/donor/auth',
                             type: 'POST',
-                            data: body,
-                            success: function(res) {
+                            data: {
+                                'correo_electrónico': email,
+                                'password': password
+                            }
+                        });
+
+                        auth.success(function(res) {
+                            if (res.success === true) {
                                 var ids = sessionStorage.getItem('cart')
                                                         .split(',');
-                                // for each child in sessionStore add the
-                                // donor _id
+                                // for each child in sessionStore and the new
+                                // donor's _id
                                 ids.forEach(function(id) {
-                                    // TODO: right now donor_id is only
-                                    // going to be a string. look into
-                                    // storing this as a real ObjectId.
-                                    var changes = {
-                                        'changes': {
-                                            'status': 'Sponsored',
-                                            'donor_id': res['id']
-                                        }
-                                    };
-                                    // ajax PUT on /api/v1/children/id/:id with
-                                    // changes
-                                    $.ajax({
+                                    // TODO: donor_id is string. ObjectId?
+                                    var editChildren = $.ajax({
                                         url: '/api/v1/children/id/' + id,
                                         type: 'PUT',
-                                        data: changes,
-                                        // this success was happening even
-                                        // when getting a "changes = null"
-                                        // error from mongo. really need to
-                                        // look into http response error
-                                        // codes (401, 404, etc.)
-                                        success: function() {
-                                            window.location =
-                                                        'contribution.html';
+                                        data: {
+                                            'changes': {
+                                                'status': 'Sponsored',
+                                                'donor_id': res['id']
+                                            }
                                         }
+                                    });
+
+                                    editChildren.success(function() {
+                                        if (displayed === false) {
+                                            displayed = true;
+                                            sessionStorage.setItem('cart', '');
+                                            displaySuccess();
+                                        }
+                                    });
+
+                                    editChildren.error(function(httpObj,
+                                                                textStatus) {
+                                        console.log(httpObj);
+                                        console.log(textStatus);
+                                        alert('something bad happened');
                                     });
                                 });
                             }
                         });
-                    } else {
-                        console.log('Something bad happened on donor insert.');
+
+                        auth.error(function(httpObj, textStatus) {
+                            console.log(httpObj);
+                            console.log(textStatus);
+                            alert('something really bad happened.');
+                        });
                     }
                 });
-            } else {
-                alert('las contraseñas no coinciden.');
+
+                insert.error(function(httpObj) {
+                    var mongoError = JSON.parse(httpObj.responseText);
+                    // email already exists exeption
+                    if (httpObj.status === 409 && mongoError.code === 11000) {
+                        /* eslint-disable */
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                        /* eslint-enable */
+                    }
+                });
             }
         }
     });
@@ -292,13 +312,13 @@ $(document).ready(function() {
     }
 
     // after all that append the 'add a child' button
-    /* eslint-disable */
     var addButton = document.createElement('button');
+    /* eslint-disable */
     addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
+    /* eslint-enable */
     addButton.onclick = function() {
         window.location = 'children.html';
     };
-    /* eslint-enable */
 
     addButton.appendChild(document.createTextNode('agregar otro niño'));
     container.appendChild(addButton);
@@ -313,4 +333,25 @@ $(document).ready(function() {
         }
     };
     $('#toggle-login').click(toggleLogin);
+
+    var displayed = false;
+    // Displays Success Page after ajax call
+    function displaySuccess (){
+        $('#children-to-sponsor').remove();
+        $('#donor-info').remove();
+
+        var centerDiv = document.createElement('div');
+        var h1Thing = document.createElement('h1');
+        var pThing = document.createElement('p');
+
+        centerDiv.className = 'center';
+        /* eslint-disable */
+        h1Thing.innerHTML = "Se lo agradezco!(Formal form for 'Thank you' in spanish)";
+        /* eslint-enable */
+        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy';
+        h1Thing.appendChild(pThing);
+        centerDiv.appendChild(h1Thing);
+
+        $('.content').append(centerDiv);
+    }
 });
