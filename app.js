@@ -76,20 +76,13 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         });
 });
 
-// PUT /api/v1/children/id/:id edit child document (mainly for
-// donor use case)
-// TODO: only client
-app.put('/api/v1/children/id/:id', function(req, res) {
-    mongo.edit(req.params.id, req.body.changes, childCollection, function() {
-        res.send('good');
-    });
-});
-
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
     mongo.getPic(req.params.id, childCollection, function(data) {
-        var dataJSON = { 'data': data };
-        res.send(dataJSON);
+        res.status(200).send({
+            'id': req.params.id,
+            'data': data
+        });
     });
 });
 
@@ -187,12 +180,36 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
-                    // /api/v1/children/id/id_from_req.body
-                    // and change status to sponsored
                     // TODO: then delete cart collection entry?
-                    res.status(200).send({
-                        success: true,
-                        message: 'Donor inserted and child sponsored.'
+
+                    // recursive function to manage asynch for each id
+                    function editEachChild(array, callback) {
+                        array = array.slice(0);
+
+                        function editChild() {
+                            var id = array.pop();
+                            mongo.edit(id, {'status': 'Sponsored'},
+                                       childCollection, function() {
+                                if(array.length > 0) {
+                                     editChild();
+                                } else {
+                                     callback();
+                                }
+                            });
+                        }
+
+                        if(array.length > 0) {
+                            editChild();
+                        } else {
+                            callback();
+                        }
+                    };
+
+                    editEachChild(donor['niños_patrocinadoras'], function() {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Donor inserted and child sponsored.'
+                        });
                     });
                 }
             } else if (result.code === 11000) {
@@ -213,25 +230,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
     });
 });
 
-/*
-var insert = $.ajax({
-    url: '/api/v1/donor/sponsor',
-    type: 'POST',
-    data: {
-        'donor': {
-            'nombre': firstName,
-            'apellido': lastName,
-            'teléfono': phone,
-            'calle': street,
-            'ciudad': city,
-            'país': country,
-            'correo_electrónico': email,
-            'password': password
-        },
-        'children': sessionStorage.getItem('cart').split(',')
-    }
-});
-*/
 /* PUT /api/v1/donor/id/:id to edit a donor
  * {
  *   "token": "token_goes_here",
