@@ -7,9 +7,13 @@ $(document).ready(function() {
 
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
-        selector['$or'] = [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                           {'status': 'Waiting for Sponsor - Discontinued'},
-                           {'status': 'Additional Sponsor Needed'}];
+        var ors = [{
+            '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
+                               {'status': 'Waiting for Sponsor - Discontinued'},
+                               {'status': 'Additional Sponsor Needed'}]
+        }];
+
+        selector['$and'] = ors;
 
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
@@ -195,25 +199,68 @@ $(document).ready(function() {
      * 3. build the html for that child            - buildHTMLforSlide()
      * 4. add the html to the slider               - addSlide()
      */
-    function insertChild(selector) {
+    function insertChild(selector, callback) {
         fillChildPool(selector, function(childPool) {
             // if the child pool is empty, return false
             if (childPool.hasOwnProperty('err')) {
                 alert('no hay niños de la búsqueda');
+                callback({success: false});
             } else {
                 getChild(childPool, function(child) {
                     // if there's an err in the response that means the child is
                     // in the cart but there are no more children to display
                     if (child.hasOwnProperty('err')) {
                         alert('no hay niños de la búsqueda');
+                        callback({success: false});
                     } else {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
+                            callback({success: true});
                         });
                     }
                 });
             }
         });
+    }
+
+    // checks the search panel for queries
+    function checkSearchPanel() {
+        var selector = {};
+        if($('#genderSearch').text() !== 'género') {
+            selector['género'] = $('#genderSearch').text();
+        }
+        if($('#locationSearch').text() !== 'provincia') {
+            selector['provincia'] = $('#locationSearch').text();
+        }
+        if($('#ageSearch').text() !== 'años') {
+            selector['años'] = $('#ageSearch').text();
+        }
+        if($('#birthmonthSearch').text() !== 'mes de nacimiento') {
+            var month = $('#birthmonthSearch').text();
+            var months = {
+                'enero': '0',
+                'febrero': '1',
+                'marzo': '2',
+                'abril': '3',
+                'mayo': '4',
+                'junio': '5',
+                'julio': '6',
+                'agosto': '7',
+                'septiembre': '8',
+                'octubre': '9',
+                'noviembre': '10',
+                'diciembre': '11'
+            };
+            if (months.hasOwnProperty(month)) {
+                var monthInt = months[month];
+                selector['mes_de_nacimiento'] = monthInt;
+            }
+        }
+        if($('#birthdaySearch').text() !== 'día del nacimiento') {
+            selector['día_del_nacimiento'] = $('#birthdaySearch').text();
+        }
+
+        return selector;
     }
 
     // add carousel functionality
@@ -235,53 +282,28 @@ $(document).ready(function() {
     });
 
     // initially load a child onto the page
-    insertChild({});
+    insertChild({}, function() {
+        console.log('initially loaded one child.');
+    });
 
     // add a child to the slide button
     $('#add-button').click(function() {
-        var selector = {};
-        if($('#genderSearch').text() !== 'Género') {
-            selector['género'] = $('#genderSearch').text();
-        }
-        if($('#locationSearch').text() !== 'Provincia') {
-            selector['provincia'] = $('#locationSearch').text();
-        }
-        if($('#ageSearch').text() !== 'Años') {
-            selector['años'] = $('#ageSearch').text();
-        }
-        /*
-        if($('#search-birthmonth').text() !== 'Birth Month') {
-            selector[''] = $('#search-birthmonth').text();
-        }
-        if($('#search-birthday').text() !== 'Birth Day') {
-            selector[''] = $('#search-birthday').text();
-        }
-        */
-        insertChild(selector);
+        var selector = checkSearchPanel();
+
+        insertChild(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted child.');
+            } else {
+                console.log('did not insert a child.');
+            }
+        });
     });
 
     /**
      * find a child panel
      */
     $('#search-button').click(function() {
-        var selector = {};
-        if($('#genderSearch').text() !== 'Género') {
-            selector['género'] = $('#genderSearch').text();
-        }
-        if($('#locationSearch').text() !== 'Provincia') {
-            selector['provincia'] = $('#locationSearch').text();
-        }
-        if($('#ageSearch').text() !== 'Años') {
-            selector['años'] = $('#ageSearch').text();
-        }
-        /*
-        if($('#search-birthmonth').text() !== 'Birth Month') {
-            selector[''] = $('#search-birthmonth').text();
-        }
-        if($('#search-birthday').text() !== 'Birth Day') {
-            selector[''] = $('#search-birthday').text();
-        }
-        */
+        var selector = checkSearchPanel();
 
         // empty the owl carousel (minus the last slide...)
         while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
@@ -314,7 +336,27 @@ $(document).ready(function() {
         childrenCurrentlyInSlider = [];
 
         // insert a child matching the selector
-        insertChild(selector);
+        insertChild(selector, function(res) {
+            if (res.success === true) {
+                console.log('inserted search child.');
+            } else {
+                owl.owlCarousel({
+                    navigation : false,
+                    slideSpeed : 800,
+                    paginationSpeed : 800,
+                    autoWidth: true,
+                    singleItem: true
+                });
+                insertChild({}, function(res) {
+                    if (res.success === true) {
+                        console.log('inserted child. search came up empty.');
+                    } else {
+                        console.log('general unsponsored child not inserted.');
+                    }
+                });
+                console.log('did not insert a child.');
+            }
+        });
     });
 
     /* Dropdown functionality, this will change the title of the
