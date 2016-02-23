@@ -106,32 +106,41 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
 app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body['correo_electrónico']};
     // find the donor's email
+    // if email === null, send res no email
     mongo.find(email, donorCollection, 1, false, function(data) {
-        for (var key in data) {
-            var saltDB = data[key].salt;
-            var passwordDB = data[key].password;
+        if (JSON.stringify(data) !== '{}') {
+            for (var key in data) {
+                var saltDB = data[key].salt;
+                var passwordDB = data[key].password;
 
-            // encrypt the password with the salt have stored
-            password.encryptWithSalt(req.body.password, saltDB,
-                function(passwordGiven) {
-                    if(passwordGiven !== passwordDB) {
-                        res.status(401).send({
-                            success: false,
-                            message: 'Incorrect password.'
-                        });
-                    } else {
-                        jwt.sign(data, nconf.get('auth:secret'),
-                                 {expiresIn: '1h'}, function(token) {
-                                     res.status(200).send({
-                                         success: true,
-                                         message: 'Authenticated.',
-                                         'id': key,
-                                         'token': token
+                // encrypt the password with the salt have stored
+                password.encryptWithSalt(req.body.password, saltDB,
+                    function(passwordGiven) {
+                        if(passwordGiven !== passwordDB) {
+                            res.status(401).send({
+                                success: false,
+                                message: 'Incorrect password.'
+                            });
+                        } else {
+                            jwt.sign(data, nconf.get('auth:secret'),
+                                     {expiresIn: '1h'}, function(token) {
+                                         res.status(200).send({
+                                             success: true,
+                                             message: 'Authenticated.',
+                                             'id': key,
+                                             'token': token
+                                         });
                                      });
-                                 });
-                    }
-                });
+                        }
+                    });
+            }
+        } else {
+            res.status(401).send({
+                success: false,
+                message: 'Email not found.'
+            });
         }
+
     });
 });
 
