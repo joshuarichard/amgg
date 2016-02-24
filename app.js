@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
 var query = require('./data/query.js');
+var emailModule = require('./data/email.js');
 
 var app = express();
 
