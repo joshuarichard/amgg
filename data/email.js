@@ -4,7 +4,9 @@ var exports = module.exports = {};
 
 exports.email = function(toAddress, callback) {
     // create reusable transporter object using the default SMTP transport
-    var transporter = nodemailer.createTransport('smtps://eos.josh.richard@gmail.com:Daisy3009@smtp.gmail.com');
+    /* eslint-disable */
+    var transporter = nodemailer.createTransport('smtps://eos.josh.richard@gmail.com:password@smtp.gmail.com');
+    /* eslint-enable */
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
@@ -15,11 +17,10 @@ exports.email = function(toAddress, callback) {
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info){
+    transporter.sendMail(mailOptions, function(error){
         if(error){
-            return console.log(error);
+            callback(false);
         }
-        console.log('Message sent: ' + JSON.stringify(info));
-        callback();
+        callback(true);
     });
 };

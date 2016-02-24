@@ -181,14 +181,13 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
 
         function editChild() {
             var id = array.pop();
-            mongo.edit(id, {'status': 'Sponsored'},
-                       childCollection, function() {
-                           if(array.length > 0) {
-                               editChild();
-                           } else {
-                               callback();
-                           }
-                       });
+            mongo.edit(id, {'status': 'Sponsored'}, childCollection, function(){
+                if(array.length > 0) {
+                    editChild();
+                } else {
+                    callback();
+                }
+            });
         }
 
         if(array.length > 0) {
@@ -209,10 +208,20 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
 
                     // recursive function to manage asynch for each id
                     editEachChild(donor['niños_patrocinadoras'], function() {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Donor inserted and child sponsored.'
-                        });
+                        emailModule.email(donor['correo_electrónico'],
+                            function(didEmail) {
+                                if(didEmail === true) {
+                                    res.status(200).send({
+                                        success: true,
+                                        message: 'Child sponsored.'
+                                    });
+                                } else {
+                                    res.status(500).send({
+                                        success: false,
+                                        message: 'An error occured on email.'
+                                    });
+                                }
+                            });
                     });
                 }
             } else if (result.code === 11000) {
