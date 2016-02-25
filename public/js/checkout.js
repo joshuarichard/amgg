@@ -213,10 +213,12 @@ $(document).ready(function() {
         } else {
             if (password !== confirmPassword) {
                 alert('las contraseñas no coinciden.');
+            } else if (password === '') {
+                alert('you cannot have a blank password');
             } else {
-                // insert donor, update child status and donor_id
+                // POST /api/v1/donor/sponsor
                 var insert = $.ajax({
-                    url: '/api/v1/donor/insert',
+                    url: '/api/v1/donor/sponsor',
                     type: 'POST',
                     data: {
                         'nombre': firstName,
@@ -226,65 +228,19 @@ $(document).ready(function() {
                         'ciudad': city,
                         'país': country,
                         'correo_electrónico': email,
-                        'password': password
+                        'password': password,
+                        'niños_patrocinadoras':
+                                       sessionStorage.getItem('cart').split(',')
                     }
                 });
 
                 insert.success(function(res) {
-                    console.log(res);
                     if(res.success === true) {
-                        // get the _id of the donor just inserted
-                        var auth = $.ajax({
-                            url: '/api/v1/donor/auth',
-                            type: 'POST',
-                            data: {
-                                'correo_electrónico': email,
-                                'password': password
-                            }
-                        });
-
-                        auth.success(function(res) {
-                            if (res.success === true) {
-                                var ids = sessionStorage.getItem('cart')
-                                                        .split(',');
-                                // for each child in sessionStore and the new
-                                // donor's _id
-                                ids.forEach(function(id) {
-                                    // TODO: donor_id is string. ObjectId?
-                                    var editChildren = $.ajax({
-                                        url: '/api/v1/children/id/' + id,
-                                        type: 'PUT',
-                                        data: {
-                                            'changes': {
-                                                'status': 'Sponsored',
-                                                'donor_id': res['id']
-                                            }
-                                        }
-                                    });
-
-                                    editChildren.success(function() {
-                                        if (displayed === false) {
-                                            displayed = true;
-                                            sessionStorage.setItem('cart', '');
-                                            displaySuccess();
-                                        }
-                                    });
-
-                                    editChildren.error(function(httpObj,
-                                                                textStatus) {
-                                        console.log(httpObj);
-                                        console.log(textStatus);
-                                        alert('something bad happened');
-                                    });
-                                });
-                            }
-                        });
-
-                        auth.error(function(httpObj, textStatus) {
-                            console.log(httpObj);
-                            console.log(textStatus);
-                            alert('something really bad happened.');
-                        });
+                        if (displayed === false) {
+                            displayed = true;
+                            sessionStorage.setItem('cart', '');
+                            displaySuccess();
+                        }
                     }
                 });
 

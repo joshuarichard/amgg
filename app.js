@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
 var query = require('./data/query.js');
+var emailModule = require('./data/email.js');
 
 var app = express();
 
@@ -76,20 +77,13 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
         });
 });
 
-// PUT /api/v1/children/id/:id edit child document (mainly for
-// donor use case)
-// TODO: only client
-app.put('/api/v1/children/id/:id', function(req, res) {
-    mongo.edit(req.params.id, req.body.changes, childCollection, function() {
-        res.send('good');
-    });
-});
-
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
     mongo.getPic(req.params.id, childCollection, function(data) {
-        var dataJSON = { 'data': data };
-        res.send(dataJSON);
+        res.status(200).send({
+            'id': req.params.id,
+            'data': data
+        });
     });
 });
 
@@ -178,9 +172,31 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 });
 
 // POST /api/v1/donor/insert to insert donor
-// TODO: only client
-app.post('/api/v1/donor/insert', function(req, res) {
+app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
+
+    // editEachChild function to add the 'status': 'sponsored' flag to each kid
+    function editEachChild(array, callback) {
+        array = array.slice(0);
+
+        function editChild() {
+            var id = array.pop();
+            mongo.edit(id, {'status': 'Sponsored'}, childCollection, function(){
+                if(array.length > 0) {
+                    editChild();
+                } else {
+                    callback();
+                }
+            });
+        }
+
+        if(array.length > 0) {
+            editChild();
+        } else {
+            callback();
+        }
+    }
+
     password.encrypt(donor['password'], function(hash, salt) {
         donor['password'] = hash;
         donor['salt'] = salt;
@@ -188,10 +204,24 @@ app.post('/api/v1/donor/insert', function(req, res) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
-                    res.status(200).send({
-                        success: true,
-                        code: 7,
-                        message: 'Donor successfully inserted.'
+                    // TODO: then delete cart collection entry?
+
+                    // recursive function to manage asynch for each id
+                    editEachChild(donor['niños_patrocinadoras'], function() {
+                        emailModule.email(donor['correo_electrónico'],
+                            function(didEmail) {
+                                if(didEmail === true) {
+                                    res.status(200).send({
+                                        success: true,
+                                        message: 'Child sponsored.'
+                                    });
+                                } else {
+                                    res.status(500).send({
+                                        success: false,
+                                        message: 'An error occured on email.'
+                                    });
+                                }
+                            });
                     });
                 }
             } else if (result.code === 11000) {

@@ -19,7 +19,8 @@
     "express": "^4.13.3",
     "jsonwebtoken": "^5.5.4",
     "mongodb": "~2.0.49",
-    "nconf": "^0.8.2"
+    "nconf": "^0.8.2",
+    "nodemailer": "^2.2.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
