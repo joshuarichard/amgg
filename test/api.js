@@ -147,8 +147,8 @@ describe('child api should', function() {
 describe('donor api should', function() {
     it ('get a json web token with valid donor credentials', function(done) {
         var donor = {
-            'correo_electrónico': 'Antonia@Juan Diego.com',
-            'password': 'testing'
+            'correo_electrónico': 'daisy@gmail.com',
+            'password': 'daisyrules'
         };
 
         api.post('/donor/auth')
@@ -184,7 +184,6 @@ describe('donor api should', function() {
            });
     });
 
-    /* GH113 to merge before this test will work
     it ('returns an error when logging in with a bad email', function(done) {
         var donor = {
             'correo_electrónico': 'bad@email.com',
@@ -200,5 +199,4 @@ describe('donor api should', function() {
                done();
            });
     });
-    */
 });
