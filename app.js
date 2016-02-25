@@ -62,7 +62,7 @@ var donorCollection = nconf.get('mongo:donorCollection');
 // GET /api/v1/children/id/:id get a child with their id
 app.get('/api/v1/children/id/:id', function(req, res) {
     mongo.get(req.params.id, childCollection, true, function(doc) {
-        res.send(doc);
+        res.status(200).send(doc);
     });
 });
 
@@ -80,10 +80,17 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
     mongo.getPic(req.params.id, childCollection, function(data) {
-        res.status(200).send({
-            'id': req.params.id,
-            'data': data
-        });
+        if (data.hasOwnProperty('err')) {
+            res.status(500).send({
+                'success': false,
+                'message': data['err']
+            });
+        } else {
+            res.status(200).send({
+                'id': req.params.id,
+                'data': data
+            });
+        }
     });
 });
 
