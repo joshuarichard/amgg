@@ -233,7 +233,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
  * delete donor document and edit all child docs who they were sponsoring and
  * change their status back to unsponsored
  */
-app.post('/api/v1/donor/unsponsor', function(req, res) {
+app.post('/api/v1/donor/delete', function(req, res) {
     function deleteDonor() {
         mongo.delete(req.body.id, donorCollection,
             function(result) {
