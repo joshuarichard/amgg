@@ -252,41 +252,38 @@ exports.edit = function(id, changes, collection, callback) {
 
 /** delete(selector, collection, callback)
  *
- * delete any number of documents into a specific collection. returns the
- * results as a JSON object.
+ * delete a document with a given ID. used to delete donor documents.
  *
- * selector       (JSON) - document selector
+ * id           (string) - document _id
  * collection   (string) - the collection to search for documents
  * callback       (func) - callback function to execute after completion
  *
- * TODO: look into fixing bulkDelete(). not sure if the for loop works correctly
  */
-exports.delete = function(selector, collection, callback) {
-    log.trace('deleting document(s) with selector ' + JSON.stringify(selector) +
-              ' in collection \'' + collection + '\'');
-    var deleteDoc = function(db, collection, selector, callback) {
-        db.collection(collection).deleteOne(selector, function(err, res) {
-            if (err) {
-                log.error('error in deleteDoc(). message: ' + err);
-                // TODO: callback with error in JSON
-            }
-            callback(res);
-        });
-    };
+exports.delete = function(id, collection, callback) {
+    log.trace('deleting document(s) with id ' + id + ' in collection \'' +
+              collection + '\'');
 
-    var bulkDelete = function(db, collection, selector, callback) {
-        var bulk = db.collection(collection).initializeUnorderedBulkOp();
-        for (var i = 0; i < selector.length; i++) {
-            bulk.find(selector[i]).removeOne();
+    var deleteDoc = function(db, collection, id, callback) {
+        if (id.length === 24) {
+            var o_id = new mongo.ObjectID(id);
+            var selector = {'_id': o_id};
+
+            db.collection(collection).deleteOne(selector, function(err, res) {
+                if (err) {
+                    log.error('error in deleteDoc(). message: ' + err);
+                    callback({
+                        'err': 'db error. could not delete document.'
+                    });
+                } else {
+                    callback(res);
+                }
+            });
+        } else {
+            log.error('Invalid _id when deleting document');
+            callback({
+                'err': 'invalid _id.'
+            });
         }
-
-        bulk.execute(function(err, res) {
-            if (err) {
-                log.error('error in bulkDelete(). message: ' + err);
-                // TODO: callback with error in JSON
-            }
-            callback(res);
-        });
     };
 
     MongoClient.connect(url, function(err, db) {
@@ -294,23 +291,12 @@ exports.delete = function(selector, collection, callback) {
             log.error('Mongo connection error in delete() ' + err);
             callback({'err': 'cannot establish a connection.'});
         } else {
-            if(selector instanceof Array) {
-                bulkDelete(db, collection, selector, function(res) {
-                    db.close();
-                    log.trace('successfully deleted documents with selector '+
-                              JSON.stringify(selector) + ' from collection \'' +
-                              collection + '\'');
-                    callback(res);
-                });
-            } else {
-                deleteDoc(db, collection, selector, function(res) {
-                    db.close();
-                    log.trace('successfully deleted one document with selector '
-                              + JSON.stringify(selector) + ' from collection \''
-                              + collection + '\'');
-                    callback(res);
-                });
-            }
+            deleteDoc(db, collection, id, function(res) {
+                db.close();
+                log.trace('successfully deleted one document with selector '
+                          + id + ' from collection \'' + collection + '\'');
+                callback(res);
+            });
         }
     });
 };
@@ -393,6 +379,8 @@ exports.getPic = function(id, collection, callback) {
                  nconf.get('mongo:port')));
 
         if (doc.hasOwnProperty('err')) {
+            log.error('DB error in getting picture. Child possibly nonexistant '
+                      + doc['err']);
             callback({
                 'err': 'error with db. it\'s probable the child doesn\'t exist.'
             });

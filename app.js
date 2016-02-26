@@ -182,28 +182,6 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
 
-    // editEachChild function to add the 'status': 'sponsored' flag to each kid
-    function editEachChild(array, callback) {
-        array = array.slice(0);
-
-        function editChild() {
-            var id = array.pop();
-            mongo.edit(id, {'status': 'Sponsored'}, childCollection, function(){
-                if(array.length > 0) {
-                    editChild();
-                } else {
-                    callback();
-                }
-            });
-        }
-
-        if(array.length > 0) {
-            editChild();
-        } else {
-            callback();
-        }
-    }
-
     password.encrypt(donor['password'], function(hash, salt) {
         donor['password'] = hash;
         donor['salt'] = salt;
@@ -214,22 +192,23 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     // TODO: then delete cart collection entry?
 
                     // recursive function to manage asynch for each id
-                    editEachChild(donor['niños_patrocinadoras'], function() {
-                        emailModule.email(donor['correo_electrónico'],
-                            function(didEmail) {
-                                if(didEmail === true) {
-                                    res.status(200).send({
-                                        success: true,
-                                        message: 'Child sponsored.'
-                                    });
-                                } else {
-                                    res.status(500).send({
-                                        success: false,
-                                        message: 'An error occured on email.'
-                                    });
-                                }
-                            });
-                    });
+                    editEachChild(donor['niños_patrocinadoras'], 'Sponsored',
+                        function() {
+                            emailModule.email(donor['correo_electrónico'],
+                                function(didEmail) {
+                                    if(didEmail === true) {
+                                        res.status(200).send({
+                                            success: true,
+                                            message: 'Child sponsored.'
+                                        });
+                                    } else {
+                                        res.status(500).send({
+                                            success: false,
+                                            message: 'Error emailing.'
+                                        });
+                                    }
+                                });
+                        });
                 }
             } else if (result.code === 11000) {
                 res.status(409).send({
@@ -246,6 +225,43 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 });
             }
         });
+    });
+});
+
+/* POST /api/v1/donor/unsponsor
+ *
+ * delete donor document and edit all child docs who they were sponsoring and
+ * change their status back to unsponsored
+ */
+app.post('/api/v1/donor/delete', function(req, res) {
+    function deleteDonor() {
+        mongo.delete(req.body.id, donorCollection,
+            function(result) {
+                if (result.hasOwnProperty('err')) {
+                    res.status(500).send({
+                        success: false,
+                        message: result['err']
+                    });
+                } else {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Donor deleted.'
+                    });
+                }
+            });
+    }
+
+    mongo.get(req.body.id, donorCollection, false, function(data) {
+        // recursive function to manage asynch for each id
+        if (data.hasOwnProperty('niños_patrocinadoras')) {
+            editEachChild(data['niños_patrocinadoras'],
+                          'Waiting for Sponsor - Discontinued', function() {
+                              deleteDonor();
+                          });
+        } else {
+            deleteDonor();
+        }
+
     });
 });
 
@@ -295,6 +311,28 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
         });
     }
 });
+
+// editEachChild function to add the 'status': 'sponsored' flag to each kid
+function editEachChild(array, newStatus, callback) {
+    array = array.slice(0);
+
+    function editChild() {
+        var id = array.pop();
+        mongo.edit(id, {'status': newStatus}, childCollection, function(){
+            if(array.length > 0) {
+                editChild();
+            } else {
+                callback();
+            }
+        });
+    }
+
+    if(array.length > 0) {
+        editChild();
+    } else {
+        callback();
+    }
+}
 
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
                      cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
