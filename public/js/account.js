@@ -22,7 +22,6 @@ $(document).ready(function() {
         tabC.className = 'tab-pane fade in';
 
         /* create the content for tabA */
-
         var tabAHeader = document.createElement('span');
         tabAHeader.className = 'header';
         tabAHeader.innerHTML = 'niños apadrinados';
@@ -36,12 +35,46 @@ $(document).ready(function() {
         table.className = 'table table-hover child-selections';
         var tbody = document.createElement('tbody');
 
+
+        /* 
+         * create content for tabC
+         * We have to create tabC before tabB becuase we will be 
+         * appending info from DB to elements in tabC
+         * this will save us from having to send another request to
+         * the DB when creating tabC
+         */
+        //create header
+        tabCHeader = document.createElement('span');
+        tabCHeader.className = 'header';
+        tabCHeader.innerHTML = 'Letter to Child';
+        var tabCHeaderhr = document.createElement('hr');
+        //create letter form
+        var letterForm = document.createElement('form');
+        letterForm.className = 'letter-form col-md-10';
+        var letter = document.createElement('textarea');
+        letter.className = 'letter';
+        var submitLetter = document.createElement('button');
+        submitLetter.className = 'letter-submit pull-right';
+        submitLetter.title = 'Send letter to your sponsored child';
+        submitLetter.innerHTML = 'Send';
+
+        //create child select table
+        var childrenSelectContainer = document.createElement('div');
+        childrenSelectContainer.className = "col-md-2";
+
+        letterForm.appendChild(letter);
+        letterForm.appendChild(submitLetter);
+        tabC.appendChild(tabCHeader);
+        tabC.appendChild(tabAHeaderhr);
+        tabC.appendChild(letterForm);
+        tabC.appendChild(childrenSelectContainer);
+
+
+
         function addChildToDonorList(id) {
+            // create child's table row
             var tr = document.createElement('tr');
 
-            // create child's table row
-            console.log("addChildToDonorList");
-                
             function pic(id, callback) {
                 //create elements for child picture
                 var picTD = document.createElement('td');
@@ -65,7 +98,6 @@ $(document).ready(function() {
                 // get child data using api
                 $.getJSON('/api/v1/children/id/' + id, function(res) {
                     if(res.hasOwnProperty('err')) {
-                        console.log(JSON.stringify(data));
                         callback(false);
                     } else {
 
@@ -119,19 +151,30 @@ $(document).ready(function() {
                     //append child info
                     tr.appendChild(dataDiv);
 
+                    //also create child list for tabC
+                    var inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    var inputGroupSpan = document.createElement('span');
+                    inputGroupSpan.className = 'input-group-btn';
+                    var selectChild = document.createElement('button');
+                    selectChild.className = 'btn btn-primary child-letter-select';
+                    selectChild.type = 'button';
+                    selectChild.innerHTML = name;
+                    inputGroupSpan.appendChild(selectChild);
+                    inputGroup.appendChild(inputGroupSpan);
+                    childrenSelectContainer.appendChild(selectChild);
+
+
                     callback(true);
                     }
                 });
             }
 
             pic(id, function(success) {
-                console.log("pic success");
                 if(success === true) {
                     // then append data
                     data(id, function(success)  {
-                        console.log("data succes");
                         if(success === true) {
-                            console.log("append stuff");
                             tbody.appendChild(tr);
                             table.appendChild(tbody);
                         }
@@ -150,10 +193,8 @@ $(document).ready(function() {
                 'id' : sessionStorage.getItem('id') 
             },
             success: function(res) {
-                console.log(res.data.niños_patrocinadoras.length);
                 for (var i = 0; i < res.data.niños_patrocinadoras.length; i++) {
                     var id = res.data.niños_patrocinadoras[i];
-                    console.log(id);
                     addChildToDonorList(id);
                     tabA.appendChild(table);
                 }
@@ -321,7 +362,7 @@ $(document).ready(function() {
             }
         });
 
-        /* create content for tabC */
+
 
         //append tabs to the page
         container.appendChild(tabA);
