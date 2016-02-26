@@ -4,23 +4,23 @@
         "port": "27017",
         "username": "x",
         "password": "x",
-        "db": "testing",
-        "childCollection": "childrenreal",
+        "db": "endgame",
+        "childCollection": "children",
         "donorCollection": "donors"
-    },
+},
     "app": {
         "port": 3000
-    },
+},
     "autofill": {
-        "dbName": "testing",
+        "dbName": "endgame",
         "collection": "childrenreal",
         "numOfDocs": "10"
-    },
+},
     "auth": {
         "secret": "x"
-    },
+},
     "keys": {
         "key": "./keys/key.pem",
         "cert": "./keys/cert.pem"
-    }
+}
 }

@@ -143,12 +143,17 @@ $(document).ready(function() {
         /* get children using donor id */
         selector = {'donor_id': sessionStorage.getItem('id')};
         $.ajax({
-            url: '/api/v1/children/find/' + JSON.stringify(selector),
-            type: 'GET',
+            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+            type: 'POST',
+            data: {
+                'token' : sessionStorage.getItem('token'),
+                'id' : sessionStorage.getItem('id') 
+            },
             success: function(res) {
-                console.log(res);
-                for (var key in res) {
-                    var id = key;
+                console.log(res.data.niños_patrocinadoras.length);
+                for (var i = 0; i < res.data.niños_patrocinadoras.length; i++) {
+                    var id = res.data.niños_patrocinadoras[i];
+                    console.log(id);
                     addChildToDonorList(id);
                     tabA.appendChild(table);
                 }
