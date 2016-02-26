@@ -159,11 +159,12 @@ $(document).ready(function() {
                     var selectChild = document.createElement('button');
                     selectChild.className = 'btn btn-primary child-letter-select';
                     selectChild.type = 'button';
+                    //this will change the header on tabC based on the child selected
+                    selectChild.onclick = function() { tabCHeader.innerHTML = 'Letter to ' +  $('.child-letter-select').text() };
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);
                     inputGroup.appendChild(inputGroupSpan);
                     childrenSelectContainer.appendChild(selectChild);
-
 
                     callback(true);
                     }
@@ -361,8 +362,6 @@ $(document).ready(function() {
                 tabB.appendChild(infoWrapper);
             }
         });
-
-
 
         //append tabs to the page
         container.appendChild(tabA);
