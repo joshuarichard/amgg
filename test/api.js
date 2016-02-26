@@ -45,7 +45,7 @@ describe('child api should', function() {
            });
     });
 
-    it ('get info and picture for an unsponsored child', function(done) {
+    it ('get info for an unsponsored child', function(done) {
         var random = Math.floor(Math.random() * ids.length);
         api.get('/children/id/' + ids[random])
            .end(function(err, res) {
@@ -62,70 +62,25 @@ describe('child api should', function() {
            });
     });
 
-    it ('get info and picture for an unsponsored child', function(done) {
+    it ('get a picture for an unsponsored child', function(done) {
         var random = Math.floor(Math.random() * ids.length);
-        api.get('/children/id/' + ids[random])
+        api.get('/pictures/id/' + ids[random])
            .end(function(err, res) {
                expect(err).to.be.null;
                expect(res.status).to.equal(200);
 
-               var kid = res.body[ids[random]];
-               expect(kid.hasOwnProperty('nombre')).to.be.true;
-               expect(kid.hasOwnProperty('años')).to.be.true;
-               expect(kid.hasOwnProperty('cumpleaños')).to.be.true;
-               expect(kid.hasOwnProperty('centro_de_ninos')).to.be.true;
-               expect(kid.hasOwnProperty('provincia')).to.be.true;
+               var kid = res.body;
+               expect(kid.hasOwnProperty('id')).to.be.true;
+               expect(kid.hasOwnProperty('data')).to.be.true;
                done();
            });
     });
 
-    it ('get info and picture for an unsponsored child', function(done) {
-        var random = Math.floor(Math.random() * ids.length);
-        api.get('/children/id/' + ids[random])
-           .end(function(err, res) {
-               expect(err).to.be.null;
-               expect(res.status).to.equal(200);
-
-               var kid = res.body[ids[random]];
-               expect(kid.hasOwnProperty('nombre')).to.be.true;
-               expect(kid.hasOwnProperty('años')).to.be.true;
-               expect(kid.hasOwnProperty('cumpleaños')).to.be.true;
-               expect(kid.hasOwnProperty('centro_de_ninos')).to.be.true;
-               expect(kid.hasOwnProperty('provincia')).to.be.true;
-               done();
-           });
-    });
-
-    it ('get info and picture for an unsponsored child', function(done) {
-        var random = Math.floor(Math.random() * ids.length);
-        api.get('/children/id/' + ids[random])
-           .end(function(err, res) {
-               expect(err).to.be.null;
-               expect(res.status).to.equal(200);
-
-               var kid = res.body[ids[random]];
-               expect(kid.hasOwnProperty('nombre')).to.be.true;
-               expect(kid.hasOwnProperty('años')).to.be.true;
-               expect(kid.hasOwnProperty('cumpleaños')).to.be.true;
-               expect(kid.hasOwnProperty('centro_de_ninos')).to.be.true;
-               expect(kid.hasOwnProperty('provincia')).to.be.true;
-               done();
-           });
-    });
-
-    it ('get info and picture for an unsponsored child', function(done) {
-        var random = Math.floor(Math.random() * ids.length);
-        api.get('/children/id/' + ids[random])
-           .end(function(err, res) {
-               expect(err).to.be.null;
-               expect(res.status).to.equal(200);
-
-               var kid = res.body[ids[random]];
-               expect(kid.hasOwnProperty('nombre')).to.be.true;
-               expect(kid.hasOwnProperty('años')).to.be.true;
-               expect(kid.hasOwnProperty('cumpleaños')).to.be.true;
-               expect(kid.hasOwnProperty('centro_de_ninos')).to.be.true;
-               expect(kid.hasOwnProperty('provincia')).to.be.true;
+    it ('fail if getting a picture with a bad child id', function(done) {
+        api.get('/pictures/id/badbadbadbadbadbadbadbad')
+           .end(function(req, res) {
+               expect(res.status).to.equal(500);
+               expect(res.body.success).to.be.false;
                done();
            });
     });
@@ -147,8 +102,8 @@ describe('child api should', function() {
 describe('donor api should', function() {
     it ('get a json web token with valid donor credentials', function(done) {
         var donor = {
-            'correo_electrónico': 'Antonia@Juan Diego.com',
-            'password': 'testing'
+            'correo_electrónico': 'daisy@gmail.com',
+            'password': 'daisyrules'
         };
 
         api.post('/donor/auth')
@@ -184,7 +139,6 @@ describe('donor api should', function() {
            });
     });
 
-    /* GH113 to merge before this test will work
     it ('returns an error when logging in with a bad email', function(done) {
         var donor = {
             'correo_electrónico': 'bad@email.com',
@@ -200,5 +154,4 @@ describe('donor api should', function() {
                done();
            });
     });
-    */
 });

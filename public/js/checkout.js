@@ -214,7 +214,10 @@ $(document).ready(function() {
             if (password !== confirmPassword) {
                 alert('las contraseñas no coinciden.');
             } else if (password === '') {
-                alert('you cannot have a blank password');
+                alert('por favor ingrese una contraseña.');
+            } else if (sessionStorage.getItem('cart') === null ||
+                       sessionStorage.getItem('cart') === '') {
+                alert('no hay niños en el carrito.');
             } else {
                 // POST /api/v1/donor/sponsor
                 var insert = $.ajax({
