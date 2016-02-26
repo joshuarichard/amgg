@@ -234,25 +234,34 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
  * change their status back to unsponsored
  */
 app.post('/api/v1/donor/unsponsor', function(req, res) {
+    function deleteDonor() {
+        mongo.delete(req.body.id, donorCollection,
+            function(result) {
+                if (result.hasOwnProperty('err')) {
+                    res.status(500).send({
+                        success: false,
+                        message: result['err']
+                    });
+                } else {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Donor deleted.'
+                    });
+                }
+            });
+    }
+
     mongo.get(req.body.id, donorCollection, false, function(data) {
         // recursive function to manage asynch for each id
-        editEachChild(data['niños_patrocinadoras'],
-                      'Waiting for Sponsor - Discontinued', function() {
-                          mongo.delete(req.body.id, donorCollection,
-                              function(result) {
-                                  if (result.hasOwnProperty('err')) {
-                                      res.status(500).send({
-                                          success: false,
-                                          message: result['err']
-                                      });
-                                  } else {
-                                      res.status(200).send({
-                                          success: true,
-                                          message: 'Donor deleted.'
-                                      });
-                                  }
-                              });
-                      });
+        if (data.hasOwnProperty('niños_patrocinadoras')) {
+            editEachChild(data['niños_patrocinadoras'],
+                          'Waiting for Sponsor - Discontinued', function() {
+                              deleteDonor();
+                          });
+        } else {
+            deleteDonor();
+        }
+
     });
 });
 
