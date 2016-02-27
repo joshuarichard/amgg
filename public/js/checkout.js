@@ -313,4 +313,38 @@ $(document).ready(function() {
 
         $('.content').append(centerDiv);
     }
+
+    /* If there is a login token in session storage
+     * then the form should be auto-populated with
+     * the donors information
+     */
+    function autoPopulate () {
+        if (sessionStorage.getItem('token') != null &&
+                sessionStorage.getItem('token') != '') {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'POST',
+                data: {
+                    'token' : sessionStorage.getItem('token'),
+                    'id' : sessionStorage.getItem('id')
+                },
+                success: function(res) {
+                    console.log(res.data.nombre);
+                    $('#form-first-name').val(res.data.nombre);
+                    $('#form-last-name').val(res.data.apellido);
+                    $('#form-phone').val(res.data.teléfono);
+                    $('#form-address-street').val(res.data.calle);
+                    $('#form-address-city').val(res.data.ciudad);
+                    $('#form-email').val(res.data.correo_electrónico);
+                },
+                error: function() {
+                    alert('Unable to retrieve your account information');
+                }
+            });
+        }
+        else {
+            alert('You are not logged in, please log in to sponsor a child');
+        }
+    }
+    $(document).ready(autoPopulate());
 });
