@@ -318,8 +318,9 @@ $(document).ready(function() {
      * then the form should be auto-populated with
      * the donors information
      */
-     function autoPopulate () {
-        if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+    function autoPopulate () {
+        if (sessionStorage.getItem('token') != null && 
+                sessionStorage.getItem('token') != '') {
             $.ajax({
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
@@ -344,6 +345,6 @@ $(document).ready(function() {
         else {
             alert('You are not logged in, please log in to sponsor a child');
         }
-     }
-     $(document).ready(autoPopulate());
+    }
+    $(document).ready(autoPopulate());
 });
