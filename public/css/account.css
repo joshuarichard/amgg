@@ -54,3 +54,20 @@ table {
 	width: 3.5em;
     height: 2em;
 }
+
+#sectionC {
+	padding-bottom: 30em;
+}
+
+.letter {
+	height: 32em;
+	width: 100%;
+	resize: none;
+}
+
+.child-letter-select {
+	display: block;
+	margin: 0.5em;
+	width: 100%;
+	text-align: center;
+}
