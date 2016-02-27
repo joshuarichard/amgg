@@ -319,14 +319,14 @@ $(document).ready(function() {
      * the donors information
      */
     function autoPopulate () {
-        if (sessionStorage.getItem('token') != null && 
+        if (sessionStorage.getItem('token') != null &&
                 sessionStorage.getItem('token') != '') {
             $.ajax({
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
                 data: {
                     'token' : sessionStorage.getItem('token'),
-                    'id' : sessionStorage.getItem('id') 
+                    'id' : sessionStorage.getItem('id')
                 },
                 success: function(res) {
                     console.log(res.data.nombre);
