@@ -241,7 +241,6 @@ $(document).ready(function() {
                     if(res.success === true) {
                         if (displayed === false) {
                             displayed = true;
-                            sessionStorage.setItem('cart', '');
                             displaySuccess();
                         }
                     }
@@ -340,6 +339,7 @@ $(document).ready(function() {
     var displayed = false;
     // Displays Success Page after ajax call
     function displaySuccess (){
+        sessionStorage.setItem('cart', '');
         $('#children-to-sponsor').remove();
         $('#donor-info').remove();
 
@@ -349,9 +349,9 @@ $(document).ready(function() {
 
         centerDiv.className = 'center';
         /* eslint-disable */
-        h1Thing.innerHTML = "Se lo agradezco!(Formal form for 'Thank you' in spanish)";
+        h1Thing.innerHTML = "¡Muchas gracias!";
         /* eslint-enable */
-        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy';
+        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
         h1Thing.appendChild(pThing);
         centerDiv.appendChild(h1Thing);
 
@@ -373,7 +373,6 @@ $(document).ready(function() {
                     'id' : sessionStorage.getItem('id')
                 },
                 success: function(res) {
-                    console.log(res.data.nombre);
                     $('#form-first-name').val(res.data.nombre);
                     $('#form-last-name').val(res.data.apellido);
                     $('#form-phone').val(res.data.teléfono);
