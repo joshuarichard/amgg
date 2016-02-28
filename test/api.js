@@ -5,6 +5,7 @@ var supertest = require('supertest');
 var api = supertest('https://localhost:3000/api/v1');
 var jwt = require('jsonwebtoken');
 var nconf = require('nconf');
+var password = require('../data/password.js');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -12,9 +13,12 @@ nconf.file({
     file: './config.json'
 });
 
-describe('child api should', function() {
-    var ids = [];
+// unsponsored child pool
+var ids = [];
+var donorID = '';
+var donorToken = '';
 
+describe('child api should', function() {
     it ('return unsponsored children in JSON', function(done) {
         var ors = [{
             '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
@@ -63,6 +67,7 @@ describe('child api should', function() {
     });
 
     it ('get a picture for an unsponsored child', function(done) {
+        this.timeout(5000);
         var random = Math.floor(Math.random() * ids.length);
         api.get('/pictures/id/' + ids[random])
            .end(function(err, res) {
@@ -99,15 +104,45 @@ describe('child api should', function() {
     */
 });
 
+var sponsoredKids = [];
+var donor = {};
 describe('donor api should', function() {
+    it ('sponsor three children and create a new donor', function(done) {
+        this.timeout(5000);
+        donor = {
+            'nombre': 'test',
+            'apellido': 'testing',
+            'teléfono': '1-800-testing',
+            'calle': 'test city',
+            'ciudad': '2 test lane',
+            'país': 'Testing',
+            'correo_electrónico': 'test@testing.com',
+            'password': 'testing',
+            'niños_patrocinadoras': [
+                ids[Math.floor(Math.random() * ids.length)],
+                ids[Math.floor(Math.random() * ids.length)],
+                ids[Math.floor(Math.random() * ids.length)]
+            ]
+        };
+
+        api.post('/donor/sponsor')
+           .send(donor)
+           .end(function(err, res) {
+               expect(err).to.be.null;
+               expect(res.status).to.equal(200);
+               expect(res.body['success']).to.be.true;
+               done();
+           });
+    });
+
     it ('get a json web token with valid donor credentials', function(done) {
-        var donor = {
-            'correo_electrónico': 'daisy@gmail.com',
-            'password': 'daisyrules'
+        var donorGetToken = {
+            'correo_electrónico': 'test@testing.com',
+            'password': 'testing'
         };
 
         api.post('/donor/auth')
-           .send(donor)
+           .send(donorGetToken)
            .end(function(err, res) {
                expect(err).to.be.null;
 
@@ -118,19 +153,69 @@ describe('donor api should', function() {
                jwt.verify(res.body['token'], nconf.get('auth:secret'),
                    function(err) {
                        expect(err).to.be.null;
+                       donorID = res.body['id'];
+                       donorToken = res.body['token'];
                        done();
                    });
            });
     });
 
+    it ('get the donor\'s document with a valid id and token', function(done) {
+        var donorGet = {
+            'token': donorToken
+        };
+
+        api.post('/donor/id/' + donorID)
+           .send(donorGet)
+           .end(function(err, res) {
+               sponsoredKids = res.body['niños_patrocinadoras'];
+
+               expect(err).to.be.null;
+               expect(res.status).to.equal(200);
+               expect(donor['nombre']).to.equal(res.body['nombre']);
+               expect(donor['apellido']).to.equal(res.body['apellido']);
+               expect(donor['teléfono']).to.equal(res.body['teléfono']);
+               expect(donor['calle']).to.equal(res.body['calle']);
+               expect(donor['ciudad']).to.equal(res.body['ciudad']);
+               expect(donor['país']).to.equal(res.body['país']);
+               expect(donor['correo_electrónico'])
+                                 .to.equal(res.body['correo_electrónico']);
+
+              // confirm password hashed correctly
+              // TODO: get rid of the password and salt from this GET
+              password.encryptWithSalt('testing', res.body['salt'], function(hash) {
+                  expect(hash).to.equal(res.body['password']);
+                  done();
+              });
+           });
+    });
+
+    it ('unsponsor one of the children', function(done) {
+        var unluckyKid = sponsoredKids[
+                              Math.floor(Math.random() * sponsoredKids.length)];
+
+        var donorUnsponsor = {
+            'id': donorID,
+            'token': donorToken,
+            'child_unsponsoring': unluckyKid
+        };
+        api.post('/donor/unsponsor')
+           .send(donorUnsponsor)
+           .end(function(err, res) {
+               expect(res.body['success']).to.be.true;
+               expect(res.body['message']).to.equal('Child unsponsored.');
+               done();
+           });
+    });
+
     it ('return an error when logging in with a bad password', function(done) {
-        var donor = {
-            'correo_electrónico': 'Antonia@Juan Diego.com',
+        var donorBadpw = {
+            'correo_electrónico': 'test@testing.com',
             'password': 'bad password'
         };
 
         api.post('/donor/auth')
-           .send(donor)
+           .send(donorBadpw)
            .end(function(err, res) {
                expect(err).to.be.null;
                expect(res.status).to.equal(401);
@@ -140,18 +225,35 @@ describe('donor api should', function() {
     });
 
     it ('returns an error when logging in with a bad email', function(done) {
-        var donor = {
+        var donorBademail = {
             'correo_electrónico': 'bad@email.com',
             'password': 'bad password'
         };
 
         api.post('/donor/auth')
-           .send(donor)
+           .send(donorBademail)
            .end(function(err, res) {
                expect(err).to.be.null;
                expect(res.status).to.equal(401);
                expect(res.body['success']).to.be.false;
                done();
            });
+    });
+
+    it ('delete the donor just inserted', function(done) {
+        this.timeout(5000);
+        var donorDeleting = {
+            'id': donorID
+        };
+
+        api.post('/donor/delete')
+           .send(donorDeleting)
+           .end(function(err, res) {
+               expect(err).to.be.null;
+               expect(res.status).to.equal(200);
+               expect(res.body['success']).to.be.true;
+               done();
+           });
+
     });
 });

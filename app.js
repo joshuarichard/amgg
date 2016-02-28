@@ -214,14 +214,12 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
             } else {
                 // if it is valid then perform the donor get
                 mongo.get(id, donorCollection, false, function(data) {
-                    res.send({
-                        success: true,
-                        'data': data
-                    });
+                    res.send(data);
                 });
             }
         });
     } else {
+        console.log(token);
         res.status(400).send({
             success: false,
             message: 'No token provided.'
@@ -290,7 +288,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     // TODO: then delete cart collection entry?
 
                     // recursive function to manage asynch for each id
-                    editEachChild(donor['niños_patrocinadoras'], function() {
+                    editEachChild(donor['niños_patrocinadoras'], 'Sponsored', function() {
                         emailModule.email(donor['correo_electrónico'],
                             function(didEmail) {
                                 if(didEmail === true) {
