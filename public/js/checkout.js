@@ -350,7 +350,7 @@ $(document).ready(function() {
         var pThing = document.createElement('p');
 
         centerDiv.className = 'center';
-        h1Thing.innerHTML = "¡Muchas gracias!";
+        h1Thing.innerHTML = '¡Muchas gracias!';
         pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
         h1Thing.appendChild(pThing);
         centerDiv.appendChild(h1Thing);

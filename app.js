@@ -348,83 +348,86 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
     // if missing information then throw malformed request
     if (typeof req.body.id === 'undefined' ||
         typeof req.body.child_unsponsoring === 'undefined') {
-            res.status(400).send({
-                success: false,
-                message: 'Malformed request.'
-            });
-        } else {
-            if (token) {
-                // confirm token sent in request is valid
-                jwt.verify(token, nconf.get('auth:secret'), function(err) {
-                    if (err) {
-                        res.status(401).send({
-                            success: false,
-                            message: 'Failed to authenticate token.'
-                        });
-                    } else {
-                        // get the donor's information
-                        mongo.get(donorID, donorCollection, false, function(data) {
-                            // if the donor has the children they're sponsoring
-                            if (data.hasOwnProperty('niños_patrocinadoras') &&
-                                data['niños_patrocinadoras'].length > 0) {
-                                var kids = data['niños_patrocinadoras'];
+        res.status(400).send({
+            success: false,
+            message: 'Malformed request.'
+        });
+    } else {
+        if (token) {
+            // confirm token sent in request is valid
+            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+                if (err) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    // get the donor's information
+                    /* eslint-disable */
+                    // just too much callback hell to deal with running over 80 chars
+                    mongo.get(donorID, donorCollection, false, function(data) {
+                        // if the donor has the children they're sponsoring
+                        if (data.hasOwnProperty('niños_patrocinadoras') &&
+                            data['niños_patrocinadoras'].length > 0) {
+                            var kids = data['niños_patrocinadoras'];
 
-                                // then remove that child from their array of sponsored children
-                                if (kids.indexOf(childIDtoUnsponsor) !== -1) {
-                                    kids.splice(kids.indexOf(childIDtoUnsponsor), 1);
+                            // then remove that child from their array of sponsored children
+                            if (kids.indexOf(childIDtoUnsponsor) !== -1) {
+                                kids.splice(kids.indexOf(childIDtoUnsponsor), 1);
 
-                                    var changes = {
-                                        'niños_patrocinadoras': kids
-                                    };
+                                var changes = {
+                                    'niños_patrocinadoras': kids
+                                };
 
-                                    // put the kids array back into the donor document
-                                    mongo.edit(donorID, changes, donorCollection, function(donorEditResult) {
-                                        if (!donorEditResult.hasOwnProperty('err')) {
-                                            changes = {'status': 'Waiting for Sponsor - Discontinued'};
-                                            mongo.edit(childIDtoUnsponsor, changes, childCollection, function(childEditResult) {
-                                                if (!childEditResult.hasOwnProperty('err')) {
-                                                    res.status(200).send({
-                                                        success: true,
-                                                        message: 'Child unsponsored.'
-                                                    });
-                                                } else {
-                                                    res.status(500).send({
-                                                        sucess: false,
-                                                        message: donorEditResult['err']
-                                                    });
+                                // put the kids array back into the donor document
+                                mongo.edit(donorID, changes, donorCollection, function(donorEditResult) {
+                                    if (!donorEditResult.hasOwnProperty('err')) {
+                                        changes = {'status': 'Waiting for Sponsor - Discontinued'};
+                                        mongo.edit(childIDtoUnsponsor, changes, childCollection, function(childEditResult) {
+                                            if (!childEditResult.hasOwnProperty('err')) {
+                                                res.status(200).send({
+                                                    success: true,
+                                                    message: 'Child unsponsored.'
+                                                });
+                                            } else {
+                                                res.status(500).send({
+                                                    sucess: false,
+                                                    message: donorEditResult['err']
+                                                });
 
-                                                }
-                                            });
-                                        } else {
-                                            res.status(500).send({
-                                                sucess: false,
-                                                message: donorEditResult['err']
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    res.status(400).send({
-                                        success: false,
-                                        message: 'Donor is not sponsoring this child.'
-                                    });
-                                }
+                                            }
+                                        });
+                                    } else {
+                                        res.status(500).send({
+                                            sucess: false,
+                                            message: donorEditResult['err']
+                                        });
+                                    }
+                                });
                             } else {
-                                res.status(409).send({
+                                res.status(400).send({
                                     success: false,
-                                    message: 'Donor is not sponsoring children.'
+                                    message: 'Donor is not sponsoring this child.'
                                 });
                             }
+                        } else {
+                            res.status(409).send({
+                                success: false,
+                                message: 'Donor is not sponsoring children.'
+                            });
+                        }
 
-                        });
-                    }
-                });
-            } else {
-                res.status(400).send({
-                    success: false,
-                    message: 'No token provided.'
-                });
-            }
+                    });
+                }
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'No token provided.'
+            });
         }
+      }
+      /* eslint-enable */
 });
 
 /* POST /api/v1/donor/delete
