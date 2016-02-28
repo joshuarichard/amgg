@@ -180,13 +180,7 @@ describe('donor api should', function() {
                expect(donor['país']).to.equal(res.body['país']);
                expect(donor['correo_electrónico'])
                                  .to.equal(res.body['correo_electrónico']);
-
-              // confirm password hashed correctly
-              // TODO: get rid of the password and salt from this GET
-              password.encryptWithSalt('testing', res.body['salt'], function(hash) {
-                  expect(hash).to.equal(res.body['password']);
-                  done();
-              });
+               done();
            });
     });
 

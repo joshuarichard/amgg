@@ -214,6 +214,8 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
             } else {
                 // if it is valid then perform the donor get
                 mongo.get(id, donorCollection, false, function(data) {
+                    delete data['password'];
+                    delete data['salt'];
                     res.send(data);
                 });
             }
