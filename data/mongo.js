@@ -228,9 +228,12 @@ exports.edit = function(id, changes, collection, callback) {
         function(err, res) {
             if (err) {
                 log.error('error in edit().editDoc(). message: ' + err);
-                // TODO: callback with error in JSON
+                callback({
+                    'err': 'edit not made.'
+                });
+            } else {
+                callback(res);
             }
-            callback(res);
         });
     };
 
