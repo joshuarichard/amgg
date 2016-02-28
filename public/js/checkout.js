@@ -339,7 +339,9 @@ $(document).ready(function() {
     var displayed = false;
     // Displays Success Page after ajax call
     function displaySuccess (){
+        // empty child _id's from session storage cart
         sessionStorage.setItem('cart', '');
+
         $('#children-to-sponsor').remove();
         $('#donor-info').remove();
 
@@ -348,9 +350,7 @@ $(document).ready(function() {
         var pThing = document.createElement('p');
 
         centerDiv.className = 'center';
-        /* eslint-disable */
         h1Thing.innerHTML = "¡Muchas gracias!";
-        /* eslint-enable */
         pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
         h1Thing.appendChild(pThing);
         centerDiv.appendChild(h1Thing);
