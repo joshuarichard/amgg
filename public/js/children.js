@@ -389,7 +389,6 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-        console.log("toggleLogin");
     }
     /* When login link is clicked, call toggleLogin */
     $('#toggle-login').click(toggleLogin);
