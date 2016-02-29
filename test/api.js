@@ -185,8 +185,9 @@ describe('donor api should', function() {
     });
 
     it ('unsponsor one of the children', function(done) {
-        var unluckyKid = sponsoredKids[
-                              Math.floor(Math.random() * sponsoredKids.length)];
+        /* eslint-disable */
+        var unluckyKid = sponsoredKids[Math.floor(Math.random() * sponsoredKids.length)];
+        /* eslint-enable */
 
         var donorUnsponsor = {
             'id': donorID,
@@ -201,6 +202,37 @@ describe('donor api should', function() {
                done();
            });
     });
+
+    it ('not unsponsor a child with a malformed request', function(done) {
+        var malformedUnsponsor = {};
+        api.post('/donor/unsponsor')
+           .send(malformedUnsponsor)
+           .end(function(err, res) {
+               expect(res.status).to.equal(400);
+               expect(res.body.message).to.equal('Malformed request.');
+               done();
+           });
+    });
+
+    it ('return an error when unsponsoring with invalid token', function(done) {
+        /* eslint-disable */
+        var invalidTokenUnsponsor = {
+            'id': donorID,
+            'token': 'bad token',
+            'child_unsponsoring': sponsoredKids[Math.floor(Math.random() * sponsoredKids.length)]
+        };
+        /* eslint-enable */
+
+        api.post('/donor/unsponsor')
+           .send(invalidTokenUnsponsor)
+           .end(function(err, res) {
+               expect(res.status).to.equal(401);
+               expect(res.body.success).to.be.false;
+               done();
+           });
+    });
+
+    // TODO: the rest of the donor unsponsor boundary cases
 
     it ('return an error when logging in with a bad password', function(done) {
         var donorBadpw = {
@@ -248,6 +280,10 @@ describe('donor api should', function() {
                expect(res.body['success']).to.be.true;
                done();
            });
-
     });
+
+    // TODO: get the donor document of the donor just deleted (should error out)
+    // TODO: unsponsor a child with the donor just deleted (should error out)
+    // TODO: edit bad donor
+    // TODO: other shit
 });

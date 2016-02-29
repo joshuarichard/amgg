@@ -411,9 +411,9 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                                 });
                             }
                         } else {
-                            res.status(409).send({
+                            res.status(400).send({
                                 success: false,
-                                message: 'Donor is not sponsoring children.'
+                                message: 'Donor is not sponsoring any children.'
                             });
                         }
 
