@@ -11,6 +11,7 @@ var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
 var query = require('./data/query.js');
 var emailModule = require('./data/email.js');
+var cart = require('./data/cart.js');
 
 /** stuff TODO here:
     1. write sendError() function for use all over app.js
@@ -476,6 +477,15 @@ app.post('/api/v1/donor/delete', function(req, res) {
             deleteDonor();
         }
 
+    });
+});
+
+app.post('/api/v1/cart/update', function(req, res) {
+    cart.update(req.body.donor, req.body.children, function(result) {
+        res.status(200).send({
+            success: true,
+            message: 'Cart updated.'
+        });
     });
 });
 
