@@ -290,7 +290,9 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     // TODO: then delete cart collection entry?
 
                     // recursive function to manage asynch for each id
+                    /* eslint-disable */
                     editEachChild(donor['niños_patrocinadoras'], 'Sponsored', function() {
+                        /* eslint-enable */
                         emailModule.email(donor['correo_electrónico'],
                             function(didEmail) {
                                 if(didEmail === true) {

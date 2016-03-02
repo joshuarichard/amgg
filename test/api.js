@@ -5,7 +5,6 @@ var supertest = require('supertest');
 var api = supertest('https://localhost:3000/api/v1');
 var jwt = require('jsonwebtoken');
 var nconf = require('nconf');
-var password = require('../data/password.js');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
