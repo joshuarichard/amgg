@@ -191,3 +191,19 @@ footer {
 	margin-bottom: 1em;
 	margin-right: 1em;
 }
+
+input[name="password-one"] {
+  width: 100%;
+  margin-left: 0em;
+  margin-bottom: 0%;
+  padding: 2%;
+  font-size: 97%;
+}
+
+input[name="password-confirm"] {
+  width: 100%;
+  margin-left: 0em;
+  margin-bottom: 0%;
+  padding: 2%;
+  font-size: 97%;
+}
