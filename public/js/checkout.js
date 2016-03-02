@@ -90,6 +90,7 @@ $(document).ready(function() {
                     tr.appendChild(dataDiv);
 
                     callback(true);
+                    $('.spinner').remove();
                 }
             });
         }
@@ -404,4 +405,23 @@ $(document).ready(function() {
         }
     }
     $(document).ready(autoPopulate());
+    $('.spinner').remove();
+
+    // recreate pending spinner and add to page
+    spinnerDiv = document.createElement('div');
+    bounceDiv1 = document.createElement('div');
+    bounceDiv2 = document.createElement('div');
+    bounceDiv3 = document.createElement('div');
+
+    spinnerDiv.className = 'spinner';
+    bounceDiv1.className = 'bounce1';
+    bounceDiv2.className = 'bounce2';
+    bounceDiv3.className = 'bounce3';
+
+    spinnerDiv.appendChild(bounceDiv1);
+    spinnerDiv.appendChild(bounceDiv2);
+    spinnerDiv.appendChild(bounceDiv3);
+
+    var container = document.getElementById('spinner-and-slider');
+    container.insertBefore(spinnerDiv, container.childNodes[0]);
 });
