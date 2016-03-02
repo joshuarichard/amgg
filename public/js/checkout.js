@@ -402,9 +402,6 @@ $(document).ready(function() {
                 }
             });
         }
-        else {
-            alert('You are not logged in, please log in to sponsor a child');
-        }
     }
     $(document).ready(autoPopulate());
 });
