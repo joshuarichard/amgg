@@ -208,6 +208,8 @@ exports.edit = function(id, changes, collection, callback) {
                     'err': err.errmsg,
                     code: err.code
                 });
+            } else {
+                callback(res);
             }
         });
     };

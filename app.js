@@ -254,15 +254,22 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 // if it is valid then perform the donor edit
                 mongo.edit(id, req.body.changes, donorCollection,
                     function(result) {
-                        if (result.result.ok === 1) {
+                        if (result.hasOwnProperty('err')) {
+                            if (result.code === 11000) {
+                                res.status(409).send({
+                                    success: false,
+                                    message: 'Email already exists.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'DB error.'
+                                });
+                            }
+                        } else {
                             res.status(200).send({
                                 success: true,
                                 message: 'Donor edited.'
-                            });
-                        } else {
-                            res.status(500).send({
-                                success: false,
-                                message: 'DB error.'
                             });
                         }
                     });
@@ -312,8 +319,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             } else if (result.code === 11000) {
                 res.status(409).send({
                     success: false,
-                    code: result.code,
-                    errmsg: result.errmsg,
                     message: 'Email already exists.'
                 });
             } else {
