@@ -50,11 +50,6 @@ table {
 	max-width: 15em;
 }
 
-.edit-button {
-	width: 3.5em;
-    height: 2em;
-}
-
 #sectionC {
 	padding-bottom: 30em;
 }
@@ -70,4 +65,14 @@ table {
 	margin: 0.5em;
 	width: 100%;
 	text-align: center;
+}
+
+.control-label {
+	margin-top: 0.4em;
+}
+
+#edit-info-submit {
+	width: 20%;
+    margin-right: 18%;
+    margin-top: 0.5em;
 }
