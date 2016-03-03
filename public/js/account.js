@@ -164,6 +164,7 @@ $(document).ready(function() {
                     childrenSelectContainer.appendChild(selectChild);
 
                     callback(true);
+                    $('.spinner').remove();
                     }
                 });
             }
@@ -196,7 +197,6 @@ $(document).ready(function() {
                     addChildToDonorList(id);
                     tabA.appendChild(table);
                 }
-
             },
             error: function() {
                 alert("Unable to edit your information");
@@ -259,7 +259,7 @@ $(document).ready(function() {
                 lastName.value = res.apellido;
 
                 //combine everything into one element
-                lastNameWrapper.appendChild(lastName);      
+                lastNameWrapper.appendChild(lastName);
                 lastNameGroup.appendChild(lastNameLabel);
                 lastNameGroup.appendChild(lastNameWrapper);
 
@@ -453,4 +453,24 @@ $(document).ready(function() {
     else {
         console.log('No login information found, please login');
     }
+
+    $('.spinner').remove();
+
+    // recreate pending spinner and add to page
+    spinnerDiv = document.createElement('div');
+    bounceDiv1 = document.createElement('div');
+    bounceDiv2 = document.createElement('div');
+    bounceDiv3 = document.createElement('div');
+
+    spinnerDiv.className = 'spinner';
+    bounceDiv1.className = 'bounce1';
+    bounceDiv2.className = 'bounce2';
+    bounceDiv3.className = 'bounce3';
+
+    spinnerDiv.appendChild(bounceDiv1);
+    spinnerDiv.appendChild(bounceDiv2);
+    spinnerDiv.appendChild(bounceDiv3);
+
+    var container = document.getElementById('spinner-and-slider');
+    container.insertBefore(spinnerDiv, container.childNodes[0]);
 });
