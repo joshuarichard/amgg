@@ -350,7 +350,7 @@ $(document).ready(function() {
         var pThing = document.createElement('p');
 
         centerDiv.className = 'center';
-        h1Thing.innerHTML = "¡Muchas gracias!";
+        h1Thing.innerHTML = '¡Muchas gracias!';
         pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
         h1Thing.appendChild(pThing);
         centerDiv.appendChild(h1Thing);
@@ -373,17 +373,17 @@ $(document).ready(function() {
                     'id' : sessionStorage.getItem('id')
                 },
                 success: function(res) {
-                    $('#form-first-name').val(res.data.nombre);
+                    $('#form-first-name').val(res.nombre);
                     $('#form-first-name').prop('disabled', true);
-                    $('#form-last-name').val(res.data.apellido);
+                    $('#form-last-name').val(res.apellido);
                     $('#form-last-name').prop('disabled', true);
-                    $('#form-phone').val(res.data.teléfono);
+                    $('#form-phone').val(res.teléfono);
                     $('#form-phone').prop('disabled', true);
-                    $('#form-address-street').val(res.data.calle);
+                    $('#form-address-street').val(res.calle);
                     $('#form-address-street').prop('disabled', true);
-                    $('#form-address-city').val(res.data.ciudad);
+                    $('#form-address-city').val(res.ciudad);
                     $('#form-address-city').prop('disabled', true);
-                    $('#form-email').val(res.data.correo_electrónico);
+                    $('#form-email').val(res.correo_electrónico);
                     $('#form-email').prop('disabled', true);
                     $('#form-country').prop('disabled', true);
                 },

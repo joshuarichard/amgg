@@ -9,7 +9,7 @@ $(document).ready(function() {
      *   if not, prompt user to login
      */
     if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-        
+
         /* create the tabs */
         var tabA = document.createElement('div');
         tabA.id = 'sectionA';
@@ -36,9 +36,9 @@ $(document).ready(function() {
         var tbody = document.createElement('tbody');
 
 
-        /* 
+        /*
          * create content for tabC
-         * We have to create tabC before tabB becuase we will be 
+         * We have to create tabC before tabB becuase we will be
          * appending info from DB to elements in tabC
          * this will save us from having to send another request to
          * the DB when creating tabC
@@ -147,7 +147,7 @@ $(document).ready(function() {
                     dataTD.appendChild(genderDiv);
                     dataTD.appendChild(centerDiv);
                     dataDiv.appendChild(dataTD);
-                    
+
                     //append child info
                     tr.appendChild(dataDiv);
 
@@ -191,15 +191,15 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 'token' : sessionStorage.getItem('token'),
-                'id' : sessionStorage.getItem('id') 
+                'id' : sessionStorage.getItem('id')
             },
             success: function(res) {
-                for (var i = 0; i < res.data.niños_patrocinadoras.length; i++) {
-                    var id = res.data.niños_patrocinadoras[i];
+                for (var i = 0; i < res.niños_patrocinadoras.length; i++) {
+                    var id = res.niños_patrocinadoras[i];
                     addChildToDonorList(id);
                     tabA.appendChild(table);
                 }
-                
+
             }
         });
 
@@ -209,7 +209,7 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 'token' : sessionStorage.getItem('token'),
-                'id' : sessionStorage.getItem('id') 
+                'id' : sessionStorage.getItem('id')
             },
             success: function(res) {
                 var id = res.key;
@@ -235,7 +235,7 @@ $(document).ready(function() {
                 firstName.className = 'form-control';
                 firstName.type = 'text';
                 firstName.name = 'first-name';
-                firstName.innerHTML = res.data.nombre;
+                firstName.innerHTML = res.nombre;
                 //create edit button for first name
                 var editFirstNameContainer = document.createElement('div');
                 editFirstNameContainer.className = "edit-button-container";
@@ -244,9 +244,9 @@ $(document).ready(function() {
                 editFirstName.id = 'editFirstName';
                 //combine everything into one element
                 editFirstNameContainer.appendChild(editFirstName);
-                firstNameWrapper.appendChild(firstName);      
+                firstNameWrapper.appendChild(firstName);
                 firstNameGroup.appendChild(firstNameLabel);
-                firstNameGroup.appendChild(firstNameWrapper);  
+                firstNameGroup.appendChild(firstNameWrapper);
                 firstNameGroup.appendChild(editFirstNameContainer);
                 //create last name
                 var lastNameGroup = document.createElement('div');
@@ -258,7 +258,7 @@ $(document).ready(function() {
                 lastNameWrapper.className = 'col-md-6';
                 var lastName = document.createElement('span');
                 lastName.className = 'form-control';
-                lastName.innerHTML = res.data.apellido;
+                lastName.innerHTML = res.apellido;
                 //create edit button for last name
                 var editLastNameContainer = document.createElement('div');
                 editLastNameContainer.className = "edit-button-container";
@@ -266,7 +266,7 @@ $(document).ready(function() {
                 editLastName.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
                 //combine everything into one element
                 editLastNameContainer.appendChild(editLastName);
-                lastNameWrapper.appendChild(lastName);      
+                lastNameWrapper.appendChild(lastName);
                 lastNameGroup.appendChild(lastNameLabel);
                 lastNameGroup.appendChild(lastNameWrapper);
                 lastNameGroup.appendChild(editLastNameContainer);
@@ -280,7 +280,7 @@ $(document).ready(function() {
                 phoneWrapper.className = 'col-md-6';
                 var phone = document.createElement('span');
                 phone.className = 'form-control';
-                phone.innerHTML = res.data.teléfono;
+                phone.innerHTML = res.teléfono;
                 //create edit button for phone number
                 var editPhoneContainer = document.createElement('div');
                 editPhoneContainer.className = "edit-button-container";
@@ -288,7 +288,7 @@ $(document).ready(function() {
                 editPhone.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
                 //combine everything into one element
                 editPhoneContainer.appendChild(editPhone);
-                phoneWrapper.appendChild(phone);      
+                phoneWrapper.appendChild(phone);
                 phoneGroup.appendChild(phoneLabel);
                 phoneGroup.appendChild(phoneWrapper);
                 phoneGroup.appendChild(editPhoneContainer);
@@ -302,7 +302,7 @@ $(document).ready(function() {
                 emailWrapper.className = 'col-md-6';
                 var email = document.createElement('span');
                 email.className = 'form-control';
-                email.innerHTML = res.data.correo_electrónico;
+                email.innerHTML = res.correo_electrónico;
                 //create edit button for email
                 var editEmailContainer = document.createElement('div');
                 editEmailContainer.className = "edit-button-container";
@@ -310,7 +310,7 @@ $(document).ready(function() {
                 editEmail.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
                 //combine everything into one element
                 editEmailContainer.appendChild(editEmail);
-                emailWrapper.appendChild(email);      
+                emailWrapper.appendChild(email);
                 emailGroup.appendChild(emailLabel);
                 emailGroup.appendChild(emailWrapper);
                 emailGroup.appendChild(editEmailContainer);
@@ -324,14 +324,14 @@ $(document).ready(function() {
                 streetWrapper.className = 'col-md-6';
                 var street = document.createElement('span');
                 street.className = 'form-control';
-                street.innerHTML = res.data.calle;
+                street.innerHTML = res.calle;
                 //create edit button for address, this will control street and city
                 var editAddressContainer = document.createElement('div');
                 editAddressContainer.className = "edit-button-container";
                 var editAddress = document.createElement('button');
                 editAddress.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
                 //combine everything into one element
-                streetWrapper.appendChild(street);      
+                streetWrapper.appendChild(street);
                 editAddressContainer.appendChild(editAddress);
                 streetGroup.appendChild(streetLabel);
                 streetGroup.appendChild(streetWrapper);
@@ -345,10 +345,10 @@ $(document).ready(function() {
                 cityWrapper.className = 'col-md-6';
                 var city = document.createElement('span');
                 city.className = 'form-control';
-                city.innerHTML = res.data.ciudad;
-                cityWrapper.appendChild(city);      
+                city.innerHTML = res.ciudad;
+                cityWrapper.appendChild(city);
                 cityGroup.appendChild(cityLabel);
-                cityGroup.appendChild(cityWrapper); 
+                cityGroup.appendChild(cityWrapper);
 
                 //append content to tab B
                 infoWrapper.appendChild(tabBHeader);
