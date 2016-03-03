@@ -35,6 +35,23 @@ $(document).ready(function() {
         table.className = 'table table-hover child-selections';
         var tbody = document.createElement('tbody');
 
+        // recreate pending spinner and add to page
+        spinnerDiv = document.createElement('div');
+        bounceDiv1 = document.createElement('div');
+        bounceDiv2 = document.createElement('div');
+        bounceDiv3 = document.createElement('div');
+
+        spinnerDiv.className = 'spinner';
+        bounceDiv1.className = 'bounce1';
+        bounceDiv2.className = 'bounce2';
+        bounceDiv3.className = 'bounce3';
+
+        spinnerDiv.appendChild(bounceDiv1);
+        spinnerDiv.appendChild(bounceDiv2);
+        spinnerDiv.appendChild(bounceDiv3);
+
+        tabA.appendChild(spinnerDiv, tabA.childNodes[0]);
+
         /*
          * create content for tabC
          * We have to create tabC before tabB becuase we will be
@@ -98,72 +115,76 @@ $(document).ready(function() {
                         callback(false);
                     } else {
 
-                    var dataTD = document.createElement('td');
+                        var dataTD = document.createElement('td');
 
-                    // set up all child info as vars
-                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
-                                      'Mayo', 'Junio', 'Julio', 'Agosto',
-                                      'Septiembre', 'Octubre', 'Noviembre',
-                                      'Diciembre'];
-                    var date = new Date(res[id].cumpleaños);
-                    var birthday = monthNames[date.getMonth()] + ' ' +
-                                     date.getDate() + ', ' + date.getFullYear();
-                    var name = res[id].nombre;
-                    var age = res[id].años;
-                    var gender = res[id].género;
-                    var center = res[id].centro_de_ninos;
+                        // set up all child info as vars
+                        var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
+                                          'Mayo', 'Junio', 'Julio', 'Agosto',
+                                          'Septiembre', 'Octubre', 'Noviembre',
+                                          'Diciembre'];
+                        var date = new Date(res[id].cumpleaños);
+                        var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+                        var name = res[id].nombre;
+                        var age = res[id].años;
+                        var gender = res[id].género;
+                        var center = res[id].centro_de_ninos;
 
-                    // create elements for each piece of info
-                    var dataDiv = document.createElement('td');
-                    dataDiv.className = 'child-info-group';
+                        // create elements for each piece of info
+                        var dataDiv = document.createElement('td');
+                        dataDiv.className = 'child-info-group';
 
-                    var nameDiv = document.createElement('div');
-                    var ageDiv = document.createElement('div');
-                    var birthdayDiv = document.createElement('div');
-                    var genderDiv = document.createElement('div');
-                    var centerDiv = document.createElement('div');
+                        var nameDiv = document.createElement('div');
+                        var ageDiv = document.createElement('div');
+                        var birthdayDiv = document.createElement('div');
+                        var genderDiv = document.createElement('div');
+                        var centerDiv = document.createElement('div');
 
-                    // assign classes to those elements
-                    nameDiv.className = 'child-info';
-                    ageDiv.className = 'child-info';
-                    birthdayDiv.className = 'child-info';
-                    genderDiv.className = 'child-info';
-                    centerDiv.className = 'child-info';
+                        // assign classes to those elements
+                        nameDiv.className = 'child-info';
+                        ageDiv.className = 'child-info';
+                        birthdayDiv.className = 'child-info';
+                        genderDiv.className = 'child-info';
+                        centerDiv.className = 'child-info';
 
-                    // assign values
-                    nameDiv.innerHTML = '<b> nombre: </b>' + name;
-                    ageDiv.innerHTML = '<b> años:  </b>' + age;
-                    birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
-                    genderDiv.innerHTML = '<b> género:  </b>' + gender;
-                    centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+                        // assign values
+                        nameDiv.innerHTML = '<b> nombre: </b>' + name;
+                        ageDiv.innerHTML = '<b> años:  </b>' + age;
+                        birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
+                        genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                        centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
 
-                    // append children to div
-                    dataTD.appendChild(nameDiv);
-                    dataTD.appendChild(ageDiv);
-                    dataTD.appendChild(birthdayDiv);
-                    dataTD.appendChild(genderDiv);
-                    dataTD.appendChild(centerDiv);
-                    dataDiv.appendChild(dataTD);
+                        // append children to div
+                        dataTD.appendChild(nameDiv);
+                        dataTD.appendChild(ageDiv);
+                        dataTD.appendChild(birthdayDiv);
+                        dataTD.appendChild(genderDiv);
+                        dataTD.appendChild(centerDiv);
+                        dataDiv.appendChild(dataTD);
 
-                    //append child info
-                    tr.appendChild(dataDiv);
+                        //append child info
+                        tr.appendChild(dataDiv);
 
-                    //also create child list for tabC
-                    var inputGroup = document.createElement('div');
-                    inputGroup.className = 'input-group';
-                    var inputGroupSpan = document.createElement('span');
-                    inputGroupSpan.className = 'input-group-btn';
-                    var selectChild = document.createElement('button');
-                    selectChild.className = 'btn btn-primary child-letter-select';
-                    selectChild.type = 'button';
-                    //this will change the header on tabC based on the child selected
-                    selectChild.onclick = function() { tabCHeader.innerHTML = 'Letter to ' +  $('.child-letter-select').text() };
-                    selectChild.innerHTML = name;
-                    inputGroupSpan.appendChild(selectChild);
-                    inputGroup.appendChild(inputGroupSpan);
-                    childrenSelectContainer.appendChild(selectChild);
+                        //also create child list for tabC
+                        var inputGroup = document.createElement('div');
+                        inputGroup.className = 'input-group';
+                        var inputGroupSpan = document.createElement('span');
+                        inputGroupSpan.className = 'input-group-btn';
+                        var selectChild = document.createElement('button');
+                        /* eslint-disable */
+                        selectChild.className = 'btn btn-primary child-letter-select';
+                        /* eslint-enable */
+                        selectChild.type = 'button';
+                        //this will change the header on tabC based on the
+                        // child selected
+                        selectChild.onclick = function() {
+                            tabCHeader.innerHTML = 'Letter to ' + $('.child-letter-select').text();
+                        };
+                        selectChild.innerHTML = name;
+                        inputGroupSpan.appendChild(selectChild);
+                        inputGroup.appendChild(inputGroupSpan);
+                        childrenSelectContainer.appendChild(selectChild);
 
-                    callback(true);
+                        callback(true);
                     }
                 });
             }
@@ -173,6 +194,7 @@ $(document).ready(function() {
                     // then append data
                     data(id, function(success)  {
                         if(success === true) {
+                            $('.spinner').remove();
                             tbody.appendChild(tr);
                             table.appendChild(tbody);
                         }
@@ -196,7 +218,6 @@ $(document).ready(function() {
                     addChildToDonorList(id);
                     tabA.appendChild(table);
                 }
-
             },
             error: function() {
                 alert("Unable to edit your information");
@@ -259,7 +280,7 @@ $(document).ready(function() {
                 lastName.value = res.apellido;
 
                 //combine everything into one element
-                lastNameWrapper.appendChild(lastName);      
+                lastNameWrapper.appendChild(lastName);
                 lastNameGroup.appendChild(lastNameLabel);
                 lastNameGroup.appendChild(lastNameWrapper);
 
