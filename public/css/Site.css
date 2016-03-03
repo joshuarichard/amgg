@@ -17,7 +17,7 @@ body {
     padding-top: 0.55em;
     margin-top:8px;
     margin-bottom:2%;
-  z-index: 11; /* 1px higher than the overlay layer */
+    z-index: 11; /* 1px higher than the overlay layer */
 }
 
 .login-triangle {
@@ -224,6 +224,7 @@ input[type="email"],input[type="password"] {
     position: fixed;
     width: 100%;
     z-index: 10000;
+    font-size: 14px;
 }
 
 .pre-header a {

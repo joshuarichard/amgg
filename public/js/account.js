@@ -35,7 +35,6 @@ $(document).ready(function() {
         table.className = 'table table-hover child-selections';
         var tbody = document.createElement('tbody');
 
-
         /* 
          * create content for tabC
          * We have to create tabC before tabB becuase we will be 
@@ -68,8 +67,6 @@ $(document).ready(function() {
         tabC.appendChild(tabAHeaderhr);
         tabC.appendChild(letterForm);
         tabC.appendChild(childrenSelectContainer);
-
-
 
         function addChildToDonorList(id) {
             // create child's table row
