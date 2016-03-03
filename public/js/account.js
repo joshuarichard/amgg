@@ -200,6 +200,9 @@ $(document).ready(function() {
                     tabA.appendChild(table);
                 }
 
+            },
+            error: function() {
+                alert("Unable to edit your information");
             }
         });
 
@@ -216,6 +219,7 @@ $(document).ready(function() {
 
                 /* create content for tabB */
                 var infoWrapper = document.createElement('div');
+                infoWrapper.id = 'tabB-content';
                 infoWrapper.className = 'content-wrapper row row-centered';
                 //tabB header
                 tabBHeader = document.createElement('span');
@@ -230,24 +234,18 @@ $(document).ready(function() {
                 firstNameLabel.innerHTML = 'Nombre';
                 var firstNameWrapper = document.createElement('div');
                 firstNameWrapper.className = 'col-md-6';
-                var firstName = document.createElement('span');
+                var firstName = document.createElement('input');
                 firstName.id = 'form-first-name';
                 firstName.className = 'form-control';
                 firstName.type = 'text';
                 firstName.name = 'first-name';
-                firstName.innerHTML = res.nombre;
-                //create edit button for first name
-                var editFirstNameContainer = document.createElement('div');
-                editFirstNameContainer.className = "edit-button-container";
-                var editFirstName = document.createElement('button');
-                editFirstName.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
-                editFirstName.id = 'editFirstName';
+                firstName.value = res.nombre;
+
                 //combine everything into one element
-                editFirstNameContainer.appendChild(editFirstName);
                 firstNameWrapper.appendChild(firstName);
                 firstNameGroup.appendChild(firstNameLabel);
                 firstNameGroup.appendChild(firstNameWrapper);
-                firstNameGroup.appendChild(editFirstNameContainer);
+
                 //create last name
                 var lastNameGroup = document.createElement('div');
                 lastNameGroup.className = 'form-group';
@@ -256,20 +254,18 @@ $(document).ready(function() {
                 lastNameLabel.innerHTML = 'Apellido';
                 var lastNameWrapper = document.createElement('div');
                 lastNameWrapper.className = 'col-md-6';
-                var lastName = document.createElement('span');
+                var lastName = document.createElement('input');
+                lastName.id = 'form-last-name';
                 lastName.className = 'form-control';
-                lastName.innerHTML = res.apellido;
-                //create edit button for last name
-                var editLastNameContainer = document.createElement('div');
-                editLastNameContainer.className = "edit-button-container";
-                var editLastName = document.createElement('button');
-                editLastName.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                lastName.type = 'text';
+                lastName.name = 'last-name';
+                lastName.value = res.apellido;
+
                 //combine everything into one element
-                editLastNameContainer.appendChild(editLastName);
-                lastNameWrapper.appendChild(lastName);
+                lastNameWrapper.appendChild(lastName);      
                 lastNameGroup.appendChild(lastNameLabel);
                 lastNameGroup.appendChild(lastNameWrapper);
-                lastNameGroup.appendChild(editLastNameContainer);
+
                 //create phone number
                 var phoneGroup = document.createElement('div');
                 phoneGroup.className = 'form-group';
@@ -278,20 +274,18 @@ $(document).ready(function() {
                 phoneLabel.innerHTML = 'Tel&#233;fono';
                 var phoneWrapper = document.createElement('div');
                 phoneWrapper.className = 'col-md-6';
-                var phone = document.createElement('span');
+                var phone = document.createElement('input');
+                phone.id = 'form-phone';
                 phone.className = 'form-control';
-                phone.innerHTML = res.teléfono;
-                //create edit button for phone number
-                var editPhoneContainer = document.createElement('div');
-                editPhoneContainer.className = "edit-button-container";
-                var editPhone = document.createElement('button');
-                editPhone.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                phone.type = 'text';
+                phone.name = 'phone';
+                phone.value = res.teléfono;
+
                 //combine everything into one element
-                editPhoneContainer.appendChild(editPhone);
                 phoneWrapper.appendChild(phone);
                 phoneGroup.appendChild(phoneLabel);
                 phoneGroup.appendChild(phoneWrapper);
-                phoneGroup.appendChild(editPhoneContainer);
+
                 //create email
                 var emailGroup = document.createElement('div');
                 emailGroup.className = 'form-group';
@@ -300,20 +294,18 @@ $(document).ready(function() {
                 emailLabel.innerHTML = 'Correo Electrónico';
                 var emailWrapper = document.createElement('div');
                 emailWrapper.className = 'col-md-6';
-                var email = document.createElement('span');
+                var email = document.createElement('input');
+                email.id = 'form-email'
                 email.className = 'form-control';
-                email.innerHTML = res.correo_electrónico;
-                //create edit button for email
-                var editEmailContainer = document.createElement('div');
-                editEmailContainer.className = "edit-button-container";
-                var editEmail = document.createElement('button');
-                editEmail.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                email.type = 'text';
+                email.name = 'email';
+                email.value = res.correo_electrónico;
+
                 //combine everything into one element
-                editEmailContainer.appendChild(editEmail);
                 emailWrapper.appendChild(email);
                 emailGroup.appendChild(emailLabel);
                 emailGroup.appendChild(emailWrapper);
-                emailGroup.appendChild(editEmailContainer);
+
                 //create street
                 var streetGroup = document.createElement('div');
                 streetGroup.className = 'form-group';
@@ -322,20 +314,18 @@ $(document).ready(function() {
                 streetLabel.innerHTML = 'Dirección';
                 var streetWrapper = document.createElement('div');
                 streetWrapper.className = 'col-md-6';
-                var street = document.createElement('span');
+                var street = document.createElement('input');
+                street.id = 'form-street';
                 street.className = 'form-control';
-                street.innerHTML = res.calle;
-                //create edit button for address, this will control street and city
-                var editAddressContainer = document.createElement('div');
-                editAddressContainer.className = "edit-button-container";
-                var editAddress = document.createElement('button');
-                editAddress.className = 'col-md-2 glyphicon glyphicon-edit edit-button';
+                street.type = 'text';
+                street.name = 'street';
+                street.value = res.calle;
+
                 //combine everything into one element
                 streetWrapper.appendChild(street);
-                editAddressContainer.appendChild(editAddress);
                 streetGroup.appendChild(streetLabel);
                 streetGroup.appendChild(streetWrapper);
-                streetGroup.appendChild(editAddressContainer);
+
                 //create city
                 var cityGroup = document.createElement('div');
                 cityGroup.className = 'form-group';
@@ -343,9 +333,14 @@ $(document).ready(function() {
                 cityLabel.className = 'col-md-4 control-label';
                 var cityWrapper = document.createElement('div');
                 cityWrapper.className = 'col-md-6';
-                var city = document.createElement('span');
+                var city = document.createElement('input');
+                city.id = 'form-city';
                 city.className = 'form-control';
-                city.innerHTML = res.ciudad;
+                city.type = 'text';
+                city.name = 'city';
+                city.value = res.ciudad;
+
+                //combine everything into one element
                 cityWrapper.appendChild(city);
                 cityGroup.appendChild(cityLabel);
                 cityGroup.appendChild(cityWrapper);
@@ -360,6 +355,8 @@ $(document).ready(function() {
                 infoWrapper.appendChild(streetGroup);
                 infoWrapper.appendChild(cityGroup);
                 tabB.appendChild(infoWrapper);
+
+                infoChange();
             }
         });
 
@@ -367,8 +364,96 @@ $(document).ready(function() {
         container.appendChild(tabA);
         container.appendChild(tabB);
         container.appendChild(tabC);
+
+        function submitInfoChanges() {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'PUT',
+                data: {
+                    'token' : sessionStorage.getItem('token'),
+                    'changes' : {
+                                    'nombre': document.getElementById("form-first-name").value,
+                                    'apellido': document.getElementById("form-last-name").value,
+                                    'teléfono': document.getElementById("form-phone").value,
+                                    'calle': document.getElementById("form-street").value,
+                                    'ciudad': document.getElementById("form-city").value,
+                                    'correo_electrónico': document.getElementById("form-email").value
+                                }
+                },
+                success: function(res) {
+                    alert("Your information has been updated");
+                }
+            });
+        }
+
+        function createButton () {
+            var editInfoSubmit = document.createElement('button');
+            editInfoSubmit.id = 'edit-info-submit';
+            editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
+            editInfoSubmit.innerHTML = 'enviar';
+            editInfoSubmit.title = 'submit changes to your information';
+            editInfoSubmit.onclick = function() { submitInfoChanges() };
+            $("#tabB-content").append(editInfoSubmit);
+        }
+
+        function infoChange () {
+            var nameInput = document.getElementById("form-first-name");
+            nameInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+            var lastNameInput = document.getElementById("form-last-name");
+            lastNameInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+            var phoneInput = document.getElementById("form-phone");
+            phoneInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+            var emailInput = document.getElementById("form-email");
+            emailInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+            var streetInput = document.getElementById("form-street");
+            streetInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+            var cityInput = document.getElementById("form-city");
+            cityInput.oninput = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                }
+                else {
+                    createButton();
+                }
+            };
+        }
     }
     else {
-        alert('No login information found, please login');
+        console.log('No login information found, please login');
     }
 });
