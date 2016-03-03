@@ -404,6 +404,24 @@ $(document).ready(function() {
                 error: function(res) {
                     if (res.status === 409) {
                         alert('el correo electrónico ya está asociada a una cuenta.');
+
+                        //put old info back in
+                        $.ajax({
+                            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                            type: 'POST',
+                            data: {
+                                'token' : sessionStorage.getItem('token'),
+                                'id' : sessionStorage.getItem('id')
+                            },
+                            success: function(res) {
+                                document.getElementById('form-first-name').value = res.nombre;
+                                document.getElementById('form-last-name').value = res.apellido;
+                                document.getElementById('form-phone').value = res.teléfono;
+                                document.getElementById('form-email').value = res.correo_electrónico;
+                                document.getElementById('form-street').value = res.calle;
+                                document.getElementById('form-city').value = res.ciudad;
+                            }
+                        });
                     }
                 }
             });
