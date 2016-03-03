@@ -384,11 +384,13 @@ $(document).ready(function() {
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+    if (sessionStorage.getItem('token') != null
+            && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     }
     else {
+        /* eslint-disable */
         /* Toggle the login box when login link is clicked */
         function toggleLogin () {
             if ($('.login').css('display') == 'none') {
@@ -401,9 +403,9 @@ $(document).ready(function() {
         /* When login link is clicked, call toggleLogin */
         $('#toggle-login').click(toggleLogin);
 
-        /* When the log in button is clicked, validate credentials and if valid
-           send the user to account.html and but the token returned by server into
-           session storage */
+        /* When the log in button is clicked, validate credentials
+           and if valid send the user to account.html and but the
+           token returned by server into session storage */
         $('.login-submit').click(login);
 
         function login () {
@@ -420,8 +422,8 @@ $(document).ready(function() {
                 }
             });
 
-            // on successful login, save token and donor id in session storage and
-            // go to the donor portal
+            // on successful login, save token and donor id
+            // in session storage and go to the donor portal
             loginRequest.success(function(res) {
                   //save login token to session storage
                 sessionStorage.setItem('token', res.token);
@@ -433,9 +435,7 @@ $(document).ready(function() {
             loginRequest.error(function(httpObj, textStatus) {
                 if (httpObj.status !== 200) {
                     if(httpObj.status === 401) {
-                        /* eslint-disable */
                         alert('correo o contraseña incorrectos - email or password incorrect');
-                        /* eslint-enable */
                     } else {
                         console.log(httpObj + ' ' + textStatus);
                         alert('internal server error. see console for error info.');
@@ -443,5 +443,6 @@ $(document).ready(function() {
                 }
             });
         }
-    }    
+        /* eslint-enable */
+    }
 });
