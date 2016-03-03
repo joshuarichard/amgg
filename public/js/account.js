@@ -60,7 +60,7 @@ $(document).ready(function() {
 
         //create child select table
         var childrenSelectContainer = document.createElement('div');
-        childrenSelectContainer.className = "col-md-2";
+        childrenSelectContainer.className = 'col-md-2';
 
         letterForm.appendChild(letter);
         letterForm.appendChild(submitLetter);
@@ -202,7 +202,7 @@ $(document).ready(function() {
 
             },
             error: function() {
-                alert("Unable to edit your information");
+                alert('Unable to edit your information');
             }
         });
 
@@ -262,7 +262,7 @@ $(document).ready(function() {
                 lastName.value = res.apellido;
 
                 //combine everything into one element
-                lastNameWrapper.appendChild(lastName);      
+                lastNameWrapper.appendChild(lastName);
                 lastNameGroup.appendChild(lastNameLabel);
                 lastNameGroup.appendChild(lastNameWrapper);
 
@@ -372,16 +372,21 @@ $(document).ready(function() {
                 data: {
                     'token' : sessionStorage.getItem('token'),
                     'changes' : {
-                                    'nombre': document.getElementById("form-first-name").value,
-                                    'apellido': document.getElementById("form-last-name").value,
-                                    'teléfono': document.getElementById("form-phone").value,
-                                    'calle': document.getElementById("form-street").value,
-                                    'ciudad': document.getElementById("form-city").value,
-                                    'correo_electrónico': document.getElementById("form-email").value
+                                    'nombre': document.getElementById('form-first-name').value,
+                                    'apellido': document.getElementById('form-last-name').value,
+                                    'teléfono': document.getElementById('form-phone').value,
+                                    'calle': document.getElementById('form-street').value,
+                                    'ciudad': document.getElementById('form-city').value,
+                                    'correo_electrónico': document.getElementById('form-email').value
                                 }
                 },
                 success: function(res) {
-                    alert("Your information has been updated");
+                    alert('Su información ha sido actualizada.');
+                },
+                error: function(res) {
+                    if (res.status === 409) {
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                    }
                 }
             });
         }
@@ -393,67 +398,60 @@ $(document).ready(function() {
             editInfoSubmit.innerHTML = 'enviar';
             editInfoSubmit.title = 'submit changes to your information';
             editInfoSubmit.onclick = function() { submitInfoChanges() };
-            $("#tabB-content").append(editInfoSubmit);
+            $('#tabB-content').append(editInfoSubmit);
         }
 
         function infoChange () {
-            var nameInput = document.getElementById("form-first-name");
+            var nameInput = document.getElementById('form-first-name');
             nameInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
-            var lastNameInput = document.getElementById("form-last-name");
+            var lastNameInput = document.getElementById('form-last-name');
             lastNameInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
-            var phoneInput = document.getElementById("form-phone");
+            var phoneInput = document.getElementById('form-phone');
             phoneInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
-            var emailInput = document.getElementById("form-email");
+            var emailInput = document.getElementById('form-email');
             emailInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
-            var streetInput = document.getElementById("form-street");
+            var streetInput = document.getElementById('form-street');
             streetInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
-            var cityInput = document.getElementById("form-city");
+            var cityInput = document.getElementById('form-city');
             cityInput.oninput = function() {
                 if (document.getElementById('edit-info-submit')) {
                     return;
-                }
-                else {
+                } else {
                     createButton();
                 }
             };
         }
-    }
-    else {
+    } else {
         console.log('No login information found, please login');
     }
 });
