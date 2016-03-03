@@ -374,11 +374,18 @@ $(document).ready(function() {
                 },
                 success: function(res) {
                     $('#form-first-name').val(res.data.nombre);
+                    $('#form-first-name').prop('disabled', true);
                     $('#form-last-name').val(res.data.apellido);
+                    $('#form-last-name').prop('disabled', true);
                     $('#form-phone').val(res.data.teléfono);
+                    $('#form-phone').prop('disabled', true);
                     $('#form-address-street').val(res.data.calle);
+                    $('#form-address-street').prop('disabled', true);
                     $('#form-address-city').val(res.data.ciudad);
+                    $('#form-address-city').prop('disabled', true);
                     $('#form-email').val(res.data.correo_electrónico);
+                    $('#form-email').prop('disabled', true);
+                    $('#form-country').prop('disabled', true);
                 },
                 error: function() {
                     alert('Unable to retrieve your account information');
