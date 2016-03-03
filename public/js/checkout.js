@@ -422,6 +422,6 @@ $(document).ready(function() {
     spinnerDiv.appendChild(bounceDiv2);
     spinnerDiv.appendChild(bounceDiv3);
 
-    var container = document.getElementById('spinner-and-slider');
-    container.insertBefore(spinnerDiv, container.childNodes[0]);
+    var containers = document.getElementById('spinner-and-slider');
+    containers.insertBefore(spinnerDiv, containers.childNodes[0]);
 });
