@@ -394,7 +394,6 @@ $(document).ready(function() {
             editInfoSubmit.title = 'submit changes to your information';
             editInfoSubmit.onclick = function() { submitInfoChanges() };
             $("#tabB-content").append(editInfoSubmit);
-            // $('#edit-info-submit').click(submitInfoChanges());
         }
 
         function infoChange () {
