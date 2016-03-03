@@ -54,7 +54,7 @@ else {
               //save login token to session storage
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('id', res.id);
-            window.location = 'account.html';
+            window.location = '/views/account.html';
         });
 
         // on login error, check error and inform user accordingly
