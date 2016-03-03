@@ -97,7 +97,10 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
         cursor.each(function(err, doc) {
             if (err) {
                 log.error('error in find().findDocs(). message: ' + err);
-                // TODO: callback with error in JSON
+                callback({
+                    'err': err.errmsg,
+                    code: err.code
+                });
             }
             if (doc != null) {
                 documents[doc._id] = doc;
@@ -153,26 +156,9 @@ exports.insert = function(docs, collection, callback) {
             if (err) {
                 log.error('error in insert().insertDoc() message: ' + err);
                 callback({
-                    success: false,
-                    code: err.code,
-                    message: err.errmsg
+                    'err': err.errmsg,
+                    code: err.code
                 });
-            } else {
-                callback(result);
-            }
-        });
-    };
-
-    var bulkInsert = function(db, collection, docs, callback) {
-        var bulk = db.collection(collection).initializeUnorderedBulkOp();
-        for (var i = 0; i < docs.length; i++) {
-            bulk.insert(docs[i]);
-        }
-
-        bulk.execute(function(err, result) {
-            if (err) {
-                log.error('error in insert().bulkInsert() message: ' + err);
-                callback(err);
             } else {
                 callback(result);
             }
@@ -184,23 +170,13 @@ exports.insert = function(docs, collection, callback) {
             log.error('Mongo connection error in insert() ' + err);
             callback({'err': 'cannot establish a connection'}); // good start
         } else {
-            if(docs instanceof Array) {
-                bulkInsert(db, collection, docs, function(result) {
-                    db.close();
-                    log.trace('successfully inserted many documents ' +
-                              JSON.stringify(docs) + ' into collection \'' +
-                              collection + '\'');
-                    callback(result);
-                });
-            } else {
-                insertDoc(db, collection, docs, function(result) {
-                    db.close();
-                    log.trace('successfully inserted one document ' +
-                              JSON.stringify(docs) + ' into collection \'' +
-                              collection + '\'');
-                    callback(result);
-                });
-            }
+            insertDoc(db, collection, docs, function(result) {
+                db.close();
+                log.trace('successfully inserted one document ' +
+                          JSON.stringify(docs) + ' into collection \'' +
+                          collection + '\'');
+                callback(result);
+            });
         }
     });
 };
@@ -229,10 +205,9 @@ exports.edit = function(id, changes, collection, callback) {
             if (err) {
                 log.error('error in edit().editDoc(). message: ' + err);
                 callback({
-                    'err': 'edit not made.'
+                    'err': err.errmsg,
+                    code: err.code
                 });
-            } else {
-                callback(res);
             }
         });
     };
@@ -275,7 +250,8 @@ exports.delete = function(id, collection, callback) {
                 if (err) {
                     log.error('error in deleteDoc(). message: ' + err);
                     callback({
-                        'err': 'db error. could not delete document.'
+                        'err': err.errmsg,
+                        code: err.code
                     });
                 } else {
                     callback(res);
@@ -328,7 +304,10 @@ exports.get = function(id, collection, isTrim, callback) {
         cursor.each(function(err, doc) {
             if (err) {
                 log.error('error in getDoc(). message: ' + err);
-                // TODO: callback with error in JSON
+                callback({
+                    'err': err.errmsg,
+                    code: err.code
+                });
             }
             if (doc != null) {
                 foundOne = true;
