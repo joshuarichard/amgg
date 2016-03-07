@@ -471,5 +471,58 @@ $(document).ready(function() {
         }
     } else {
         console.log('No login information found, please login');
+        document.getElementById('myTab').remove();
+        alert('entra en la cuenta para acceder a esta página.');
+    }
+
+    /* Toggle the login box when login link is clicked */
+    function toggleLogin () {
+        if ($('.login').css('display') == 'none') {
+            $('.login').show();
+        }
+        else {
+            $('.login').hide();
+        }
+    }
+    /* When login link is clicked, call toggleLogin */
+    $('#toggle-login').click(toggleLogin);
+
+    /* When the log in button is clicked, validate credentials
+       and if valid send the user to account.html and but the
+       token returned by server into session storage */
+    $('.login-submit').click(login);
+
+    function login () {
+        var email = $('.donor-email').val();
+        var password = $('.donor-password').val();
+
+        // define the request
+        var loginRequest = $.ajax({
+            url: '/api/v1/donor/auth',
+            type: 'POST',
+            data: {
+                'correo_electrónico': email,
+                'password': password
+            }
+        });
+
+        // on successful login, save token and donor id
+        // in session storage and go to the donor portal
+        loginRequest.success(function(res) {
+              //save login token to session storage
+            sessionStorage.setItem('token', res.token);
+            sessionStorage.setItem('id', res.id);
+            window.location = 'account.html';
+        });
+
+        // on login error, check error and inform user accordingly
+        loginRequest.error(function(httpObj, textStatus) {
+            if(httpObj.status === 401) {
+                alert('correo o contraseña incorrectos.');
+            } else {
+                console.log(JSON.stringify(httpObj));
+                alert('see console for error info.');
+            }
+        });
     }
 });

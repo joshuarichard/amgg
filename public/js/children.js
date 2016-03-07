@@ -388,8 +388,7 @@ $(document).ready(function() {
             && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-    }
-    else {
+    } else {
         /* eslint-disable */
         /* Toggle the login box when login link is clicked */
         function toggleLogin () {
@@ -433,13 +432,11 @@ $(document).ready(function() {
 
             // on login error, check error and inform user accordingly
             loginRequest.error(function(httpObj, textStatus) {
-                if (httpObj.status !== 200) {
-                    if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos - email or password incorrect');
-                    } else {
-                        console.log(httpObj + ' ' + textStatus);
-                        alert('internal server error. see console for error info.');
-                    }
+                if(httpObj.status === 401) {
+                    alert('correo o contraseña incorrectos.');
+                } else {
+                    console.log(JSON.stringify(httpObj));
+                    alert('see console for error info.');
                 }
             });
         }
