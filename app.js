@@ -165,25 +165,24 @@ app.post('/api/v1/donor/auth', function(req, res) {
                 var passwordDB = data[key].password;
 
                 // encrypt the password with the salt have stored
-                password.encryptWithSalt(req.body.password, saltDB,
-                    function(passwordGiven) {
-                        if(passwordGiven !== passwordDB) {
-                            res.status(401).send({
-                                success: false,
-                                message: 'Incorrect password.'
-                            });
-                        } else {
-                            jwt.sign(data, nconf.get('auth:secret'),
-                                     {expiresIn: '1h'}, function(token) {
-                                         res.status(200).send({
-                                             success: true,
-                                             message: 'Authenticated.',
-                                             'id': key,
-                                             'token': token
-                                         });
+                password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
+                    if(passwordGiven !== passwordDB) {
+                        res.status(401).send({
+                            success: false,
+                            message: 'Incorrect password.'
+                        });
+                    } else {
+                        jwt.sign(data, nconf.get('auth:secret'),
+                                 {expiresIn: '1h'}, function(token) {
+                                     res.status(200).send({
+                                         success: true,
+                                         message: 'Authenticated.',
+                                         'id': key,
+                                         'token': token
                                      });
-                        }
-                    });
+                                 });
+                    }
+                });
             }
         } else {
             res.status(401).send({
@@ -191,7 +190,6 @@ app.post('/api/v1/donor/auth', function(req, res) {
                 message: 'Email not found.'
             });
         }
-
     });
 });
 
@@ -286,52 +284,121 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
 
 // POST /api/v1/donor/insert to insert donor
 app.post('/api/v1/donor/sponsor', function(req, res) {
-    
     var donor = req.body;
+    if (req.body.hasOwnProperty('assigned_donor_id')) {
+        // find the donor's cart in the cart collection and get the children to sponsor
+        cart.find(req.body.assigned_donor_id, function(cart) {
+            for (var key in cart) {
+                var realCart = cart[key];
+                var childrenToSponsor = realCart['niños_patrocinadoras'];
 
-    password.encrypt(donor['password'], function(hash, salt) {
-        donor['password'] = hash;
-        donor['salt'] = salt;
-        mongo.insert(donor, donorCollection, function(result) {
-            // if mongo confirms success and n = 1 where n is inserted docs
-            if (result.hasOwnProperty('insertedCount')) {
-                if (result.insertedCount === 1) {
-                    // TODO: then delete cart collection entry?
-
-                    // recursive function to manage asynch for each id
-                    /* eslint-disable */
-                    editEachChild(donor['niños_patrocinadoras'], 'Sponsored', function() {
-                        /* eslint-enable */
-                        emailModule.email(donor['correo_electrónico'],
-                            function(didEmail) {
-                                if(didEmail === true) {
-                                    res.status(200).send({
-                                        success: true,
-                                        message: 'Child sponsored.'
-                                    });
-                                } else {
-                                    res.status(500).send({
-                                        success: false,
-                                        message: 'An error occured on email.'
-                                    });
-                                }
+                // hash the password and store it in the db
+                password.encrypt(donor['password'], function(hash, salt) {
+                    donor['password'] = hash;
+                    donor['salt'] = salt;
+                    mongo.insert(donor, donorCollection, function(result) {
+                        // if mongo confirms success and n = 1 where n is inserted docs
+                        if (result.hasOwnProperty('insertedCount')) {
+                            if (result.insertedCount === 1) {
+                                // recursive function to manage asynch for each id
+                                editEachChild(childrenToSponsor, 'Sponsored', function() {
+                                    emailModule.email(donor['correo_electrónico'],
+                                        function(didEmail) {
+                                            if(didEmail === true) {
+                                                res.status(200).send({
+                                                    success: true,
+                                                    message: 'Child sponsored.'
+                                                });
+                                            } else {
+                                                res.status(500).send({
+                                                    success: false,
+                                                    message: 'An error occured on email.'
+                                                });
+                                            }
+                                        });
+                                });
+                            }
+                        } else if (result.code === 11000) {
+                            res.status(409).send({
+                                success: false,
+                                message: 'Email already exists.'
                             });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                code: result.code,
+                                errmsg: result.errmsg
+                            });
+                        }
                     });
-                }
-            } else if (result.code === 11000) {
-                res.status(409).send({
-                    success: false,
-                    message: 'Email already exists.'
-                });
-            } else {
-                res.status(500).send({
-                    success: false,
-                    code: result.code,
-                    errmsg: result.errmsg
                 });
             }
         });
-    });
+    } else {
+        // find the donor's cart in the cart collection and get the children to sponsor
+        cart.find(req.body.donor_id, function(cart) {
+            for (var key in cart) {
+                var realCart = cart[key];
+                var childrenToSponsor = realCart['niños_patrocinadoras'];
+
+                mongo.get(req.body.donor_id, donorCollection, false, function(donor) {
+                    if (JSON.stringify(donor) !== '{}') {
+                        var saltDB = donor.salt;
+                        var passwordDB = donor.password;
+
+                        // encrypt the password with the salt have stored
+                        var saltDB = donor.salt;
+                        password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
+                            if(passwordGiven !== passwordDB) {
+                                res.status(401).send({
+                                    success: false,
+                                    message: 'Incorrect password.'
+                                });
+                            } else {
+                                var childrenSponsored = donor['niños_patrocinadoras'];
+                                for (var d = 0; d < childrenToSponsor.length; d++) {
+                                    childrenSponsored.push(childrenToSponsor[d]);
+                                }
+
+                                mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
+                                    // TODO: then delete cart collection entry?
+
+                                    if (result.hasOwnProperty('err')) {
+                                        res.status(500).send({
+                                            success: false,
+                                            message: result['err']
+                                        });
+                                    } else {
+                                        // recursive function to manage asynch for each id
+                                        editEachChild(childrenToSponsor, 'Sponsored', function() {
+                                            emailModule.email(donor['correo_electrónico'], function(didEmail) {
+                                                if(didEmail === true) {
+                                                    res.status(200).send({
+                                                        success: true,
+                                                        message: 'Child sponsored.'
+                                                    });
+                                                } else {
+                                                    res.status(500).send({
+                                                        success: false,
+                                                        message: 'An error occured on email.'
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.status(401).send({
+                            success: false,
+                            message: 'Email not found.'
+                        });
+                    }
+                });
+            }
+        });
+    }
 });
 
 /* POST /api/v1/donor/unsponsor

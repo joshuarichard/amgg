@@ -64,7 +64,7 @@ $(document).ready(function() {
 
     sendCart(function(result) {
         if (result === true) {
-            console.log('successfully sent cart to db');
+            console.log('successfully sent cart to db.');
         } else {
             console.log('cart not successfully sent to db.');
             $('#checkout-submit').prop('disabled', true);
@@ -186,7 +186,7 @@ $(document).ready(function() {
 
                 sendCart(function(result) {
                     if (result === true) {
-                        console.log('successfully sent cart to db');
+                        console.log('successfully sent cart to db.');
                     } else {
                         console.log('cart not successfully sent to db.');
                         $('#checkout-submit').prop('disabled', true);
@@ -297,11 +297,15 @@ $(document).ready(function() {
                        sessionStorage.getItem('cart') === '') {
                 alert('no hay niños en el carrito.');
             } else {
-                // POST /api/v1/donor/sponsor
-                var insert = $.ajax({
-                    url: '/api/v1/donor/sponsor',
-                    type: 'POST',
-                    data: {
+                var donor = {};
+                if (sessionStorage.getItem('id') != null) {
+                    donor = {
+                      'donor_id': sessionStorage.getItem('id'),
+                      'password': password
+                    };
+                } else if (sessionStorage.getItem('assignedDonorID') != null) {
+                    donor = {
+                        'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
                         'nombre': firstName,
                         'apellido': lastName,
                         'teléfono': phone,
@@ -309,10 +313,14 @@ $(document).ready(function() {
                         'ciudad': city,
                         'país': country,
                         'correo_electrónico': email,
-                        'password': password,
-                        'niños_patrocinadoras':
-                                       sessionStorage.getItem('cart').split(',')
-                    }
+                        'password': password
+                    };
+                }
+                // POST /api/v1/donor/sponsor
+                var insert = $.ajax({
+                    url: '/api/v1/donor/sponsor',
+                    type: 'POST',
+                    data: donor
                 });
 
                 insert.success(function(res) {

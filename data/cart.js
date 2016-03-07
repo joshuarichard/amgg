@@ -39,4 +39,10 @@ exports.update = function(donorID, childIDs, callback) {
     });
 }
 
+exports.find = function(donorID, callback) {
+  mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
+      callback(doc);
+  });
+}
+
 // TODO: periodically delete expired cart docs
