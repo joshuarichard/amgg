@@ -7,8 +7,8 @@ $(document).ready(function() {
     function sendCart(callback) {
         function assignDonorID()
         {
-            var text = "";
-            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var text = '';
+            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
             for(var i = 0; i < 24; i++) {
                 text += possible.charAt(Math.floor(Math.random() * possible.length));
@@ -25,7 +25,7 @@ $(document).ready(function() {
                     'donor' : donorID,
                     'children' : sessionStorage.getItem('cart').split(',')
                 },
-                success: function(res) {
+                success: function() {
                     callback(true);
                 },
                 error: function() {
@@ -40,9 +40,9 @@ $(document).ready(function() {
             sessionStorage.getItem('id') != '' &&
             sessionStorage.getItem('cart') != null &&
             sessionStorage.getItem('cart') != '') {
-                sendAPICallToUpdateCart(sessionStorage.getItem('id'), function(result) {
-                    callback(result);
-                });
+            sendAPICallToUpdateCart(sessionStorage.getItem('id'), function(result) {
+                callback(result);
+            });
         // else if the donor already has an assigned donor ID then use that
         } else if (sessionStorage.getItem('assignedDonorID') &&
                    sessionStorage.getItem('assignedDonorID') != '' &&
@@ -300,8 +300,8 @@ $(document).ready(function() {
                 var donor = {};
                 if (sessionStorage.getItem('id') != null) {
                     donor = {
-                      'donor_id': sessionStorage.getItem('id'),
-                      'password': password
+                        'donor_id': sessionStorage.getItem('id'),
+                        'password': password
                     };
                 } else if (sessionStorage.getItem('assignedDonorID') != null) {
                     donor = {

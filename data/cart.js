@@ -1,11 +1,10 @@
 var nconf = require('nconf');
-var bunyan = require('bunyan');
 
 var mongo = require('./mongo.js');
 
 nconf.file({
-         file: 'config.json'
-      });
+    file: 'config.json'
+});
 
 var exports = module.exports = {};
 
@@ -19,9 +18,9 @@ var cartCollection = nconf.get('mongo:cartCollection');
  */
 exports.update = function(donorID, childIDs, callback) {
     var cart = {
-        "donor_id": donorID,
-        "last_modified": new Date(),
-        "niños_patrocinadoras": childIDs
+        'donor_id': donorID,
+        'last_modified': new Date(),
+        'niños_patrocinadoras': childIDs
     };
 
     mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
@@ -37,12 +36,12 @@ exports.update = function(donorID, childIDs, callback) {
             }
         }
     });
-}
+};
 
 exports.find = function(donorID, callback) {
-  mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
-      callback(doc);
-  });
-}
+    mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
+        callback(doc);
+    });
+};
 
 // TODO: periodically delete expired cart docs

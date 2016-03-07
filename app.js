@@ -347,7 +347,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                         var passwordDB = donor.password;
 
                         // encrypt the password with the salt have stored
-                        var saltDB = donor.salt;
                         password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
                             if(passwordGiven !== passwordDB) {
                                 res.status(401).send({
