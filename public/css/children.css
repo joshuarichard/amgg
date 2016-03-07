@@ -1,6 +1,24 @@
 /* Begin Login overlay */
 body {
-    z-index: 10;
+    position: relative;
+    margin: 0;
+    padding-bottom: 20rem;
+    min-height: 100%;
+}
+
+.demo {
+  margin: 0 auto;
+}
+
+html{
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 .login{
@@ -134,8 +152,10 @@ input[type="email"],input[type="password"] {
 }
 
 footer {
-	margin-top: 10%;
-	display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .child-picture {
