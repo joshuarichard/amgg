@@ -6,7 +6,8 @@
         "password": "x",
         "db": "endgame",
         "childCollection": "children",
-        "donorCollection": "donors"
+        "donorCollection": "donors",
+        "cartCollection": "carts"
     },
     "app": {
         "port": 3000

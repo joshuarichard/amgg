@@ -19,20 +19,24 @@ var cartCollection = nconf.get('mongo:cartCollection');
  */
 exports.update = function(donorID, childIDs, callback) {
     var cart = {
-        "donor": donorID,
+        "donor_id": donorID,
         "last_modified": new Date(),
-        "children": childIDs
+        "niños_patrocinadoras": childIDs
     };
 
-    mongo.insert(cart, cartCollection, function(result) {
-        if (result.result.ok === 1 && result.result.n === 1) {
-            callback(result);
-        } else {
-            callback({
-                success: false,
-                code: result.code,
-                message: result.message
+    mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
+        if(JSON.stringify(doc) === '{}') {
+            mongo.insert(cart, cartCollection, function(result) {
+                callback(result);
             });
+        } else {
+            for (var key in doc) {
+                mongo.edit(key, cart, cartCollection, function(result) {
+                    callback(result);
+                });
+            }
         }
     });
 }
+
+// TODO: periodically delete expired cart docs

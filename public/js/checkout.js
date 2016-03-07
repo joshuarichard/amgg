@@ -2,6 +2,75 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
+    // firstly, every page load send an api call with all children in the cart
+
+    function sendCart(callback) {
+        function assignDonorID()
+        {
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for(var i = 0; i < 24; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+
+            return text;
+        }
+
+        function sendAPICallToUpdateCart(donorID, callback) {
+            $.ajax({
+                url: '/api/v1/donor/cart',
+                type: 'POST',
+                data: {
+                    'donor' : donorID,
+                    'children' : sessionStorage.getItem('cart').split(',')
+                },
+                success: function(res) {
+                    callback(true);
+                },
+                error: function() {
+                    callback(false);
+                }
+            });
+        }
+
+        var donorID = '';
+        // if token is set use that in the cart document
+        if (sessionStorage.getItem('id') != null &&
+            sessionStorage.getItem('id') != '' &&
+            sessionStorage.getItem('cart') != null &&
+            sessionStorage.getItem('cart') != '') {
+                sendAPICallToUpdateCart(sessionStorage.getItem('id'), function(result) {
+                    callback(result);
+                });
+        // else if the donor already has an assigned donor ID then use that
+        } else if (sessionStorage.getItem('assignedDonorID') &&
+                   sessionStorage.getItem('assignedDonorID') != '' &&
+                   sessionStorage.getItem('cart') != null &&
+                   sessionStorage.getItem('cart') != '') {
+            sendAPICallToUpdateCart(sessionStorage.getItem('assignedDonorID'), function(result) {
+                callback(result);
+            });
+        // else if the donor has nothing then generate one for them and use that
+        } else if (sessionStorage.getItem('cart') != null &&
+                   sessionStorage.getItem('cart') != '') {
+            donorID = assignDonorID();
+            sessionStorage.setItem('assignedDonorID', donorID);
+            sendAPICallToUpdateCart(donorID, function(result) {
+                callback(result);
+            });
+        }
+    }
+
+    sendCart(function(result) {
+        if (result === true) {
+            console.log('successfully sent cart to db');
+        } else {
+            console.log('cart not successfully sent to db.');
+            $('#checkout-submit').prop('disabled', true);
+        }
+    });
+
     // get the element to put the table and create the table
     var container = document.getElementById('children-to-sponsor');
     var table = document.createElement('table');
@@ -115,8 +184,16 @@ $(document).ready(function() {
                     sessionStorage.setItem('cart', ids.toString());
                 }
 
-                // remove child from table
-                button.parentNode.parentNode.remove();
+                sendCart(function(result) {
+                    if (result === true) {
+                        console.log('successfully sent cart to db');
+                    } else {
+                        console.log('cart not successfully sent to db.');
+                        $('#checkout-submit').prop('disabled', true);
+                    }
+                    // remove child from table
+                    button.parentNode.parentNode.remove();
+                });
             };
 
             // add button to table entry and add table entry to row

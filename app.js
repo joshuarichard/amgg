@@ -286,6 +286,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
 
 // POST /api/v1/donor/insert to insert donor
 app.post('/api/v1/donor/sponsor', function(req, res) {
+    
     var donor = req.body;
 
     password.encrypt(donor['password'], function(hash, salt) {
@@ -480,12 +481,19 @@ app.post('/api/v1/donor/delete', function(req, res) {
     });
 });
 
-app.post('/api/v1/cart/update', function(req, res) {
+app.post('/api/v1/donor/cart', function(req, res) {
     cart.update(req.body.donor, req.body.children, function(result) {
-        res.status(200).send({
-            success: true,
-            message: 'Cart updated.'
-        });
+        if (result.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                message: result['err']
+            });
+        } else {
+            res.status(200).send({
+                success: true,
+                message: 'Cart updated.'
+            });
+        }
     });
 });
 
