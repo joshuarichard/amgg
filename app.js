@@ -84,6 +84,7 @@ var adminEmail = nconf.get('admin:email');
 
 var childCollection = nconf.get('mongo:childCollection');
 var donorCollection = nconf.get('mongo:donorCollection');
+var cartCollection = nconf.get('mongo:cartCollection');
 
 /*** child api routes ***/
 
@@ -100,10 +101,35 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = query.format(JSON.parse(req.params.selector));
 
-    mongo.find(selector, childCollection, 100, true,
-        function(doc) {
-            res.send(doc);
+    // get a child pool
+    mongo.find(selector, childCollection, 100, true, function(children) {
+        var unsponsoredChildrenIds = [];
+        for (var key in children) {
+            unsponsoredChildrenIds.push(key);
+        }
+
+        // get all cart docs...
+        mongo.find({}, cartCollection, 10000, false, function(cartdocs) {
+            // ...and make an array of all child ids currently in carts
+            var idsOfKidsInCarts = [];
+            for (var key in cartdocs) {
+                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+                for (var e = 0; e < kidsInThisCart.length; e++) {
+                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                }
+            }
+
+            // then compare that to the list of ids in the child pool...
+            for (var c = 0; c < idsOfKidsInCarts.length; c++) {
+                if (children.hasOwnProperty(idsOfKidsInCarts[c])) {
+                    // ...and remove them from the child pool if in a cart
+                    delete children[idsOfKidsInCarts[c]];
+                }
+            }
+
+            res.send(children);
         });
+    });
 });
 
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
