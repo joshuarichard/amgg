@@ -14,7 +14,7 @@
     },
     "autofill": {
         "dbName": "endgame",
-        "collection": "childrenreal",
+        "collection": "children",
         "numOfDocs": "10"
     },
     "auth": {
@@ -23,5 +23,8 @@
     "keys": {
         "key": "./keys/key.pem",
         "cert": "./keys/cert.pem"
+    },
+    "admin": {
+        "email": "eos.josh.richard@gmail.com"
     }
 }
