@@ -2,66 +2,33 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    // firstly, every page load send an api call with all children in the cart
-
-    function sendCart(callback) {
-        function assignDonorID()
-        {
-            var text = '';
-            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-            for(var i = 0; i < 24; i++) {
-                text += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-
-            return text;
-        }
-
-        function sendAPICallToUpdateCart(donorID, callback) {
-            $.ajax({
-                url: '/api/v1/donor/cart',
-                type: 'POST',
-                data: {
-                    'donor' : donorID,
-                    'children' : sessionStorage.getItem('cart').split(',')
-                },
-                success: function() {
-                    callback(true);
-                },
-                error: function() {
-                    callback(false);
-                }
-            });
-        }
-
-        var donorID = '';
-        // if token is set use that in the cart document
-        if (sessionStorage.getItem('id') != null &&
-            sessionStorage.getItem('id') != '' &&
-            sessionStorage.getItem('cart') != null &&
-            sessionStorage.getItem('cart') != '') {
-            sendAPICallToUpdateCart(sessionStorage.getItem('id'), function(result) {
-                callback(result);
-            });
-        // else if the donor already has an assigned donor ID then use that
-        } else if (sessionStorage.getItem('assignedDonorID') &&
-                   sessionStorage.getItem('assignedDonorID') != '' &&
-                   sessionStorage.getItem('cart') != null &&
-                   sessionStorage.getItem('cart') != '') {
-            sendAPICallToUpdateCart(sessionStorage.getItem('assignedDonorID'), function(result) {
-                callback(result);
-            });
-        // else if the donor has nothing then generate one for them and use that
-        } else if (sessionStorage.getItem('cart') != null &&
-                   sessionStorage.getItem('cart') != '') {
-            donorID = assignDonorID();
-            sessionStorage.setItem('assignedDonorID', donorID);
-            sendAPICallToUpdateCart(donorID, function(result) {
-                callback(result);
-            });
-        }
+    // firstly, set a donor id if the user isn't logged in. this will be used to
+    // manage their cart and lock children as they add them to the cart.
+    var donorID = '';
+    // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
+    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '' &&
+        (sessionStorage.getItem('id') === null || sessionStorage.getItem('id') === '') &&
+        (sessionStorage.getItem('assignedDonorID') === null || sessionStorage.getItem('assignedDonorID' === ''))) {
+        donorID = generateDonorID();
+        sessionStorage.setItem('assignedDonorID', donorID);
     }
 
+    // secondly, check the lock status of all children currently in the cart.
+    // if the child is locked, remove the child and alert the donor accordingly
+    checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
+        if (lockedChildren.length > 0) {
+            for (var y = 0; y < lockedChildren.length; y++) {
+                removeChild(lockedChildren[y]);
+            }
+            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+        }
+    });
+
+    // thirdly, send the current cart's contents
+    // NOTE: when you remove a child from the table it will send the cart to the
+    // db. if it's the case that all children currently in the cart are clear to be
+    // sponsored (i.e. they are not locked), then it will not send the cart,
+    // therefore, it is required we send the contents of the cart at least once
     sendCart(function(result) {
         if (result === true) {
             console.log('successfully sent cart to db.');
@@ -71,11 +38,181 @@ $(document).ready(function() {
         }
     });
 
-    // get the element to put the table and create the table
+    // fourthly, begin creating the UI and make some api calls to get child
+    // and donor data.
     var container = document.getElementById('children-to-sponsor');
     var table = document.createElement('table');
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
+
+    // insert all children in session storage into the cart
+    if (sessionStorage.getItem('cart') != null &&
+        sessionStorage.getItem('cart') != '') {
+        var ids = sessionStorage.getItem('cart').split(',');
+        for (var i = 0; i < ids.length; i++) {
+            addChildToCart(ids[i]);
+            container.appendChild(table);
+        }
+    }
+
+    // after all that append the 'add a child' button
+    var addButton = document.createElement('button');
+    addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
+    addButton.onclick = function() {
+        window.location = 'children.html';
+    };
+
+    addButton.appendChild(document.createTextNode('agregar otro niño'));
+    container.appendChild(addButton);
+
+    /* if the user is already logged in, change the login button
+     * to a go to account page link, else create login overlay
+     */
+    if (sessionStorage.getItem('token') != null
+            && sessionStorage.getItem('token') != '') {
+        document.getElementById('toggle-login').href = 'account.html';
+        document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+    } else {
+        /* Toggle the login box when login link is clicked */
+        function toggleLogin () {
+            if ($('.login').css('display') == 'none') {
+                $('.login').show();
+            }
+            else {
+                $('.login').hide();
+            }
+        }
+        /* When login link is clicked, call toggleLogin */
+        $('#toggle-login').click(toggleLogin);
+
+        /* When the log in button is clicked, validate credentials
+           and if valid send the user to account.html and but the
+           token returned by server into session storage */
+        $('.login-submit').click(login);
+
+        function login () {
+            var email = $('.donor-email').val();
+            var password = $('.donor-password').val();
+
+            // define the request
+            var loginRequest = $.ajax({
+                url: '/api/v1/donor/auth',
+                type: 'POST',
+                data: {
+                    'correo_electrónico': email,
+                    'password': password
+                }
+            });
+
+            // on successful login, save token and donor id
+            // in session storage and go to the donor portal
+            loginRequest.success(function(res) {
+                  //save login token to session storage
+                sessionStorage.setItem('token', res.token);
+                sessionStorage.setItem('id', res.id);
+                window.location = 'account.html';
+            });
+
+            // on login error, check error and inform user accordingly
+            loginRequest.error(function(httpObj, textStatus) {
+                if (httpObj.status !== 200) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos - email or password incorrect');
+                    } else {
+                        console.log(httpObj + ' ' + textStatus);
+                        alert('internal server error. see console for error info.');
+                    }
+                }
+            });
+        }
+    }
+
+    function generateDonorID() {
+        var text = '';
+        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        for(var i = 0; i < 24; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+
+        return text;
+    }
+
+    // checks the status of all kids in the cart. takes the cart from sessionStorage
+    // as an array, not a string.
+    function checkCartsLockedStatus(array, callback) {
+        array = array.slice(0);
+
+        function checkForLockedStatus() {
+            var childID = array.pop();
+            var lockedChildren = [];
+
+            var donorIDjson = {};
+            if (sessionStorage.getItem('id') !== null && sessionStorage.getItem('id') !== '') {
+                donorIDjson = {
+                    'donor_id': sessionStorage.getItem('id')
+                };
+            } else {
+                donorIDjson = {
+                    'donor_id': sessionStorage.getItem('assignedDonorID')
+                };
+            }
+
+            $.ajax({
+                url: '/api/v1/children/islocked/id/' + childID,
+                type: 'POST',
+                data: donorIDjson,
+                success: function(res) {
+                    if (res.islocked === true) {
+                        lockedChildren.push(childID);
+                    }
+                    if(array.length > 0) {
+                        checkForLockedStatus();
+                    } else {
+                        callback(lockedChildren);
+                    }
+                }
+            });
+        }
+
+        if(array.length > 0) {
+            checkForLockedStatus();
+        } else {
+            callback(lockedChildren);
+        }
+    }
+
+    function sendCart(callback) {
+        var donorIDinCart = '';
+        // if the donor is logged in then use their donor id in the cart doc
+        if (sessionStorage.getItem('id') != null &&
+            sessionStorage.getItem('id') != '' &&
+            sessionStorage.getItem('cart') != null &&
+            sessionStorage.getItem('cart') != '') {
+            donorIDinCart = sessionStorage.getItem('id');
+        // else if the donor has an assigned donor id then use that
+        } else if (sessionStorage.getItem('assignedDonorID') &&
+                   sessionStorage.getItem('assignedDonorID') != '' &&
+                   sessionStorage.getItem('cart') != null &&
+                   sessionStorage.getItem('cart') != '') {
+            donorIDinCart = sessionStorage.getItem('assignedDonorID');
+        }
+
+        $.ajax({
+            url: '/api/v1/donor/cart',
+            type: 'POST',
+            data: {
+                'donor' : donorIDinCart,
+                'children' : sessionStorage.getItem('cart').split(',')
+            },
+            success: function() {
+                callback(true);
+            },
+            error: function() {
+                callback(false);
+            }
+        });
+    }
 
     function addChildToCart(id) {
         // create child's table row
@@ -168,32 +305,13 @@ $(document).ready(function() {
             var buttonTD = document.createElement('td');
 
             // create button, add classname for styling, append text
-            /* eslint-disable */
             var button = document.createElement('button');
             button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
             button.appendChild(document.createTextNode('eliminar'));
-            /* eslint-enable */
 
             // set on click button function
             button.onclick = function() {
-                // remove child from sessionStorage
-                var ids = sessionStorage.getItem('cart').split(',');
-                var id = button.parentNode.parentNode.id;
-                if (ids.indexOf(id) != -1) {
-                    ids.splice(ids.indexOf(id), 1);
-                    sessionStorage.setItem('cart', ids.toString());
-                }
-
-                sendCart(function(result) {
-                    if (result === true) {
-                        console.log('successfully sent cart to db.');
-                    } else {
-                        console.log('cart not successfully sent to db.');
-                        $('#checkout-submit').prop('disabled', true);
-                    }
-                    // remove child from table
-                    button.parentNode.parentNode.remove();
-                });
+                removeChild(button.parentNode.parentNode.id);
             };
 
             // add button to table entry and add table entry to row
@@ -219,6 +337,26 @@ $(document).ready(function() {
                     }
                 });
             }
+        });
+    }
+
+    function removeChild(id) {
+        // remove child from sessionStorage
+        var ids = sessionStorage.getItem('cart').split(',');
+        if (ids.indexOf(id) != -1) {
+            ids.splice(ids.indexOf(id), 1);
+            sessionStorage.setItem('cart', ids.toString());
+        }
+
+        sendCart(function(result) {
+            if (result === true) {
+                console.log('successfully sent cart to db.');
+            } else {
+                console.log('cart not successfully sent to db.');
+                $('#checkout-submit').prop('disabled', true);
+            }
+            // remove child from table
+            $('#' + id).remove();
         });
     }
 
@@ -336,101 +474,12 @@ $(document).ready(function() {
                     var mongoError = JSON.parse(httpObj.responseText);
                     // email already exists exeption
                     if (httpObj.status === 409 && mongoError.code === 11000) {
-                        /* eslint-disable */
                         alert('el correo electrónico ya está asociada a una cuenta.');
-                        /* eslint-enable */
                     }
                 });
             }
         }
     });
-
-    // insert all children in session storage into the cart
-    if (sessionStorage.getItem('cart') != null &&
-        sessionStorage.getItem('cart') != '') {
-        var ids = sessionStorage.getItem('cart').split(',');
-        for (var i = 0; i < ids.length; i++) {
-            addChildToCart(ids[i]);
-            container.appendChild(table);
-        }
-    }
-
-    // after all that append the 'add a child' button
-    var addButton = document.createElement('button');
-    /* eslint-disable */
-    addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
-    /* eslint-enable */
-    addButton.onclick = function() {
-        window.location = 'children.html';
-    };
-
-    addButton.appendChild(document.createTextNode('agregar otro niño'));
-    container.appendChild(addButton);
-
-    /* if the user is already logged in, change the login button
-     * to a go to account page link, else create login overlay
-     */
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
-        document.getElementById('toggle-login').href = 'account.html';
-        document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-    }
-    else {
-        /* eslint-disable */
-        /* Toggle the login box when login link is clicked */
-        function toggleLogin () {
-            if ($('.login').css('display') == 'none') {
-                $('.login').show();
-            }
-            else {
-                $('.login').hide();
-            }
-        }
-        /* When login link is clicked, call toggleLogin */
-        $('#toggle-login').click(toggleLogin);
-
-        /* When the log in button is clicked, validate credentials
-           and if valid send the user to account.html and but the
-           token returned by server into session storage */
-        $('.login-submit').click(login);
-
-        function login () {
-            var email = $('.donor-email').val();
-            var password = $('.donor-password').val();
-
-            // define the request
-            var loginRequest = $.ajax({
-                url: '/api/v1/donor/auth',
-                type: 'POST',
-                data: {
-                    'correo_electrónico': email,
-                    'password': password
-                }
-            });
-
-            // on successful login, save token and donor id
-            // in session storage and go to the donor portal
-            loginRequest.success(function(res) {
-                  //save login token to session storage
-                sessionStorage.setItem('token', res.token);
-                sessionStorage.setItem('id', res.id);
-                window.location = 'account.html';
-            });
-
-            // on login error, check error and inform user accordingly
-            loginRequest.error(function(httpObj, textStatus) {
-                if (httpObj.status !== 200) {
-                    if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos - email or password incorrect');
-                    } else {
-                        console.log(httpObj + ' ' + textStatus);
-                        alert('internal server error. see console for error info.');
-                    }
-                }
-            });
-        }
-        /* eslint-enable */
-    }
 
     var displayed = false;
     // Displays Success Page after ajax call

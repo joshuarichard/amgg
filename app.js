@@ -132,6 +132,59 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     });
 });
 
+/** POST /api/v1/children/islocked/id/:id
+ *
+ * checks to see if a child is currently locked meaning they are currently in a
+ * donor's cart. returns true if they are in a cart, false if they are not in a
+ * cart.
+ *
+ * takes the donor_id as the only key/value in the req.body. this donor id is
+ * either the donor's actual id in the db or it could be autogenterated. either
+ * way send it from the client as 'donor_id'
+ */
+app.post('/api/v1/children/islocked/id/:id', function(req, res) {
+    var child = req.params.id;
+    var body = req.body;
+    var selector = {
+        'donor_id': {
+            '$ne': body['donor_id']
+        }
+    };
+
+    // get all cart docs...
+    mongo.find(selector, cartCollection, 10000, false, function(cartdocs) {
+        // ...and make an array of all child ids currently in carts
+        var idsOfKidsInCarts = [];
+        for (var key in cartdocs) {
+            var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+            for (var e = 0; e < kidsInThisCart.length; e++) {
+                idsOfKidsInCarts.push(kidsInThisCart[e]);
+            }
+        }
+
+        var isLocked = false;
+        // then compare that to the list of ids in the child pool...
+        for (var c = 0; c < idsOfKidsInCarts.length; c++) {
+            if (child === idsOfKidsInCarts[c]) {
+                isLocked = true;
+                break;
+            }
+        }
+
+        if (isLocked === true) {
+            res.status(200).send({
+                success: true,
+                islocked: true
+            });
+        } else {
+            res.status(200).send({
+                success: true,
+                islocked: false
+            });
+        }
+    });
+});
+
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
     mongo.getPic(req.params.id, childCollection, function(data) {
