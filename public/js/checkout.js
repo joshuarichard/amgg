@@ -529,7 +529,7 @@ $(document).ready(function() {
         });
 
         // on login error, check error and inform user accordingly
-        loginRequest.error(function(httpObj, textStatus) {
+        loginRequest.error(function(httpObj) {
             if(httpObj.status === 401) {
                 alert('correo o contraseña incorrectos.');
             } else {
