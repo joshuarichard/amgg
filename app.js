@@ -1,3 +1,4 @@
+/* eslint-env node */
 var express = require('express');
 var fs = require('fs');
 var https = require('https');
@@ -21,14 +22,15 @@ var cart = require('./data/cart.js');
 
 /** api routes:
  *
- * child api routes
- * ----------------
+ * children
+ * --------
  * GET /api/v1/children/id/:id - get a child by their id
  * GET /api/v1/children/find/:selector - get children by a selector
+ * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
  * GET /api/v1/pictures/id/:id - get a child's picture by their doc _id
  *
- * donor api routes (^ denotes required token)
- * -------------------------------------------
+ * donors (^ denotes required token)
+ * ---------------------------------
  * GET /api/v1/donor/auth - get a token with email + password to get donor info
  * ^POST /api/v1/donor/id/:id - get a donor by their id
  * ^PUT /api/v1/donor/id/:id - edit a donor
@@ -403,7 +405,9 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     cart.delete(assignedDonorID, function(result) {
                                         if (result === false) {
                                             emailModule.email(adminEmail, function(didEmail) {
-                                                log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
+                                                if (didEmail === false) {
+                                                    log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
+                                                }
                                             });
                                         }
                                         if (result.hasOwnProperty('err')) {
@@ -494,39 +498,48 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
 
                                 // ... and store it in the donor doc
                                 mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
-                                    // then delete the cart doc
-                                    cart.delete(req.body.donor_id, function(result) {
-                                        if (result === false) {
-                                            emailModule.email(adminEmail, function(didEmail) {
-                                                log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
-                                            });
-                                        }
-                                        if (result.hasOwnProperty('err')) {
-                                            res.status(500).send({
-                                                success: false,
-                                                message: result['err']
-                                            });
-                                        } else {
-                                            // recursive function to manage asynch for each id (change status to sponsored)
-                                            changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                // email donor about their successful confirmation
-                                                emailModule.email(donor['correo_electrónico'], function(didEmail) {
-                                                    if(didEmail === true) {
-                                                        // and we're done.
-                                                        res.status(200).send({
-                                                            success: true,
-                                                            message: 'Child sponsored.'
-                                                        });
-                                                    } else {
-                                                        res.status(500).send({
-                                                            success: false,
-                                                            message: 'An error occured on email.'
-                                                        });
+                                    if (result.hasOwnProperty('err')) {
+                                        res.status(500).send({
+                                            success: false,
+                                            message: result['err']
+                                        });
+                                    } else {
+                                        // then delete the cart doc
+                                        cart.delete(req.body.donor_id, function(result) {
+                                            if (result === false) {
+                                                emailModule.email(adminEmail, function(didEmail) {
+                                                    if (didEmail === false) {
+                                                        log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
                                                     }
                                                 });
-                                            });
-                                        }
-                                    });
+                                            }
+                                            if (result.hasOwnProperty('err')) {
+                                                res.status(500).send({
+                                                    success: false,
+                                                    message: result['err']
+                                                });
+                                            } else {
+                                                // recursive function to manage asynch for each id (change status to sponsored)
+                                                changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
+                                                    // email donor about their successful confirmation
+                                                    emailModule.email(donor['correo_electrónico'], function(didEmail) {
+                                                        if(didEmail === true) {
+                                                            // and we're done.
+                                                            res.status(200).send({
+                                                                success: true,
+                                                                message: 'Child sponsored.'
+                                                            });
+                                                        } else {
+                                                            res.status(500).send({
+                                                                success: false,
+                                                                message: 'An error occured on email.'
+                                                            });
+                                                        }
+                                                    });
+                                                });
+                                            }
+                                        });
+                                    }
                                 });
                             }
                         });
@@ -580,7 +593,6 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                     });
                 } else {
                     // get the donor's information
-                    /* eslint-disable */
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, donorCollection, false, function(data) {
                         // if the donor has the children they're sponsoring
@@ -643,8 +655,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                 message: 'No token provided.'
             });
         }
-      }
-      /* eslint-enable */
+    }
 });
 
 /* POST /api/v1/donor/delete
