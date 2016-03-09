@@ -6,14 +6,15 @@
         "password": "x",
         "db": "endgame",
         "childCollection": "children",
-        "donorCollection": "donors"
+        "donorCollection": "donors",
+        "cartCollection": "carts"
     },
     "app": {
         "port": 3000
     },
     "autofill": {
         "dbName": "endgame",
-        "collection": "childrenreal",
+        "collection": "children",
         "numOfDocs": "10"
     },
     "auth": {
@@ -22,5 +23,8 @@
     "keys": {
         "key": "./keys/key.pem",
         "cert": "./keys/cert.pem"
+    },
+    "admin": {
+        "email": "eos.josh.richard@gmail.com"
     }
 }

@@ -213,6 +213,7 @@ $(document).ready(function() {
                 'id' : sessionStorage.getItem('id')
             },
             success: function(res) {
+                console.log(res);
                 for (var i = 0; i < res.niños_patrocinadoras.length; i++) {
                     var id = res.niños_patrocinadoras[i];
                     addChildToDonorList(id);
@@ -405,7 +406,7 @@ $(document).ready(function() {
                     if (res.status === 409) {
                         alert('el correo electrónico ya está asociada a una cuenta.');
                     }
-                    
+
                     //put old info back in
                     $.ajax({
                         url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
