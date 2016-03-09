@@ -135,8 +135,6 @@ $(document).ready(function() {
         slide.appendChild(divImg);
 
         // create the description element
-        // note: need to disable eslint because of html strings
-        /* eslint-disable */
         var divData = document.createElement('div');
         divData.className = 'col-xs-6';
         var hData = document.createElement('h1');
@@ -171,7 +169,6 @@ $(document).ready(function() {
         };
         divData.appendChild(sponsorButton);
         slide.appendChild(divData);
-        /* eslint-enable*/
 
         $('#slides').append(slide);
         callback(slide);
@@ -389,7 +386,6 @@ $(document).ready(function() {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
-        /* eslint-disable */
         /* Toggle the login box when login link is clicked */
         function toggleLogin () {
             if ($('.login').css('display') == 'none') {
@@ -407,7 +403,7 @@ $(document).ready(function() {
            token returned by server into session storage */
         $('.login-submit').click(login);
 
-        function login () {
+        function login() {
             var email = $('.donor-email').val();
             var password = $('.donor-password').val();
 
@@ -421,13 +417,14 @@ $(document).ready(function() {
                 }
             });
 
+            var worked = false;
             // on successful login, save token and donor id
             // in session storage and go to the donor portal
             loginRequest.success(function(res) {
-                  //save login token to session storage
+                //save login token to session storage
                 sessionStorage.setItem('token', res.token);
                 sessionStorage.setItem('id', res.id);
-                window.location = 'account.html';
+                worked = true;
             });
 
             // on login error, check error and inform user accordingly
@@ -438,8 +435,14 @@ $(document).ready(function() {
                     console.log(JSON.stringify(httpObj));
                     alert('see console for error info.');
                 }
+                worked = false;
+            });
+
+            loginRequest.complete(function() {
+                if (worked === true) {
+                    window.location = 'account.html';
+                }
             });
         }
-        /* eslint-enable */
     }
 });
