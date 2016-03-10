@@ -498,6 +498,7 @@ $(document).ready(function() {
         document.getElementById('toggle-login').href = 'children.html';
         document.getElementById('toggle-login').innerHTML = 'Logout';
         sessionStorage.removeItem('token');
+        sessionStorage.removeItem('id');
     } else {
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
