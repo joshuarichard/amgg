@@ -157,8 +157,8 @@ $(document).ready(function() {
             url: '/api/v1/donor/cart',
             type: 'POST',
             data: {
-                'donor' : donorIDinCart,
-                'children' : sessionStorage.getItem('cart').split(',')
+                'donor_id' : donorIDinCart,
+                'niños_patrocinadoras' : sessionStorage.getItem('cart').split(',')
             },
             success: function() {
                 callback(true);

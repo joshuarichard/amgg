@@ -6,6 +6,7 @@ module.exports = function (grunt) {
                   'data/*.js',
                   'public/js/checkout.js',
                   'public/js/children.js',
+                  'public/js/account.js',
                   'test/**/*.js']
         },
         mochaTest: {

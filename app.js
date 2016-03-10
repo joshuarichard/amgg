@@ -253,15 +253,14 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'),
-                                 {expiresIn: '1h'}, function(token) {
-                                     res.status(200).send({
-                                         success: true,
-                                         message: 'Authenticated.',
-                                         'id': key,
-                                         'token': token
-                                     });
-                                 });
+                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'}, function(token) {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Authenticated.',
+                                'id': key,
+                                'token': token
+                            });
+                        });
                     }
                 });
             }
@@ -332,27 +331,26 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor edit
-                mongo.edit(id, req.body.changes, donorCollection,
-                    function(result) {
-                        if (result.hasOwnProperty('err')) {
-                            if (result.code === 11000) {
-                                res.status(409).send({
-                                    success: false,
-                                    message: 'Email already exists.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'DB error.'
-                                });
-                            }
+                mongo.edit(id, req.body.changes, donorCollection, function(result) {
+                    if (result.hasOwnProperty('err')) {
+                        if (result.code === 11000) {
+                            res.status(409).send({
+                                success: false,
+                                message: 'Email already exists.'
+                            });
                         } else {
-                            res.status(200).send({
-                                success: true,
-                                message: 'Donor edited.'
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
                             });
                         }
-                    });
+                    } else {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Donor edited.'
+                        });
+                    }
+                });
             }
         });
     } else {
@@ -553,8 +551,13 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
     }
 });
 
+/* POST /api/v1/donor/cart
+ *
+ * update the cart document with the new cart from the client
+ *
+ */
 app.post('/api/v1/donor/cart', function(req, res) {
-    cart.update(req.body.donor, req.body.children, function(result) {
+    cart.update(req.body.donor_id, req.body.niños_patrocinadoras, function(result) {
         if (result.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,

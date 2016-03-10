@@ -63,7 +63,8 @@ $(document).ready(function() {
         tabCHeader = document.createElement('span');
         tabCHeader.className = 'header';
         tabCHeader.innerHTML = 'Letter to Child';
-        var tabCHeaderhr = document.createElement('hr');
+        // eslint says this is never being used... is it needed?
+        // var tabCHeaderhr = document.createElement('hr');
         //create letter form
         var letterForm = document.createElement('form');
         letterForm.className = 'letter-form col-md-10';
@@ -84,124 +85,6 @@ $(document).ready(function() {
         tabC.appendChild(tabAHeaderhr);
         tabC.appendChild(letterForm);
         tabC.appendChild(childrenSelectContainer);
-
-        function addChildToDonorList(id) {
-            // create child's table row
-            var tr = document.createElement('tr');
-
-            function pic(id, callback) {
-                //create elements for child picture
-                var picTD = document.createElement('td');
-                var picIMG = document.createElement('img');
-                picIMG.className = 'child-img';
-
-                //get child picture
-                $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                    if (res.data.hasOwnProperty('err')){
-                        console.log(res.data.err);
-                    } else if (res.data !== undefined) {
-                        picIMG.src = 'data:image/image;base64,' + res.data;
-                        picTD.appendChild(picIMG);
-                        tr.appendChild(picTD);
-                        callback(true);
-                    }
-                });
-            }
-
-            function data(id, callback) {
-                // get child data using api
-                $.getJSON('/api/v1/children/id/' + id, function(res) {
-                    if(res.hasOwnProperty('err')) {
-                        callback(false);
-                    } else {
-
-                        var dataTD = document.createElement('td');
-
-                        // set up all child info as vars
-                        var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
-                                          'Mayo', 'Junio', 'Julio', 'Agosto',
-                                          'Septiembre', 'Octubre', 'Noviembre',
-                                          'Diciembre'];
-                        var date = new Date(res[id].cumpleaños);
-                        var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-                        var name = res[id].nombre;
-                        var age = res[id].años;
-                        var gender = res[id].género;
-                        var center = res[id].centro_de_ninos;
-
-                        // create elements for each piece of info
-                        var dataDiv = document.createElement('td');
-                        dataDiv.className = 'child-info-group';
-
-                        var nameDiv = document.createElement('div');
-                        var ageDiv = document.createElement('div');
-                        var birthdayDiv = document.createElement('div');
-                        var genderDiv = document.createElement('div');
-                        var centerDiv = document.createElement('div');
-
-                        // assign classes to those elements
-                        nameDiv.className = 'child-info';
-                        ageDiv.className = 'child-info';
-                        birthdayDiv.className = 'child-info';
-                        genderDiv.className = 'child-info';
-                        centerDiv.className = 'child-info';
-
-                        // assign values
-                        nameDiv.innerHTML = '<b> nombre: </b>' + name;
-                        ageDiv.innerHTML = '<b> años:  </b>' + age;
-                        birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
-                        genderDiv.innerHTML = '<b> género:  </b>' + gender;
-                        centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
-
-                        // append children to div
-                        dataTD.appendChild(nameDiv);
-                        dataTD.appendChild(ageDiv);
-                        dataTD.appendChild(birthdayDiv);
-                        dataTD.appendChild(genderDiv);
-                        dataTD.appendChild(centerDiv);
-                        dataDiv.appendChild(dataTD);
-
-                        //append child info
-                        tr.appendChild(dataDiv);
-
-                        //also create child list for tabC
-                        var inputGroup = document.createElement('div');
-                        inputGroup.className = 'input-group';
-                        var inputGroupSpan = document.createElement('span');
-                        inputGroupSpan.className = 'input-group-btn';
-                        var selectChild = document.createElement('button');
-                        /* eslint-disable */
-                        selectChild.className = 'btn btn-primary child-letter-select';
-                        /* eslint-enable */
-                        selectChild.type = 'button';
-                        //this will change the header on tabC based on the
-                        // child selected
-                        selectChild.onclick = function() {
-                            tabCHeader.innerHTML = 'Letter to ' + $('.child-letter-select').text();
-                        };
-                        selectChild.innerHTML = name;
-                        inputGroupSpan.appendChild(selectChild);
-                        inputGroup.appendChild(inputGroupSpan);
-                        childrenSelectContainer.appendChild(selectChild);
-
-                        callback(true);
-                    }
-                });
-            }
-
-            pic(id, function(success) {
-                if(success === true) {
-                    // then append data
-                    data(id, function(success)  {
-                        if(success === true) {
-                            $('.spinner').remove();
-                            tbody.appendChild(tr);
-                            table.appendChild(tbody);
-                        }
-                    });
-                }
-            });
-        }
 
         /* get children using donor id */
         selector = {'donor_id': sessionStorage.getItem('id')};
@@ -233,8 +116,6 @@ $(document).ready(function() {
                 'id' : sessionStorage.getItem('id')
             },
             success: function(res) {
-                var id = res.key;
-
                 /* create content for tabB */
                 var infoWrapper = document.createElement('div');
                 infoWrapper.id = 'tabB-content';
@@ -313,7 +194,7 @@ $(document).ready(function() {
                 var emailWrapper = document.createElement('div');
                 emailWrapper.className = 'col-md-6';
                 var email = document.createElement('input');
-                email.id = 'form-email'
+                email.id = 'form-email';
                 email.className = 'form-control';
                 email.type = 'text';
                 email.name = 'email';
@@ -382,128 +263,251 @@ $(document).ready(function() {
         container.appendChild(tabA);
         container.appendChild(tabB);
         container.appendChild(tabC);
-
-        function submitInfoChanges() {
-            $.ajax({
-                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                type: 'PUT',
-                data: {
-                    'token' : sessionStorage.getItem('token'),
-                    'changes' : {
-                                    'nombre': document.getElementById('form-first-name').value,
-                                    'apellido': document.getElementById('form-last-name').value,
-                                    'teléfono': document.getElementById('form-phone').value,
-                                    'calle': document.getElementById('form-street').value,
-                                    'ciudad': document.getElementById('form-city').value,
-                                    'correo_electrónico': document.getElementById('form-email').value
-                                }
-                },
-                success: function(res) {
-                    alert('Su información ha sido actualizada.');
-                },
-                error: function(res) {
-                    if (res.status === 409) {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
-                    }
-
-                    //put old info back in
-                    $.ajax({
-                        url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                        type: 'POST',
-                        data: {
-                            'token' : sessionStorage.getItem('token'),
-                            'id' : sessionStorage.getItem('id')
-                        },
-                        success: function(res) {
-                            document.getElementById('form-first-name').value = res.nombre;
-                            document.getElementById('form-last-name').value = res.apellido;
-                            document.getElementById('form-phone').value = res.teléfono;
-                            document.getElementById('form-email').value = res.correo_electrónico;
-                            document.getElementById('form-street').value = res.calle;
-                            document.getElementById('form-city').value = res.ciudad;
-                        }
-                    });
-                }
-            });
-        }
-
-        function createButton () {
-            var editInfoSubmit = document.createElement('button');
-            editInfoSubmit.id = 'edit-info-submit';
-            editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
-            editInfoSubmit.innerHTML = 'enviar';
-            editInfoSubmit.title = 'submit changes to your information';
-            editInfoSubmit.onclick = function() { submitInfoChanges() };
-            $('#tabB-content').append(editInfoSubmit);
-        }
-
-        function infoChange () {
-            var nameInput = document.getElementById('form-first-name');
-            nameInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-            var lastNameInput = document.getElementById('form-last-name');
-            lastNameInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-            var phoneInput = document.getElementById('form-phone');
-            phoneInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-            var emailInput = document.getElementById('form-email');
-            emailInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-            var streetInput = document.getElementById('form-street');
-            streetInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-            var cityInput = document.getElementById('form-city');
-            cityInput.oninput = function() {
-                if (document.getElementById('edit-info-submit')) {
-                    return;
-                } else {
-                    createButton();
-                }
-            };
-        }
     } else {
         console.log('No login information found, please login');
         document.getElementById('myTab').remove();
         alert('entra en la cuenta para acceder a esta página.');
     }
 
-    function logout() {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('id');
+    function submitInfoChanges() {
+        $.ajax({
+            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+            type: 'PUT',
+            data: {
+                'token' : sessionStorage.getItem('token'),
+                'changes' : {
+                    'nombre': document.getElementById('form-first-name').value,
+                    'apellido': document.getElementById('form-last-name').value,
+                    'teléfono': document.getElementById('form-phone').value,
+                    'calle': document.getElementById('form-street').value,
+                    'ciudad': document.getElementById('form-city').value,
+                    'correo_electrónico': document.getElementById('form-email').value
+                }
+            },
+            success: function(res) {
+                console.log(res);
+                // TODO: need to actually confirm success from the res here
+                alert('Su información ha sido actualizada.');
+            },
+            error: function(res) {
+                if (res.status === 409) {
+                    alert('el correo electrónico ya está asociada a una cuenta.');
+                }
+
+                //put old info back in
+                $.ajax({
+                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                    type: 'POST',
+                    data: {
+                        'token' : sessionStorage.getItem('token'),
+                        'id' : sessionStorage.getItem('id')
+                    },
+                    success: function(res) {
+                        document.getElementById('form-first-name').value = res.nombre;
+                        document.getElementById('form-last-name').value = res.apellido;
+                        document.getElementById('form-phone').value = res.teléfono;
+                        document.getElementById('form-email').value = res.correo_electrónico;
+                        document.getElementById('form-street').value = res.calle;
+                        document.getElementById('form-city').value = res.ciudad;
+                    }
+                });
+            }
+        });
     }
 
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
+    function createButton () {
+        var editInfoSubmit = document.createElement('button');
+        editInfoSubmit.id = 'edit-info-submit';
+        editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
+        editInfoSubmit.innerHTML = 'enviar';
+        editInfoSubmit.title = 'submit changes to your information';
+        editInfoSubmit.onclick = function() {
+            submitInfoChanges();
+        };
+        $('#tabB-content').append(editInfoSubmit);
+    }
+
+    function infoChange () {
+        var nameInput = document.getElementById('form-first-name');
+        nameInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+        var lastNameInput = document.getElementById('form-last-name');
+        lastNameInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+        var phoneInput = document.getElementById('form-phone');
+        phoneInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+        var emailInput = document.getElementById('form-email');
+        emailInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+        var streetInput = document.getElementById('form-street');
+        streetInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+        var cityInput = document.getElementById('form-city');
+        cityInput.oninput = function() {
+            if (document.getElementById('edit-info-submit')) {
+                return;
+            } else {
+                createButton();
+            }
+        };
+    }
+
+    function addChildToDonorList(id) {
+        // create child's table row
+        var tr = document.createElement('tr');
+
+        function pic(id, callback) {
+            //create elements for child picture
+            var picTD = document.createElement('td');
+            var picIMG = document.createElement('img');
+            picIMG.className = 'child-img';
+
+            //get child picture
+            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
+                if (res.data.hasOwnProperty('err')){
+                    console.log(res.data.err);
+                } else if (res.data !== undefined) {
+                    picIMG.src = 'data:image/image;base64,' + res.data;
+                    picTD.appendChild(picIMG);
+                    tr.appendChild(picTD);
+                    callback(true);
+                }
+            });
+        }
+
+        function data(id, callback) {
+            // get child data using api
+            $.getJSON('/api/v1/children/id/' + id, function(res) {
+                if(res.hasOwnProperty('err')) {
+                    callback(false);
+                } else {
+
+                    var dataTD = document.createElement('td');
+
+                    // set up all child info as vars
+                    var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
+                                      'Mayo', 'Junio', 'Julio', 'Agosto',
+                                      'Septiembre', 'Octubre', 'Noviembre',
+                                      'Diciembre'];
+                    var date = new Date(res[id].cumpleaños);
+                    var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
+                    var name = res[id].nombre;
+                    var age = res[id].años;
+                    var gender = res[id].género;
+                    var center = res[id].centro_de_ninos;
+
+                    // create elements for each piece of info
+                    var dataDiv = document.createElement('td');
+                    dataDiv.className = 'child-info-group';
+
+                    var nameDiv = document.createElement('div');
+                    var ageDiv = document.createElement('div');
+                    var birthdayDiv = document.createElement('div');
+                    var genderDiv = document.createElement('div');
+                    var centerDiv = document.createElement('div');
+
+                    // assign classes to those elements
+                    nameDiv.className = 'child-info';
+                    ageDiv.className = 'child-info';
+                    birthdayDiv.className = 'child-info';
+                    genderDiv.className = 'child-info';
+                    centerDiv.className = 'child-info';
+
+                    // assign values
+                    nameDiv.innerHTML = '<b> nombre: </b>' + name;
+                    ageDiv.innerHTML = '<b> años:  </b>' + age;
+                    birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
+                    genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                    centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+
+                    // append children to div
+                    dataTD.appendChild(nameDiv);
+                    dataTD.appendChild(ageDiv);
+                    dataTD.appendChild(birthdayDiv);
+                    dataTD.appendChild(genderDiv);
+                    dataTD.appendChild(centerDiv);
+                    dataDiv.appendChild(dataTD);
+
+                    //append child info
+                    tr.appendChild(dataDiv);
+
+                    //also create child list for tabC
+                    var inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    var inputGroupSpan = document.createElement('span');
+                    inputGroupSpan.className = 'input-group-btn';
+                    var selectChild = document.createElement('button');
+                    selectChild.className = 'btn btn-primary child-letter-select';
+                    selectChild.type = 'button';
+                    //this will change the header on tabC based on the
+                    // child selected
+                    selectChild.onclick = function() {
+                        tabCHeader.innerHTML = 'Letter to ' + $('.child-letter-select').text();
+                    };
+                    selectChild.innerHTML = name;
+                    inputGroupSpan.appendChild(selectChild);
+                    inputGroup.appendChild(inputGroupSpan);
+                    childrenSelectContainer.appendChild(selectChild);
+
+                    callback(true);
+                }
+            });
+        }
+
+        pic(id, function(success) {
+            if(success === true) {
+                // then append data
+                data(id, function(success)  {
+                    if(success === true) {
+                        $('.spinner').remove();
+                        tbody.appendChild(tr);
+                        table.appendChild(tbody);
+                    }
+                });
+            }
+        });
+    }
+
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'children.html';
         document.getElementById('toggle-login').innerHTML = 'Logout';
         $('#toggle-login').click(logout);
     } else {
+        /* When login link is clicked, call toggleLogin */
+        $('#toggle-login').click(toggleLogin);
+
+        /* When the log in button is clicked, validate credentials
+           and if valid send the user to account.html and but the
+           token returned by server into session storage */
+        $('.login-submit').click(login);
+    }
+
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
         if ($('.login').css('display') == 'none') {
@@ -513,13 +517,6 @@ $(document).ready(function() {
             $('.login').hide();
         }
     }
-    /* When login link is clicked, call toggleLogin */
-    $('#toggle-login').click(toggleLogin);
-
-    /* When the log in button is clicked, validate credentials
-       and if valid send the user to account.html and but the
-       token returned by server into session storage */
-    $('.login-submit').click(login);
 
     function login () {
         var email = $('.donor-email').val();
@@ -546,7 +543,7 @@ $(document).ready(function() {
         });
 
         // on login error, check error and inform user accordingly
-        loginRequest.error(function(httpObj, textStatus) {
+        loginRequest.error(function(httpObj) {
             if(httpObj.status === 401) {
                 alert('correo o contraseña incorrectos.');
             } else {
@@ -561,6 +558,10 @@ $(document).ready(function() {
                 window.location = 'account.html';
             }
         });
-      }
+    }
+
+    function logout() {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('id');
     }
 });
