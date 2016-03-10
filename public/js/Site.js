@@ -48,26 +48,30 @@ else {
             }
         });
 
-        // on successful login, save token and donor id in session storage and
-        // go to the donor portal
+        var worked = false;
+        // on successful login, save token and donor id
+        // in session storage and go to the donor portal
         loginRequest.success(function(res) {
-              //save login token to session storage
+            //save login token to session storage
             sessionStorage.setItem('token', res.token);
             sessionStorage.setItem('id', res.id);
-            window.location = '/views/account.html';
+            worked = true;
         });
 
         // on login error, check error and inform user accordingly
         loginRequest.error(function(httpObj, textStatus) {
-            if (httpObj.status !== 200) {
-                if(httpObj.status === 401) {
-                    /* eslint-disable */
-                    alert('correo o contraseña incorrectos - email or password incorrect');
-                    /* eslint-enable */
-                } else {
-                    console.log(httpObj + ' ' + textStatus);
-                    alert('internal server error. see console for error info.');
-                }
+            if(httpObj.status === 401) {
+                alert('correo o contraseña incorrectos.');
+            } else {
+                console.log(JSON.stringify(httpObj));
+                alert('see console for error info.');
+            }
+            worked = false;
+        });
+
+        loginRequest.complete(function() {
+            if (worked === true) {
+                window.location = '/views/account.html';
             }
         });
     }

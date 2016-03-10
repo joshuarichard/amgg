@@ -135,8 +135,6 @@ $(document).ready(function() {
         slide.appendChild(divImg);
 
         // create the description element
-        // note: need to disable eslint because of html strings
-        /* eslint-disable */
         var divData = document.createElement('div');
         divData.className = 'col-xs-6';
         var hData = document.createElement('h1');
@@ -171,7 +169,6 @@ $(document).ready(function() {
         };
         divData.appendChild(sponsorButton);
         slide.appendChild(divData);
-        /* eslint-enable*/
 
         $('#slides').append(slide);
         callback(slide);
@@ -389,16 +386,6 @@ $(document).ready(function() {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
-        /* eslint-disable */
-        /* Toggle the login box when login link is clicked */
-        function toggleLogin () {
-            if ($('.login').css('display') == 'none') {
-                $('.login').show();
-            }
-            else {
-                $('.login').hide();
-            }
-        }
         /* When login link is clicked, call toggleLogin */
         $('#toggle-login').click(toggleLogin);
 
@@ -406,40 +393,57 @@ $(document).ready(function() {
            and if valid send the user to account.html and but the
            token returned by server into session storage */
         $('.login-submit').click(login);
+    }
 
-        function login () {
-            var email = $('.donor-email').val();
-            var password = $('.donor-password').val();
-
-            // define the request
-            var loginRequest = $.ajax({
-                url: '/api/v1/donor/auth',
-                type: 'POST',
-                data: {
-                    'correo_electrónico': email,
-                    'password': password
-                }
-            });
-
-            // on successful login, save token and donor id
-            // in session storage and go to the donor portal
-            loginRequest.success(function(res) {
-                  //save login token to session storage
-                sessionStorage.setItem('token', res.token);
-                sessionStorage.setItem('id', res.id);
-                window.location = 'account.html';
-            });
-
-            // on login error, check error and inform user accordingly
-            loginRequest.error(function(httpObj, textStatus) {
-                if(httpObj.status === 401) {
-                    alert('correo o contraseña incorrectos.');
-                } else {
-                    console.log(JSON.stringify(httpObj));
-                    alert('see console for error info.');
-                }
-            });
+    /* Toggle the login box when login link is clicked */
+    function toggleLogin () {
+        if ($('.login').css('display') == 'none') {
+            $('.login').show();
         }
-        /* eslint-enable */
+        else {
+            $('.login').hide();
+        }
+    }
+
+    function login() {
+        var email = $('.donor-email').val();
+        var password = $('.donor-password').val();
+
+        // define the request
+        var loginRequest = $.ajax({
+            url: '/api/v1/donor/auth',
+            type: 'POST',
+            data: {
+                'correo_electrónico': email,
+                'password': password
+            }
+        });
+
+        var worked = false;
+        // on successful login, save token and donor id
+        // in session storage and go to the donor portal
+        loginRequest.success(function(res) {
+            //save login token to session storage
+            sessionStorage.setItem('token', res.token);
+            sessionStorage.setItem('id', res.id);
+            worked = true;
+        });
+
+        // on login error, check error and inform user accordingly
+        loginRequest.error(function(httpObj) {
+            if(httpObj.status === 401) {
+                alert('correo o contraseña incorrectos.');
+            } else {
+                console.log(JSON.stringify(httpObj));
+                alert('see console for error info.');
+            }
+            worked = false;
+        });
+
+        loginRequest.complete(function() {
+            if (worked === true) {
+                window.location = 'account.html';
+            }
+        });
     }
 });
