@@ -493,6 +493,17 @@ $(document).ready(function() {
         alert('entra en la cuenta para acceder a esta página.');
     }
 
+    function logout() {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('id');
+    }
+
+    if (sessionStorage.getItem('token') != null
+            && sessionStorage.getItem('token') != '') {
+        document.getElementById('toggle-login').href = 'children.html';
+        document.getElementById('toggle-login').innerHTML = 'Logout';
+        $('#toggle-login').click(logout);
+    } else {
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
         if ($('.login').css('display') == 'none') {
@@ -550,5 +561,6 @@ $(document).ready(function() {
                 window.location = 'account.html';
             }
         });
+      }
     }
 });
