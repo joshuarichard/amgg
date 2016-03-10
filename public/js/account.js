@@ -405,7 +405,7 @@ $(document).ready(function() {
                     if (res.status === 409) {
                         alert('el correo electrónico ya está asociada a una cuenta.');
                     }
-                    
+
                     //put old info back in
                     $.ajax({
                         url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
@@ -493,6 +493,12 @@ $(document).ready(function() {
         alert('entra en la cuenta para acceder a esta página.');
     }
 
+    if (sessionStorage.getItem('token') != null
+            && sessionStorage.getItem('token') != '') {
+        document.getElementById('toggle-login').href = 'children.html';
+        document.getElementById('toggle-login').innerHTML = 'Logout';
+        sessionStorage.removeItem('token');
+    } else {
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
         if ($('.login').css('display') == 'none') {
@@ -542,5 +548,6 @@ $(document).ready(function() {
                 alert('see console for error info.');
             }
         });
+      }
     }
 });
