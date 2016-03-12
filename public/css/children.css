@@ -93,9 +93,21 @@ input[type="email"],input[type="password"] {
 }
 /* End Login overlay */
 
+.create-account-overlay {
+  display: none;
+  z-index: 12;
+  position: fixed;
+  width: 70%;
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 5%;
+  padding-top: 0.55em;
+  background-color: darkgrey;
+}
+
 #child-img {
-    margin-top: 5%;
-    margin-bottom: 5%;
+  margin-top: 5%;
+  margin-bottom: 5%;
 }
 
 .owl-carousel{

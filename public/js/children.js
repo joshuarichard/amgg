@@ -446,4 +446,123 @@ $(document).ready(function() {
             }
         });
     }
+
+    function toggleCreateAccount () {
+        if ($('.create-account-overlay').css('display') == 'none') {
+            $('.create-account-overlay').show();
+            $('.login').hide();
+        }
+        else {
+            $('.create-account-overlay').hide();
+        }
+    }
+    $('.create-account').click(toggleCreateAccount);
+
+    function createAccount() {
+        // get all form info
+        var firstName = document.getElementById('form-first-name').value;
+        var lastName = document.getElementById('form-last-name').value;
+        var phone = document.getElementById('form-phone').value;
+        var street = document.getElementById('form-address-street').value;
+        var city = document.getElementById('form-address-city').value;
+        var country = document.getElementById('form-country').value;
+        var email = document.getElementById('form-email').value;
+        var password = document.getElementById('form-password').value;
+        var confirmPassword = document.getElementById('form-password-confirm')
+                                      .value;
+
+        // manage any null fields and throw errors accordingly
+        var nullFields = [];
+
+        if(firstName === '') {
+            nullFields.push('First name field empty.');
+        }
+        if (lastName === '') {
+            nullFields.push('Last name field empty.');
+        }
+        if (phone === '') {
+            nullFields.push('Phone number field empty.');
+        }
+        if (email === '') {
+            nullFields.push('Email field empty.');
+        }
+        if (street === '') {
+            nullFields.push('Street field empty.');
+        }
+        if (city === '') {
+            nullFields.push('City field empty.');
+        }
+        if (country === '') {
+            nullFields.push('Country field empty.');
+        }
+
+        // if anything is null then alert, else submit a post with donor info
+        if (nullFields.length > 0) {
+            var alertMessage = 'You are missing some fields: \n';
+            for (var i = 0; i < nullFields.length; i++) {
+                alertMessage += nullFields[i];
+                alertMessage += '\n';
+            }
+            alert(alertMessage);
+        } 
+        else if (password !== confirmPassword) {
+            alert('las contraseñas no coinciden.');
+        } 
+        else if (password === '') {
+            alert('por favor ingrese una contraseña.');
+        } 
+        else {
+            var donor = {};
+            if (sessionStorage.getItem('id') != null) {
+                donor = {
+                    'donor_id': sessionStorage.getItem('id'),
+                    'password': password
+                };
+            } else if (sessionStorage.getItem('assignedDonorID') != null) {
+                donor = {
+                        'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
+                        'nombre': firstName,
+                        'apellido': lastName,
+                        'teléfono': phone,
+                        'calle': street,
+                        'ciudad': city,
+                        'país': country,
+                        'correo_electrónico': email,
+                        'password': password
+                };
+            }
+            // POST /api/v1/donor/sponsor
+            $.ajax({
+                url: '/api/v1/donor/sponsor',
+                type: 'POST',
+                data: donor,
+                success: function(res) {
+                    $('.create-account-overlay').hide();
+                    //log user into their new account
+                    $.ajax({
+                        url: '/api/v1/donor/auth',
+                        type: 'POST',
+                        data: {
+                            'correo_electrónico': email,
+                            'password': password
+                        },
+                        success: function(res) {
+                            alert("Your account has successful been created, you are now logged in");
+                        },
+                        error: function(res) {
+                            alert("Your account has been created but we were unable to log you in at this time, please try again later");
+                        }
+                    });
+                },
+                error: function(httpObj) {
+                    var mongoError = JSON.parse(httpObj.responseText);
+                    // email already exists exeption
+                    if (httpObj.status === 409 && mongoError.code === 11000) {
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                    }
+                }
+            });
+        }
+    }
+    $('.create-account-submit').click(createAccount);
 });
