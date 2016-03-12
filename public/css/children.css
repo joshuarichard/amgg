@@ -1,37 +1,23 @@
 /* Begin Login overlay */
 body {
-    position: relative;
-    margin: 0;
-    padding-bottom: 20rem;
-    min-height: 100%;
-}
-
-.demo {
-  margin: 0 auto;
-}
-
-html{
-  height: 100%;
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+  z-index: 10;
+  position: relative;
+  margin: 0;
+  padding-bottom: 20rem;
+  min-height: 100%;
 }
 
 .login{
 	position: fixed;
 	display: none;
-	width:400px;
+	width: 400px;
 	margin-left: 68%;
 	margin-right: 0.5em;
 	margin-top: 0;
 	padding-top: 0.55em;
 	margin-top:8px;
 	margin-bottom:2%;
-  z-index: 11; /* 1px higher than the overlay layer */
+  z-index: 11; /* 1px higher than the body */
 }
 
 .login-triangle {
@@ -103,6 +89,37 @@ input[type="email"],input[type="password"] {
   margin-top: 5%;
   padding-top: 0.55em;
   background-color: darkgrey;
+}
+
+#form-password {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0;
+  padding: 2%;
+  font-size: 97%;
+}
+
+#form-password-confirm {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0;
+  padding: 2%;
+  font-size: 97%;
+}
+
+.create-account-submit {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-right: 2em;
+}
+
+.control-label {
+  margin-top: 0.5em;
+}
+
+.create-account-input {
+  margin-top: .1em;
+  margin-bottom: .1em;
 }
 
 #child-img {

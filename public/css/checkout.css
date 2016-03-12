@@ -1,24 +1,10 @@
 /* Begin Login overlay */
 body {
-    position: relative;
-    margin: 0;
-    padding-bottom: 20rem;
-    min-height: 100%;
-}
-
-.demo {
-  margin: 0 auto;
-}
-
-html{
-  height: 100%;
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+  z-index: 10;
+  position: relative;
+  margin: 0;
+  padding-bottom: 20rem;
+  min-height: 100%;
 }
 
 .login{
@@ -209,18 +195,18 @@ footer {
 	margin-right: 1em;
 }
 
-input[name="password-one"] {
+#form-password {
   width: 100%;
-  margin-left: 0em;
-  margin-bottom: 0%;
+  margin-left: 0;
+  margin-bottom: 0;
   padding: 2%;
   font-size: 97%;
 }
 
-input[name="password-confirm"] {
+#form-password-confirm {
   width: 100%;
-  margin-left: 0em;
-  margin-bottom: 0%;
+  margin-left: 0;
+  margin-bottom: 0;
   padding: 2%;
   font-size: 97%;
 }
