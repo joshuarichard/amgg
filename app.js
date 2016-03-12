@@ -35,6 +35,7 @@ var cart = require('./data/cart.js');
  * ^POST /api/v1/donor/id/:id - get a donor by their id
  * ^PUT /api/v1/donor/id/:id - edit a donor
  * POST /api/v1/donor/sponsor - inserts a donor and sponsors kids (optional)
+ * POST /api/v1/donor/create - create a new donor account
  */
 
 var app = express();
@@ -549,6 +550,51 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             }
         });
     }
+});
+
+// POST /api/v1/donor/create to create a donor
+app.post('/api/v1/donor/create', function(req, res) {
+    var donor = req.body;
+
+    // hash the password and store it in the db
+    password.encrypt(donor['password'], function(hash, salt) {
+        // fix the donor doc a bit before insertion
+        donor['password'] = hash;
+        donor['salt'] = salt;
+
+        // store this as a variable because need to delete from
+        // donor doc before insert.
+        var assignedDonorID = donor['assigned_donor_id'];
+        delete donor['assigned_donor_id'];
+
+        // now insert donor into db
+        mongo.insert(donor, donorCollection, function(result) {
+            // if mongo confirms success and n = 1 where n is inserted docs
+            if (result.hasOwnProperty('insertedCount')) {
+                if (result.insertedCount === 1) {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Child sponsored.'
+                    });
+                } else {
+                    res.status(500).send({
+                        success: false,
+                        message: 'Donor could not be inserted.'
+                    });
+                }
+            } else if (result.code === 11000) {
+                res.status(409).send({
+                    success: false,
+                    message: 'Email already exists.'
+                });
+            } else {
+                res.status(500).send({
+                    success: false,
+                    message: result.errmsg
+                });
+            }
+        });
+    });
 });
 
 /* POST /api/v1/donor/cart

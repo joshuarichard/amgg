@@ -531,13 +531,14 @@ $(document).ready(function() {
                         'password': password
                 };
             }
-            // POST /api/v1/donor/sponsor
+            // POST /api/v1/donor/create
             $.ajax({
-                url: '/api/v1/donor/sponsor',
+                url: '/api/v1/donor/create',
                 type: 'POST',
                 data: donor,
                 success: function(res) {
                     $('.create-account-overlay').hide();
+                    console.log("success");
                     //log user into their new account
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -547,6 +548,13 @@ $(document).ready(function() {
                             'password': password
                         },
                         success: function(res) {
+                            //put token and donor id into sessionStorage
+                            sessionStorage.setItem('token', res.token);
+                            sessionStorage.setItem('id', res.id);
+                            //change login button to account button
+                            document.getElementById('toggle-login').href = 'account.html';
+                            document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+                            //notify user they are now logged into their new account
                             alert("Your account has successful been created, you are now logged in");
                         },
                         error: function(res) {
@@ -554,11 +562,15 @@ $(document).ready(function() {
                         }
                     });
                 },
-                error: function(httpObj) {
-                    var mongoError = JSON.parse(httpObj.responseText);
-                    // email already exists exeption
-                    if (httpObj.status === 409 && mongoError.code === 11000) {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
+                statusCode: {
+                    404: function() {
+                      alert( "page not found" );
+                    },
+                    409: function() {
+                        alert("An account already exists under this email, please log in");
+                    },
+                    500: function() {
+                        alert("An error occured, please try again or contact an admin");
                     }
                 }
             });
