@@ -407,9 +407,9 @@ $(document).ready(function() {
                 if(res.hasOwnProperty('err')) {
                     callback(false);
                 } else {
-
                     var dataTD = document.createElement('td');
-
+                    tr.id = id;
+                    
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
