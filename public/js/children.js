@@ -504,13 +504,13 @@ $(document).ready(function() {
                 alertMessage += '\n';
             }
             alert(alertMessage);
-        } 
+        }
         else if (password !== confirmPassword) {
             alert('las contraseñas no coinciden.');
-        } 
+        }
         else if (password === '') {
             alert('por favor ingrese una contraseña.');
-        } 
+        }
         else {
             var donor = {};
             if (sessionStorage.getItem('id') != null) {
@@ -520,15 +520,15 @@ $(document).ready(function() {
                 };
             } else if (sessionStorage.getItem('assignedDonorID') != null) {
                 donor = {
-                        'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                        'nombre': firstName,
-                        'apellido': lastName,
-                        'teléfono': phone,
-                        'calle': street,
-                        'ciudad': city,
-                        'país': country,
-                        'correo_electrónico': email,
-                        'password': password
+                    'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
+                    'nombre': firstName,
+                    'apellido': lastName,
+                    'teléfono': phone,
+                    'calle': street,
+                    'ciudad': city,
+                    'país': country,
+                    'correo_electrónico': email,
+                    'password': password
                 };
             }
             // POST /api/v1/donor/create
@@ -536,9 +536,9 @@ $(document).ready(function() {
                 url: '/api/v1/donor/create',
                 type: 'POST',
                 data: donor,
-                success: function(res) {
+                success: function() {
                     $('.create-account-overlay').hide();
-                    console.log("success");
+                    console.log('success');
                     //log user into their new account
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -555,22 +555,22 @@ $(document).ready(function() {
                             document.getElementById('toggle-login').href = 'account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
-                            alert("Your account has successful been created, you are now logged in");
+                            alert('Your account has successful been created, you are now logged in');
                         },
-                        error: function(res) {
-                            alert("Your account has been created but we were unable to log you in at this time, please try again later");
+                        error: function() {
+                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
                         }
                     });
                 },
                 statusCode: {
                     404: function() {
-                      alert( "page not found" );
+                        alert('page not found');
                     },
                     409: function() {
-                        alert("An account already exists under this email, please log in");
+                        alert('An account already exists under this email, please log in');
                     },
                     500: function() {
-                        alert("An error occured, please try again or contact an admin");
+                        alert('An error occured, please try again or contact an admin');
                     }
                 }
             });
