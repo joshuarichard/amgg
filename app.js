@@ -564,7 +564,6 @@ app.post('/api/v1/donor/create', function(req, res) {
 
         // store this as a variable because need to delete from
         // donor doc before insert.
-        var assignedDonorID = donor['assigned_donor_id'];
         delete donor['assigned_donor_id'];
 
         // now insert donor into db
