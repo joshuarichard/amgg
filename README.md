@@ -5,17 +5,19 @@ The purpose of this system is to provide AMG Guatemala with a new web applicatio
 
 An additional goal of this project is to help AMG Guatemala better focus their aid efforts through computed analytics on the child data they have stored. Although it is still unknown if there will be time at the end of the core functionality development for additional work done with analytics, the system will be designed with this option available by further development teams. At the very least, web analytics will be incorporated into the web application using Google Analytics.
 
-Preliminary system documentation for this project can be found in `planning/`
+Preliminary system documentation for this project can be found in `planning/`.
 
 ### Dependencies
 Node and npm are required to build this system.
 
+For linux and mac osx:
 ```shell
 $ sudo apt-get install nodejs
 $ brew install nodejs
 ```
 
-or just go here and run an installer: https://nodejs.org/en/download/
+For windows:
+Download and run an installer: https://nodejs.org/en/download/
 
 You must also have access to an instance of MongoDB, however you're welcome to use our instance as long as you make sure you change the names of the collections you will be using.
 
