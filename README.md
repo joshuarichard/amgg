@@ -28,6 +28,8 @@ Run `npm install` to install all dependencies.
 
 Unzip the two keys and put them in a folder called `keys/` in the root directory of the project.
 
+Lastly, run `mkdir log` to create the log directory.
+
 ### Configuration
 To configure the system, you need to edit a couple of things in the `config.json` file.
 
