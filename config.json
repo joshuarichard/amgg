@@ -25,6 +25,7 @@
         "cert": "./keys/cert.pem"
     },
     "admin": {
-        "email": "eos.josh.richard@gmail.com"
+        "email": "eos.josh.richard@gmail.com",
+        "password": "x"
     }
 }
