@@ -261,7 +261,7 @@ $(document).ready(function() {
 
                 // set on click button function
                 deleteAccountButton.onclick = function() {
-                    var yesUnsponsor = confirm('Are you sure you want to remove your sponsorship for this child?');
+                    var yesUnsponsor = confirm('Are you sure you want to delete your account?');
                     if (yesUnsponsor == true) {
                         $.ajax({
                             url: '/api/v1/donor/delete',
