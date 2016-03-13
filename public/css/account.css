@@ -6,21 +6,11 @@ footer {
 }
 
 body {
-    position: relative;
-    margin: 0;
-    padding-bottom: 20rem;
-    min-height: 100%;
-}
-
-html{
-  height: 100%;
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+  z-index: 10;
+  position: relative;
+  margin: 0;
+  padding-bottom: 20rem;
+  min-height: 100%;
 }
 
 .nav {
@@ -48,10 +38,10 @@ input {
 
 table {
 	display: table;
-    width: 90% !important;
-    max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+  width: 90% !important;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tab-content {
@@ -148,28 +138,6 @@ table {
 /* End CSS loading spinner */
 
 /* Begin Login overlay */
-body {
-    position: relative;
-    margin: 0;
-    padding-bottom: 20rem;
-    min-height: 100%;
-}
-
-.demo {
-  margin: 0 auto;
-}
-
-html{
-  height: 100%;
-  box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
-}
-
 .login{
 	position: fixed;
 	display: none;
