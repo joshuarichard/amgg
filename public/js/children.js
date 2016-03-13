@@ -577,4 +577,5 @@ $(document).ready(function() {
         }
     }
     $('.create-account-submit').click(createAccount);
+    $('.close-create-account-overlay').click(toggleCreateAccount);
 });

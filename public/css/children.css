@@ -122,6 +122,18 @@ input[type="email"],input[type="password"] {
   margin-bottom: .1em;
 }
 
+.close-create-account-overlay {
+  margin-top: 0;
+  margin-bottom: 1em;
+  margin-right: 0;
+  margin-left: 0;
+  cursor: pointer;
+}
+
+.close-create-account-overlay-container {
+  margin-left: 100%;
+}
+
 #child-img {
   margin-top: 5%;
   margin-bottom: 5%;
