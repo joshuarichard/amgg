@@ -1,6 +1,10 @@
 # amgg child sponsorship
 2015-2016 Gordon College Senior Project by Jake Buettner, Joshua Richard, and Dane Vanden Berg.
 
+The purpose of this system is to provide AMG Guatemala with a new web application and database that will allow local Guatemalan donors the opportunity to support children in their own country as part of AMGG's 2015-2020 five year plan. Node.js, the current de facto standard among web applications, was chosen as the framework due to the high availability it offers. MongoDB was chosen for persistant storage due to it's seamless integration with Node.js and it's ease of use.
+
+An additional goal of this project is to help AMG Guatemala better focus their aid efforts through computed analytics on the child data they have stored. Although it is still unknown if there will be time at the end of the core functionality development for additional work done with analytics, the system will be designed with this option available by further development teams. At the very least, web analytics will be incorporated into the web application using Google Analytics.
+
 Preliminary system documentation for this project can be found in `planning/`
 
 ### Dependencies
