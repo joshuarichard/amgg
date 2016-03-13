@@ -31,7 +31,7 @@ Firstly, and this is **very, very important** - change name of the database you'
 
 Additionally, you'll need to add your email and password to the `admin:email` and `admin:password` entries.
 
-```json
+```javascript
 {
     "mongo": {
         "host": "73.227.187.84",
