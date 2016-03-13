@@ -19,7 +19,7 @@ $ brew install nodejs
 For windows:
 Download and run an installer: https://nodejs.org/en/download/
 
-You must also have access to an instance of MongoDB, however you're welcome to use our instance as long as you make sure you change the names of the collections you will be using.
+You must also have access to an instance of MongoDB, however you're welcome to use our instance as long as you make sure you change the names of the database you will be using.
 
 Our server's IP address is `73.227.187.84`. MongoDB is running on the default port `27017`.
 
