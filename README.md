@@ -1,5 +1,5 @@
 # amgg child sponsorship
-2015-2016 Gordon College Senior Project by Jake Buettner, Joshua Richard, and Dane Vanden Berg
+2015-2016 Gordon College Senior Project by Jake Buettner, Joshua Richard, and Dane Vanden Berg.
 
 Preliminary system documentation for this project can be found in `planning/`
 
