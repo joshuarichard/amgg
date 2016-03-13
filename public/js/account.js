@@ -409,7 +409,7 @@ $(document).ready(function() {
                 } else {
                     var dataTD = document.createElement('td');
                     tr.id = id;
-                    
+
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
@@ -486,6 +486,41 @@ $(document).ready(function() {
                 data(id, function(success)  {
                     if(success === true) {
                         $('.spinner').remove();
+
+                        var buttonTD = document.createElement('td');
+
+                        // create button, add classname for styling, append text
+                        var button = document.createElement('button');
+                        button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
+                        button.appendChild(document.createTextNode('eliminar'));
+
+                        // set on click button function
+                        button.onclick = function() {
+                            var yesUnsponsor = confirm("Are you sure you want to remove your sponsorship for this child?");
+                            if (yesUnsponsor == true) {
+                                $.ajax({
+                                    url: '/api/v1/donor/unsponsor',
+                                    type: 'POST',
+                                    data: {
+                                        'token' : sessionStorage.getItem('token'),
+                                        'donor_id' : sessionStorage.getItem('id'),
+                                        'child_id': button.parentNode.parentNode.id
+                                    },
+                                    success: function(res) {
+                                        if (res.success === true) {
+                                            alert('your request for the removal of your sponsorship has been submitted. you will receive an email when the process has been completed.');
+                                        }
+                                    },
+                                    error: function(res) {
+                                        alert('your request was not received. please try again.');
+                                    }
+                                });
+                            }
+                        };
+
+                        // add button to table entry and add table entry to row
+                        buttonTD.appendChild(button);
+                        tr.appendChild(buttonTD);
                         tbody.appendChild(tr);
                         table.appendChild(tbody);
                     }

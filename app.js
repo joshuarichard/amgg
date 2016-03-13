@@ -82,6 +82,18 @@ app.get('/', function(req, res) {
 
 var adminEmail = nconf.get('admin:email');
 
+// email strings
+var emailHeaderSponsor =  'Thank you for your sponsorship';
+var emailBodySponsor = 'You sponsored a child!!!!!';
+var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorship.';
+var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
+
+// error email strings
+var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
+var emailErrorBodyDeletingCart = 'Error deleting donor cart.';
+var emailErrorHeader = 'Error adding sponsor for donor.';
+var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
+
 var childCollection = nconf.get('mongo:childCollection');
 var donorCollection = nconf.get('mongo:donorCollection');
 var cartCollection = nconf.get('mongo:cartCollection');
@@ -400,7 +412,8 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     // then delete the cart doc
                                     cart.delete(assignedDonorID, function(result) {
                                         if (result === false) {
-                                            emailModule.email(adminEmail, function(didEmail) {
+                                            emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + assignedDonorID;
+                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
                                                 if (didEmail === false) {
                                                     log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
                                                 }
@@ -415,7 +428,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                             // recursive function to manage asynch for each id (change status to sponsored)
                                             changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
                                                 // email donor about their successful confirmation
-                                                emailModule.email(donor['correo_electrónico'], function(didEmail) {
+                                                emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor, function(didEmail) {
                                                     if(didEmail === true) {
                                                         // and we're done.
                                                         res.status(200).send({
@@ -503,7 +516,8 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         // then delete the cart doc
                                         cart.delete(req.body.donor_id, function(result) {
                                             if (result === false) {
-                                                emailModule.email(adminEmail, function(didEmail) {
+                                                emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
+                                                emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
                                                     if (didEmail === false) {
                                                         log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
                                                     }
@@ -518,7 +532,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 // recursive function to manage asynch for each id (change status to sponsored)
                                                 changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
                                                     // email donor about their successful confirmation
-                                                    emailModule.email(donor['correo_electrónico'], function(didEmail) {
+                                                    emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor,  function(didEmail) {
                                                         if(didEmail === true) {
                                                             // and we're done.
                                                             res.status(200).send({
@@ -554,7 +568,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
 /* POST /api/v1/donor/cart
  *
  * update the cart document with the new cart from the client
- *
  */
 app.post('/api/v1/donor/cart', function(req, res) {
     cart.update(req.body.donor_id, req.body.niños_patrocinadoras, function(result) {
@@ -570,6 +583,66 @@ app.post('/api/v1/donor/cart', function(req, res) {
             });
         }
     });
+});
+
+/* POST /api/v1/donor/unsponsor
+ *
+ * emails the admin saying a donor wants to unsponsor a child
+ * {
+ *   'token': 'token_goes_here',
+ *   'donor_id': donor_id,
+ *   'child_id': child_id_to_unsponsor
+ * }
+ */
+app.post('/api/v1/donor/unsponsor', function(req, res) {
+    var donorID = req.body.donor_id;
+    var token = req.body.token;
+    var childID = req.body.child_id;
+
+    // if missing information then throw malformed request
+    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined') {
+        res.status(400).send({
+            success: false,
+            message: 'Malformed request.'
+        });
+    } else {
+        if (token) {
+            // confirm token sent in request is valid
+            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+                if (err) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    // get the donor's information
+                    // just too much callback hell to deal with running over 80 chars
+                    mongo.get(donorID, donorCollection, false, function(data) {
+                        emailBodyRemoveSponsorship += '\n\ndonor: ' + donorID + '\nchild: ' + childID;
+                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
+                            if(didEmail === true) {
+                                // and we're done.
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Email send. Child removal is processing.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'An error occured on email.'
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+    }
 });
 
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
