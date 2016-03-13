@@ -138,15 +138,15 @@ $(document).ready(function() {
         var divData = document.createElement('div');
         divData.className = 'col-xs-6';
         var hData = document.createElement('h1');
-        hData.innerHTML = 'Hola, me llamo <span id =\"child-name\">' + name + '</span>!';
+        hData.innerHTML = 'Hola, me llamo <span id =\'child-name\'>' + name + '</span>!';
         divData.appendChild(hData);
         var divDescription = document.createElement('div');
         divDescription.className = 'child-description';
         var pData1 = document.createElement('p');
         pData1.className = 'lead';
-        pData1.innerHTML = 'I\'m a <span id=\"child-age\">' + age + '</span>-year-old <span id=\"child-gender\">' + gender + '</span> from <span id=\"child-location\">' + location + '</span>, and you can change my world for good!';
+        pData1.innerHTML = 'I\'m a <span id=\'child-age\'>' + age + '</span>-year-old <span id=\'child-gender\'>' + gender + '</span> from <span id=\'child-location\'>' + location + '</span>, and you can change my world for good!';
         var pData2 = document.createElement('p');
-        pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\"child-cost\">39</span> a month can help transform my community and change my world.';
+        pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
         divDescription.appendChild(pData1);
         divDescription.appendChild(pData2);
         divData.appendChild(divDescription);
@@ -534,7 +534,7 @@ $(document).ready(function() {
                     url: '/api/v1/donor/create',
                     type: 'POST',
                     data: donor,
-                    success: function(res) {
+                    success: function() {
                         $('.create-account-overlay').hide();
                         //log user into their new account
                         $.ajax({
@@ -544,7 +544,7 @@ $(document).ready(function() {
                                 'correo_electrónico': email,
                                 'password': password
                             },
-                            success: function(res) {
+                            success: function() {
                                 //put token and donor id into sessionStorage
                                 sessionStorage.setItem('token', res.token);
                                 sessionStorage.setItem('id', res.id);
@@ -552,22 +552,22 @@ $(document).ready(function() {
                                 document.getElementById('toggle-login').href = 'account.html';
                                 document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                                 //notify user they are now logged into their new account
-                                alert("Your account has successful been created, you are now logged in");
+                                alert('Your account has successful been created, you are now logged in');
                             },
-                            error: function(res) {
-                                alert("Your account has been created but we were unable to log you in at this time, please try again later");
+                            error: function() {
+                                alert('Your account has been created but we were unable to log you in at this time, please try again later');
                             }
                         });
                     },
                     statusCode: {
                         404: function() {
-                          alert( "page not found" );
+                            alert('page not found');
                         },
                         409: function() {
-                            alert("An account already exists under this email, please log in");
+                            alert('An account already exists under this email, please log in');
                         },
                         500: function() {
-                            alert("An error occured, please try again or contact an admin");
+                            alert('An error occured, please try again or contact an admin');
                         }
                     }
                 });
