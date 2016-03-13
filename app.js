@@ -91,8 +91,8 @@ var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their spo
 // error email strings
 var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
 var emailErrorBodyDeletingCart = 'Error deleting donor cart.';
-var emailErrorHeader = 'Error adding sponsor for donor.';
-var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
+//var emailErrorHeader = 'Error adding sponsor for donor.';
+//var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
 var childCollection = nconf.get('mongo:childCollection');
 var donorCollection = nconf.get('mongo:donorCollection');

@@ -496,7 +496,7 @@ $(document).ready(function() {
 
                         // set on click button function
                         button.onclick = function() {
-                            var yesUnsponsor = confirm("Are you sure you want to remove your sponsorship for this child?");
+                            var yesUnsponsor = confirm('Are you sure you want to remove your sponsorship for this child?');
                             if (yesUnsponsor == true) {
                                 $.ajax({
                                     url: '/api/v1/donor/unsponsor',
@@ -511,7 +511,7 @@ $(document).ready(function() {
                                             alert('your request for the removal of your sponsorship has been submitted. you will receive an email when the process has been completed.');
                                         }
                                     },
-                                    error: function(res) {
+                                    error: function() {
                                         alert('your request was not received. please try again.');
                                     }
                                 });
