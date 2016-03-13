@@ -253,6 +253,37 @@ $(document).ready(function() {
                 infoWrapper.appendChild(emailGroup);
                 infoWrapper.appendChild(streetGroup);
                 infoWrapper.appendChild(cityGroup);
+
+                // delete account button
+                var deleteAccountButton = document.createElement('button');
+                deleteAccountButton.className = 'btn btn-danger btn-sm child-intro-btn-sponsor sponsor-button';
+                deleteAccountButton.appendChild(document.createTextNode('delete account'));
+
+                // set on click button function
+                deleteAccountButton.onclick = function() {
+                    var yesUnsponsor = confirm('Are you sure you want to remove your sponsorship for this child?');
+                    if (yesUnsponsor == true) {
+                        $.ajax({
+                            url: '/api/v1/donor/delete',
+                            type: 'POST',
+                            data: {
+                                'token' : sessionStorage.getItem('token'),
+                                'donor_id' : sessionStorage.getItem('id')
+                            },
+                            success: function(res) {
+                                if (res.success === true) {
+                                    alert('your request for the removal of your account has been submitted. you will receive an email when the process has been completed.');
+                                }
+                            },
+                            error: function() {
+                                alert('your request was not received. please try again.');
+                            }
+                        });
+                    }
+                };
+
+                infoWrapper.appendChild(deleteAccountButton);
+
                 tabB.appendChild(infoWrapper);
 
                 infoChange();
@@ -489,6 +520,7 @@ $(document).ready(function() {
 
                         var buttonTD = document.createElement('td');
 
+                        // remove child sponsorship button
                         // create button, add classname for styling, append text
                         var button = document.createElement('button');
                         button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';

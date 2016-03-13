@@ -87,6 +87,8 @@ var emailHeaderSponsor =  'Thank you for your sponsorship';
 var emailBodySponsor = 'You sponsored a child!!!!!';
 var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorship.';
 var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
+var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
+var emailBodyDeleteAccount = 'A donor is requesting their account be deleted.';
 
 // error email strings
 var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
@@ -620,6 +622,64 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                     mongo.get(donorID, donorCollection, false, function(data) {
                         emailBodyRemoveSponsorship += '\n\ndonor: ' + donorID + '\nchild: ' + childID;
                         emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
+                            if(didEmail === true) {
+                                // and we're done.
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Email send. Child removal is processing.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'An error occured on email.'
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+    }
+});
+
+/* POST /api/v1/donor/delete
+ *
+ * emails the admin saying a donor wants to delete their account
+ * {
+ *   'token': 'token_goes_here',
+ *   'donor_id': donor_id
+ * }
+ */
+app.post('/api/v1/donor/delete', function(req, res) {
+    var donorID = req.body.donor_id;
+    var token = req.body.token;
+
+    // if missing information then throw malformed request
+    if (typeof req.body.donor_id === 'undefined') {
+        res.status(400).send({
+            success: false,
+            message: 'Malformed request.'
+        });
+    } else {
+        if (token) {
+            // confirm token sent in request is valid
+            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+                if (err) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    // get the donor's information
+                    // just too much callback hell to deal with running over 80 chars
+                    mongo.get(donorID, donorCollection, false, function(data) {
+                        emailBodyDeleteAccount += '\n\ndonor: ' + donorID;
+                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
