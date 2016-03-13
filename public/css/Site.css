@@ -925,7 +925,7 @@ h4, .p-apadriana {
     }
 }
 
-
+/* Create account overlay */
 .create-account-overlay {
   display: none;
   z-index: 12;
@@ -980,3 +980,4 @@ h4, .p-apadriana {
 .close-create-account-overlay-container {
   margin-left: 100%;
 }
+/* ^Create account overlay^ */
