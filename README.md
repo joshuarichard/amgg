@@ -33,7 +33,7 @@ Lastly, run `mkdir log` to create the log directory.
 ### Configuration
 To configure the system, you need to edit a couple of things in the `config.json` file.
 
-Firstly, and this is **very, very important** - change name of the database you're working with in the config file. *Please change the name of the database to your name.* This will ensure that it does not interfere with our own development environment. The two places you need to removed the current database **endgame** and add in your name are `mongo:db` and `autofill:db`. Below is an example.
+Firstly, and this is **very, very important** - change name of the database you're working with in the config file. *Please change the name of the database to your name.* This will ensure that it does not interfere with our own development environment. The two places you need to remove the current database **endgame** and add in your own name are `mongo:db` and `autofill:db`. See below for clarification.
 
 Additionally, you'll need to add your email and password to the `admin:email` and `admin:password` entries.
 
