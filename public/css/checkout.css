@@ -177,6 +177,7 @@ footer {
 
 .child-img {
 	max-width: 10em;
+  border-radius: 10px;
 }
 
 .child-info-group {
@@ -204,6 +205,22 @@ footer {
 }
 
 #form-password-confirm {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0;
+  padding: 2%;
+  font-size: 97%;
+}
+
+#create-account-password {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0;
+  padding: 2%;
+  font-size: 97%;
+}
+
+#create-account-password-confirm {
   width: 100%;
   margin-left: 0;
   margin-bottom: 0;
@@ -255,58 +272,3 @@ footer {
   }
 }
 /* End CSS loading spinner */
-
-.create-account-overlay {
-  display: none;
-  z-index: 12;
-  position: fixed;
-  width: 70%;
-  margin-left: 15%;
-  margin-right: 15%;
-  margin-top: 5%;
-  padding-top: 0.55em;
-  background-color: darkgrey;
-}
-
-#form-password {
-  width: 100%;
-  margin-left: 0;
-  margin-bottom: 0;
-  padding: 2%;
-  font-size: 97%;
-}
-
-#form-password-confirm {
-  width: 100%;
-  margin-left: 0;
-  margin-bottom: 0;
-  padding: 2%;
-  font-size: 97%;
-}
-
-.create-account-submit {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-right: 2em;
-}
-
-.control-label {
-  margin-top: 0.5em;
-}
-
-.create-account-input {
-  margin-top: .1em;
-  margin-bottom: .1em;
-}
-
-.close-create-account-overlay {
-  margin-top: 0;
-  margin-bottom: 1em;
-  margin-right: 0;
-  margin-left: 0;
-  cursor: pointer;
-}
-
-.close-create-account-overlay-container {
-  margin-left: 100%;
-}

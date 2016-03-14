@@ -157,6 +157,7 @@ input[type="email"],input[type="password"] {
 .carousel-indicators {
     margin-bottom: -15px;
     opacity: 1;
+    z-index: 10;
 }
 
 .carousel-indicators li {
@@ -939,7 +940,8 @@ h4, .p-apadriana {
   box-shadow: 3px 3px 5px #888888;
   background-color: #EF801F;
 }
-#form-password {
+
+#create-account-password {
   width: 100%;
   margin-left: 0;
   margin-bottom: 0;
@@ -947,7 +949,7 @@ h4, .p-apadriana {
   font-size: 97%;
 }
 
-#form-password-confirm {
+#create-account-password-confirm {
   width: 100%;
   margin-left: 0;
   margin-bottom: 0;
