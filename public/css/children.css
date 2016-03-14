@@ -88,7 +88,9 @@ input[type="email"],input[type="password"] {
   margin-right: 15%;
   margin-top: 5%;
   padding-top: 0.55em;
-  background-color: darkgrey;
+  border-radius: 25px;
+  box-shadow: 3px 3px 5px #888888;
+  background-color: #EF801F;
 }
 
 #form-password {
@@ -115,6 +117,9 @@ input[type="email"],input[type="password"] {
 
 .control-label {
   margin-top: 0.5em;
+  color: #2C429B;
+  font-family: damion;
+  font-size: 12pt;
 }
 
 .create-account-input {
@@ -202,6 +207,7 @@ footer {
 .child-picture {
 	margin-top:  2em;
 	display: block/none;
+  border-radius: 25px;
 }
 
 .child-search {
