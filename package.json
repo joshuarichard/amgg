@@ -1,9 +1,9 @@
 {
-  "name": "team-amg",
-  "version": "0.0.1",
-  "description": "website and backend infrastructure for amg guatemala",
+  "name": "amgg child sponsorship",
+  "version": "0.2.0",
+  "description": "web application to allow guatemalan donors to sponsor children that are part of amg guatemala.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
