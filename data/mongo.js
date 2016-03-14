@@ -16,19 +16,19 @@ var log = bunyan.createLogger({
         {
             level: 'info',
             stream: process.stdout
-            // path: './var/log/mongo_info.log',
+            // path: './log/mongo_info.log',
             // period: '1d',  // daily rotation
             // count: 3
         },
         {
             level: 'trace',
-            path: './var/log/mongo_access.log',
+            path: './log/mongo_access.log',
             period: '1d',    // daily rotation
             count: 3
         },
         {
             level: 'error',
-            path: './var/log/mongo_error.log',
+            path: './log/mongo_error.log',
             period: '1d',   // daily rotation
             count: 3
         }

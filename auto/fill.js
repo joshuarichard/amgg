@@ -8,9 +8,10 @@ var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json'});
 
-var dbName = nconf.get('autofill:dbName');
-var collectionName = nconf.get('autofill:collection');
+var dbName = nconf.get('autofill:db');
+var collectionName = nconf.get('autofill:childCollection');
 var numOfDocs = nconf.get('autofill:numOfDocs');
+
 var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
            nconf.get('mongo:port') + '/' + dbName;
 

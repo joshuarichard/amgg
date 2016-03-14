@@ -13,8 +13,9 @@
         "port": 3000
     },
     "autofill": {
-        "dbName": "endgame",
-        "collection": "children",
+        "db": "endgame",
+        "childCollection": "children",
+        "donorCollection": "donors",
         "numOfDocs": "10"
     },
     "auth": {

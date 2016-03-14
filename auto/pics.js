@@ -9,7 +9,7 @@ var nconf = require('nconf');
 nconf.env()
      .file({ file: 'config.json'});
 
-var dbName = nconf.get('autofill:dbName');
+var dbName = nconf.get('autofill:db');
 
 var exports = module.exports = {};
 
