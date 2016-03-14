@@ -87,7 +87,7 @@ $ sudo npm install -g grunt-cli
 Run `grunt test` to test the api. You'll need to have a running instance of the system to do this.
 
 ### Logging
-Bunyan is used for server side logging. All log files are stored in `var/log/`.
+Bunyan is used for server side logging. All log files are stored in `log/`.
 
 ### Database
 Mongo runs in a Docker container on our test server. See `runbooks/MONGO.md` for more information.
