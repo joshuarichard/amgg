@@ -542,7 +542,7 @@ $(document).ready(function() {
                                         if (res.success === true) {
                                             alert('your request for the removal of your sponsorship has been submitted. you will receive an email when the process has been completed.');
                                             button.disabled = true;
-                                            button.title = "Your request has been received, please wait for it to be processed by an AMG admin";
+                                            button.title = 'Your request has been received, please wait for it to be processed by an AMG admin';
                                         }
                                     },
                                     error: function() {
