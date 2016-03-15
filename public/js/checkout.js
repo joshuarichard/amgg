@@ -19,7 +19,7 @@ $(document).ready(function() {
         checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
             if (lockedChildren.length > 0) {
                 for (var y = 0; y < lockedChildren.length; y++) {
-                    removeChild(lockedChildren[y]);
+                    removeChildFromCart(lockedChildren[y]);
                 }
                 alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
@@ -311,7 +311,7 @@ $(document).ready(function() {
 
             // set on click button function
             button.onclick = function() {
-                removeChild(button.parentNode.parentNode.id);
+                removeChildFromCart(button.parentNode.parentNode.id);
             };
 
             // add button to table entry and add table entry to row
@@ -340,7 +340,12 @@ $(document).ready(function() {
         });
     }
 
-    function removeChild(id) {
+    function removeChildFromCart(id) {
+        // if the table entry hasn't already been deleted then delete it now
+        if ($('#' + id).length > 0) {
+            $('#' + id).remove();
+        }
+
         // remove child from sessionStorage
         var ids = sessionStorage.getItem('cart').split(',');
         if (ids.indexOf(id) != -1) {
@@ -355,8 +360,6 @@ $(document).ready(function() {
                 console.log('cart not successfully sent to db.');
                 $('#checkout-submit').prop('disabled', true);
             }
-            // remove child from table
-            $('#' + id).remove();
         });
     }
 
