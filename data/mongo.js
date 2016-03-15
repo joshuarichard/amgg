@@ -379,13 +379,17 @@ exports.getPic = function(id, collection, callback) {
                     var imageId = new mongo.ObjectID(doc.image_id);
                     var gridStore = new mongo.GridStore(db, imageId, 'r');
                     gridStore.open(function(err, gridStore) {
-                        gridStore.seek(0, function() {
-                            gridStore.read(function(err, data) {
-                                db.close();
-                                log.trace('got picture for child with id '+ id);
-                                callback(data.toString('base64'));
+                        if (typeof gridStore !== 'undefined') {
+                            gridStore.seek(0, function() {
+                                gridStore.read(function(err, data) {
+                                    db.close();
+                                    log.trace('got picture for child with id '+ id);
+                                    callback(data.toString('base64'));
+                                });
                             });
-                        });
+                        } else {
+                            callback({'err': 'picture not found.'});
+                        }
                     });
                 }
             });
