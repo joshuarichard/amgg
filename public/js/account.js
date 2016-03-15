@@ -490,7 +490,6 @@ $(document).ready(function() {
                     dataTD.appendChild(ageDiv);
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
-                    dataTD.appendChild(centerDiv);
                     dataDiv.appendChild(dataTD);
                     dataTD.appendChild(provinciaDiv);
                     dataTD.appendChild(centerDiv);
