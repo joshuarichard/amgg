@@ -103,7 +103,7 @@ $(document).ready(function() {
                 }
             },
             error: function() {
-                alert('Unable to edit your information');
+                alert('Unable to edit your information.');
             }
         });
 
@@ -451,7 +451,9 @@ $(document).ready(function() {
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
+                    var provincia = res[id].provincia;
                     var center = res[id].centro_de_ninos;
+                    var aficiones = res[id].aficiones;
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -461,29 +463,37 @@ $(document).ready(function() {
                     var ageDiv = document.createElement('div');
                     var birthdayDiv = document.createElement('div');
                     var genderDiv = document.createElement('div');
+                    var provinciaDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
+                    var aficionesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
                     ageDiv.className = 'child-info';
                     birthdayDiv.className = 'child-info';
                     genderDiv.className = 'child-info';
+                    provinciaDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
+                    aficionesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> nombre: </b>' + name;
                     ageDiv.innerHTML = '<b> años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                    provinciaDiv.innerHTML = '<b> provincia: </b>' + provincia;
                     centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+                    aficionesDiv.innerHTML = '<b> aficiones: </b>' + aficiones;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
                     dataTD.appendChild(ageDiv);
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
-                    dataTD.appendChild(centerDiv);
                     dataDiv.appendChild(dataTD);
+                    dataTD.appendChild(provinciaDiv);
+                    dataTD.appendChild(centerDiv);
+                    dataTD.appendChild(aficionesDiv);
 
                     //append child info
                     tr.appendChild(dataDiv);
