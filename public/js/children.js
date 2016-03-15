@@ -67,6 +67,8 @@ $(document).ready(function() {
             var age = childPool[id].años;
             var gender = childPool[id].género;
             var location = childPool[id].provincia;
+            var aficiones = childPool[id].aficiones;
+            var biodata = childPool[id].biodata;
 
             // get the picture and load it in
             $.getJSON('/api/v1/pictures/id/' + id, function(res) {
@@ -76,6 +78,8 @@ $(document).ready(function() {
                     'age': age,
                     'gender': gender,
                     'location': location,
+                    'aficiones': aficiones,
+                    'biodata': biodata,
                     'picture': res.data
                 };
                 childrenCurrentlyInSlider.push(id);
@@ -116,6 +120,8 @@ $(document).ready(function() {
         var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
+        var aficiones = child.aficiones;
+        var biodata = child.biodata;
 
         // create the slide
         var slide = document.createElement('div');
@@ -147,8 +153,14 @@ $(document).ready(function() {
         pData1.innerHTML = 'I\'m a <span id=\'child-age\'>' + age + '</span>-year-old <span id=\'child-gender\'>' + gender + '</span> from <span id=\'child-location\'>' + location + '</span>, and you can change my world for good!';
         var pData2 = document.createElement('p');
         pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
+        var pData3 = document.createElement('p');
+        pData3.innerHTML = 'My hobbies include ' + aficiones;
+        var pData4 = document.createElement('p');
+        pData4.innerHTML = 'You should sponsor me because ' + biodata;
         divDescription.appendChild(pData1);
         divDescription.appendChild(pData2);
+        divDescription.appendChild(pData3);
+        divDescription.appendChild(pData4);
         divData.appendChild(divDescription);
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
