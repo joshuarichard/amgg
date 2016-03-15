@@ -15,28 +15,32 @@ $(document).ready(function() {
 
     // secondly, check the lock status of all children currently in the cart.
     // if the child is locked, remove the child and alert the donor accordingly
-    checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
-        if (lockedChildren.length > 0) {
-            for (var y = 0; y < lockedChildren.length; y++) {
-                removeChild(lockedChildren[y]);
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
+        checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
+            if (lockedChildren.length > 0) {
+                for (var y = 0; y < lockedChildren.length; y++) {
+                    removeChild(lockedChildren[y]);
+                }
+                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
-            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
-        }
-    });
+        });
+    }
 
     // thirdly, send the current cart's contents
     // NOTE: when you remove a child from the table it will send the cart to the
     // db. if it's the case that all children currently in the cart are clear to be
     // sponsored (i.e. they are not locked), then it will not send the cart,
     // therefore, it is required we send the contents of the cart at least once
-    sendCart(function(result) {
-        if (result === true) {
-            console.log('successfully sent cart to db.');
-        } else {
-            console.log('cart not successfully sent to db.');
-            $('#checkout-submit').prop('disabled', true);
-        }
-    });
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
+        sendCart(function(result) {
+            if (result === true) {
+                console.log('successfully sent cart to db.');
+            } else {
+                console.log('cart not successfully sent to db.');
+                $('#checkout-submit').prop('disabled', true);
+            }
+        });
+    }
 
     // fourthly, begin creating the UI and make some api calls to get child
     // and donor data.
