@@ -49,7 +49,7 @@ if(mail($para, $asunto, $mensaje, $headers)){
 	ob_start(); // ensures anything dumped out will be caught
 
 	// do stuff here
-	$url = 'http://test.amgg.org/involucrate.html'; // this can be set based on whatever
+	$url = 'http://es.amgg.org/involucrate.html'; // this can be set based on whatever
 	
 	// clear out the output buffer
 	while (ob_get_status()) 
