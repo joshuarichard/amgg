@@ -184,11 +184,14 @@ $(document).ready(function() {
         callback(slide);
     }
 
+  //  $('.nav-buttons').hide();
+
     // add a slide to the carousel given slide html
     function addSlide(slide) {
         // remove the pending spinner
+        $('.nav-buttons').hide();
         $('.spinner').remove();
-
+        $('.nav-buttons').show();
         // create the item div
         var item = document.createElement('div');
         item.className = 'item';
