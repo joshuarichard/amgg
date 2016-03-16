@@ -1,4 +1,0 @@
-{"name":"mongo","hostname":"mac.local","pid":79392,"level":50,"msg":"document not found with id: 'badbadbadbadbadbadbadbad'","time":"2016-03-14T17:18:47.832Z","v":0}
-{"name":"mongo","hostname":"mac.local","pid":79392,"level":50,"msg":"DB error in getting picture. Child possibly nonexistant not found","time":"2016-03-14T17:18:47.833Z","v":0}
-{"name":"mongo","hostname":"mac.local","pid":83704,"level":50,"msg":"document not found with id: '56ccd075f6c292b46f200813'","time":"2016-03-15T20:42:58.978Z","v":0}
-{"name":"mongo","hostname":"mac.local","pid":83704,"level":50,"msg":"DB error in getting picture. Child possibly nonexistant not found","time":"2016-03-15T20:42:58.979Z","v":0}
