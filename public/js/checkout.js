@@ -77,7 +77,44 @@ $(document).ready(function() {
         /* When the log in button is clicked, validate credentials
            and if valid send the user to account.html and but the
            token returned by server into session storage */
-        $('.login-submit').click(login);
+        $('.login-submit').click(function(event) {
+            event.preventDefault();
+            var worked = false;
+            var email = $('.donor-email').val();
+            var password = $('.donor-password').val();
+
+            // define the request
+            $.ajax({
+                url: '/api/v1/donor/auth',
+                type: 'POST',
+                data: {
+                    'correo_electrónico': email,
+                    'password': password
+                },
+                // on successful login, save token and donor id
+                // in session storage and go to the donor portal
+                success: function(res) {
+                    //save login token to session storage
+                    sessionStorage.setItem('token', res.token);
+                    sessionStorage.setItem('id', res.id);
+                    worked = true;
+                },
+                error: function(httpObj) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos.');
+                    } else {
+                        console.log(JSON.stringify(httpObj));
+                        alert('see console for error info.');
+                    }
+                    worked = false;
+                },
+                complete: function() {
+                    if (worked === true) {
+                        window.location = 'account.html';
+                    }
+                }
+            });
+        });
     }
 
     function generateDonorID() {
@@ -522,48 +559,6 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-    }
-
-    function login () {
-        var email = $('.donor-email').val();
-        var password = $('.donor-password').val();
-
-        // define the request
-        var loginRequest = $.ajax({
-            url: '/api/v1/donor/auth',
-            type: 'POST',
-            data: {
-                'correo_electrónico': email,
-                'password': password
-            }
-        });
-
-        var worked = false;
-        // on successful login, save token and donor id
-        // in session storage and go to the donor portal
-        loginRequest.success(function(res) {
-            //save login token to session storage
-            sessionStorage.setItem('token', res.token);
-            sessionStorage.setItem('id', res.id);
-            worked = true;
-        });
-
-        // on login error, check error and inform user accordingly
-        loginRequest.error(function(httpObj) {
-            if(httpObj.status === 401) {
-                alert('correo o contraseña incorrectos.');
-            } else {
-                console.log(JSON.stringify(httpObj));
-                alert('see console for error info.');
-            }
-            worked = false;
-        });
-
-        loginRequest.complete(function() {
-            if (worked === true) {
-                window.location = 'account.html';
-            }
-        });
     }
 
     function toggleCreateAccount () {
