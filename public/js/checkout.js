@@ -2,6 +2,9 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
+    // define these three at the top most so the whole doc can use it
+    var target, config, observer;
+
     // firstly, set a donor id if the user isn't logged in. this will be used to
     // manage their cart and lock children as they add them to the cart.
     var donorID = '';
@@ -16,11 +19,36 @@ $(document).ready(function() {
     // secondly, check the lock status of all children currently in the cart.
     // if the child is locked, remove the child and alert the donor accordingly
     if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
-        checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
+        var cartArray = sessionStorage.getItem('cart').split(',');
+
+        // check the locked status of every child in the cart. lockedChildren is
+        // an array of all children that were in the cart that are locked
+        checkCartsLockedStatus(cartArray, function(lockedChildren) {
             if (lockedChildren.length > 0) {
-                for (var y = 0; y < lockedChildren.length; y++) {
-                    removeChildFromCart(lockedChildren[y]);
-                }
+                config = { attributes: true, childList: true, characterData: true };
+
+                // create one observer instance
+                observer = new MutationObserver(function(mutations) {
+                    console.log(mutations);
+                    // for each mutation...
+                    mutations.forEach(function(mutation) {
+                        console.log(mutation);
+                        // ...check all of the added nodes...
+                        mutation.addedNodes.forEach(function(node) {
+                            console.log(node);
+                            // .. and if it was one of the children on the table...
+                            if (lockedChildren.indexOf(node.id) !== -1) {
+                                console.log('the table entry was just added');
+                                // ... then remove it from the table
+                                // removeChildFromCart(lockedChildren[y]);
+                            }
+                        });
+                    });
+                });
+                console.log(observer); // only this console.logs out.. none of the other above work
+
+                // observe the entire document because the table element is asynch javascript generated
+                observer.observe(document.body, config);
                 alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
         });
