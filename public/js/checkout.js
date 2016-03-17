@@ -473,8 +473,7 @@ $(document).ready(function() {
      * the donors information
      */
     function autoPopulate () {
-        if (sessionStorage.getItem('token') != null &&
-                sessionStorage.getItem('token') != '') {
+        if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
             $.ajax({
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
@@ -498,7 +497,24 @@ $(document).ready(function() {
                     $('#form-country').prop('disabled', true);
                 },
                 error: function() {
-                    alert('Unable to retrieve your account information');
+                    alert('Your session has expired. Please login again.');
+                    // if getting in here that means that the id and token has
+                    // been set but it's since expired. nuke everything and
+                    // make them login again.
+                    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+                        sessionStorage.removeItem('token');
+                    }
+                    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+                        sessionStorage.removeItem('cart');
+                    }
+                    if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
+                        sessionStorage.removeItem('id');
+                    }
+                    // this shouldn't be set but check anyway
+                    if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
+                        sessionStorage.removeItem('assignedDonorID');
+                    }
+                    window.location = 'children.html';
                 }
             });
         }
