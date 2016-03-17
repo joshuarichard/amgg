@@ -46,8 +46,7 @@ $(document).ready(function() {
     var tbody = document.createElement('tbody');
 
     // insert all children in session storage into the cart
-    if (sessionStorage.getItem('cart') != null &&
-        sessionStorage.getItem('cart') != '') {
+    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
         var ids = sessionStorage.getItem('cart').split(',');
         for (var i = 0; i < ids.length; i++) {
             addChildToCart(ids[i]);
@@ -68,8 +67,7 @@ $(document).ready(function() {
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
@@ -84,6 +82,8 @@ $(document).ready(function() {
 
     function generateDonorID() {
         var text = '';
+        // there are 2^62 possiblities here and they're recycleable after an hour...
+        // that should be enough.
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         for(var i = 0; i < 24; i++) {
@@ -140,16 +140,12 @@ $(document).ready(function() {
     function sendCart(callback) {
         var donorIDinCart = '';
         // if the donor is logged in then use their donor id in the cart doc
-        if (sessionStorage.getItem('id') != null &&
-            sessionStorage.getItem('id') != '' &&
-            sessionStorage.getItem('cart') != null &&
-            sessionStorage.getItem('cart') != '') {
+        if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '' &&
+            sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             donorIDinCart = sessionStorage.getItem('id');
         // else if the donor has an assigned donor id then use that
-        } else if (sessionStorage.getItem('assignedDonorID') &&
-                   sessionStorage.getItem('assignedDonorID') != '' &&
-                   sessionStorage.getItem('cart') != null &&
-                   sessionStorage.getItem('cart') != '') {
+        } else if (sessionStorage.getItem('assignedDonorID') && sessionStorage.getItem('assignedDonorID') != '' &&
+                   sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             donorIDinCart = sessionStorage.getItem('assignedDonorID');
         }
 
@@ -207,8 +203,7 @@ $(document).ready(function() {
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
                     var date = new Date(res[id].cumpleaños);
-                    var birthday = monthNames[date.getMonth()] + ' ' +
-                                     date.getDate() + ', ' + date.getFullYear();
+                    var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
@@ -255,8 +250,7 @@ $(document).ready(function() {
                     dataTD.appendChild(centerDiv);
                     dataTD.appendChild(aficionesDiv);
 
-                    // append dataTD to the dataDiv for styling, then append to
-                    // row
+                    // append dataTD to the dataDiv for styling, then append to row
                     dataDiv.appendChild(dataTD);
                     tr.appendChild(dataDiv);
 
@@ -473,8 +467,7 @@ $(document).ready(function() {
      * the donors information
      */
     function autoPopulate () {
-        if (sessionStorage.getItem('token') != null &&
-                sessionStorage.getItem('token') != '') {
+        if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
             $.ajax({
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
@@ -498,7 +491,24 @@ $(document).ready(function() {
                     $('#form-country').prop('disabled', true);
                 },
                 error: function() {
-                    alert('Unable to retrieve your account information');
+                    alert('Your session has expired. Please login again.');
+                    // if getting in here that means that the id and token has
+                    // been set but it's since expired. nuke everything and
+                    // make them login again.
+                    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+                        sessionStorage.removeItem('token');
+                    }
+                    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+                        sessionStorage.removeItem('cart');
+                    }
+                    if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
+                        sessionStorage.removeItem('id');
+                    }
+                    // this shouldn't be set but check anyway
+                    if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
+                        sessionStorage.removeItem('assignedDonorID');
+                    }
+                    window.location = 'children.html';
                 }
             });
         }
@@ -577,8 +587,7 @@ $(document).ready(function() {
         var country = document.getElementById('create-account-country').value;
         var email = document.getElementById('create-account-email').value;
         var password = document.getElementById('create-account-password').value;
-        var confirmPassword = document.getElementById('create-account-password-confirm')
-                                      .value;
+        var confirmPassword = document.getElementById('create-account-password-confirm').value;
 
         // manage any null fields and throw errors accordingly
         var nullFields = [];
