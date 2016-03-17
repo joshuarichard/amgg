@@ -9,8 +9,8 @@ $(document).ready(function() {
     function fillChildPool(selector, callback) {
         var ors = [{
             '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                               {'status': 'Waiting for Sponsor - Discontinued'},
-                               {'status': 'Additional Sponsor Needed'}]
+                    {'status': 'Waiting for Sponsor - Discontinued'},
+                    {'status': 'Additional Sponsor Needed'}]
         }];
 
         selector['$and'] = ors;
@@ -53,14 +53,12 @@ $(document).ready(function() {
 
         // init the cart as an array from sessionStorage
         var cart = [];
-        if (sessionStorage.getItem('cart') != null &&
-            sessionStorage.getItem('cart') != '') {
+        if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             cart = sessionStorage.getItem('cart').split(',');
         }
 
         // if the child isn't in the cart and also isn't in the slider
-        if (cart.indexOf(id) === -1 &&
-            childrenCurrentlyInSlider.indexOf(id) === -1) {
+        if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
 
             // then add the child to the slider
             var name = childPool[id].nombre;
@@ -88,9 +86,7 @@ $(document).ready(function() {
         } else {
              // if the child is already in the slider or cart but there
              // are more children in the child pool
-            if (childrenCurrentlyInSlider.length !== ids.length &&
-               childrenCurrentlyInSlider.length < ids.length &&
-               cart.indexOf(id) === -1) {
+            if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
                 getChild(childPool, function(child) {
                     callback(child);
                 });
@@ -109,6 +105,8 @@ $(document).ready(function() {
      *    age: int,
      *    gender: string,
      *    location: string,
+     *    aficiones: string,
+     *    biodata: string,
      *    picture: base64 string
      * }
      */
@@ -393,8 +391,7 @@ $(document).ready(function() {
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
