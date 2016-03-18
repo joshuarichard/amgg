@@ -455,7 +455,7 @@ $(document).ready(function() {
                     callback(false);
                 } else {
                     var dataTD = document.createElement('td');
-                    tr.id = id;
+                    tr.id = 'id' + id;
 
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',

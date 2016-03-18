@@ -124,7 +124,7 @@ $(document).ready(function() {
         // create the slide
         var slide = document.createElement('div');
         slide.className = 'child-slide';
-        slide.id = id;
+        slide.id = 'id' + id;
 
         // create the picture element
         var divImg = document.createElement('div');
@@ -336,7 +336,7 @@ $(document).ready(function() {
         spinnerDiv.appendChild(bounceDiv2);
         spinnerDiv.appendChild(bounceDiv3);
 
-        var container = document.getElementById('spinner-and-slider');
+        var container = document.getElementById('spinner');
         container.insertBefore(spinnerDiv, container.childNodes[0]);
 
         // empty the array that keeps track of the children in the slider

@@ -2,9 +2,6 @@
 /* eslint no-undef: 0 */
 
 $(document).ready(function() {
-    // define these three at the top most so the whole doc can use it
-    var target, config, observer;
-
     // firstly, set a donor id if the user isn't logged in. this will be used to
     // manage their cart and lock children as they add them to the cart.
     var donorID = '';
@@ -25,30 +22,10 @@ $(document).ready(function() {
         // an array of all children that were in the cart that are locked
         checkCartsLockedStatus(cartArray, function(lockedChildren) {
             if (lockedChildren.length > 0) {
-                config = { attributes: true, childList: true, characterData: true };
-
-                // create one observer instance
-                observer = new MutationObserver(function(mutations) {
-                    console.log(mutations);
-                    // for each mutation...
-                    mutations.forEach(function(mutation) {
-                        console.log(mutation);
-                        // ...check all of the added nodes...
-                        mutation.addedNodes.forEach(function(node) {
-                            console.log(node);
-                            // .. and if it was one of the children on the table...
-                            if (lockedChildren.indexOf(node.id) !== -1) {
-                                console.log('the table entry was just added');
-                                // ... then remove it from the table
-                                // removeChildFromCart(lockedChildren[y]);
-                            }
-                        });
-                    });
-                });
-                console.log(observer); // only this console.logs out.. none of the other above work
-
-                // observe the entire document because the table element is asynch javascript generated
-                observer.observe(document.body, config);
+                for (var q = 0; q < lockedChildren.length; q++) {
+                    // ... then remove it from the table
+                    removeChildFromCart(lockedChildren[q]);
+                }
                 alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
         });
@@ -77,13 +54,16 @@ $(document).ready(function() {
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    // insert all children in session storage into the cart
+    // fifthly, insert all children in session storage into the cart.
+    // if no children in the cart, the remove the spinner
     if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
         var ids = sessionStorage.getItem('cart').split(',');
         for (var i = 0; i < ids.length; i++) {
             addChildToCart(ids[i]);
             container.appendChild(table);
         }
+    } else {
+        $('.spinner').remove();
     }
 
     // after all that append the 'add a child' button
@@ -264,7 +244,7 @@ $(document).ready(function() {
                     callback(false);
                 } else {
                     var dataTD = document.createElement('td');
-                    tr.id = id;
+                    tr.id = 'id' + id;
 
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
@@ -370,24 +350,25 @@ $(document).ready(function() {
 
     function removeChildFromCart(id) {
         // if the table entry hasn't already been deleted then delete it now
-        if ($('#' + id).length > 0) {
-            $('#' + id).remove();
-        }
+        // but wait for it using arrive.js if it's not there yet
+        $(document).arrive('#id' + id, {onceOnly: true, existing: true}, function() {
+            $(this).remove();
 
-        // remove child from sessionStorage
-        var ids = sessionStorage.getItem('cart').split(',');
-        if (ids.indexOf(id) != -1) {
-            ids.splice(ids.indexOf(id), 1);
-            sessionStorage.setItem('cart', ids.toString());
-        }
-
-        sendCart(function(result) {
-            if (result === true) {
-                console.log('successfully sent cart to db.');
-            } else {
-                console.log('cart not successfully sent to db.');
-                $('#checkout-submit').prop('disabled', true);
+            // remove child from sessionStorage
+            var ids = sessionStorage.getItem('cart').split(',');
+            if (ids.indexOf(id) != -1) {
+                ids.splice(ids.indexOf(id), 1);
+                sessionStorage.setItem('cart', ids.toString());
             }
+
+            sendCart(function(result) {
+                if (result === true) {
+                    console.log('successfully sent cart to db.');
+                } else {
+                    console.log('cart not successfully sent to db.');
+                    $('#checkout-submit').prop('disabled', true);
+                }
+            });
         });
     }
 
@@ -726,23 +707,4 @@ $(document).ready(function() {
     $('.close-create-account-overlay').click(toggleCreateAccount);
 
     $(document).ready(autoPopulate());
-    $('.spinner').remove();
-
-    // recreate pending spinner and add to page
-    spinnerDiv = document.createElement('div');
-    bounceDiv1 = document.createElement('div');
-    bounceDiv2 = document.createElement('div');
-    bounceDiv3 = document.createElement('div');
-
-    spinnerDiv.className = 'spinner';
-    bounceDiv1.className = 'bounce1';
-    bounceDiv2.className = 'bounce2';
-    bounceDiv3.className = 'bounce3';
-
-    spinnerDiv.appendChild(bounceDiv1);
-    spinnerDiv.appendChild(bounceDiv2);
-    spinnerDiv.appendChild(bounceDiv3);
-
-    var containers = document.getElementById('spinner-and-slider');
-    containers.insertBefore(spinnerDiv, containers.childNodes[0]);
 });
