@@ -412,7 +412,7 @@ $(document).ready(function() {
                                 data: {
                                     'token' : sessionStorage.getItem('token'),
                                     'changes' : {
-                                        'contraseña': password
+                                        'password': document.getElementById('form-contraseña').value
                                     }
                                 },
                                 success: function(res) {
