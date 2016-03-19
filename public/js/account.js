@@ -95,11 +95,20 @@ $(document).ready(function() {
                 'id' : sessionStorage.getItem('id')
             },
             success: function(res) {
-                for (var i = 0; i < res.niños_patrocinadoras.length; i++) {
-                    var id = res.niños_patrocinadoras[i];
-                    addChildToDonorList(id);
-                    tabA.appendChild(table);
+                if (res.hasOwnProperty('niños_patrocinadoras')) {
+                    if (res.niños_patrocinadoras.length > 0) {
+                        for (var i = 0; i < res.niños_patrocinadoras.length; i++) {
+                            var id = res.niños_patrocinadoras[i];
+                            addChildToDonorList(id);
+                            tabA.appendChild(table);
+                        }
+                    } else {
+                        $('.spinner').remove();
+                    }
+                } else {
+                    $('.spinner').remove();
                 }
+
             },
             error: function() {
                 alert('Your session has expired. Please login again.');
