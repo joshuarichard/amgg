@@ -88,8 +88,36 @@ table {
 
 #edit-info-submit {
 	width: 20%;
-    margin-right: 18%;
-    margin-top: 0.5em;
+  margin-right: 18%;
+  margin-top: 0.5em;
+}
+
+#form-contraseña {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0.1em;
+  padding: 2%;
+  font-size: 97%;
+}
+
+#form-confirmarContraseña {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0.1em;
+  padding: 2%;
+  font-size: 97%;
+}
+
+#form-old-password {
+  width: 100%;
+  margin-left: 0;
+  margin-bottom: 0.1em;
+  padding: 2%;
+  font-size: 97%;
+}
+
+.info-form {
+  width: 60%;
 }
 
 /* Login overlay http://codepen.io/miroot/pen/qwIgC */
