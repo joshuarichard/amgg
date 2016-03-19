@@ -531,10 +531,9 @@ $(document).ready(function() {
                     var selectChild = document.createElement('button');
                     selectChild.className = 'btn btn-primary child-letter-select';
                     selectChild.type = 'button';
-                    //this will change the header on tabC based on the
-                    // child selected
+                    // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                        tabCHeader.innerHTML = 'Letter to ' + $('.child-letter-select').text();
+                        tabCHeader.innerHTML = 'Letter to ' + this.innerHTML;
                     };
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);
