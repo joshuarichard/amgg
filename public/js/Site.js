@@ -85,15 +85,15 @@ $('.create-account').click(toggleCreateAccount);
 
 function createAccount() {
     // get all form info
-    var firstName = document.getElementById('form-first-name').value;
-    var lastName = document.getElementById('form-last-name').value;
-    var phone = document.getElementById('form-phone').value;
-    var street = document.getElementById('form-address-street').value;
-    var city = document.getElementById('form-address-city').value;
-    var country = document.getElementById('form-country').value;
-    var email = document.getElementById('form-email').value;
-    var password = document.getElementById('form-password').value;
-    var confirmPassword = document.getElementById('form-password-confirm').value;
+    var firstName = document.getElementById('create-account-first-name').value;
+    var lastName = document.getElementById('create-account-last-name').value;
+    var phone = document.getElementById('create-account-phone').value;
+    var street = document.getElementById('create-account-address-street').value;
+    var city = document.getElementById('create-account-address-city').value;
+    var country = document.getElementById('create-account-country').value;
+    var email = document.getElementById('create-account-email').value;
+    var password = document.getElementById('create-account-password').value;
+    var confirmPassword = document.getElementById('create-account-password-confirm').value;
 
     // manage any null fields and throw errors accordingly
     var nullFields = [];
@@ -142,7 +142,6 @@ function createAccount() {
             }
         } else {
             var donor = {
-                'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
                 'nombre': firstName,
                 'apellido': lastName,
                 'teléfono': phone,

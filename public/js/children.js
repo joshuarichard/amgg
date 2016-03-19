@@ -124,7 +124,7 @@ $(document).ready(function() {
         // create the slide
         var slide = document.createElement('div');
         slide.className = 'child-slide';
-        slide.id = id;
+        slide.id = 'id' + id;
 
         // create the picture element
         var divImg = document.createElement('div');
@@ -336,7 +336,7 @@ $(document).ready(function() {
         spinnerDiv.appendChild(bounceDiv2);
         spinnerDiv.appendChild(bounceDiv3);
 
-        var container = document.getElementById('spinner-and-slider');
+        var container = document.getElementById('spinner');
         container.insertBefore(spinnerDiv, container.childNodes[0]);
 
         // empty the array that keeps track of the children in the slider
@@ -464,16 +464,15 @@ $(document).ready(function() {
 
     function createAccount() {
         // get all form info
-        var firstName = document.getElementById('form-first-name').value;
-        var lastName = document.getElementById('form-last-name').value;
-        var phone = document.getElementById('form-phone').value;
-        var street = document.getElementById('form-address-street').value;
-        var city = document.getElementById('form-address-city').value;
-        var country = document.getElementById('form-country').value;
-        var email = document.getElementById('form-email').value;
-        var password = document.getElementById('form-password').value;
-        var confirmPassword = document.getElementById('form-password-confirm')
-                                      .value;
+        var firstName = document.getElementById('create-account-first-name').value;
+        var lastName = document.getElementById('create-account-last-name').value;
+        var phone = document.getElementById('create-account-phone').value;
+        var street = document.getElementById('create-account-address-street').value;
+        var city = document.getElementById('create-account-address-city').value;
+        var country = document.getElementById('create-account-country').value;
+        var email = document.getElementById('create-account-email').value;
+        var password = document.getElementById('create-account-password').value;
+        var confirmPassword = document.getElementById('create-account-password-confirm').value;
 
         // manage any null fields and throw errors accordingly
         var nullFields = [];
@@ -548,7 +547,7 @@ $(document).ready(function() {
                                 'correo_electrónico': email,
                                 'password': password
                             },
-                            success: function() {
+                            success: function(res) {
                                 //put token and donor id into sessionStorage
                                 sessionStorage.setItem('token', res.token);
                                 sessionStorage.setItem('id', res.id);
