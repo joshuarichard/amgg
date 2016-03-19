@@ -5,12 +5,24 @@ footer {
   left: 0;
 }
 
+.html{
+  height: 100%;
+  box-sizing: border-box;
+}
+
 body {
   z-index: 10;
   position: relative;
   margin: 0;
-  padding-bottom: 20rem;
+  padding-bottom: 45rem;
   min-height: 100%;
+}
+
+.demo{
+  margin: 0 auto;
+  padding-top: 64px;
+  max-width: 640px
+  width: 100%;
 }
 
 .nav {
