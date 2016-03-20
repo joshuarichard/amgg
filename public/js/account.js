@@ -339,7 +339,7 @@ $(document).ready(function() {
                 submitPasswordChanges.id = 'submit-new-password';
                 submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
                 submitPasswordChanges.innerHTML = 'submit password';
-                submitContainer.appendChild(submitPasswordChanges)
+                submitContainer.appendChild(submitPasswordChanges);
 
                 //combine the password elements into one block so we can target them together with css
                 var contraseñaContainer = document.createElement('div');
@@ -386,13 +386,13 @@ $(document).ready(function() {
                     }
                     else {
                         contraseñaContainer.style.display = 'none';
-                    }   
-                }
+                    }
+                };
 
                 // check that their old password is correct, then update donor
                 // doc with new password
                 submitPasswordChanges.onclick = function() {
-                    var password = document.getElementById('form-old-password').value
+                    var password = document.getElementById('form-old-password').value;
                     $.ajax({
                         url: '/api/v1/donor/auth',
                         type: 'POST',
@@ -410,7 +410,7 @@ $(document).ready(function() {
                             if (password !== confirmPassword) {
                                 alert('las contraseñas no coinciden.');
                             } else if (password === '') {
-                                alert('por favor ingrese una contraseña.');) 
+                                alert('por favor ingrese una contraseña.');
                             }
                             else{
                                 $.ajax({
@@ -422,11 +422,10 @@ $(document).ready(function() {
                                             'password': document.getElementById('form-contraseña').value
                                         }
                                     },
-                                    success: function(res) {
-                                        console.log(res);
+                                    success: function() {
                                         alert('Password successful changed');
                                     },
-                                    error: function(res) {
+                                    error: function() {
                                         alert('Something went wrong when submitting your new password');
                                     }
                                 });

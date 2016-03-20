@@ -335,7 +335,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 app.put('/api/v1/donor/id/:id', function(req, res) {
     var token = req.body.token;
     var id = req.params.id;
-    var changes = req.body.changes
+    var changes = req.body.changes;
 
     if (token) {
         // confirm token sent in request is valid
