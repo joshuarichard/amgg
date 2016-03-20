@@ -334,10 +334,10 @@ $(document).ready(function() {
 
                 //submit button for password changes
                 var submitContainer = document.createElement('div');
-                submitContainer.className = 'col-md-12';
+                submitContainer.className = 'col-md-11';
                 var submitPasswordChanges = document.createElement('button');
                 submitPasswordChanges.id = 'submit-new-password';
-                submitPasswordChanges.className = 'btn btn-primary btn-sm';
+                submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
                 submitPasswordChanges.innerHTML = 'submit password';
                 submitContainer.appendChild(submitPasswordChanges)
 
@@ -361,7 +361,6 @@ $(document).ready(function() {
                 userInfoContainer.appendChild(cityGroup);
                 userInfoContainer.appendChild(contraseñaContainer);
 
-
                 // delete account button
                 var deleteAccountButton = document.createElement('button');
                 deleteAccountButton.className = 'btn btn-danger btn-sm';
@@ -371,7 +370,7 @@ $(document).ready(function() {
                 //change password button
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
-                changePasswordButton.className = 'btn btn-danger btn-sm';
+                changePasswordButton.className = 'btn btn-success btn-sm';
                 changePasswordButton.appendChild(document.createTextNode('change password'));
                 userInfoSidebar.appendChild(changePasswordButton);
 
@@ -387,11 +386,11 @@ $(document).ready(function() {
                     }
                     else {
                         contraseñaContainer.style.display = 'none';
-                    }
-
-                    
+                    }   
                 }
 
+                // check that their old password is correct, then update donor
+                // doc with new password
                 submitPasswordChanges.onclick = function() {
                     var password = document.getElementById('form-old-password').value
                     $.ajax({
@@ -406,24 +405,32 @@ $(document).ready(function() {
                             sessionStorage.setItem('token', res.token);
                             sessionStorage.setItem('id', res.id);
 
-                            $.ajax({
-                                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                                type: 'PUT',
-                                data: {
-                                    'token' : sessionStorage.getItem('token'),
-                                    'changes' : {
-                                        'password': document.getElementById('form-contraseña').value
+                            //make sure their new password is not '' and make sure
+                            //the two passwords match, then send new password to db
+                            if (password !== confirmPassword) {
+                                alert('las contraseñas no coinciden.');
+                            } else if (password === '') {
+                                alert('por favor ingrese una contraseña.');) 
+                            }
+                            else{
+                                $.ajax({
+                                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                                    type: 'PUT',
+                                    data: {
+                                        'token' : sessionStorage.getItem('token'),
+                                        'changes' : {
+                                            'password': document.getElementById('form-contraseña').value
+                                        }
+                                    },
+                                    success: function(res) {
+                                        console.log(res);
+                                        alert('Password successful changed');
+                                    },
+                                    error: function(res) {
+                                        alert('Something went wrong when submitting your new password');
                                     }
-                                },
-                                success: function(res) {
-                                    console.log(res);
-                                    alert('Password successful changed');
-                                },
-                                error: function(res) {
-                                    alert('Something went wrong when submitting your new password');
-                                }
-                            })
-
+                                });
+                            }
                         },
                         error: function() {
                             alert('Something went wrong when trying to authenticate your old password');
@@ -519,6 +526,9 @@ $(document).ready(function() {
     }
 
     function createButton () {
+        if ($('.contraseña-container').css('display') == 'block') {
+            $('.contraseña-container').hide();
+        }
         var editInfoSubmit = document.createElement('button');
         editInfoSubmit.id = 'edit-info-submit';
         editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
