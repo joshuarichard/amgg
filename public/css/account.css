@@ -1,3 +1,14 @@
+/* override bootstrap button colors */
+.btn-primary {
+    background: #F5842A;
+    border-color: #F5842A;
+}
+
+.btn-primary:hover {
+  background: #9A5324;
+  border-color: #9A5324;
+}
+
 footer {
   position: absolute;
   right: 0;

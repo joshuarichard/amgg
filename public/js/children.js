@@ -124,7 +124,7 @@ $(document).ready(function() {
         // create the slide
         var slide = document.createElement('div');
         slide.className = 'child-slide';
-        slide.id = 'id' + id;
+        slide.id = id;
 
         // create the picture element
         var divImg = document.createElement('div');

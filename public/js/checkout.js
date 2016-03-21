@@ -6,11 +6,21 @@ $(document).ready(function() {
     // manage their cart and lock children as they add them to the cart.
     var donorID = '';
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
-    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '' &&
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '' &&
         (sessionStorage.getItem('id') === null || sessionStorage.getItem('id') === '') &&
         (sessionStorage.getItem('assignedDonorID') === null || sessionStorage.getItem('assignedDonorID' === ''))) {
         donorID = generateDonorID();
         sessionStorage.setItem('assignedDonorID', donorID);
+    }
+
+    // secondly, check if they have both an assigned ID and a real ID. if they have both, then they've
+    // logged in since adding a child to their cart. nuke the cart, delete the assigned ID, and reroute to child page
+    if (sessionStorage.getItem('id') !== null && sessionStorage.getItem('id') !== '' &&
+        sessionStorage.getItem('assignedDonorID') !== null && sessionStorage.getItem('assignedDonorID') !== '') {
+        // we shouldn't have to do this, but right now we do
+        sessionStorage.removeItem('assignedDonorID');
+        sessionStorage.removeItem('cart');
+        window.location = 'children.html';
     }
 
     // secondly, check the lock status of all children currently in the cart.
@@ -244,7 +254,7 @@ $(document).ready(function() {
                     callback(false);
                 } else {
                     var dataTD = document.createElement('td');
-                    tr.id = 'id' + id;
+                    tr.id = id;
 
                     // set up all child info as vars
                     var monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril',
@@ -351,7 +361,7 @@ $(document).ready(function() {
     function removeChildFromCart(id) {
         // if the table entry hasn't already been deleted then delete it now
         // but wait for it using arrive.js if it's not there yet
-        $(document).arrive('#id' + id, {onceOnly: true, existing: true}, function() {
+        $(document).arrive('[id=\'' + id + '\']', {onceOnly: true, existing: true}, function() {
             $(this).remove();
 
             // remove child from sessionStorage
