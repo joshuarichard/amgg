@@ -335,6 +335,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 app.put('/api/v1/donor/id/:id', function(req, res) {
     var token = req.body.token;
     var id = req.params.id;
+    var changes = req.body.changes;
 
     if (token) {
         // confirm token sent in request is valid
@@ -345,8 +346,18 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                     message: 'Failed to authenticate token.'
                 });
             } else {
+                //if there is a password in the changes, encrypt it
+                if (changes.password != null) {
+                    // hash the password and store it in the db
+                    password.encrypt(changes['password'], function(hash, salt) {
+                        // fix the donor doc a bit before insertion
+                        changes['password'] = hash;
+                        changes['salt'] = salt;
+                    });
+                }
+
                 // if it is valid then perform the donor edit
-                mongo.edit(id, req.body.changes, donorCollection, function(result) {
+                mongo.edit(id, changes, donorCollection, function(result) {
                     if (result.hasOwnProperty('err')) {
                         if (result.code === 11000) {
                             res.status(409).send({

@@ -150,6 +150,15 @@ $(document).ready(function() {
                 tabBHeader.className = 'header';
                 tabBHeader.innerHTML = 'datos de facturación';
                 var tabBHeaderhr = document.createElement('hr');
+
+                //create container for user info
+                var userInfoContainer = document.createElement('div');
+                userInfoContainer.className = 'user-info-container col-md-10';
+
+                //create container for buttons to the right of user info
+                var userInfoSidebar = document.createElement('div');
+                userInfoSidebar.className = 'user-info-sidebar col-md-2';
+
                 //create first name
                 var firstNameGroup = document.createElement('div');
                 firstNameGroup.className = 'form-group';
@@ -157,7 +166,7 @@ $(document).ready(function() {
                 firstNameLabel.className = 'col-md-4 control-label';
                 firstNameLabel.innerHTML = 'Nombre';
                 var firstNameWrapper = document.createElement('div');
-                firstNameWrapper.className = 'col-md-6';
+                firstNameWrapper.className = 'info-form col-md-6';
                 var firstName = document.createElement('input');
                 firstName.id = 'form-first-name';
                 firstName.className = 'form-control';
@@ -177,7 +186,7 @@ $(document).ready(function() {
                 lastNameLabel.className = 'col-md-4 control-label';
                 lastNameLabel.innerHTML = 'Apellido';
                 var lastNameWrapper = document.createElement('div');
-                lastNameWrapper.className = 'col-md-6';
+                lastNameWrapper.className = 'info-form col-md-6';
                 var lastName = document.createElement('input');
                 lastName.id = 'form-last-name';
                 lastName.className = 'form-control';
@@ -197,7 +206,7 @@ $(document).ready(function() {
                 phoneLabel.className = 'col-md-4 control-label';
                 phoneLabel.innerHTML = 'Tel&#233;fono';
                 var phoneWrapper = document.createElement('div');
-                phoneWrapper.className = 'col-md-6';
+                phoneWrapper.className = 'info-form col-md-6';
                 var phone = document.createElement('input');
                 phone.id = 'form-phone';
                 phone.className = 'form-control';
@@ -217,7 +226,7 @@ $(document).ready(function() {
                 emailLabel.className = 'col-md-4 control-label';
                 emailLabel.innerHTML = 'Correo Electrónico';
                 var emailWrapper = document.createElement('div');
-                emailWrapper.className = 'col-md-6';
+                emailWrapper.className = 'info-form col-md-6';
                 var email = document.createElement('input');
                 email.id = 'form-email';
                 email.className = 'form-control';
@@ -237,7 +246,7 @@ $(document).ready(function() {
                 streetLabel.className = 'col-md-4 control-label';
                 streetLabel.innerHTML = 'Dirección';
                 var streetWrapper = document.createElement('div');
-                streetWrapper.className = 'col-md-6';
+                streetWrapper.className = 'info-form col-md-6';
                 var street = document.createElement('input');
                 street.id = 'form-street';
                 street.className = 'form-control';
@@ -256,7 +265,7 @@ $(document).ready(function() {
                 var cityLabel = document.createElement('label');
                 cityLabel.className = 'col-md-4 control-label';
                 var cityWrapper = document.createElement('div');
-                cityWrapper.className = 'col-md-6';
+                cityWrapper.className = 'info-form col-md-6';
                 var city = document.createElement('input');
                 city.id = 'form-city';
                 city.className = 'form-control';
@@ -269,22 +278,183 @@ $(document).ready(function() {
                 cityGroup.appendChild(cityLabel);
                 cityGroup.appendChild(cityWrapper);
 
+                //create old password form
+                var oldPasswordGroup = document.createElement('div');
+                oldPasswordGroup.className = 'form-group';
+                var oldPasswordLabel = document.createElement('label');
+                oldPasswordLabel.className = 'col-md-4 control-label';
+                oldPasswordLabel.innerHTML = 'Old Password';
+                var oldPasswordWrapper = document.createElement('div');
+                oldPasswordWrapper.className = 'info-form col-md-6';
+                var oldPassword = document.createElement('input');
+                oldPassword.id = 'form-old-password';
+                oldPassword.className = 'form-control password-form';
+                oldPassword.type = 'password';
+
+                //combine password elements into one element
+                oldPasswordWrapper.appendChild(oldPassword);
+                oldPasswordGroup.appendChild(oldPasswordLabel);
+                oldPasswordGroup.appendChild(oldPasswordWrapper);
+
+                //create password form
+                var contraseñaGroup = document.createElement('div');
+                contraseñaGroup.className = 'form-group';
+                var contraseñaLabel = document.createElement('label');
+                contraseñaLabel.className = 'col-md-4 control-label';
+                contraseñaLabel.innerHTML = 'Contraseña';
+                var contraseñaWrapper = document.createElement('div');
+                contraseñaWrapper.className = 'info-form col-md-6';
+                var contraseña = document.createElement('input');
+                contraseña.id = 'form-password';
+                contraseña.className = 'form-control password-form';
+                contraseña.type = 'password';
+
+                //combine password elements into one element
+                contraseñaWrapper.appendChild(contraseña);
+                contraseñaGroup.appendChild(contraseñaLabel);
+                contraseñaGroup.appendChild(contraseñaWrapper);
+
+                //create confirm password form
+                var confirmarContraseñaGroup = document.createElement('div');
+                confirmarContraseñaGroup.className = 'form-group';
+                var confirmarContraseñaLabel = document.createElement('label');
+                confirmarContraseñaLabel.className = 'col-md-4 control-label';
+                confirmarContraseñaLabel.innerHTML = 'Confirmar Contraseña';
+                var confirmarContraseñaWrapper = document.createElement('div');
+                confirmarContraseñaWrapper.className = 'info-form col-md-6';
+                var confirmarContraseña = document.createElement('input');
+                confirmarContraseña.id = 'form-confirm-password';
+                confirmarContraseña.className = 'form-control password-form';
+                confirmarContraseña.type = 'password';
+
+                //combine password elements into one element
+                confirmarContraseñaWrapper.appendChild(confirmarContraseña);
+                confirmarContraseñaGroup.appendChild(confirmarContraseñaLabel);
+                confirmarContraseñaGroup.appendChild(confirmarContraseñaWrapper);
+
+                //submit button for password changes
+                var submitContainer = document.createElement('div');
+                submitContainer.className = 'col-md-11';
+                var submitPasswordChanges = document.createElement('button');
+                submitPasswordChanges.id = 'submit-new-password';
+                submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
+                submitPasswordChanges.innerHTML = 'submit password';
+                submitContainer.appendChild(submitPasswordChanges);
+
+                //combine the password elements into one block so we can target them together with css
+                var contraseñaContainer = document.createElement('div');
+                contraseñaContainer.className = 'contraseña-container';
+                contraseñaContainer.style.display = 'none';
+                contraseñaContainer.appendChild(oldPasswordGroup);
+                contraseñaContainer.appendChild(contraseñaGroup);
+                contraseñaContainer.appendChild(confirmarContraseñaGroup);
+                contraseñaContainer.appendChild(submitContainer);
+
                 //append content to tab B
                 infoWrapper.appendChild(tabBHeader);
                 infoWrapper.appendChild(tabBHeaderhr);
-                infoWrapper.appendChild(firstNameGroup);
-                infoWrapper.appendChild(lastNameGroup);
-                infoWrapper.appendChild(phoneGroup);
-                infoWrapper.appendChild(emailGroup);
-                infoWrapper.appendChild(streetGroup);
-                infoWrapper.appendChild(cityGroup);
+                userInfoContainer.appendChild(firstNameGroup);
+                userInfoContainer.appendChild(lastNameGroup);
+                userInfoContainer.appendChild(phoneGroup);
+                userInfoContainer.appendChild(emailGroup);
+                userInfoContainer.appendChild(streetGroup);
+                userInfoContainer.appendChild(cityGroup);
+                userInfoContainer.appendChild(contraseñaContainer);
 
                 // delete account button
+                /* take this out for now, we need to find a better place for it
                 var deleteAccountButton = document.createElement('button');
-                deleteAccountButton.className = 'btn btn-danger btn-sm child-intro-btn-sponsor sponsor-button';
+                deleteAccountButton.className = 'btn btn-danger btn-sm';
                 deleteAccountButton.appendChild(document.createTextNode('delete account'));
+                userInfoSidebar.appendChild(deleteAccountButton);
+                */
+
+                //change password button
+                var changePasswordButton = document.createElement('button');
+                changePasswordButton.id = 'change-password-button';
+                changePasswordButton.className = 'btn btn-success btn-sm';
+                changePasswordButton.appendChild(document.createTextNode('change password'));
+                userInfoSidebar.appendChild(changePasswordButton);
+
+                //toggle the password form
+                changePasswordButton.onclick = function() {
+                    if (contraseñaContainer.style.display === 'none') {
+                        // if the edit info submit button is there, we want to remove it and replace if
+                        // with the new password changes submit button
+                        if (document.getElementById('edit-info-submit') != null) {
+                            $('#edit-info-submit').remove();
+                        }
+                        $('#form-first-name').prop('disabled', true);
+                        $('#form-last-name').prop('disabled', true);
+                        $('#form-phone').prop('disabled', true);
+                        $('#form-email').prop('disabled', true);
+                        $('#form-street').prop('disabled', true);
+                        $('#form-city').prop('disabled', true);
+                        // $('#form-country').prop('disabled', true); need country eventually?
+                        contraseñaContainer.style.display = 'block';
+                    } else {
+                        contraseñaContainer.style.display = 'none';
+                        $('#form-first-name').prop('disabled', false);
+                        $('#form-last-name').prop('disabled', false);
+                        $('#form-phone').prop('disabled', false);
+                        $('#form-email').prop('disabled', false);
+                        $('#form-street').prop('disabled', false);
+                        $('#form-city').prop('disabled', false);
+                        // $('#form-country').prop('disabled', false); need country eventually?
+                    }
+                };
+
+                // check that their old password is correct, then update donor
+                // doc with new password
+                submitPasswordChanges.onclick = function() {
+                    var oldPassword = document.getElementById('form-old-password').value;
+                    var newPassword = document.getElementById('form-password').value;
+                    var confirmNewPassword = document.getElementById('form-confirm-password').value;
+
+                    //make sure their new password is not '' and make sure
+                    //the two passwords match, then send new password to db
+                    if (oldPassword === '' || newPassword === '' || confirmNewPassword === '') {
+                        alert('Missing fields.');
+                    } else if (newPassword !== confirmNewPassword) {
+                        alert('Las contraseñas no coinciden.');
+                    } else {
+                        $.ajax({
+                            url: '/api/v1/donor/auth',
+                            type: 'POST',
+                            data: {
+                                'correo_electrónico': document.getElementById('form-email').value,
+                                'password': oldPassword
+                            },
+                            success: function(res) {
+                                //update the users token and id which will reset their session timer
+                                sessionStorage.setItem('token', res.token);
+                                sessionStorage.setItem('id', res.id);
+                                $.ajax({
+                                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                                    type: 'PUT',
+                                    data: {
+                                        'token' : sessionStorage.getItem('token'),
+                                        'changes' : {
+                                            'password': document.getElementById('form-password').value
+                                        }
+                                    },
+                                    success: function() {
+                                        alert('Password successful changed.');
+                                    },
+                                    error: function() {
+                                        alert('Couldn\'t change your password.');
+                                    }
+                                });
+                            },
+                            error: function() {
+                                alert('Incorrect old password.');
+                            }
+                        });
+                    }
+                };
 
                 // set on click button function
+                /* take this out for now, we need to find a better place for it
                 deleteAccountButton.onclick = function() {
                     var yesUnsponsor = confirm('Are you sure you want to delete your account?');
                     if (yesUnsponsor == true) {
@@ -306,9 +476,10 @@ $(document).ready(function() {
                         });
                     }
                 };
+                */
 
-                infoWrapper.appendChild(deleteAccountButton);
-
+                infoWrapper.appendChild(userInfoContainer);
+                infoWrapper.appendChild(userInfoSidebar);
                 tabB.appendChild(infoWrapper);
 
                 infoChange();
@@ -372,6 +543,9 @@ $(document).ready(function() {
     }
 
     function createButton () {
+        if ($('.contraseña-container').css('display') == 'block') {
+            $('.contraseña-container').hide();
+        }
         var editInfoSubmit = document.createElement('button');
         editInfoSubmit.id = 'edit-info-submit';
         editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
