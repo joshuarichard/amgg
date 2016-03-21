@@ -305,7 +305,7 @@ $(document).ready(function() {
                 var contraseñaWrapper = document.createElement('div');
                 contraseñaWrapper.className = 'info-form col-md-6';
                 var contraseña = document.createElement('input');
-                contraseña.id = 'form-contraseña';
+                contraseña.id = 'form-password';
                 contraseña.className = 'form-control password-form';
                 contraseña.type = 'password';
 
@@ -323,7 +323,7 @@ $(document).ready(function() {
                 var confirmarContraseñaWrapper = document.createElement('div');
                 confirmarContraseñaWrapper.className = 'info-form col-md-6';
                 var confirmarContraseña = document.createElement('input');
-                confirmarContraseña.id = 'form-confirmarContraseña';
+                confirmarContraseña.id = 'form-confirm-password';
                 confirmarContraseña.className = 'form-control password-form';
                 confirmarContraseña.type = 'password';
 
@@ -392,49 +392,50 @@ $(document).ready(function() {
                 // check that their old password is correct, then update donor
                 // doc with new password
                 submitPasswordChanges.onclick = function() {
-                    var password = document.getElementById('form-old-password').value;
-                    $.ajax({
-                        url: '/api/v1/donor/auth',
-                        type: 'POST',
-                        data: {
-                            'correo_electrónico': document.getElementById('form-email').value,
-                            'password': password
-                        },
-                        success: function(res) {
-                            //update the users token and id which will reset their session timer
-                            sessionStorage.setItem('token', res.token);
-                            sessionStorage.setItem('id', res.id);
+                    var oldPassword = document.getElementById('form-old-password').value;
+                    var newPassword = document.getElementById('form-password').value;
+                    var confirmNewPassword = document.getElementById('form-confirm-password').value;
 
-                            //make sure their new password is not '' and make sure
-                            //the two passwords match, then send new password to db
-                            if (password !== confirmPassword) {
-                                alert('las contraseñas no coinciden.');
-                            } else if (password === '') {
-                                alert('por favor ingrese una contraseña.');
-                            }
-                            else{
-                                $.ajax({
-                                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                                    type: 'PUT',
-                                    data: {
-                                        'token' : sessionStorage.getItem('token'),
-                                        'changes' : {
-                                            'password': document.getElementById('form-contraseña').value
+                    //make sure their new password is not '' and make sure
+                    //the two passwords match, then send new password to db
+                    if (oldPassword === '' || newPassword === '' || confirmNewPassword === '') {
+                        alert('Missing fields.');
+                    } else if (newPassword !== confirmNewPassword) {
+                        alert('Las contraseñas no coinciden.');
+                    } else {
+                        $.ajax({
+                            url: '/api/v1/donor/auth',
+                            type: 'POST',
+                            data: {
+                                'correo_electrónico': document.getElementById('form-email').value,
+                                'password': oldPassword
+                            },
+                            success: function(res) {
+                                //update the users token and id which will reset their session timer
+                                sessionStorage.setItem('token', res.token);
+                                sessionStorage.setItem('id', res.id);
+                                    $.ajax({
+                                        url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                                        type: 'PUT',
+                                        data: {
+                                            'token' : sessionStorage.getItem('token'),
+                                            'changes' : {
+                                                'password': document.getElementById('form-password').value
+                                            }
+                                        },
+                                        success: function() {
+                                            alert('Password successful changed.');
+                                        },
+                                        error: function() {
+                                            alert('Couldn\'t change your password.');
                                         }
-                                    },
-                                    success: function() {
-                                        alert('Password successful changed');
-                                    },
-                                    error: function() {
-                                        alert('Something went wrong when submitting your new password');
-                                    }
-                                });
+                                    });
+                            },
+                            error: function() {
+                                alert('Incorrect old password.');
                             }
-                        },
-                        error: function() {
-                            alert('Something went wrong when trying to authenticate your old password');
-                        }
-                    });
+                        });
+                    }
                 };
 
                 // set on click button function

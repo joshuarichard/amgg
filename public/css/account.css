@@ -92,7 +92,7 @@ table {
   margin-top: 0.5em;
 }
 
-#form-contraseña {
+#form-password {
   width: 100%;
   margin-left: 0;
   margin-bottom: 0.1em;
@@ -100,7 +100,7 @@ table {
   font-size: 97%;
 }
 
-#form-confirmarContraseña {
+#form-confirm-password {
   width: 100%;
   margin-left: 0;
   margin-bottom: 0.1em;
