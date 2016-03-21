@@ -362,10 +362,12 @@ $(document).ready(function() {
                 userInfoContainer.appendChild(contraseñaContainer);
 
                 // delete account button
+                /* take this out for now, we need to find a better place for it
                 var deleteAccountButton = document.createElement('button');
                 deleteAccountButton.className = 'btn btn-danger btn-sm';
                 deleteAccountButton.appendChild(document.createTextNode('delete account'));
                 userInfoSidebar.appendChild(deleteAccountButton);
+                */
 
                 //change password button
                 var changePasswordButton = document.createElement('button');
@@ -382,10 +384,23 @@ $(document).ready(function() {
                         if (document.getElementById('edit-info-submit') != null) {
                             $('#edit-info-submit').remove();
                         }
+                        $('#form-first-name').prop('disabled', true);
+                        $('#form-last-name').prop('disabled', true);
+                        $('#form-phone').prop('disabled', true);
+                        $('#form-email').prop('disabled', true);
+                        $('#form-street').prop('disabled', true);
+                        $('#form-city').prop('disabled', true);
+                        // $('#form-country').prop('disabled', true); need country eventually?
                         contraseñaContainer.style.display = 'block';
-                    }
-                    else {
+                    } else {
                         contraseñaContainer.style.display = 'none';
+                        $('#form-first-name').prop('disabled', false);
+                        $('#form-last-name').prop('disabled', false);
+                        $('#form-phone').prop('disabled', false);
+                        $('#form-email').prop('disabled', false);
+                        $('#form-street').prop('disabled', false);
+                        $('#form-city').prop('disabled', false);
+                        // $('#form-country').prop('disabled', false); need country eventually?
                     }
                 };
 
@@ -439,6 +454,7 @@ $(document).ready(function() {
                 };
 
                 // set on click button function
+                /* take this out for now, we need to find a better place for it
                 deleteAccountButton.onclick = function() {
                     var yesUnsponsor = confirm('Are you sure you want to delete your account?');
                     if (yesUnsponsor == true) {
@@ -460,6 +476,7 @@ $(document).ready(function() {
                         });
                     }
                 };
+                */
 
                 infoWrapper.appendChild(userInfoContainer);
                 infoWrapper.appendChild(userInfoSidebar);
