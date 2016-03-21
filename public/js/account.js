@@ -414,22 +414,22 @@ $(document).ready(function() {
                                 //update the users token and id which will reset their session timer
                                 sessionStorage.setItem('token', res.token);
                                 sessionStorage.setItem('id', res.id);
-                                    $.ajax({
-                                        url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                                        type: 'PUT',
-                                        data: {
-                                            'token' : sessionStorage.getItem('token'),
-                                            'changes' : {
-                                                'password': document.getElementById('form-password').value
-                                            }
-                                        },
-                                        success: function() {
-                                            alert('Password successful changed.');
-                                        },
-                                        error: function() {
-                                            alert('Couldn\'t change your password.');
+                                $.ajax({
+                                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                                    type: 'PUT',
+                                    data: {
+                                        'token' : sessionStorage.getItem('token'),
+                                        'changes' : {
+                                            'password': document.getElementById('form-password').value
                                         }
-                                    });
+                                    },
+                                    success: function() {
+                                        alert('Password successful changed.');
+                                    },
+                                    error: function() {
+                                        alert('Couldn\'t change your password.');
+                                    }
+                                });
                             },
                             error: function() {
                                 alert('Incorrect old password.');
