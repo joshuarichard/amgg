@@ -150,6 +150,11 @@ footer {
   border-radius: 10px;
 }
 
+/* override bootstrap panel color */
+.panel-primary {
+  border-color: #252964;
+}
+
 .child-search {
 	display: inline-block;
 	margin-left: 0;
