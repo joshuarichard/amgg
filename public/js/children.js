@@ -191,7 +191,7 @@ $(document).ready(function() {
         // remove the pending spinner
         $('.spinner').remove();
         //show slider nav buttons
-        document.getElementById('nav-press').style.display = 'block';
+        $('.nav-buttons').show();
         // create the item div
         var item = document.createElement('div');
         item.className = 'item';

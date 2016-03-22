@@ -1,7 +1,3 @@
-#nav-press {
-  display: none;
-}
-
 .content-container {
   min-height: 100%;
   /* 60px less than footer to give some spacing between footer and content */
@@ -185,6 +181,7 @@ input[type="email"],input[type="password"] {
   width: 50%;
   padding-left: 10em;
   margin: 0 auto;
+  display: none;
 }
 
 /* spinning CSS loading spinner */
