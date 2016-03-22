@@ -83,7 +83,7 @@ $(document).ready(function() {
         window.location = 'children.html';
     };
 
-    addButton.appendChild(document.createTextNode('agregar otro niño'));
+    addButton.appendChild(document.createTextNode('Agregar otro Niño'));
     container.appendChild(addButton);
 
     /* if the user is already logged in, change the login button
@@ -325,7 +325,7 @@ $(document).ready(function() {
             // create button, add classname for styling, append text
             var button = document.createElement('button');
             button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
-            button.appendChild(document.createTextNode('eliminar'));
+            button.appendChild(document.createTextNode('Eliminar'));
 
             // set on click button function
             button.onclick = function() {
