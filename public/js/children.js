@@ -184,11 +184,6 @@ $(document).ready(function() {
         callback(slide);
     }
 
-    //$('.nav-buttons').hide();
-  //  document.getElementById('prev-button').style.display = 'none';
-  //  document.getElementById('add-button').style.display = 'none';
-  //  document.getElementById('next-button').style.display = 'none';
-
     // add a slide to the carousel given slide html
     function addSlide(slide) {
         // remove the pending spinner
