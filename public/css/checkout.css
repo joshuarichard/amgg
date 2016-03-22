@@ -1,3 +1,20 @@
+.content-container {
+  min-height: 100%;
+  /* 60px less than footer to give some spacing between footer and content */
+  margin-bottom: -124px;
+}
+
+.content-container:after {
+  content: "";
+  display: block;
+}
+
+footer, .content-container:after {
+  /* .push must be the same height as footer */
+  height: 184px;
+}
+
+
 /*Element Styles*/
 label {
 	margin-top: .4em;
@@ -15,13 +32,6 @@ input {
 
 table {
 	display: table;
-}
-
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
 
 .center {
