@@ -83,56 +83,83 @@ function toggleCreateAccount () {
 }
 $('.create-account').click(toggleCreateAccount);
 
-function createAccount() {
+function checkForm(form) {
     // get all form info
-    var firstName = document.getElementById('create-account-first-name').value;
-    var lastName = document.getElementById('create-account-last-name').value;
-    var phone = document.getElementById('create-account-phone').value;
-    var street = document.getElementById('create-account-address-street').value;
-    var city = document.getElementById('create-account-address-city').value;
-    var country = document.getElementById('create-account-country').value;
-    var email = document.getElementById('create-account-email').value;
-    var password = document.getElementById('create-account-password').value;
-    var confirmPassword = document.getElementById('create-account-password-confirm').value;
+    var firstName = $('[name=first-name]', form)[0];
+    var lastName = $('[name=last-name]', form)[0];
+    var phone = $('[name=phone]', form)[0];
+    var street = $('[name=address]', form)[0];
+    var city = $('[name=address-city]', form)[0];
+    var email = $('[name=email]', form)[0];
+    var password = $('[name=password]', form)[0];
+    var confirmPassword = $('[name=password-confirm]', form)[0];
 
-    // manage any null fields and throw errors accordingly
-    var nullFields = [];
-
-    if(firstName === '') {
-        nullFields.push('First name field empty.');
+    console.log(firstName);
+    if(firstName.value == "") {
+        alert("Error: First name cannot be blank!");
+        firstName.focus();
+        return false;
+    } if(lastName.value == "") {
+        alert("Error: Last name cannot be blank!");
+        lastName.focus();
+        return false;
+    } else if(phone.value == "") {
+        alert("Error: Phone number cannot be blank!");
+        phone.focus();
+        return false;
+    } else if(street.value == "") {
+        alert("Error: Street address cannot be blank!");
+        street.focus();
+        return false;
+    } else if(city.value == "") {
+        alert("Error: City cannot be blank!");
+        city.focus();
+        return false;
+    } else if(email.value == "") {
+        alert("Error: Email cannot be blank!");
+        email.focus();
+        return false;
     }
-    if (lastName === '') {
-        nullFields.push('Last name field empty.');
-    }
-    if (phone === '') {
-        nullFields.push('Phone number field empty.');
-    }
-    if (email === '') {
-        nullFields.push('Email field empty.');
-    }
-    if (street === '') {
-        nullFields.push('Street field empty.');
-    }
-    if (city === '') {
-        nullFields.push('City field empty.');
-    }
-    if (country === '') {
-        nullFields.push('Country field empty.');
-    }
-
-    // if anything is null then alert, else submit a post with donor info
-    if (nullFields.length > 0) {
-        var alertMessage = 'You are missing some fields: \n';
-        for (var i = 0; i < nullFields.length; i++) {
-            alertMessage += nullFields[i];
-            alertMessage += '\n';
+    else if(password.value != "" && password.value == confirmPassword.value) {
+        if(password.value.length < 6) {
+            alert("Error: Password must contain at least six characters!");
+            password.focus();
+            return false;
         }
-        alert(alertMessage);
-    } else if (password !== confirmPassword) {
-        alert('las contraseñas no coinciden.');
-    } else if (password === '') {
-        alert('por favor ingrese una contraseña.');
+        if(password.value == firstName.value || password.value == lastName.value) {
+            alert("Error: Password must be different from your name!");
+            password.focus();
+            return false;
+        }
+        re = /[0-9]/;
+        if(!re.test(password.value)) {
+            alert("Error: password must contain at least one number (0-9)!");
+            password.focus();
+            return false;
+        }
+        re = /[a-z]/;
+        if(!re.test(password.value)) {
+            alert("Error: password must contain at least one lowercase letter (a-z)!");
+            password.focus();
+            return false;
+        }
+        re = /[A-Z]/;
+        if(!re.test(password.value)) {
+            alert("Error: password must contain at least one uppercase letter (A-Z)!");
+            password.focus();
+            return false;
+        }
     } else {
+        alert("Error: Please check that you've entered and confirmed your password!");
+        password.focus();
+        return false;
+    }
+    //form passed all constraints
+    return true;
+}
+
+function createAccount() {
+    if (checkForm(document.getElementById('create-account-form'))) {
         if (sessionStorage.getItem('assignedDonorID') !== null || sessionStorage.getItem('assignedDonorID') === '') {
             var deleteCart = confirm('you are currently in the process of sponsoring children. please create your account by completing the sponsorship process. if you would like to create an account without sponsoring a child, please click yes below and your cart will be deleted.');
             if (deleteCart === true) {
@@ -142,14 +169,15 @@ function createAccount() {
             }
         } else {
             var donor = {
-                'nombre': firstName,
-                'apellido': lastName,
-                'teléfono': phone,
-                'calle': street,
-                'ciudad': city,
-                'país': country,
-                'correo_electrónico': email,
-                'password': password
+                'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
+                'nombre': document.getElementById('create-account-first-name').value,
+                'apellido': document.getElementById('create-account-last-name').value,
+                'teléfono': document.getElementById('create-account-phone').value,
+                'calle': document.getElementById('create-account-address-street').value,
+                'ciudad': document.getElementById('create-account-address-city').value,
+                'país': document.getElementById('create-account-country').value,
+                'correo_electrónico': document.getElementById('create-account-email').value,
+                'password': document.getElementById('create-account-password').value
             };
 
             // POST /api/v1/donor/create
@@ -157,15 +185,15 @@ function createAccount() {
                 url: '/api/v1/donor/create',
                 type: 'POST',
                 data: donor,
-                success: function(res) {
+                success: function() {
                     $('.create-account-overlay').hide();
                     //log user into their new account
                     $.ajax({
                         url: '/api/v1/donor/auth',
                         type: 'POST',
                         data: {
-                            'correo_electrónico': email,
-                            'password': password
+                            'correo_electrónico': document.getElementById('create-account-email').value,
+                            'password': document.getElementById('create-account-password').value
                         },
                         success: function(res) {
                             //put token and donor id into sessionStorage
@@ -175,22 +203,22 @@ function createAccount() {
                             document.getElementById('toggle-login').href = 'account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
-                            alert("Your account has successful been created, you are now logged in");
+                            alert('Your account has successful been created, you are now logged in');
                         },
-                        error: function(res) {
-                            alert("Your account has been created but we were unable to log you in at this time, please try again later");
+                        error: function() {
+                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
                         }
                     });
                 },
                 statusCode: {
                     404: function() {
-                      alert( "page not found" );
+                        alert('page not found');
                     },
                     409: function() {
-                        alert("An account already exists under this email, please log in");
+                        alert('An account already exists under this email, please log in');
                     },
                     500: function() {
-                        alert("An error occured, please try again or contact an admin");
+                        alert('An error occured, please try again or contact an admin');
                     }
                 }
             });

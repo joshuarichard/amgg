@@ -358,6 +358,84 @@ $(document).ready(function() {
         });
     }
 
+    /* Check to make sure all the fields are filled in and ensure the 
+     * user's password passes the constraints
+     */
+    function checkForm(form) {
+        // get all form info
+        var firstName = $('[name=first-name]', form)[0];
+        var lastName = $('[name=last-name]', form)[0];
+        var phone = $('[name=phone]', form)[0];
+        var street = $('[name=address]', form)[0];
+        var city = $('[name=address-city]', form)[0];
+        var email = $('[name=email]', form)[0];
+        var password = $('[name=password]', form)[0];
+        var confirmPassword = $('[name=password-confirm]', form)[0];
+
+        console.log(firstName);
+        if(firstName.value == "") {
+            alert("Error: First name cannot be blank!");
+            firstName.focus();
+            return false;
+        } if(lastName.value == "") {
+            alert("Error: Last name cannot be blank!");
+            lastName.focus();
+            return false;
+        } else if(phone.value == "") {
+            alert("Error: Phone number cannot be blank!");
+            phone.focus();
+            return false;
+        } else if(street.value == "") {
+            alert("Error: Street address cannot be blank!");
+            street.focus();
+            return false;
+        } else if(city.value == "") {
+            alert("Error: City cannot be blank!");
+            city.focus();
+            return false;
+        } else if(email.value == "") {
+            alert("Error: Email cannot be blank!");
+            email.focus();
+            return false;
+        }
+        else if(password.value != "" && password.value == confirmPassword.value) {
+            if(password.value.length < 6) {
+                alert("Error: Password must contain at least six characters!");
+                password.focus();
+                return false;
+            }
+            if(password.value == firstName.value || password.value == lastName.value) {
+                alert("Error: Password must be different from your name!");
+                password.focus();
+                return false;
+            }
+            re = /[0-9]/;
+            if(!re.test(password.value)) {
+                alert("Error: password must contain at least one number (0-9)!");
+                password.focus();
+                return false;
+            }
+            re = /[a-z]/;
+            if(!re.test(password.value)) {
+                alert("Error: password must contain at least one lowercase letter (a-z)!");
+                password.focus();
+                return false;
+            }
+            re = /[A-Z]/;
+            if(!re.test(password.value)) {
+                alert("Error: password must contain at least one uppercase letter (A-Z)!");
+                password.focus();
+                return false;
+            }
+        } else {
+            alert("Error: Please check that you've entered and confirmed your password!");
+            password.focus();
+            return false;
+        }
+        //form passed all constraints
+        return true;
+    }
+
     function removeChildFromCart(id) {
         // if the table entry hasn't already been deleted then delete it now
         // but wait for it using arrive.js if it's not there yet
@@ -383,86 +461,9 @@ $(document).ready(function() {
     }
 
     $('#checkout-submit').click(function() {
-        // get all form info
-        var firstName = document.getElementById('form-first-name').value;
-        var lastName = document.getElementById('form-last-name').value;
-        var phone = document.getElementById('form-phone').value;
-        var street = document.getElementById('form-address-street').value;
-        var city = document.getElementById('form-address-city').value;
-        var country = document.getElementById('form-country').value;
-        var email = document.getElementById('form-email').value;
-        var password = document.getElementById('form-password').value;
-        var confirmPassword = document.getElementById('form-password-confirm')
-                                      .value;
-
-        /* credit information - need to fix expiration so leaving out for now
-        var credit = document.getElementById('form-credit').value;
-        // expiration doesn't work? - jake any ideas?
-        var expiration = document.getElementById('form-expiration-1').value +
-                         '/' +
-                         document.getElementById('form-expiration-2').value;
-        var nameOnCard = document.getElementById('form-name-on-card').value;
-        */
-
-        // manage any null fields and throw errors accordingly
-        var nullFields = [];
-
-        if(firstName === '') {
-            nullFields.push('First name field empty.');
-        }
-        if (lastName === '') {
-            nullFields.push('Last name field empty.');
-        }
-        if (phone === '') {
-            nullFields.push('Phone number field empty.');
-        }
-        if (email === '') {
-            nullFields.push('Email field empty.');
-        }
-        if (street === '') {
-            nullFields.push('Street field empty.');
-        }
-        if (city === '') {
-            nullFields.push('City field empty.');
-        }
-        if (country === '') {
-            nullFields.push('Country field empty.');
-        }
-            if (email == '') {
-            nullFields.push('Please enter a email address');
-        }
-        if (password == '') {
-            nullFields.push('Please enter a password');
-        }
-        if (confirmPassword == '') {
-            nullFields.push('Please confirm your password');
-        }
-        /*
-        if (credit === '') {
-            nullFields.push('Credit field empty.');
-        }
-        if (expiration === '/') {
-            nullFields.push('Expiration field is empty.');
-        }
-        if (nameOnCard === '') {
-            nullFields.push('Name on card field empty.');
-        }
-        */
-
         // if anything is null then alert, else submit a post with donor info
-        if (nullFields.length > 0) {
-            var alertMessage = 'You are missing some fields: \n';
-            for (var i = 0; i < nullFields.length; i++) {
-                alertMessage += nullFields[i];
-                alertMessage += '\n';
-            }
-            alert(alertMessage);
-        } else {
-            if (password !== confirmPassword) {
-                alert('las contraseñas no coinciden.');
-            } else if (password === '') {
-                alert('por favor ingrese una contraseña.');
-            } else if (sessionStorage.getItem('cart') === null ||
+        if (checkForm(document.getElementById('donor-info'))) {
+            if (sessionStorage.getItem('cart') === null ||
                        sessionStorage.getItem('cart') === '') {
                 alert('no hay niños en el carrito.');
             } else {
@@ -470,19 +471,19 @@ $(document).ready(function() {
                 if (sessionStorage.getItem('id') != null) {
                     donor = {
                         'donor_id': sessionStorage.getItem('id'),
-                        'password': password
+                        'password': document.getElementById('form-password').value
                     };
                 } else if (sessionStorage.getItem('assignedDonorID') != null) {
                     donor = {
                         'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                        'nombre': firstName,
-                        'apellido': lastName,
-                        'teléfono': phone,
-                        'calle': street,
-                        'ciudad': city,
-                        'país': country,
-                        'correo_electrónico': email,
-                        'password': password
+                        'nombre': document.getElementById('form-first-name').value,
+                        'apellido': document.getElementById('form-last-name').value,
+                        'teléfono': document.getElementById('form-phone').value,
+                        'calle': document.getElementById('form-address-street').value,
+                        'ciudad': document.getElementById('form-address-city').value,
+                        'país': document.getElementById('form-country').value,
+                        'correo_electrónico': document.getElementById('form-email').value,
+                        'password': document.getElementById('form-password').value
                     };
                 }
                 // POST /api/v1/donor/sponsor
@@ -608,55 +609,7 @@ $(document).ready(function() {
     $('.create-account').click(toggleCreateAccount);
 
     function createAccount() {
-        // get all form info
-        var firstName = document.getElementById('create-account-first-name').value;
-        var lastName = document.getElementById('create-account-last-name').value;
-        var phone = document.getElementById('create-account-phone').value;
-        var street = document.getElementById('create-account-address-street').value;
-        var city = document.getElementById('create-account-address-city').value;
-        var country = document.getElementById('create-account-country').value;
-        var email = document.getElementById('create-account-email').value;
-        var password = document.getElementById('create-account-password').value;
-        var confirmPassword = document.getElementById('create-account-password-confirm').value;
-
-        // manage any null fields and throw errors accordingly
-        var nullFields = [];
-
-        if(firstName === '') {
-            nullFields.push('First name field empty.');
-        }
-        if (lastName === '') {
-            nullFields.push('Last name field empty.');
-        }
-        if (phone === '') {
-            nullFields.push('Phone number field empty.');
-        }
-        if (email === '') {
-            nullFields.push('Email field empty.');
-        }
-        if (street === '') {
-            nullFields.push('Street field empty.');
-        }
-        if (city === '') {
-            nullFields.push('City field empty.');
-        }
-        if (country === '') {
-            nullFields.push('Country field empty.');
-        }
-
-        // if anything is null then alert, else submit a post with donor info
-        if (nullFields.length > 0) {
-            var alertMessage = 'You are missing some fields: \n';
-            for (var i = 0; i < nullFields.length; i++) {
-                alertMessage += nullFields[i];
-                alertMessage += '\n';
-            }
-            alert(alertMessage);
-        } else if (password !== confirmPassword) {
-            alert('las contraseñas no coinciden.');
-        } else if (password === '') {
-            alert('por favor ingrese una contraseña.');
-        } else {
+        if (checkForm(document.getElementById('create-account-form'))) {
             if (sessionStorage.getItem('assignedDonorID') !== null || sessionStorage.getItem('assignedDonorID') === '') {
                 var deleteCart = confirm('you are currently in the process of sponsoring children. please create your account by completing the sponsorship process. if you would like to create an account without sponsoring a child, please click yes below and your cart will be deleted.');
                 if (deleteCart === true) {
@@ -667,14 +620,14 @@ $(document).ready(function() {
             } else {
                 var donor = {
                     'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                    'nombre': firstName,
-                    'apellido': lastName,
-                    'teléfono': phone,
-                    'calle': street,
-                    'ciudad': city,
-                    'país': country,
-                    'correo_electrónico': email,
-                    'password': password
+                    'nombre': document.getElementById('create-account-first-name').value,
+                    'apellido': document.getElementById('create-account-last-name').value,
+                    'teléfono': document.getElementById('create-account-phone').value,
+                    'calle': document.getElementById('create-account-address-street').value,
+                    'ciudad': document.getElementById('create-account-address-city').value,
+                    'país': document.getElementById('create-account-country').value,
+                    'correo_electrónico': document.getElementById('create-account-email').value,
+                    'password': document.getElementById('create-account-password').value
                 };
 
                 // POST /api/v1/donor/create
@@ -689,8 +642,8 @@ $(document).ready(function() {
                             url: '/api/v1/donor/auth',
                             type: 'POST',
                             data: {
-                                'correo_electrónico': email,
-                                'password': password
+                                'correo_electrónico': document.getElementById('create-account-email').value,
+                                'password': document.getElementById('create-account-password').value
                             },
                             success: function() {
                                 //put token and donor id into sessionStorage
