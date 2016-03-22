@@ -292,13 +292,13 @@ $(document).ready(function() {
                     aficionesDiv.className = 'child-info';
 
                     // assign values
-                    nameDiv.innerHTML = '<b> nombre: </b>' + name;
-                    ageDiv.innerHTML = '<b> años:  </b>' + age;
-                    birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
-                    genderDiv.innerHTML = '<b> género:  </b>' + gender;
-                    provinciaDiv.innerHTML = '<b> provincia: </b>' + provincia;
-                    centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
-                    aficionesDiv.innerHTML = '<b> aficiones: </b>' + aficiones;
+                    nameDiv.innerHTML = '<b> Nombre: </b>' + name;
+                    ageDiv.innerHTML = '<b> Años:  </b>' + age;
+                    birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
+                    genderDiv.innerHTML = '<b> Género:  </b>' + gender;
+                    provinciaDiv.innerHTML = '<b> Provincia: </b>' + provincia;
+                    centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
+                    aficionesDiv.innerHTML = '<b> Aficiones: </b>' + aficiones;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
