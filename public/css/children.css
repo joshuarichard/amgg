@@ -161,7 +161,7 @@ input[type="email"],input[type="password"] {
   font-family:'Open Sans',sans-serif;
   font-size:100%;
   color:#fff;
-  cursor:pointer;
+  /* cursor:pointer; */
   background-color: #F5842A;
   border-color: #F5842A;
   transition:background .3s;
