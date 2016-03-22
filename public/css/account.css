@@ -1,28 +1,39 @@
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+* {
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+
+.demo {
+  min-height: 100%;
+  /* equal to footer height */
+	margin-bottom: -184px;
+  padding-bottom: 100px;
+}
+
+.demo:after {
+  content: "";
+  display: block;
+}
+
+.footer, .demo:after {
+  /* .push must be the same height as footer */
+	height: 184px;
 }
 
 .html{
   height: 100%;
   box-sizing: border-box;
+  padding-bottom: 100px;
 }
 
 body {
   z-index: 10;
   position: relative;
   margin: 0;
-  padding-bottom: 45rem;
   min-height: 100%;
-}
-
-.demo{
-  margin: 0 auto;
-  padding-top: 64px;
-  max-width: 640px
-  width: 100%;
 }
 
 .nav {
@@ -133,13 +144,6 @@ table {
 }
 
 /* Login overlay http://codepen.io/miroot/pen/qwIgC */
-body {
-  z-index: 10;
-  position: relative;
-  margin: 0;
-  padding-bottom: 20rem;
-  min-height: 100%;
-}
 
 #submit-new-password {
   margin-top: .3em;

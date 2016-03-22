@@ -24,14 +24,14 @@ footer, .content-container:after {
 }
 
 .owl-carousel{
-	display: inline-block;
+  display: inline-block;
   width: 100%;
   height: auto;
   margin-left: 5em;
 }
 
 .owl-item {
-	width: 75%;
+  width: 75%;
 }
 
 .owl-pagination {
@@ -53,12 +53,12 @@ footer, .content-container:after {
 }
 
 .btn-group {
-	margin-top: .15em;
-	margin-bottom: .15em;
+  margin-top: .15em;
+  margin-bottom: .15em;
 }
 
 .dropdown-toggle {
-	color: black;
+  color: black;
 }
 
 .scrollable-menu {
@@ -68,17 +68,17 @@ footer, .content-container:after {
 }
 
 #sponsor-button {
-	margin-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .form-group {
-	margin-left: 1em;
-	margin-right: 1em;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 .child-picture {
-	margin-top:  2em;
-	display: block/none;
+  margin-top:  2em;
+  display: block/none;
   border-radius: 10px;
 }
 
@@ -88,10 +88,10 @@ footer, .content-container:after {
 }
 
 .child-search {
-	display: inline-block;
-	margin-left: 0;
-	margin-right: 0;
-	margin-bottom: 2.5em;
+  display: inline-block;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 2.5em;
 }
 
 #search-button {
