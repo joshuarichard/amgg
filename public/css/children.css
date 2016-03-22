@@ -1,121 +1,19 @@
-
-/* Begin Login overlay */
-.html{
-  height: 100%;
-  box-sizing: border-box;
-}
-
-body {
-  z-index: 10;
-  position: relative;
-  margin: 0;
-  padding-bottom: 40rem;
-  min-height: 100%;
-}
-
-.demo{
-  margin: 0 auto;
-  padding-top: 64px;
-  max-width: 640px
-  width: 100%;
-}
-
-.login{
-	position: fixed;
-	display: none;
-	width: 400px;
-	margin-left: 68%;
-	margin-right: 0.5em;
-	margin-top: 0;
-	padding-top: 0.55em;
-	margin-top:8px;
-	margin-bottom:2%;
-  z-index: 11; /* 1px higher than the body */
-}
-
-.login-triangle {
-  width: 0;
-  margin-right: 0.75em;
-  margin-left: auto;
-  border: 12px solid transparent;
-  border-bottom-color: #28d;
-}
-
-.login h1{
-  background:#3399cc;
-  padding:10px 0;
-  font-size:140%;
-  font-weight:300;
-  text-align:center;
-  color:#fff;
-  margin: 0;
-}
-
-form{
-  background:#f0f0f0;
-  padding: 6% 4%;
-}
-
-input[type="email"],input[type="password"] {
-  width:92%;
-  background:#fff;
-  margin-left: 1em;
-  margin-bottom:4%;
-  border:1px solid #ccc;
-  padding:4%;
-  font-family:'Open Sans',sans-serif;
-  font-size:95%;
-  color:#555;
-}
-
-.login-submit {
-  width:100%;
-  background:#3399cc;
-  border:0;
-  padding:4%;
-  font-family:'Open Sans',sans-serif;
-  font-size:100%;
-  color:#fff;
-  cursor:pointer;
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  transition:background .3s;
-  -webkit-transition:background .3s;
-}
-
-.login-submit a {
-  color: #FFFFFF;
-}
-
-.login-submit a:hover {
-  background:#2288bb;
-}
-/* End Login overlay */
-
 #nav-press {
   display: none;
 }
 
-* {
-  margin: 0;
-}
-
-html, body {
-  height: 100%;
-}
-
-.demo {
+.content-container {
   min-height: 100%;
-  /* equal to footer height */
-  margin-bottom: -184px;
+  /* 60px less than footer to give some spacing between footer and content */
+  margin-bottom: -124px;
 }
 
-.demo:after {
+.content-container:after {
   content: "";
   display: block;
 }
 
-.footer, .demo:after {
+footer, .content-container:after {
   /* .push must be the same height as footer */
   height: 184px;
 }
@@ -178,13 +76,6 @@ html, body {
 	margin-right: 1em;
 }
 
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
 .child-picture {
 	margin-top:  2em;
 	display: block/none;
@@ -208,6 +99,86 @@ footer {
   margin-right: 0;
   margin-left: 57%;
 }
+
+/* Login overlay http://codepen.io/miroot/pen/qwIgC */
+body {
+  z-index: 10;
+  position: relative;
+  margin: 0;
+  min-height: 100%;
+}
+
+.login{
+  position: fixed;
+  display: none;
+  width: 400px;
+  margin-left: 68%;
+  margin-right: 0.5em;
+  margin-top: 0;
+  padding-top: 0.55em;
+  margin-top:8px;
+  margin-bottom:2%;
+  z-index: 11; /* 1px higher than the body */
+}
+
+.login-triangle {
+  width: 0;
+  margin-right: 0.75em;
+  margin-left: auto;
+  border: 12px solid transparent;
+  border-bottom-color: #28d;
+}
+
+.login h1{
+  background:#3399cc;
+  padding:10px 0;
+  font-size:140%;
+  font-weight:300;
+  text-align:center;
+  color:#fff;
+  margin: 0;
+}
+
+form{
+  background:#f0f0f0;
+  padding: 6% 4%;
+}
+
+input[type="email"],input[type="password"] {
+  width:92%;
+  background:#fff;
+  margin-left: 1em;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:95%;
+  color:#555;
+}
+
+.login-submit {
+  width:100%;
+  background:#3399cc;
+  border:0;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:100%;
+  color:#fff;
+  cursor:pointer;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+.login-submit a {
+  color: #FFFFFF;
+}
+
+.login-submit a:hover {
+  background:#2288bb;
+}
+/* End Login overlay */
 
 /* This may mess things up for other displays */
 .nav-buttons {
