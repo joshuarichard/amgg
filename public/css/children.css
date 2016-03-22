@@ -14,6 +14,7 @@ html, body {
   min-height: 100%;
   /* equal to footer height */
 	margin-bottom: -184px;
+  padding-bottom: 100px;
 }
 
 .demo:after {
@@ -29,6 +30,7 @@ html, body {
 .html{
   height: 100%;
   box-sizing: border-box;
+  padding-bottom: 100px;
 }
 
 body {
@@ -166,13 +168,6 @@ input[type="email"],input[type="password"] {
 .form-group {
 	margin-left: 1em;
 	margin-right: 1em;
-}
-
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
 
 .child-picture {
