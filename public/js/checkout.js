@@ -372,12 +372,11 @@ $(document).ready(function() {
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
 
-        console.log(firstName);
         if(firstName.value == '') {
             alert('Error: First name cannot be blank!');
             firstName.focus();
             return false;
-        } if(lastName.value == '') {
+        } else if(lastName.value == '') {
             alert('Error: Last name cannot be blank!');
             lastName.focus();
             return false;
@@ -397,8 +396,7 @@ $(document).ready(function() {
             alert('Error: Email cannot be blank!');
             email.focus();
             return false;
-        }
-        else if(password.value != '' && password.value == confirmPassword.value) {
+        } else if(password.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
                 alert('Error: Password must contain at least six characters!');
                 password.focus();

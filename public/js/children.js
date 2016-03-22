@@ -465,7 +465,7 @@ $(document).ready(function() {
     }
     $('.create-account').click(toggleCreateAccount);
 
-    /* Check to make sure all the fields are filled in and ensure the 
+    /* Check to make sure all the fields are filled in and ensure the
      * user's password passes the constraints
      */
     function checkForm(form) {
@@ -484,7 +484,7 @@ $(document).ready(function() {
             alert('Error: First name cannot be blank!');
             firstName.focus();
             return false;
-        } if(lastName.value == '') {
+        } else if(lastName.value == '') {
             alert('Error: Last name cannot be blank!');
             lastName.focus();
             return false;
@@ -504,8 +504,7 @@ $(document).ready(function() {
             alert('Error: Email cannot be blank!');
             email.focus();
             return false;
-        }
-        else if(password.value != '' && password.value == confirmPassword.value) {
+        } else if(password.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
                 alert('Error: Password must contain at least six characters!');
                 password.focus();
