@@ -1,3 +1,4 @@
+
 /* Begin Login overlay */
 .html{
   height: 100%;
@@ -91,6 +92,34 @@ input[type="email"],input[type="password"] {
 }
 /* End Login overlay */
 
+#nav-press {
+  display: none;
+}
+
+* {
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+.demo {
+  min-height: 100%;
+  /* equal to footer height */
+  margin-bottom: -184px;
+}
+
+.demo:after {
+  content: "";
+  display: block;
+}
+
+.footer, .demo:after {
+  /* .push must be the same height as footer */
+  height: 184px;
+}
+
 #child-img {
   margin-top: 5%;
   margin-bottom: 5%;
@@ -160,6 +189,11 @@ footer {
 	margin-top:  2em;
 	display: block/none;
   border-radius: 10px;
+}
+
+/* override bootstrap panel color */
+.panel-primary {
+  border-color: #252964;
 }
 
 .child-search {

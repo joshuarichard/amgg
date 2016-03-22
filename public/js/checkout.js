@@ -6,37 +6,56 @@ $(document).ready(function() {
     // manage their cart and lock children as they add them to the cart.
     var donorID = '';
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
-    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '' &&
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '' &&
         (sessionStorage.getItem('id') === null || sessionStorage.getItem('id') === '') &&
         (sessionStorage.getItem('assignedDonorID') === null || sessionStorage.getItem('assignedDonorID' === ''))) {
         donorID = generateDonorID();
         sessionStorage.setItem('assignedDonorID', donorID);
     }
 
+    // secondly, check if they have both an assigned ID and a real ID. if they have both, then they've
+    // logged in since adding a child to their cart. nuke the cart, delete the assigned ID, and reroute to child page
+    if (sessionStorage.getItem('id') !== null && sessionStorage.getItem('id') !== '' &&
+        sessionStorage.getItem('assignedDonorID') !== null && sessionStorage.getItem('assignedDonorID') !== '') {
+        // we shouldn't have to do this, but right now we do
+        sessionStorage.removeItem('assignedDonorID');
+        sessionStorage.removeItem('cart');
+        window.location = 'children.html';
+    }
+
     // secondly, check the lock status of all children currently in the cart.
     // if the child is locked, remove the child and alert the donor accordingly
-    checkCartsLockedStatus(sessionStorage.getItem('cart').split(','), function(lockedChildren) {
-        if (lockedChildren.length > 0) {
-            for (var y = 0; y < lockedChildren.length; y++) {
-                removeChild(lockedChildren[y]);
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
+        var cartArray = sessionStorage.getItem('cart').split(',');
+
+        // check the locked status of every child in the cart. lockedChildren is
+        // an array of all children that were in the cart that are locked
+        checkCartsLockedStatus(cartArray, function(lockedChildren) {
+            if (lockedChildren.length > 0) {
+                for (var q = 0; q < lockedChildren.length; q++) {
+                    // ... then remove it from the table
+                    removeChildFromCart(lockedChildren[q]);
+                }
+                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
-            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
-        }
-    });
+        });
+    }
 
     // thirdly, send the current cart's contents
     // NOTE: when you remove a child from the table it will send the cart to the
     // db. if it's the case that all children currently in the cart are clear to be
     // sponsored (i.e. they are not locked), then it will not send the cart,
     // therefore, it is required we send the contents of the cart at least once
-    sendCart(function(result) {
-        if (result === true) {
-            console.log('successfully sent cart to db.');
-        } else {
-            console.log('cart not successfully sent to db.');
-            $('#checkout-submit').prop('disabled', true);
-        }
-    });
+    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
+        sendCart(function(result) {
+            if (result === true) {
+                console.log('successfully sent cart to db.');
+            } else {
+                console.log('cart not successfully sent to db.');
+                $('#checkout-submit').prop('disabled', true);
+            }
+        });
+    }
 
     // fourthly, begin creating the UI and make some api calls to get child
     // and donor data.
@@ -45,14 +64,16 @@ $(document).ready(function() {
     table.className = 'table table-hover child-selections';
     var tbody = document.createElement('tbody');
 
-    // insert all children in session storage into the cart
-    if (sessionStorage.getItem('cart') != null &&
-        sessionStorage.getItem('cart') != '') {
+    // fifthly, insert all children in session storage into the cart.
+    // if no children in the cart, the remove the spinner
+    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
         var ids = sessionStorage.getItem('cart').split(',');
         for (var i = 0; i < ids.length; i++) {
             addChildToCart(ids[i]);
             container.appendChild(table);
         }
+    } else {
+        $('.spinner').remove();
     }
 
     // after all that append the 'add a child' button
@@ -68,8 +89,7 @@ $(document).ready(function() {
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
@@ -79,11 +99,50 @@ $(document).ready(function() {
         /* When the log in button is clicked, validate credentials
            and if valid send the user to account.html and but the
            token returned by server into session storage */
-        $('.login-submit').click(login);
+        $('.login-submit').click(function(event) {
+            event.preventDefault();
+            var worked = false;
+            var email = $('.donor-email').val();
+            var password = $('.donor-password').val();
+
+            // define the request
+            $.ajax({
+                url: '/api/v1/donor/auth',
+                type: 'POST',
+                data: {
+                    'correo_electrónico': email,
+                    'password': password
+                },
+                // on successful login, save token and donor id
+                // in session storage and go to the donor portal
+                success: function(res) {
+                    //save login token to session storage
+                    sessionStorage.setItem('token', res.token);
+                    sessionStorage.setItem('id', res.id);
+                    worked = true;
+                },
+                error: function(httpObj) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos.');
+                    } else {
+                        console.log(JSON.stringify(httpObj));
+                        alert('see console for error info.');
+                    }
+                    worked = false;
+                },
+                complete: function() {
+                    if (worked === true) {
+                        window.location = 'account.html';
+                    }
+                }
+            });
+        });
     }
 
     function generateDonorID() {
         var text = '';
+        // there are 2^62 possiblities here and they're recycleable after an hour...
+        // that should be enough.
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         for(var i = 0; i < 24; i++) {
@@ -140,16 +199,12 @@ $(document).ready(function() {
     function sendCart(callback) {
         var donorIDinCart = '';
         // if the donor is logged in then use their donor id in the cart doc
-        if (sessionStorage.getItem('id') != null &&
-            sessionStorage.getItem('id') != '' &&
-            sessionStorage.getItem('cart') != null &&
-            sessionStorage.getItem('cart') != '') {
+        if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '' &&
+            sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             donorIDinCart = sessionStorage.getItem('id');
         // else if the donor has an assigned donor id then use that
-        } else if (sessionStorage.getItem('assignedDonorID') &&
-                   sessionStorage.getItem('assignedDonorID') != '' &&
-                   sessionStorage.getItem('cart') != null &&
-                   sessionStorage.getItem('cart') != '') {
+        } else if (sessionStorage.getItem('assignedDonorID') && sessionStorage.getItem('assignedDonorID') != '' &&
+                   sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             donorIDinCart = sessionStorage.getItem('assignedDonorID');
         }
 
@@ -207,12 +262,13 @@ $(document).ready(function() {
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
                     var date = new Date(res[id].cumpleaños);
-                    var birthday = monthNames[date.getMonth()] + ' ' +
-                                     date.getDate() + ', ' + date.getFullYear();
+                    var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
+                    var provincia = res[id].provincia;
                     var center = res[id].centro_de_ninos;
+                    var aficiones = res[id].aficiones;
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -222,31 +278,38 @@ $(document).ready(function() {
                     var ageDiv = document.createElement('div');
                     var birthdayDiv = document.createElement('div');
                     var genderDiv = document.createElement('div');
+                    var provinciaDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
+                    var aficionesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
                     ageDiv.className = 'child-info';
                     birthdayDiv.className = 'child-info';
                     genderDiv.className = 'child-info';
+                    provinciaDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
+                    aficionesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> nombre: </b>' + name;
                     ageDiv.innerHTML = '<b> años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> género:  </b>' + gender;
+                    provinciaDiv.innerHTML = '<b> provincia: </b>' + provincia;
                     centerDiv.innerHTML = '<b> centro de ninos:  </b>' + center;
+                    aficionesDiv.innerHTML = '<b> aficiones: </b>' + aficiones;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
                     dataTD.appendChild(ageDiv);
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
+                    dataTD.appendChild(provinciaDiv);
                     dataTD.appendChild(centerDiv);
+                    dataTD.appendChild(aficionesDiv);
 
-                    // append dataTD to the dataDiv for styling, then append to
-                    // row
+                    // append dataTD to the dataDiv for styling, then append to row
                     dataDiv.appendChild(dataTD);
                     tr.appendChild(dataDiv);
 
@@ -266,7 +329,7 @@ $(document).ready(function() {
 
             // set on click button function
             button.onclick = function() {
-                removeChild(button.parentNode.parentNode.id);
+                removeChildFromCart(button.parentNode.parentNode.id);
             };
 
             // add button to table entry and add table entry to row
@@ -295,23 +358,27 @@ $(document).ready(function() {
         });
     }
 
-    function removeChild(id) {
-        // remove child from sessionStorage
-        var ids = sessionStorage.getItem('cart').split(',');
-        if (ids.indexOf(id) != -1) {
-            ids.splice(ids.indexOf(id), 1);
-            sessionStorage.setItem('cart', ids.toString());
-        }
+    function removeChildFromCart(id) {
+        // if the table entry hasn't already been deleted then delete it now
+        // but wait for it using arrive.js if it's not there yet
+        $(document).arrive('[id=\'' + id + '\']', {onceOnly: true, existing: true}, function() {
+            $(this).remove();
 
-        sendCart(function(result) {
-            if (result === true) {
-                console.log('successfully sent cart to db.');
-            } else {
-                console.log('cart not successfully sent to db.');
-                $('#checkout-submit').prop('disabled', true);
+            // remove child from sessionStorage
+            var ids = sessionStorage.getItem('cart').split(',');
+            if (ids.indexOf(id) != -1) {
+                ids.splice(ids.indexOf(id), 1);
+                sessionStorage.setItem('cart', ids.toString());
             }
-            // remove child from table
-            $('#' + id).remove();
+
+            sendCart(function(result) {
+                if (result === true) {
+                    console.log('successfully sent cart to db.');
+                } else {
+                    console.log('cart not successfully sent to db.');
+                    $('#checkout-submit').prop('disabled', true);
+                }
+            });
         });
     }
 
@@ -463,8 +530,7 @@ $(document).ready(function() {
      * the donors information
      */
     function autoPopulate () {
-        if (sessionStorage.getItem('token') != null &&
-                sessionStorage.getItem('token') != '') {
+        if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
             $.ajax({
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
@@ -488,7 +554,24 @@ $(document).ready(function() {
                     $('#form-country').prop('disabled', true);
                 },
                 error: function() {
-                    alert('Unable to retrieve your account information');
+                    alert('Your session has expired. Please login again.');
+                    // if getting in here that means that the id and token has
+                    // been set but it's since expired. nuke everything and
+                    // make them login again.
+                    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+                        sessionStorage.removeItem('token');
+                    }
+                    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+                        sessionStorage.removeItem('cart');
+                    }
+                    if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
+                        sessionStorage.removeItem('id');
+                    }
+                    // this shouldn't be set but check anyway
+                    if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
+                        sessionStorage.removeItem('assignedDonorID');
+                    }
+                    window.location = 'children.html';
                 }
             });
         }
@@ -502,48 +585,6 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-    }
-
-    function login () {
-        var email = $('.donor-email').val();
-        var password = $('.donor-password').val();
-
-        // define the request
-        var loginRequest = $.ajax({
-            url: '/api/v1/donor/auth',
-            type: 'POST',
-            data: {
-                'correo_electrónico': email,
-                'password': password
-            }
-        });
-
-        var worked = false;
-        // on successful login, save token and donor id
-        // in session storage and go to the donor portal
-        loginRequest.success(function(res) {
-            //save login token to session storage
-            sessionStorage.setItem('token', res.token);
-            sessionStorage.setItem('id', res.id);
-            worked = true;
-        });
-
-        // on login error, check error and inform user accordingly
-        loginRequest.error(function(httpObj) {
-            if(httpObj.status === 401) {
-                alert('correo o contraseña incorrectos.');
-            } else {
-                console.log(JSON.stringify(httpObj));
-                alert('see console for error info.');
-            }
-            worked = false;
-        });
-
-        loginRequest.complete(function() {
-            if (worked === true) {
-                window.location = 'account.html';
-            }
-        });
     }
 
     function toggleCreateAccount () {
@@ -567,8 +608,7 @@ $(document).ready(function() {
         var country = document.getElementById('create-account-country').value;
         var email = document.getElementById('create-account-email').value;
         var password = document.getElementById('create-account-password').value;
-        var confirmPassword = document.getElementById('create-account-password-confirm')
-                                      .value;
+        var confirmPassword = document.getElementById('create-account-password-confirm').value;
 
         // manage any null fields and throw errors accordingly
         var nullFields = [];
@@ -677,23 +717,4 @@ $(document).ready(function() {
     $('.close-create-account-overlay').click(toggleCreateAccount);
 
     $(document).ready(autoPopulate());
-    $('.spinner').remove();
-
-    // recreate pending spinner and add to page
-    spinnerDiv = document.createElement('div');
-    bounceDiv1 = document.createElement('div');
-    bounceDiv2 = document.createElement('div');
-    bounceDiv3 = document.createElement('div');
-
-    spinnerDiv.className = 'spinner';
-    bounceDiv1.className = 'bounce1';
-    bounceDiv2.className = 'bounce2';
-    bounceDiv3.className = 'bounce3';
-
-    spinnerDiv.appendChild(bounceDiv1);
-    spinnerDiv.appendChild(bounceDiv2);
-    spinnerDiv.appendChild(bounceDiv3);
-
-    var containers = document.getElementById('spinner-and-slider');
-    containers.insertBefore(spinnerDiv, containers.childNodes[0]);
 });

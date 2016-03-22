@@ -9,8 +9,8 @@ $(document).ready(function() {
     function fillChildPool(selector, callback) {
         var ors = [{
             '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                               {'status': 'Waiting for Sponsor - Discontinued'},
-                               {'status': 'Additional Sponsor Needed'}]
+                    {'status': 'Waiting for Sponsor - Discontinued'},
+                    {'status': 'Additional Sponsor Needed'}]
         }];
 
         selector['$and'] = ors;
@@ -53,20 +53,20 @@ $(document).ready(function() {
 
         // init the cart as an array from sessionStorage
         var cart = [];
-        if (sessionStorage.getItem('cart') != null &&
-            sessionStorage.getItem('cart') != '') {
+        if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
             cart = sessionStorage.getItem('cart').split(',');
         }
 
         // if the child isn't in the cart and also isn't in the slider
-        if (cart.indexOf(id) === -1 &&
-            childrenCurrentlyInSlider.indexOf(id) === -1) {
+        if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
 
             // then add the child to the slider
             var name = childPool[id].nombre;
             var age = childPool[id].años;
             var gender = childPool[id].género;
             var location = childPool[id].provincia;
+            var aficiones = childPool[id].aficiones;
+            var biodata = childPool[id].biodata;
 
             // get the picture and load it in
             $.getJSON('/api/v1/pictures/id/' + id, function(res) {
@@ -76,6 +76,8 @@ $(document).ready(function() {
                     'age': age,
                     'gender': gender,
                     'location': location,
+                    'aficiones': aficiones,
+                    'biodata': biodata,
                     'picture': res.data
                 };
                 childrenCurrentlyInSlider.push(id);
@@ -84,9 +86,7 @@ $(document).ready(function() {
         } else {
              // if the child is already in the slider or cart but there
              // are more children in the child pool
-            if (childrenCurrentlyInSlider.length !== ids.length &&
-               childrenCurrentlyInSlider.length < ids.length &&
-               cart.indexOf(id) === -1) {
+            if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
                 getChild(childPool, function(child) {
                     callback(child);
                 });
@@ -105,6 +105,8 @@ $(document).ready(function() {
      *    age: int,
      *    gender: string,
      *    location: string,
+     *    aficiones: string,
+     *    biodata: string,
      *    picture: base64 string
      * }
      */
@@ -116,6 +118,8 @@ $(document).ready(function() {
         var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
+        var aficiones = child.aficiones;
+        var biodata = child.biodata;
 
         // create the slide
         var slide = document.createElement('div');
@@ -147,8 +151,14 @@ $(document).ready(function() {
         pData1.innerHTML = 'I\'m a <span id=\'child-age\'>' + age + '</span>-year-old <span id=\'child-gender\'>' + gender + '</span> from <span id=\'child-location\'>' + location + '</span>, and you can change my world for good!';
         var pData2 = document.createElement('p');
         pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
+        var pData3 = document.createElement('p');
+        pData3.innerHTML = 'My hobbies include ' + aficiones;
+        var pData4 = document.createElement('p');
+        pData4.innerHTML = 'You should sponsor me because ' + biodata;
         divDescription.appendChild(pData1);
         divDescription.appendChild(pData2);
+        divDescription.appendChild(pData3);
+        divDescription.appendChild(pData4);
         divData.appendChild(divDescription);
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
@@ -180,7 +190,8 @@ $(document).ready(function() {
     function addSlide(slide) {
         // remove the pending spinner
         $('.spinner').remove();
-        $('.nav-buttons').show();
+        //show slider nav buttons
+        document.getElementById('nav-press').style.display = 'block';
         // create the item div
         var item = document.createElement('div');
         item.className = 'item';
@@ -328,7 +339,7 @@ $(document).ready(function() {
         spinnerDiv.appendChild(bounceDiv2);
         spinnerDiv.appendChild(bounceDiv3);
 
-        var container = document.getElementById('spinner-and-slider');
+        var container = document.getElementById('spinner');
         container.insertBefore(spinnerDiv, container.childNodes[0]);
 
         // empty the array that keeps track of the children in the slider
@@ -383,8 +394,7 @@ $(document).ready(function() {
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null
-            && sessionStorage.getItem('token') != '') {
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
     } else {
@@ -394,7 +404,44 @@ $(document).ready(function() {
         /* When the log in button is clicked, validate credentials
            and if valid send the user to account.html and but the
            token returned by server into session storage */
-        $('.login-submit').click(login);
+        $('.login-submit').click(function(event) {
+            event.preventDefault();
+            var worked = false;
+            var email = $('.donor-email').val();
+            var password = $('.donor-password').val();
+
+            // define the request
+            $.ajax({
+                url: '/api/v1/donor/auth',
+                type: 'POST',
+                data: {
+                    'correo_electrónico': email,
+                    'password': password
+                },
+                // on successful login, save token and donor id
+                // in session storage and go to the donor portal
+                success: function(res) {
+                    //save login token to session storage
+                    sessionStorage.setItem('token', res.token);
+                    sessionStorage.setItem('id', res.id);
+                    worked = true;
+                },
+                error: function(httpObj) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos.');
+                    } else {
+                        console.log(JSON.stringify(httpObj));
+                        alert('see console for error info.');
+                    }
+                    worked = false;
+                },
+                complete: function() {
+                    if (worked === true) {
+                        window.location = 'account.html';
+                    }
+                }
+            });
+        });
     }
 
     /* Toggle the login box when login link is clicked */
@@ -405,48 +452,6 @@ $(document).ready(function() {
         else {
             $('.login').hide();
         }
-    }
-
-    function login() {
-        var email = $('.donor-email').val();
-        var password = $('.donor-password').val();
-
-        // define the request
-        var loginRequest = $.ajax({
-            url: '/api/v1/donor/auth',
-            type: 'POST',
-            data: {
-                'correo_electrónico': email,
-                'password': password
-            }
-        });
-
-        var worked = false;
-        // on successful login, save token and donor id
-        // in session storage and go to the donor portal
-        loginRequest.success(function(res) {
-            //save login token to session storage
-            sessionStorage.setItem('token', res.token);
-            sessionStorage.setItem('id', res.id);
-            worked = true;
-        });
-
-        // on login error, check error and inform user accordingly
-        loginRequest.error(function(httpObj) {
-            if(httpObj.status === 401) {
-                alert('correo o contraseña incorrectos.');
-            } else {
-                console.log(JSON.stringify(httpObj));
-                alert('see console for error info.');
-            }
-            worked = false;
-        });
-
-        loginRequest.complete(function() {
-            if (worked === true) {
-                window.location = 'account.html';
-            }
-        });
     }
 
     function toggleCreateAccount () {
@@ -462,16 +467,15 @@ $(document).ready(function() {
 
     function createAccount() {
         // get all form info
-        var firstName = document.getElementById('form-first-name').value;
-        var lastName = document.getElementById('form-last-name').value;
-        var phone = document.getElementById('form-phone').value;
-        var street = document.getElementById('form-address-street').value;
-        var city = document.getElementById('form-address-city').value;
-        var country = document.getElementById('form-country').value;
-        var email = document.getElementById('form-email').value;
-        var password = document.getElementById('form-password').value;
-        var confirmPassword = document.getElementById('form-password-confirm')
-                                      .value;
+        var firstName = document.getElementById('create-account-first-name').value;
+        var lastName = document.getElementById('create-account-last-name').value;
+        var phone = document.getElementById('create-account-phone').value;
+        var street = document.getElementById('create-account-address-street').value;
+        var city = document.getElementById('create-account-address-city').value;
+        var country = document.getElementById('create-account-country').value;
+        var email = document.getElementById('create-account-email').value;
+        var password = document.getElementById('create-account-password').value;
+        var confirmPassword = document.getElementById('create-account-password-confirm').value;
 
         // manage any null fields and throw errors accordingly
         var nullFields = [];
@@ -546,7 +550,7 @@ $(document).ready(function() {
                                 'correo_electrónico': email,
                                 'password': password
                             },
-                            success: function() {
+                            success: function(res) {
                                 //put token and donor id into sessionStorage
                                 sessionStorage.setItem('token', res.token);
                                 sessionStorage.setItem('id', res.id);

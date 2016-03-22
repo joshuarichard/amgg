@@ -1,85 +1,15 @@
-﻿/* Begin Login overlay */
-body {
-    z-index: 10;
+﻿/* override bootstrap button colors */
+.btn-primary {
+  background: #F5842A;
+  border-color: #F5842A;
 }
 
-.navbar {
-    z-index: 10;
+.btn-primary:hover {
+  background: #9A5324;
+  border-color: #9A5324;
 }
 
-.login{
-    position: fixed;
-    display: none;
-    width:400px;
-    margin-left: 68%;
-    margin-right: 0.5em;
-    margin-top: 0;
-    padding-top: 0.55em;
-    margin-top:8px;
-    margin-bottom:2%;
-    z-index: 11; /* 1px higher than the overlay layer */
-}
-
-.login-triangle {
-  width: 0;
-  margin-right: 0.75em;
-  margin-left: auto;
-  border: 12px solid transparent;
-  border-bottom-color: #28d;
-}
-
-.login h1{
-  background:#3399cc;
-  padding:10px 0;
-  font-size:140%;
-  font-weight:300;
-  text-align:center;
-  color:#fff;
-  margin: 0;
-}
-
-form{
-  background:#f0f0f0;
-  padding: 6% 4%;
-}
-
-input[type="email"],input[type="password"] {
-  width:92%;
-  background:#fff;
-  margin-left: 1em;
-  margin-bottom:4%;
-  border:1px solid #ccc;
-  padding:4%;
-  font-family:'Open Sans',sans-serif;
-  font-size:95%;
-  color:#555;
-}
-
-.login-submit {
-  width:100%;
-  background:#3399cc;
-  border:0;
-  padding:4%;
-  font-family:'Open Sans',sans-serif;
-  font-size:100%;
-  color:#fff;
-  cursor:pointer;
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  transition:background .3s;
-  -webkit-transition:background .3s;
-}
-
-.login-submit a {
-  color: #FFFFFF;
-}
-
-.login-submit a:hover {
-  background:#2288bb;
-}
-/* End Login overlay */
-
-.container-full, .row-full { 
+.container-full, .row-full {
   padding: 0px;
   width: 100%;
 }
@@ -253,7 +183,7 @@ input[type="email"],input[type="password"] {
 }
 
 .content-center-90 {
-    width:90%; 
+    width:90%;
     margin: auto;
 }
 
@@ -383,7 +313,7 @@ footer p {
     background: url('../image/bkg-donde-trabajamos.png') no-repeat;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-} 
+}
 
 .full-cover-voluntariado {
     width: 100%;
@@ -476,7 +406,7 @@ footer p {
 }
 
 a {
-    color: #EF801F;    
+    color: #EF801F;
 }
 
 h1, h2 {
@@ -519,22 +449,22 @@ h4, .p-apadriana {
     .link-programa {
         font-size: 12px !important;
     }
-    
+
     .tit-puente {
         width: 152.4px;
         height: 44.4px;
     }
-    
+
     .box{
         position: relative;
         width: 100%;		/* desired width */
         max-width: 320px;
     }
-    
+
     .img-trigo-title {
         width: 165px;
     }
-    
+
     .div-flecha {
         background-image: url('../image/bkg-flecha.png');
         background-position: right;
@@ -547,32 +477,32 @@ h4, .p-apadriana {
         line-height: 12px;
         height: 40px;
     }
-    
+
     h1 {
         font-size: 20px;
         line-height: 24px;
     }
-    
+
     h2 {
         font-size: 16px;
     }
-    
+
     p, .divTexto>ul>li {
         font-size: 10px;
         line-height: 12px;
     }
-    
+
     .divTexto {
         width: 420%;
          margin-left: 10px;
          margin-top: 20px;
     }
-    
+
     .foto-programa, .sa-foto, .ri-foto, .pl-foto, .as-foto,
     .es-foto, .ca-foto {
-        display: none;   
+        display: none;
     }
-    
+
     .texto-importante {
         font-size: 16px;
     }
@@ -582,22 +512,22 @@ h4, .p-apadriana {
     .link-programa {
         font-size: 0.8em;
     }
-    
+
     .tit-puente {
         width: 228.6px;
         height: 66.6px;
     }
-    
+
     .box{
         position: relative;
         width: 100%;		/* desired width */
         max-width: 475px;
-    }  
-    
+    }
+
     .img-trigo-title {
         width: 300px;
     }
-    
+
     .div-flecha {
         background-image: url('../image/bkg-flecha.png');
         background-position: right;
@@ -611,62 +541,62 @@ h4, .p-apadriana {
         line-height: 16px;
         height: 44px;
     }
-    
+
     h1 {
         font-size: 38px;
         line-height: 42px;
     }
-    
+
     h2 {
         font-size: 24px;
     }
-    
+
     p, .divTexto>ul>li {
         font-size: 13px;
         line-height: 15px;
     }
-    
+
     .divTexto {
         width: 420%;
          margin-left: 20px;
          margin-top: 20px;
     }
-    
+
     .foto-programa {
         width: 172px;
-        height: 181.6px;    
+        height: 181.6px;
     }
-    
+
     .sa-foto {
         width: 210.4px;
         height: 179.2px;
     }
-    
+
     .ri-foto {
         width: 169.2px;
         height: 177.2px;
     }
-    
+
     .pl-foto {
         width: 211.2px;
         height: 187.6px;
     }
-    
+
     .as-foto {
         width: 177.6px;
         height: 178px;
     }
-    
+
     .es-foto {
         width: 202.8px;
         height: 176.8px;
     }
-        
+
     .ca-foto {
         width: 188.4px;
         height: 197.6px;
     }
-    
+
     .texto-importante {
         font-size: 20px;
     }
@@ -676,16 +606,16 @@ h4, .p-apadriana {
     .link-programa {
         font-size: 1em;
     }
-    
+
     .tit-puente {
         width: 342.9px;
         height: 99.9px;
     }
-    
+
     .img-trigo-title {
         width: 350px;
     }
-    
+
     .div-flecha {
         background-image: url('../image/bkg-flecha.png');
         background-position: right;
@@ -699,62 +629,62 @@ h4, .p-apadriana {
         line-height: 26px;
         height: 66px;
     }
-    
+
     h1 {
         font-size: 44px;
         line-height: 48px;
     }
-    
+
     h2 {
         font-size: 34px;
     }
-    
+
     p, .divTexto>ul>li {
         font-size: 15px;
         line-height: 17px;
     }
-    
+
     .divTexto {
         width: 375%;
          margin-left: 20px;
          margin-top: 20px;
     }
-    
+
     .foto-programa {
         width: 258px;
-        height: 272.4px;  
+        height: 272.4px;
     }
-    
+
     .sa-foto {
         width: 315.6px;
         height: 268.8px;
     }
-    
+
     .ri-foto {
         width: 253.8px;
         height: 265.8px;
     }
-    
+
     .pl-foto {
         width: 316.8px;
         height: 281.4px;
     }
-    
+
     .as-foto {
         width: 266.4px;
         height: 267px;
     }
-    
+
     .es-foto {
         width: 304.2px;
         height: 265.2px;
     }
-        
+
     .ca-foto {
         width: 282.6px;
         height: 296.4px;
     }
-    
+
     .texto-importante {
         font-size: 20px;
     }
@@ -764,16 +694,16 @@ h4, .p-apadriana {
     .link-programa {
         font-size: 1.2em;
     }
-    
+
     .tit-puente {
         width: 381px;
         height: 111px;
     }
-    
+
     .img-trigo-title {
         width: 375px;
     }
-    
+
     .div-flecha {
         background-image: url('../image/bkg-flecha.png');
         background-position: right;
@@ -787,56 +717,56 @@ h4, .p-apadriana {
         line-height: 30px;
         height: 76px;
     }
-    
+
     h1 {
         font-size: 46px;
         line-height: 50px;
     }
-    
+
     h2 {
         font-size: 38px;
     }
-    
+
     p, .divTexto>ul>li {
         font-size: 15px;
         line-height: 21px;
     }
-    
+
     .divTexto {
         width: 355%;
          margin: 20px;
     }
-    
+
     .foto-programa {
         width: 387px;
         height: 408.6px;
     }
-    
+
     .sa-foto {
         width: 473.4px;
         height: 403.2px;
     }
-    
+
     .ri-foto {
         width: 380.7px;
         height: 398.7px;
     }
-    
+
     .pl-foto {
         width: 475.2px;
         height: 422.1px;
     }
-    
+
     .as-foto {
         width: 399.6px;
         height: 400.5px;
     }
-    
+
     .es-foto {
         width: 456.3px;
         height: 397.8px;
     }
-        
+
     .ca-foto {
         width: 423.9px;
         height: 444.6px;
@@ -847,16 +777,16 @@ h4, .p-apadriana {
     .link-programa {
         font-size: 1.2em;
     }
-    
+
     .tit-puente {
         width: 381px;
         height: 111px;
     }
-    
+
     .img-trigo-title {
         width: 375px;
     }
-    
+
     .div-flecha {
         background-image: url('../image/bkg-flecha.png');
         background-position: right;
@@ -870,61 +800,142 @@ h4, .p-apadriana {
         line-height: 34px;
         height: 84px;
     }
-    
+
     h1 {
         font-size: 48px;
         line-height: 52px;
     }
-    
+
     h2 {
         font-size: 38px;
     }
-    
+
     p, .divTexto>ul>li {
         font-size: 15px;
         line-height: 21px;
     }
-    
+
     .divTexto {
         width: 355%;
          margin: 20px;
     }
-    
+
     .foto-programa {
         width: 430px;
         height: 454px;
     }
-    
+
     .sa-foto {
         width: 526px;
         height: 448px;
     }
-    
+
     .ri-foto {
         width: 423px;
         height: 443px;
     }
-    
+
     .pl-foto {
         width: 528px;
-        height: 469px;    
+        height: 469px;
     }
-    
+
     .as-foto {
         width: 444px;
         height: 445px;
     }
-    
+
     .es-foto {
         width: 507px;
         height: 442px;
     }
-        
+
     .ca-foto {
         width: 471px;
         height: 494px;
     }
 }
+
+/* Login overlay http://codepen.io/miroot/pen/qwIgC */
+body {
+    z-index: 10;
+}
+
+.navbar {
+    z-index: 10;
+}
+
+.login{
+    position: fixed;
+    display: none;
+    width:400px;
+    margin-left: 68%;
+    margin-right: 0.5em;
+    margin-top: 0;
+    padding-top: 0.55em;
+    margin-top:8px;
+    margin-bottom:2%;
+    z-index: 11; /* 1px higher than the overlay layer */
+}
+
+.login-triangle {
+  width: 0;
+  margin-right: 0.75em;
+  margin-left: auto;
+  border: 12px solid transparent;
+  border-bottom-color: #28d;
+}
+
+.login h1{
+  background:#3399cc;
+  padding:10px 0;
+  font-size:140%;
+  font-weight:300;
+  text-align:center;
+  color:#fff;
+  margin: 0;
+}
+
+form{
+  background:#f0f0f0;
+  padding: 6% 4%;
+}
+
+input[type="email"],input[type="password"] {
+  width:92%;
+  background:#fff;
+  margin-left: 1em;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:95%;
+  color:#555;
+}
+
+.login-submit {
+  width:100%;
+  background:#3399cc;
+  border:0;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:100%;
+  color:#fff;
+  cursor:pointer;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+.login-submit a {
+  color: #FFFFFF;
+}
+
+.login-submit a:hover {
+  background:#2288bb;
+}
+/* End Login overlay */
 
 /* Create account overlay */
 .create-account-overlay {

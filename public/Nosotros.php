@@ -50,46 +50,24 @@
             <link href="css/Site.css" rel="stylesheet" />
         </head>
         <body>
-            <img id="scroll" src="images/btn-abajo.png" class="bounce" 
-            style="right:25px; bottom: 25px; position: fixed; z-index: 9999;" 
-            onclick="javascript:scrolldown();" />
+            
         <section class="pre-header">
             <div class="content">
                 <div class="row vcenter">
-                    <div class="col-sm-1 hidden-xs col-sm-offset-1">
-                        <a class="vcenter" href="https://twitter.com/AMGGuatemala">
-                            <img src="image/btn-pre-twitter.png" class="img-center" />
-                        </a>
-                    </div>
-                    <div class="col-sm-1 hidden-xs">
-                        <a class="vcenter" href="https://www.facebook.com/amgguatemala">
-                            <img src="image/btn-pre-facebook.png" class="img-center" />
-                        </a>
-                    </div>
-                    <div class="col-sm-1 hidden-xs">
-                        <a class="vcenter" href="https://www.youtube.com/channel/UCDRWMZkdIWYWq7lqZzcuFxQ">
-                            <img src="image/btn-pre-youtube.png" class="img-center" />
-                        </a>
-                    </div>
-                    <div class="col-sm-1 hidden-xs">
-                        <a class="vcenter" href="https://instagram.com/amgguatemala/">
-                            <img src="image/btn-pre-instagram.png" class="img-center" />
-                        </a>
-                    </div>
-                    <div class="col-sm-1 col-sm-offset-1">
+                    <div class="col-sm-2 col-sm-offset-1">
                         <a class="vcenter" href="en.amgg.org">English</a>
                     </div>
-                    <div class="col-sm-1">
-                        <a class="vcenter" href="pdf/boletin.pdf">Boletin</a>
+                    <div class="col-sm-2">
+                        <a style="text-align: right" href="https://www.facebook.com/Guates-Best-Store-1431567437168029/" target="_blank">Guates Best</a>
                     </div>
-                    <div class="col-sm-1">
+                    <div class="col-sm-2">
+                        <a class="vcenter" href="pdf/boletin.pdf" target="_blank">Boletin</a>
+                    </div>
+                    <div class="col-sm-2">
                         <a class="vcenter" href="https://amgg.org/donacion/">Donar</a>
                     </div>
-                    <div class="col-sm-2 hidden-xs">
-                        <a class="vcenter" href="https://www.facebook.com/Guates-Best-Store-1431567437168029/">Guates Best</a>
-                    </div>
-                    <div class="col-sm-1 pre-active">
-                        <a class="vcenter" href="involucrate.html#Apadrina">Apadrina</a>
+                    <div class="col-sm-2 pre-active" style="text-align: center" >
+                        <a style="text-align: center"  href="involucrate.html#Apadrina">Apadrina</a>
                     </div>
                 </div>
             </div>
@@ -145,7 +123,7 @@
             </div><!-- /.container-fluid -->
         </header>
         <!-- Sección Nosotros -->
-        <section id="Nosotros" class="container">
+        <section id="primera" class="container">
 			<article cclass="rev_slider_wrapper fullwidthbanner-container" data-alias="Nosotros" 
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_portada" class="rev_slider fullwidthabanner" 
@@ -184,7 +162,7 @@
                                 data-splitout="none" 
                                 data-basealign="slide" 
                                 data-responsive_offset="on" 
-                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white">
+                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white; background-color: rgba(128, 128, 128, 0.5);">
                                 ¿Quiénes somos? 
                             </div>
 						</li>    
@@ -290,8 +268,8 @@
                             <!-- LAYER NR. 1 -->
 							<div class="tp-caption Newspaper-Title gotham-text tp-resizeme rs-parallaxlevel-0" 
                                 id="slide-129-layer-2" 
-                                data-x="['center','center','center','center']" 
-                                data-hoffset="['450','425','400','375']" 
+                                data-x="['right','right','right','right']" 
+                                data-hoffset="['0','0','0','0']" 
                                 data-y="['top','top','top','top']" 
                                 data-voffset="['165','135','105','100']" 
                                 data-fontsize="['50','40','32','22']"
@@ -309,7 +287,7 @@
                                 data-splitout="none" 
                                 data-basealign="slide" 
                                 data-responsive_offset="on" 
-                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white">
+                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white; background-color: rgba(128, 128, 128, 0.5);">
                                 Alianzas
                             </div>
 						</li>    
@@ -371,7 +349,7 @@
 			<!-- END REVOLUTION SLIDER -->
 		</section>
         <!-- End Section Alianzas -->
-        <section id="AlianzasDet">
+        <section id="AlianzasDet" class="container">
             <?php
                 $x = 1;
                 $comilla = "'";
@@ -526,7 +504,7 @@
                             data-masterspeed="1000"  data-thumb="assets/images/bigbold_3-100x50.jpg"  
                             data-rotate="0"  data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" data-saveperformance="off"  data-title="¿Quiénes somos?" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/bkg-nuestroequipo.jpg"  alt=""  data-bgposition="center center" 
+							<img src="image/bkg-nuestroequipo.jpg"  alt=""  data-bgposition="top center" 
                                 data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
@@ -534,8 +512,8 @@
                             <!-- LAYER NR. 1 -->
 							<div class="tp-caption Newspaper-Title gotham-text tp-resizeme rs-parallaxlevel-0" 
                                 id="slide-130-layer-2" 
-                                data-x="['left','left','left','left']" 
-                                data-hoffset="['450','425','400','375']" 
+                                data-x="['right','right','right','right']" 
+                                data-hoffset="['0','0','0','0']" 
                                 data-y="['bottom','bottom','bottom','bottom']" 
                                 data-voffset="['165','135','105','100']" 
                                 data-fontsize="['50','40','32','22']"
@@ -553,7 +531,7 @@
                                 data-splitout="none" 
                                 data-basealign="slide" 
                                 data-responsive_offset="on" 
-                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white">
+                                style="z-index: 6; min-width: 600px; max-width: 600px; white-space: normal; color:white; background-color: rgba(128, 128, 128, 0.5);">
                                 Nuestro Equipo
                             </div>
 						</li>    
@@ -796,15 +774,11 @@
                 </div>
             </div>
         </section>
-        <section id="Modelo" class="container-full">
-            
-            <div class="row row-centered">
-                <div class="col-xs-12 col-centered content-full">
-                    <iframe class="img-responsive center-block" style="margin: auto; padding:auto; height:700px; width:100%;"
-                            src="https://www.youtube.com/embed/S8ax0P0jNbI" frameborder="0" allowfullscreen></iframe>
-                </div>
+        <section id="VideoModelo" class="container-full">
+            <div class="box">
+                <iframe class="content"
+                        src="https://www.youtube.com/embed/S8ax0P0jNbI" frameborder="0" allowfullscreen></iframe>
             </div>
-            
         </section>
         <footer id="Footer" class="container-fluid bottom">
                 <div class="row">
@@ -815,19 +789,19 @@
                             <a class="text-white" href="mailto:info@amgguatemala.org">info@amgguatemala.org</a><br />
                             14 Calle 10-80, zona 7 Colonia La Verbena, Guatemala C.A.<br />
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <a href="https://twitter.com/AMGGuatemala"><img src="images/btn-twitter.png" /></a>
-                                </div>
-                                <div class="col-xs-2">
-                                    <a href="https://www.facebook.com/amgguatemala"><img src="images/btn-facebook.png" /></a>
-                                </div>
-                                <div class="col-xs-3">
-                                    <a href="https://www.youtube.com/channel/UCDRWMZkdIWYWq7lqZzcuFxQ"><img src="images/btn-youtube.png" /></a>
-                                </div>
-                                <div class="col-xs-2">
-                                    <a href="https://instagram.com/amgguatemala/"><img src="images/btn-instagram.png" /></a>
-                                </div>
+                            <div class="col-xs-3">
+                                <a href="https://twitter.com/AMGGuatemala" target="_blank"><img src="images/btn-twitter.png" /></a>
                             </div>
+                            <div class="col-xs-2">
+                                <a href="https://www.facebook.com/amgguatemala" target="_blank"><img src="images/btn-facebook.png" /></a>
+                            </div>
+                            <div class="col-xs-3">
+                                <a href="https://www.youtube.com/channel/UCDRWMZkdIWYWq7lqZzcuFxQ" target="_blank"><img src="images/btn-youtube.png" /></a>
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="https://instagram.com/amgguatemala/" target="_blank"><img src="images/btn-instagram.png" /></a>
+                            </div>
+                        </div>
                         </p>
                     </div>
                     <div class="col-xs-10 col-xs-offset-1 col-sm-5 col-sm-offset-0">
@@ -870,6 +844,7 @@
                         scrollTop: '+=' + 400
                     });
                 };
+                
         </script>
     
     </body>
