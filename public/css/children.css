@@ -1,22 +1,119 @@
-/* Begin Login overlay */
+.content-container {
+  min-height: 100%;
+  /* 60px less than footer to give some spacing between footer and content */
+  margin-bottom: -124px;
+}
+
+.content-container:after {
+  content: "";
+  display: block;
+}
+
+footer, .content-container:after {
+  /* .push must be the same height as footer */
+  height: 184px;
+}
+
+#child-img {
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.owl-carousel{
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  margin-left: 5em;
+}
+
+.owl-item {
+  width: 75%;
+}
+
+.owl-pagination {
+  margin-right: 7em;
+}
+
+.span8 {
+  width: 950px;
+  display: inline-block !important;
+  margin-top: 5em;
+}
+
+.span4 {
+  width: 350px;
+  display: inline-block !important;
+  margin-top: 5em;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.btn-group {
+  margin-top: .15em;
+  margin-bottom: .15em;
+}
+
+.dropdown-toggle {
+  color: black;
+}
+
+.scrollable-menu {
+  height: auto;
+  max-height: 195px;
+  overflow-x: hidden;
+}
+
+#sponsor-button {
+  margin-bottom: 0.5em;
+}
+
+.form-group {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.child-picture {
+  margin-top:  2em;
+  display: block/none;
+  border-radius: 10px;
+}
+
+/* override bootstrap panel color */
+.panel-primary {
+  border-color: #252964;
+}
+
+.child-search {
+  display: inline-block;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 2.5em;
+}
+
+#search-button {
+  width: 38%;
+  margin-right: 0;
+  margin-left: 57%;
+}
+
+/* Login overlay http://codepen.io/miroot/pen/qwIgC */
 body {
   z-index: 10;
   position: relative;
   margin: 0;
-  padding-bottom: 20rem;
   min-height: 100%;
 }
 
 .login{
-	position: fixed;
-	display: none;
-	width: 400px;
-	margin-left: 68%;
-	margin-right: 0.5em;
-	margin-top: 0;
-	padding-top: 0.55em;
-	margin-top:8px;
-	margin-bottom:2%;
+  position: fixed;
+  display: none;
+  width: 400px;
+  margin-left: 68%;
+  margin-right: 0.5em;
+  margin-top: 0;
+  padding-top: 0.55em;
+  margin-top:8px;
+  margin-bottom:2%;
   z-index: 11; /* 1px higher than the body */
 }
 
@@ -79,100 +176,12 @@ input[type="email"],input[type="password"] {
 }
 /* End Login overlay */
 
-#child-img {
-  margin-top: 5%;
-  margin-bottom: 5%;
-}
-
-.owl-carousel{
-	display: inline-block;
-  width: 100%;
-  height: auto;
-  margin-left: 5em;
-}
-
-.owl-item {
-	width: 75%;
-}
-
-.owl-pagination {
-  margin-right: 7em;
-}
-
-.span8 {
-  width: 950px;
-  display: inline-block !important;
-  margin-top: 5em;
-}
-
-.span4 {
-  width: 350px;
-  display: inline-block !important;
-  margin-top: 5em;
-  margin-left: auto;
-  margin-right: 0;
-}
-
-.btn-group {
-	margin-top: .15em;
-	margin-bottom: .15em;
-}
-
-.dropdown-toggle {
-	color: black;
-}
-
-.scrollable-menu {
-  height: auto;
-  max-height: 195px;
-  overflow-x: hidden;
-}
-
-#sponsor-button {
-	margin-bottom: 0.5em;
-}
-
-.form-group {
-	margin-left: 1em;
-	margin-right: 1em;
-}
-
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.child-picture {
-	margin-top:  2em;
-	display: block/none;
-  border-radius: 10px;
-}
-
-/* override bootstrap panel color */
-.panel-primary {
-  border-color: #252964;
-}
-
-.child-search {
-	display: inline-block;
-	margin-left: 0;
-	margin-right: 0;
-	margin-bottom: 2.5em;
-}
-
-#search-button {
-  width: 38%;
-  margin-right: 0;
-  margin-left: 57%;
-}
-
 /* This may mess things up for other displays */
 .nav-buttons {
   width: 50%;
   padding-left: 10em;
   margin: 0 auto;
+  display: none;
 }
 
 /* spinning CSS loading spinner */
@@ -180,6 +189,7 @@ footer {
   margin: 100px auto 0;
   width: 70px;
   text-align: center;
+  padding-top: 10em;
 }
 
 .spinner > div {
