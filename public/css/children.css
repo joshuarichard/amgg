@@ -1,4 +1,32 @@
 /* Begin Login overlay */
+#nav-press {
+  display: none;
+}
+
+* {
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+
+.demo {
+  min-height: 100%;
+  /* equal to footer height */
+	margin-bottom: -184px;
+}
+
+.demo:after {
+  content: "";
+  display: block;
+}
+
+.footer, .demo:after {
+  /* .push must be the same height as footer */
+	height: 184px;
+}
+
 .html{
   height: 100%;
   box-sizing: border-box;
@@ -8,15 +36,7 @@ body {
   z-index: 10;
   position: relative;
   margin: 0;
-  padding-bottom: 40rem;
   min-height: 100%;
-}
-
-.demo{
-  margin: 0 auto;
-  padding-top: 64px;
-  max-width: 640px
-  width: 100%;
 }
 
 .login{
