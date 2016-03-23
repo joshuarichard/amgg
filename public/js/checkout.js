@@ -362,6 +362,7 @@ $(document).ready(function() {
      * user's password passes the constraints
      */
     function checkForm(form) {
+        console.log(form);
         // get all form info
         var firstName = $('[name=first-name]', form)[0];
         var lastName = $('[name=last-name]', form)[0];
@@ -545,8 +546,7 @@ $(document).ready(function() {
                 url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                 type: 'POST',
                 data: {
-                    'token' : sessionStorage.getItem('token'),
-                    'id' : sessionStorage.getItem('id')
+                    'token' : sessionStorage.getItem('token')
                 },
                 success: function(res) {
                     $('#form-first-name').val(res.nombre);
@@ -563,7 +563,7 @@ $(document).ready(function() {
                     $('#form-email').prop('disabled', true);
                     $('#form-country').prop('disabled', true);
                 },
-                error: function() {
+                error: function(res) {
                     alert('Your session has expired. Please login again.');
                     // if getting in here that means that the id and token has
                     // been set but it's since expired. nuke everything and
