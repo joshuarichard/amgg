@@ -403,15 +403,16 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             // if the cart is empty then send back 500
             if (JSON.stringify(cartdoc) !== '{}') {
                 for (var key in cartdoc) {
-                    var realCart = cartdoc[key];
-                    var childrenToSponsor = realCart['niños_patrocinadoras'];
+                    // get the cart _id
+                    // var realCart = cartdoc[key];
+                    var childrenWaiting = cartdoc[key]['los_niños_en_espera'];
 
                     // hash the password and store it in the db
                     password.encrypt(donor['password'], function(hash, salt) {
-                        // fix the donor doc a bit before insertion
+                        // add password, salt, and children in waiting to donor doc
                         donor['password'] = hash;
                         donor['salt'] = salt;
-                        donor['niños_patrocinadoras'] = childrenToSponsor;
+                        donor['en_espera_de_pago'] = childrenWaiting;
 
                         // store this as a variable because need to delete from
                         // donor doc before insert.
@@ -423,41 +424,10 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                             // if mongo confirms success and n = 1 where n is inserted docs
                             if (result.hasOwnProperty('insertedCount')) {
                                 if (result.insertedCount === 1) {
-                                    // then delete the cart doc
-                                    cart.delete(assignedDonorID, function(result) {
-                                        if (result === false) {
-                                            emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + assignedDonorID;
-                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
-                                                if (didEmail === false) {
-                                                    log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
-                                                }
-                                            });
-                                        }
-                                        if (result.hasOwnProperty('err')) {
-                                            res.status(500).send({
-                                                success: false,
-                                                message: result['err']
-                                            });
-                                        } else {
-                                            // recursive function to manage asynch for each id (change status to sponsored)
-                                            changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                // email donor about their successful confirmation
-                                                emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor, function(didEmail) {
-                                                    if(didEmail === true) {
-                                                        // and we're done.
-                                                        res.status(200).send({
-                                                            success: true,
-                                                            message: 'Child sponsored.'
-                                                        });
-                                                    } else {
-                                                        res.status(500).send({
-                                                            success: false,
-                                                            message: 'An error occured on email.'
-                                                        });
-                                                    }
-                                                });
-                                            });
-                                        }
+                                    console.log(result);
+                                    res.status(200).send({
+                                        success: true,
+                                        message: 'Donor inserted and awaiting payment.'
                                     });
                                 } else {
                                     res.status(500).send({
@@ -494,7 +464,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
         cart.find(req.body.donor_id, function(cartdoc) {
             for (var key in cartdoc) {
                 var realCart = cartdoc[key];
-                var childrenToSponsor = realCart['niños_patrocinadoras'];
+                var childrenToSponsor = realCart['los_niños_en_espera'];
 
                 // get the donor's document from the db using the donor_id the
                 // client sent us
@@ -503,8 +473,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                         var saltDB = donor.salt;
                         var passwordDB = donor.password;
 
-                        // encrypt the password and validate it. if not equal
-                        // send back a 401
+                        // encrypt the password and validate it. if not equal send back a 401
                         password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
                             if(passwordGiven !== passwordDB) {
                                 res.status(401).send({
@@ -512,56 +481,21 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     message: 'Incorrect password.'
                                 });
                             } else {
-                                // push all of the new children to the sponsored
-                                // children array...
-                                var childrenSponsored = donor['niños_patrocinadoras'];
-                                for (var d = 0; d < childrenToSponsor.length; d++) {
-                                    childrenSponsored.push(childrenToSponsor[d]);
-                                }
+                                // push all of the new children to the waiting children array...
+                                var childrenWaiting = donor['en_espera_de_pago'];
 
                                 // ... and store it in the donor doc
-                                mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
+                                mongo.edit(req.body.donor_id, {'en_espera_de_pago': childrenWaiting}, donorCollection, function(result) {
                                     if (result.hasOwnProperty('err')) {
                                         res.status(500).send({
                                             success: false,
                                             message: result['err']
                                         });
                                     } else {
-                                        // then delete the cart doc
-                                        cart.delete(req.body.donor_id, function(result) {
-                                            if (result === false) {
-                                                emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
-                                                emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
-                                                    if (didEmail === false) {
-                                                        log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
-                                                    }
-                                                });
-                                            }
-                                            if (result.hasOwnProperty('err')) {
-                                                res.status(500).send({
-                                                    success: false,
-                                                    message: result['err']
-                                                });
-                                            } else {
-                                                // recursive function to manage asynch for each id (change status to sponsored)
-                                                changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                    // email donor about their successful confirmation
-                                                    emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor,  function(didEmail) {
-                                                        if(didEmail === true) {
-                                                            // and we're done.
-                                                            res.status(200).send({
-                                                                success: true,
-                                                                message: 'Child sponsored.'
-                                                            });
-                                                        } else {
-                                                            res.status(500).send({
-                                                                success: false,
-                                                                message: 'An error occured on email.'
-                                                            });
-                                                        }
-                                                    });
-                                                });
-                                            }
+                                        console.log(result);
+                                        res.status(200).send({
+                                            success: true,
+                                            message: 'Donor inserted and awaiting payment.'
                                         });
                                     }
                                 });

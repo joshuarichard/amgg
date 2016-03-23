@@ -20,7 +20,7 @@ exports.update = function(donorID, childIDs, callback) {
     var cart = {
         'donor_id': donorID,
         'last_modified': new Date(),
-        'niños_patrocinadoras': childIDs
+        'los_niños_en_espera': childIDs
     };
 
     mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
@@ -58,5 +58,3 @@ exports.delete = function(donorID, callback) {
         }
     });
 };
-
-// TODO: periodically delete expired cart docs
