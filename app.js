@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
+var mongodb = require('mongodb');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -137,7 +138,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
             // ...and make an array of all child ids currently in carts
             var idsOfKidsInCarts = [];
             for (var key in cartdocs) {
-                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+                var kidsInThisCart = cartdocs[key].los_niños_en_espera;
                 for (var e = 0; e < kidsInThisCart.length; e++) {
                     idsOfKidsInCarts.push(kidsInThisCart[e]);
                 }
@@ -277,7 +278,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'}, function(token) {
+                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '5h'}, function(token) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Authenticated.',
