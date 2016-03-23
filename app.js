@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
+var mongodb = require('mongodb');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -128,7 +129,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
             // ...and make an array of all child ids currently in carts
             var idsOfKidsInCarts = [];
             for (var key in cartdocs) {
-                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+                var kidsInThisCart = cartdocs[key].los_niños_en_espera;
                 for (var e = 0; e < kidsInThisCart.length; e++) {
                     idsOfKidsInCarts.push(kidsInThisCart[e]);
                 }
@@ -268,7 +269,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'}, function(token) {
+                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '5h'}, function(token) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Authenticated.',
@@ -403,9 +404,8 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             // if the cart is empty then send back 500
             if (JSON.stringify(cartdoc) !== '{}') {
                 for (var key in cartdoc) {
-                    // get the cart _id
-                    // var realCart = cartdoc[key];
-                    var childrenWaiting = cartdoc[key]['los_niños_en_espera'];
+                    var childrenWaiting = [];
+                    childrenWaiting.push({"order_id": new mongodb.ObjectID(), "niños": cartdoc[key]['los_niños_en_espera']});
 
                     // hash the password and store it in the db
                     password.encrypt(donor['password'], function(hash, salt) {
@@ -424,10 +424,24 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                             // if mongo confirms success and n = 1 where n is inserted docs
                             if (result.hasOwnProperty('insertedCount')) {
                                 if (result.insertedCount === 1) {
-                                    console.log(result);
-                                    res.status(200).send({
-                                        success: true,
-                                        message: 'Donor inserted and awaiting payment.'
+                                    // then delete the cart doc
+                                    cart.delete(assignedDonorID, function(result) {
+                                        if (result === false) {
+                                            emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + assignedDonorID;
+                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                                if (didEmail === false) {
+                                                    log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
+                                                }
+                                            });
+                                        }
+                                        // recursive function to manage asynch for each id (change status to sponsored)
+                                        changeChildrenStatus(cartdoc[key]['los_niños_en_espera'], 'Sponsorship Promised - Awaiting Payment', function() {
+                                            // and we're done.
+                                            res.status(200).send({
+                                                success: true,
+                                                message: 'Donor inserted. Awaiting payment.'
+                                            });
+                                        });
                                     });
                                 } else {
                                     res.status(500).send({
@@ -463,8 +477,10 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
         // and get the children to sponsor
         cart.find(req.body.donor_id, function(cartdoc) {
             for (var key in cartdoc) {
-                var realCart = cartdoc[key];
-                var childrenToSponsor = realCart['los_niños_en_espera'];
+                var childrenWaiting = {
+                        "order_id": new mongodb.ObjectID(),
+                        "niños": cartdoc[key]['los_niños_en_espera']
+                };
 
                 // get the donor's document from the db using the donor_id the
                 // client sent us
@@ -482,20 +498,40 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                 });
                             } else {
                                 // push all of the new children to the waiting children array...
-                                var childrenWaiting = donor['en_espera_de_pago'];
+                                var allChildrenWaiting = [];
+                                if (donor.hasOwnProperty('en_espera_de_pago')) {
+                                    allChildrenWaiting = donor['en_espera_de_pago']; // include children currently waiting if there are any
+                                    allChildrenWaiting.push(childrenWaiting);
+                                } else {
+                                    allChildrenWaiting = [childrenWaiting];
+                                }
 
                                 // ... and store it in the donor doc
-                                mongo.edit(req.body.donor_id, {'en_espera_de_pago': childrenWaiting}, donorCollection, function(result) {
+                                mongo.edit(req.body.donor_id, {'en_espera_de_pago': allChildrenWaiting}, donorCollection, function(result) {
                                     if (result.hasOwnProperty('err')) {
                                         res.status(500).send({
                                             success: false,
                                             message: result['err']
                                         });
                                     } else {
-                                        console.log(result);
-                                        res.status(200).send({
-                                            success: true,
-                                            message: 'Donor inserted and awaiting payment.'
+                                        // then delete the cart doc
+                                        cart.delete(req.body.donor_id, function(result) {
+                                            if (result === false) {
+                                                emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
+                                                emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                                    if (didEmail === false) {
+                                                        log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
+                                                    }
+                                                });
+                                            }
+                                            // recursive function to manage asynch for each id (change status to sponsored)
+                                            changeChildrenStatus(cartdoc[key]['los_niños_en_espera'], 'Sponsorship Promised - Awaiting Payment', function() {
+                                                // and we're done.
+                                                res.status(200).send({
+                                                    success: true,
+                                                    message: 'Donor inserted. Awaiting payment.'
+                                                });
+                                            });
                                         });
                                     }
                                 });
