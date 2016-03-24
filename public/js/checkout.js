@@ -52,7 +52,7 @@ $(document).ready(function() {
                 console.log('successfully sent cart to db.');
             } else {
                 console.log('cart not successfully sent to db.');
-                $('#checkout-submit').prop('disabled', true);
+                $('#checkout-go-to-step-two').prop('disabled', true);
             }
         });
     }
@@ -321,6 +321,7 @@ $(document).ready(function() {
 
         function deleteButton(callback) {
             var buttonTD = document.createElement('td');
+            buttonTD.id = 'delete-child-button';
 
             // create button, add classname for styling, append text
             var button = document.createElement('button');
@@ -455,13 +456,13 @@ $(document).ready(function() {
                     console.log('successfully sent cart to db.');
                 } else {
                     console.log('cart not successfully sent to db.');
-                    $('#checkout-submit').prop('disabled', true);
+                    $('#go-to-step-two').prop('disabled', true);
                 }
             });
         });
     }
 
-    $('#checkout-submit').click(function() {
+    $('#go-to-step-two').click(function() {
         // if anything is null then alert, else submit a post with donor info
         if (checkForm(document.getElementById('donor-info'))) {
             if (sessionStorage.getItem('cart') === null ||
@@ -496,10 +497,7 @@ $(document).ready(function() {
 
                 insert.success(function(res) {
                     if(res.success === true) {
-                        if (displayed === false) {
-                            displayed = true;
-                            displaySuccess();
-                        }
+                        stepTwo();
                     }
                 });
 
@@ -514,7 +512,31 @@ $(document).ready(function() {
         }
     });
 
-    var displayed = false;
+    function stepTwo() {
+        // delete the donor form and the go to step 2 button
+        $('#donor-info-form').remove();
+        $('#go-to-step-two').remove();
+
+        // show the credit form and add the button to go to step 3
+        $('#donor-credit-form').css('display', 'block');
+        var aTag = document.createElement('a');
+        var stepTwoContinueButton = document.createElement('button');
+        stepTwoContinueButton.id = 'go-to-step-three';
+        stepTwoContinueButton.type = 'button';
+        stepTwoContinueButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button pull-right';
+        stepTwoContinueButton.appendChild(document.createTextNode('Continuar'));
+        stepTwoContinueButton.onclick = function() {
+            stepThree();
+        }
+        aTag.appendChild(stepTwoContinueButton);
+        document.getElementById('donor-credit-form').appendChild(aTag);
+    }
+
+    function stepThree() {
+        console.log('congrats you\'re at step three');
+        // displaySuccess();
+    }
+
     // Displays Success Page after ajax call
     function displaySuccess (){
         // empty child _id's from session storage cart

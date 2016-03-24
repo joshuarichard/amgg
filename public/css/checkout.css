@@ -119,7 +119,13 @@ table {
 }
 
 /*ID Styles*/
-#checkout-submit {
+#go-to-step-two {
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-right: 1em;
+}
+
+#go-to-step-three {
 	margin-top: 1em;
 	margin-bottom: 1em;
 	margin-right: 1em;

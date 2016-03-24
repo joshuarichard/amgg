@@ -392,309 +392,380 @@
                 <div class="form col-md-6" id="donor-info">
                     <span class="header">Datos de Facturación</span>
                     <hr>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Nombre</label>
-                        <div class="col-md-8">
-                            <input id="form-first-name" class="form-control" type="text" name="first-name" placeholder="First Name" >
+                    <div id="donor-info-form">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Nombre</label>
+                            <div class="col-md-8">
+                                <input id="form-first-name" class="form-control" type="text" name="first-name" placeholder="First Name" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Apellido</label>
+                            <div class="col-md-8">
+                                <input id="form-last-name" class="form-control" type="text" name="last-name" placeholder="Last Name" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Tel&#233;fono</label>
+                            <div class="col-md-8">
+                                <input id="form-phone" class="form-control" type="text" name="phone" placeholder="(978) 927-2300" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Dirección</label>
+                            <div class="col-md-8">
+                                <input id="form-address-street" class="form-control" type="text" name="address" placeholder="Street" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"></label>
+                            <div class="col-md-8">
+                                <input id="form-address-city" class="form-control" type="text" name="address-city" placeholder="City" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">País</label>
+                            <div class="col-md-8">
+                                <select id="form-country" name="country" class="inputbox form-control validate[required]">
+                                    <option value=""><font><font>Select country</font></font></option>
+                                    <option value="Afghanistan"><font><font>Afghanistan</font></font></option>
+                                    <option value="Albania"><font><font>Albania</font></font></option>
+                                    <option value="Algeria"><font><font>Algeria</font></font></option>
+                                    <option value="American Samoa"><font><font>American Samoa</font></font></option>
+                                    <option value="Andorra"><font><font>Andorra</font></font></option>
+                                    <option value="Angola"><font><font>Angola</font></font></option>
+                                    <option value="Anguilla"><font><font>Anguilla</font></font></option>
+                                    <option value="Antarctica"><font><font>Antarctica</font></font></option>
+                                    <option value="Antigua and Barbuda"><font><font>Antigua and Barbuda</font></font></option>
+                                    <option value="Argentina"><font><font>Argentina</font></font></option>
+                                    <option value="Armenia"><font><font>Armenia</font></font></option>
+                                    <option value="Aruba"><font><font>Aruba</font></font></option>
+                                    <option value="Australia"><font><font>Australia</font></font></option>
+                                    <option value="Austria"><font><font>Austria</font></font></option>
+                                    <option value="Azerbaijan"><font><font>Azerbaijan</font></font></option>
+                                    <option value="Bahamas"><font><font>Bahamas</font></font></option>
+                                    <option value="Bahrain"><font><font>Bahrain</font></font></option>
+                                    <option value="Bangladesh"><font><font>Bangladesh</font></font></option>
+                                    <option value="Barbados"><font><font>Barbados</font></font></option>
+                                    <option value="Belarus"><font><font>Belarus</font></font></option>
+                                    <option value="Belgium"><font><font>Belgium</font></font></option>
+                                    <option value="Belize"><font><font>Belize</font></font></option>
+                                    <option value="Benin"><font><font>Benin</font></font></option>
+                                    <option value="Bermuda"><font><font>Bermuda</font></font></option>
+                                    <option value="Bhutan"><font><font>Bhutan</font></font></option>
+                                    <option value="Bolivia"><font><font>Bolivia</font></font></option>
+                                    <option value="Bosnia and Herzegowina"><font><font>Bosnia and Herzegowina</font></font></option>
+                                    <option value="Botswana"><font><font>Botswana</font></font></option>
+                                    <option value="Bouvet Island"><font><font>Bouvet Island</font></font></option>
+                                    <option value="Brazil"><font><font>Brazil</font></font></option>
+                                    <option value="British Indian Ocean Territory"><font><font>British Indian Ocean Territory</font></font></option>
+                                    <option value="Brunei Darussalam"><font><font>Brunei Darussalam</font></font></option>
+                                    <option value="Bulgaria"><font><font>Bulgaria</font></font></option>
+                                    <option value="Burkina Faso"><font><font>Burkina Faso</font></font></option>
+                                    <option value="Burundi"><font><font>Burundi</font></font></option>
+                                    <option value="Cambodia"><font><font>Cambodia</font></font></option>
+                                    <option value="Cameroon"><font><font>Cameroon</font></font></option>
+                                    <option value="Canada"><font><font>Canada</font></font></option>
+                                    <option value="Canary Islands"><font><font>Canary Islands</font></font></option>
+                                    <option value="Cape Verde"><font><font>Cape Verde</font></font></option>
+                                    <option value="Cayman Islands"><font><font>Cayman Islands</font></font></option>
+                                    <option value="Central African Republic"><font><font>Central African Republic</font></font></option>
+                                    <option value="Chad"><font><font>Chad</font></font></option>
+                                    <option value="Chile"><font><font>Chile</font></font></option>
+                                    <option value="China"><font><font>China</font></font></option>
+                                    <option value="Christmas Island"><font><font>Christmas Island</font></font></option>
+                                    <option value="Cocos (Keeling) Islands"><font><font>Cocos (Keeling) Islands</font></font></option>
+                                    <option value="Colombia"><font><font>Colombia</font></font></option>
+                                    <option value="Comoros"><font><font>Comoros</font></font></option>
+                                    <option value="Congo"><font><font>Congo</font></font></option>
+                                    <option value="Cook Islands"><font><font>Cook Islands</font></font></option>
+                                    <option value="Costa Rica"><font><font>Costa Rica</font></font></option>
+                                    <option value="Cote D'Ivoire"><font><font>Cote D'Ivoire</font></font></option>
+                                    <option value="Croatia"><font><font>Croatia</font></font></option>
+                                    <option value="Cuba"><font><font>Cuba</font></font></option>
+                                    <option value="Cyprus"><font><font>Cyprus</font></font></option>
+                                    <option value="Czech Republic"><font><font>Czech Republic</font></font></option>
+                                    <option value="Denmark"><font><font>Denmark</font></font></option>
+                                    <option value="Djibouti"><font><font>Djibouti</font></font></option>
+                                    <option value="Dominica"><font><font>Dominica</font></font></option>
+                                    <option value="Dominican Republic"><font><font>Dominican Republic</font></font></option>
+                                    <option value="East Timor"><font><font>East Timor</font></font></option>
+                                    <option value="East Timor"><font><font>East Timor</font></font></option>
+                                    <option value="Ecuador"><font><font>Ecuador</font></font></option>
+                                    <option value="Egypt"><font><font>Egypt</font></font></option>
+                                    <option value="El Salvador"><font><font>The Savior</font></font></option>
+                                    <option value="Equatorial Guinea"><font><font>Equatorial Guinea</font></font></option>
+                                    <option value="Eritrea"><font><font>Eritrea</font></font></option>
+                                    <option value="Estonia"><font><font>Estonia</font></font></option>
+                                    <option value="Ethiopia"><font><font>Ethiopia</font></font></option>
+                                    <option value="Falkland Islands (Malvinas)"><font><font>Falkland Islands (Malvinas)</font></font></option>
+                                    <option value="Faroe Islands"><font><font>Faroe Islands</font></font></option>
+                                    <option value="Fiji"><font><font>Fiji</font></font></option>
+                                    <option value="Finland"><font><font>Finland</font></font></option>
+                                    <option value="France"><font><font>France</font></font></option>
+                                    <option value="France, Metropolitan"><font><font>France, Metropolitan</font></font></option>
+                                    <option value="French Guiana"><font><font>French Guiana</font></font></option>
+                                    <option value="French Polynesia"><font><font>French Polynesia</font></font></option>
+                                    <option value="French Southern Territories"><font><font>French Southern Territories</font></font></option>
+                                    <option value="Gabon"><font><font>Gabon</font></font></option>
+                                    <option value="Gambia"><font><font>Gambia</font></font></option>
+                                    <option value="Georgia"><font><font>Georgia</font></font></option>
+                                    <option value="Germany"><font><font>Germany</font></font></option>
+                                    <option value="Ghana"><font><font>Ghana</font></font></option>
+                                    <option value="Gibraltar"><font><font>Gibraltar</font></font></option>
+                                    <option value="Greece"><font><font>Greece</font></font></option>
+                                    <option value="Greenland"><font><font>Greenland</font></font></option>
+                                    <option value="Grenada"><font><font>Grenada</font></font></option>
+                                    <option value="Guadeloupe"><font><font>Guadeloupe</font></font></option>
+                                    <option value="Guam"><font><font>Guam</font></font></option>
+                                    <option value="Guatemala" selected="selected"><font><font>Guatemala</font></font></option>
+                                    <option value="Guinea"><font><font>Guinea</font></font></option>
+                                    <option value="Guinea-bissau"><font><font>Guinea-Bissau</font></font></option>
+                                    <option value="Guyana"><font><font>Guyana</font></font></option>
+                                    <option value="Haiti"><font><font>Haiti</font></font></option>
+                                    <option value="Heard and Mc Donald Islands"><font><font>Heard and McDonald Islands</font></font></option>
+                                    <option value="Honduras"><font><font>Honduras</font></font></option>
+                                    <option value="Hong Kong"><font><font>Hong Kong</font></font></option>
+                                    <option value="Hungary"><font><font>Hungary</font></font></option>
+                                    <option value="Iceland"><font><font>Iceland</font></font></option>
+                                    <option value="India"><font><font>India</font></font></option>
+                                    <option value="Indonesia"><font><font>Indonesia</font></font></option>
+                                    <option value="Iran (Islamic Republic of)"><font><font>Iran (Islamic Republic of)</font></font></option>
+                                    <option value="Iraq"><font><font>Iraq</font></font></option>
+                                    <option value="Ireland"><font><font>Ireland</font></font></option>
+                                    <option value="Israel"><font><font>Israel</font></font></option>
+                                    <option value="Italy"><font><font>Italy</font></font></option>
+                                    <option value="Jamaica"><font><font>Jamaica</font></font></option>
+                                    <option value="Japan"><font><font>Japan</font></font></option>
+                                    <option value="Jersey"><font><font>Jersey</font></font></option>
+                                    <option value="Jordan"><font><font>Jordan</font></font></option>
+                                    <option value="Kazakhstan"><font><font>Kazakhstan</font></font></option>
+                                    <option value="Kenya"><font><font>Kenya</font></font></option>
+                                    <option value="Kiribati"><font><font>Kiribati</font></font></option>
+                                    <option value="Korea, Democratic People's Republic of"><font><font>Korea, Democratic People's Republic of</font></font></option>
+                                    <option value="Korea, Republic of"><font><font>Korea, Republic of</font></font></option>
+                                    <option value="Kuwait"><font><font>Kuwait</font></font></option>
+                                    <option value="Kyrgyzstan"><font><font>Kyrgyzstan</font></font></option>
+                                    <option value="Lao People's Democratic Republic"><font><font>Lao People's Democratic Republic</font></font></option>
+                                    <option value="Latvia"><font><font>Latvia</font></font></option>
+                                    <option value="Lebanon"><font><font>Lebanon</font></font></option>
+                                    <option value="Lesotho"><font><font>Lesotho</font></font></option>
+                                    <option value="Liberia"><font><font>Liberia</font></font></option>
+                                    <option value="Libyan Arab Jamahiriya"><font><font>Libyan Arab Jamahiriya</font></font></option>
+                                    <option value="Liechtenstein"><font><font>Liechtenstein</font></font></option>
+                                    <option value="Lithuania"><font><font>Lithuania</font></font></option>
+                                    <option value="Luxembourg"><font><font>Luxembourg</font></font></option>
+                                    <option value="Macau"><font><font>Macau</font></font></option>
+                                    <option value="Macedonia, The Former Yugoslav Republic of"><font><font>Macedonia, The Former Yugoslav Republic of</font></font></option>
+                                    <option value="Madagascar"><font><font>Madagascar</font></font></option>
+                                    <option value="Malawi"><font><font>Malawi</font></font></option>
+                                    <option value="Malaysia"><font><font>Malaysia</font></font></option>
+                                    <option value="Maldives"><font><font>Maldives</font></font></option>
+                                    <option value="Mali"><font><font>Mali</font></font></option>
+                                    <option value="Malta"><font><font>malt</font></font></option>
+                                    <option value="Marshall Islands"><font><font>Marshall Islands</font></font></option>
+                                    <option value="Martinique"><font><font>Martinique</font></font></option>
+                                    <option value="Mauritania"><font><font>Mauritania</font></font></option>
+                                    <option value="Mauritius"><font><font>Mauritius</font></font></option>
+                                    <option value="Mayotte"><font><font>Mayotte</font></font></option>
+                                    <option value="Mexico"><font><font>Mexico</font></font></option>
+                                    <option value="Micronesia, Federated States of"><font><font>Micronesia, Federated States of</font></font></option>
+                                    <option value="Moldova, Republic of"><font><font>Moldova, Republic of</font></font></option>
+                                    <option value="Monaco"><font><font>Monaco</font></font></option>
+                                    <option value="Mongolia"><font><font>Mongolia</font></font></option>
+                                    <option value="Montenegro"><font><font>Montenegro</font></font></option>
+                                    <option value="Montserrat"><font><font>Montserrat</font></font></option>
+                                    <option value="Morocco"><font><font>Morocco</font></font></option>
+                                    <option value="Mozambique"><font><font>Mozambique</font></font></option>
+                                    <option value="Myanmar"><font><font>Myanmar</font></font></option>
+                                    <option value="Namibia"><font><font>Namibia</font></font></option>
+                                    <option value="Nauru"><font><font>Nauru</font></font></option>
+                                    <option value="Nepal"><font><font>Nepal</font></font></option>
+                                    <option value="Netherlands"><font><font>Netherlands</font></font></option>
+                                    <option value="Netherlands Antilles"><font><font>Netherlands Antilles</font></font></option>
+                                    <option value="New Caledonia"><font><font>New Caledonia</font></font></option>
+                                    <option value="New Zealand"><font><font>New Zealand</font></font></option>
+                                    <option value="Nicaragua"><font><font>Nicaragua</font></font></option>
+                                    <option value="Niger"><font><font>Niger</font></font></option>
+                                    <option value="Nigeria"><font><font>Nigeria</font></font></option>
+                                    <option value="Niue"><font><font>Niue</font></font></option>
+                                    <option value="Norfolk Island"><font><font>Norfolk Island</font></font></option>
+                                    <option value="Northern Mariana Islands"><font><font>Northern Mariana Islands</font></font></option>
+                                    <option value="Norway"><font><font>Norway</font></font></option>
+                                    <option value="Oman"><font><font>Oman</font></font></option>
+                                    <option value="Pakistan"><font><font>Pakistan</font></font></option>
+                                    <option value="Palau"><font><font>Palau</font></font></option>
+                                    <option value="Panama"><font><font>Panama</font></font></option>
+                                    <option value="Papua New Guinea"><font><font>Papua New Guinea</font></font></option>
+                                    <option value="Paraguay"><font><font>Paraguay</font></font></option>
+                                    <option value="Peru"><font><font>Peru</font></font></option>
+                                    <option value="Philippines"><font><font>Philippines</font></font></option>
+                                    <option value="Pitcairn"><font><font>Pitcairn</font></font></option>
+                                    <option value="Poland"><font><font>Poland</font></font></option>
+                                    <option value="Portugal"><font><font>Portugal</font></font></option>
+                                    <option value="Puerto Rico"><font><font>Puerto Rico</font></font></option>
+                                    <option value="Qatar"><font><font>Qatar</font></font></option>
+                                    <option value="Reunion"><font><font>Meeting</font></font></option>
+                                    <option value="Romania"><font><font>Romania</font></font></option>
+                                    <option value="Russian Federation"><font><font>Russian Federation</font></font></option>
+                                    <option value="Rwanda"><font><font>Rwanda</font></font></option>
+                                    <option value="Saint Kitts and Nevis"><font><font>Saint Kitts and Nevis</font></font></option>
+                                    <option value="Saint Lucia"><font><font>Saint Lucia</font></font></option>
+                                    <option value="Saint Vincent and the Grenadines"><font><font>Saint Vincent and the Grenadines</font></font></option>
+                                    <option value="Samoa"><font><font>Samoa</font></font></option>
+                                    <option value="San Marino"><font><font>San Marino</font></font></option>
+                                    <option value="Sao Tome and Principe"><font><font>Sao Tome and Principe</font></font></option>
+                                    <option value="Saudi Arabia"><font><font>Saudi Arabia</font></font></option>
+                                    <option value="Senegal"><font><font>Senegal</font></font></option>
+                                    <option value="Serbia"><font><font>Serbia</font></font></option>
+                                    <option value="Seychelles"><font><font>Seychelles</font></font></option>
+                                    <option value="Sierra Leone"><font><font>Sierra Leone</font></font></option>
+                                    <option value="Singapore"><font><font>Singapore</font></font></option>
+                                    <option value="Slovakia (Slovak Republic)"><font><font>Slovakia (Slovak Republic)</font></font></option>
+                                    <option value="Slovenia"><font><font>Slovenia</font></font></option>
+                                    <option value="Solomon Islands"><font><font>Solomon Islands</font></font></option>
+                                    <option value="Somalia"><font><font>Somalia</font></font></option>
+                                    <option value="South Africa"><font><font>South Africa</font></font></option>
+                                    <option value="South Georgia and the South Sandwich Islands"><font><font>South Georgia and the South Sandwich Islands</font></font></option>
+                                    <option value="Spain"><font><font>Spain</font></font></option>
+                                    <option value="Sri Lanka"><font><font>Sri Lanka</font></font></option>
+                                    <option value="St. Barthelemy"><font><font>St. Barthelemy</font></font></option>
+                                    <option value="St. Eustatius"><font><font>St. Eustatius</font></font></option>
+                                    <option value="St. Helena"><font><font>St. Helena</font></font></option>
+                                    <option value="St. Pierre and Miquelon"><font><font>St. Pierre and Miquelon</font></font></option>
+                                    <option value="Sudan"><font><font>Sudan</font></font></option>
+                                    <option value="Suriname"><font><font>Suriname</font></font></option>
+                                    <option value="Svalbard and Jan Mayen Islands"><font><font>Svalbard and Jan Mayen Islands</font></font></option>
+                                    <option value="Swaziland"><font><font>Swaziland</font></font></option>
+                                    <option value="Sweden"><font><font>Sweden</font></font></option>
+                                    <option value="Switzerland"><font><font>Switzerland</font></font></option>
+                                    <option value="Syrian Arab Republic"><font><font>Syrian Arab Republic</font></font></option>
+                                    <option value="Taiwan"><font><font>Taiwan</font></font></option>
+                                    <option value="Tajikistan"><font><font>Tajikistan</font></font></option>
+                                    <option value="Tanzania, United Republic of"><font><font>Tanzania, United Republic of</font></font></option>
+                                    <option value="Thailand"><font><font>Thailand</font></font></option>
+                                    <option value="The Democratic Republic of Congo"><font><font>The Democratic Republic of Congo</font></font></option>
+                                    <option value="Togo"><font><font>Togo</font></font></option>
+                                    <option value="Tokelau"><font><font>Tokelau</font></font></option>
+                                    <option value="Tonga"><font><font>Tonga</font></font></option>
+                                    <option value="Trinidad and Tobago"><font><font>Trinidad and Tobago</font></font></option>
+                                    <option value="Tunisia"><font><font>Tunisia</font></font></option>
+                                    <option value="Turkey"><font><font>Turkey</font></font></option>
+                                    <option value="Turkmenistan"><font><font>Turkmenistan</font></font></option>
+                                    <option value="Turks and Caicos Islands"><font><font>Turks and Caicos Islands</font></font></option>
+                                    <option value="Tuvalu"><font><font>Tuvalu</font></font></option>
+                                    <option value="Uganda"><font><font>Uganda</font></font></option>
+                                    <option value="Ukraine"><font><font>Ukraine</font></font></option>
+                                    <option value="United Arab Emirates"><font><font>United Arab Emirates</font></font></option>
+                                    <option value="United Kingdom"><font><font>United Kingdom</font></font></option>
+                                    <option value="United States"><font><font>United States</font></font></option>
+                                    <option value="United States Minor Outlying Islands"><font><font>United States Minor Outlying Islands</font></font></option>
+                                    <option value="Uruguay"><font><font>Uruguay</font></font></option>
+                                    <option value="Uzbekistan"><font><font>Uzbekistan</font></font></option>
+                                    <option value="Vanuatu"><font><font>Vanuatu</font></font></option>
+                                    <option value="Vatican City State (Holy See)"><font><font>Vatican City State (Holy See)</font></font></option>
+                                    <option value="Venezuela"><font><font>Venezuela</font></font></option>
+                                    <option value="Viet Nam"><font><font>Vietnam</font></font></option>
+                                    <option value="Virgin Islands (British)"><font><font>Virgin Islands (British)</font></font></option>
+                                    <option value="Virgin Islands (U.S.)"><font><font>Virgin Islands (US)</font></font></option>
+                                    <option value="Wallis and Futuna Islands"><font><font>Wallis and Futuna Islands</font></font></option>
+                                    <option value="Western Sahara"><font><font>Western Sahara</font></font></option>
+                                    <option value="Yemen"><font><font>Yemen</font></font></option>
+                                    <option value="Zambia"><font><font>Zambia</font></font></option>
+                                    <option value="Zimbabwe"><font><font>Zimbabwe</font></font></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Correo Electrónico</label>
+                            <div class="col-md-8">
+                                <input id="form-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Contraseña</label>
+                            <div class="col-md-8">
+                                <input id="form-password" class="form-control" type="password" name="password" placeholder="contraseña" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Confirmar Contraseña</label>
+                            <div class="col-md-8">
+                                <input id="form-password-confirm" class="form-control" type="password" name="password-confirm" placeholder="confirmar contraseña" >
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Apellido</label>
-                        <div class="col-md-8">
-                            <input id="form-last-name" class="form-control" type="text" name="last-name" placeholder="Last Name" >
+                    <div id="donor-credit-form" style="display: none;">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Número de Tarjeta</label>
+                            <div class="col-md-8">
+                                <input id="form-credit" class="form-control" type="text" name="credit" placeholder="xxxx xxxx xxxx xxxx" >
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Tel&#233;fono</label>
-                        <div class="col-md-8">
-                            <input id="form-phone" class="form-control" type="text" name="phone" placeholder="(978) 927-2300" >
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">CVV</label>
+                            <div class="col-md-8">
+                                <input id="form-cvv" class="form-control" type="text" name="cvv" placeholder="123" >
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Dirección</label>
-                        <div class="col-md-8">
-                            <input id="form-address-street" class="form-control" type="text" name="address" placeholder="Street" >
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Fecha de Caducidad</label>
+                            <div class="expiration-date">
+                                <div class="col-md-8">
+                                    <div class="dropdown">
+                                        <button id="form-expiration-1" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        01
+                                        <span class="caret"></span>
+                                        </button>
+                                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#">02</a></li>
+                                        <li><a href="#">03</a></li>
+                                        <li><a href="#">04</a></li>
+                                        <li><a href="#">05</a></li>
+                                        <li><a href="#">06</a></li>
+                                        <li><a href="#">07</a></li>
+                                        <li><a href="#">08</a></li>
+                                        <li><a href="#">09</a></li>
+                                        <li><a href="#">10</a></li>
+                                        <li><a href="#">11</a></li>
+                                        <li><a href="#">12</a></li>
+                                      </ul>
+                                    </div>
+                                    /
+                                    <div class="dropdown">
+                                        <button id="form-expiration-2" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        16
+                                        <span class="caret"></span>
+                                        </button>
+                                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#">17</a></li>
+                                        <li><a href="#">18</a></li>
+                                        <li><a href="#">19</a></li>
+                                        <li><a href="#">20</a></li>
+                                        <li><a href="#">21</a></li>
+                                        <li><a href="#">22</a></li>
+                                        <li><a href="#">23</a></li>
+                                        <li><a href="#">24</a></li>
+                                        <li><a href="#">25</a></li>
+                                        <li><a href="#">26</a></li>
+                                        <li><a href="#">27</a></li>
+                                        <li><a href="#">28</a></li>
+                                        <li><a href="#">29</a></li>
+                                        <li><a href="#">30</a></li>
+                                      </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label"></label>
-                        <div class="col-md-8">
-                            <input id="form-address-city" class="form-control" type="text" name="address-city" placeholder="City" >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">País</label>
-                        <div class="col-md-8">
-                            <select id="form-country" name="country" class="inputbox form-control validate[required]">
-                                <option value=""><font><font>Select country</font></font></option>
-                                <option value="Afghanistan"><font><font>Afghanistan</font></font></option>
-                                <option value="Albania"><font><font>Albania</font></font></option>
-                                <option value="Algeria"><font><font>Algeria</font></font></option>
-                                <option value="American Samoa"><font><font>American Samoa</font></font></option>
-                                <option value="Andorra"><font><font>Andorra</font></font></option>
-                                <option value="Angola"><font><font>Angola</font></font></option>
-                                <option value="Anguilla"><font><font>Anguilla</font></font></option>
-                                <option value="Antarctica"><font><font>Antarctica</font></font></option>
-                                <option value="Antigua and Barbuda"><font><font>Antigua and Barbuda</font></font></option>
-                                <option value="Argentina"><font><font>Argentina</font></font></option>
-                                <option value="Armenia"><font><font>Armenia</font></font></option>
-                                <option value="Aruba"><font><font>Aruba</font></font></option>
-                                <option value="Australia"><font><font>Australia</font></font></option>
-                                <option value="Austria"><font><font>Austria</font></font></option>
-                                <option value="Azerbaijan"><font><font>Azerbaijan</font></font></option>
-                                <option value="Bahamas"><font><font>Bahamas</font></font></option>
-                                <option value="Bahrain"><font><font>Bahrain</font></font></option>
-                                <option value="Bangladesh"><font><font>Bangladesh</font></font></option>
-                                <option value="Barbados"><font><font>Barbados</font></font></option>
-                                <option value="Belarus"><font><font>Belarus</font></font></option>
-                                <option value="Belgium"><font><font>Belgium</font></font></option>
-                                <option value="Belize"><font><font>Belize</font></font></option>
-                                <option value="Benin"><font><font>Benin</font></font></option>
-                                <option value="Bermuda"><font><font>Bermuda</font></font></option>
-                                <option value="Bhutan"><font><font>Bhutan</font></font></option>
-                                <option value="Bolivia"><font><font>Bolivia</font></font></option>
-                                <option value="Bosnia and Herzegowina"><font><font>Bosnia and Herzegowina</font></font></option>
-                                <option value="Botswana"><font><font>Botswana</font></font></option>
-                                <option value="Bouvet Island"><font><font>Bouvet Island</font></font></option>
-                                <option value="Brazil"><font><font>Brazil</font></font></option>
-                                <option value="British Indian Ocean Territory"><font><font>British Indian Ocean Territory</font></font></option>
-                                <option value="Brunei Darussalam"><font><font>Brunei Darussalam</font></font></option>
-                                <option value="Bulgaria"><font><font>Bulgaria</font></font></option>
-                                <option value="Burkina Faso"><font><font>Burkina Faso</font></font></option>
-                                <option value="Burundi"><font><font>Burundi</font></font></option>
-                                <option value="Cambodia"><font><font>Cambodia</font></font></option>
-                                <option value="Cameroon"><font><font>Cameroon</font></font></option>
-                                <option value="Canada"><font><font>Canada</font></font></option>
-                                <option value="Canary Islands"><font><font>Canary Islands</font></font></option>
-                                <option value="Cape Verde"><font><font>Cape Verde</font></font></option>
-                                <option value="Cayman Islands"><font><font>Cayman Islands</font></font></option>
-                                <option value="Central African Republic"><font><font>Central African Republic</font></font></option>
-                                <option value="Chad"><font><font>Chad</font></font></option>
-                                <option value="Chile"><font><font>Chile</font></font></option>
-                                <option value="China"><font><font>China</font></font></option>
-                                <option value="Christmas Island"><font><font>Christmas Island</font></font></option>
-                                <option value="Cocos (Keeling) Islands"><font><font>Cocos (Keeling) Islands</font></font></option>
-                                <option value="Colombia"><font><font>Colombia</font></font></option>
-                                <option value="Comoros"><font><font>Comoros</font></font></option>
-                                <option value="Congo"><font><font>Congo</font></font></option>
-                                <option value="Cook Islands"><font><font>Cook Islands</font></font></option>
-                                <option value="Costa Rica"><font><font>Costa Rica</font></font></option>
-                                <option value="Cote D'Ivoire"><font><font>Cote D'Ivoire</font></font></option>
-                                <option value="Croatia"><font><font>Croatia</font></font></option>
-                                <option value="Cuba"><font><font>Cuba</font></font></option>
-                                <option value="Cyprus"><font><font>Cyprus</font></font></option>
-                                <option value="Czech Republic"><font><font>Czech Republic</font></font></option>
-                                <option value="Denmark"><font><font>Denmark</font></font></option>
-                                <option value="Djibouti"><font><font>Djibouti</font></font></option>
-                                <option value="Dominica"><font><font>Dominica</font></font></option>
-                                <option value="Dominican Republic"><font><font>Dominican Republic</font></font></option>
-                                <option value="East Timor"><font><font>East Timor</font></font></option>
-                                <option value="East Timor"><font><font>East Timor</font></font></option>
-                                <option value="Ecuador"><font><font>Ecuador</font></font></option>
-                                <option value="Egypt"><font><font>Egypt</font></font></option>
-                                <option value="El Salvador"><font><font>The Savior</font></font></option>
-                                <option value="Equatorial Guinea"><font><font>Equatorial Guinea</font></font></option>
-                                <option value="Eritrea"><font><font>Eritrea</font></font></option>
-                                <option value="Estonia"><font><font>Estonia</font></font></option>
-                                <option value="Ethiopia"><font><font>Ethiopia</font></font></option>
-                                <option value="Falkland Islands (Malvinas)"><font><font>Falkland Islands (Malvinas)</font></font></option>
-                                <option value="Faroe Islands"><font><font>Faroe Islands</font></font></option>
-                                <option value="Fiji"><font><font>Fiji</font></font></option>
-                                <option value="Finland"><font><font>Finland</font></font></option>
-                                <option value="France"><font><font>France</font></font></option>
-                                <option value="France, Metropolitan"><font><font>France, Metropolitan</font></font></option>
-                                <option value="French Guiana"><font><font>French Guiana</font></font></option>
-                                <option value="French Polynesia"><font><font>French Polynesia</font></font></option>
-                                <option value="French Southern Territories"><font><font>French Southern Territories</font></font></option>
-                                <option value="Gabon"><font><font>Gabon</font></font></option>
-                                <option value="Gambia"><font><font>Gambia</font></font></option>
-                                <option value="Georgia"><font><font>Georgia</font></font></option>
-                                <option value="Germany"><font><font>Germany</font></font></option>
-                                <option value="Ghana"><font><font>Ghana</font></font></option>
-                                <option value="Gibraltar"><font><font>Gibraltar</font></font></option>
-                                <option value="Greece"><font><font>Greece</font></font></option>
-                                <option value="Greenland"><font><font>Greenland</font></font></option>
-                                <option value="Grenada"><font><font>Grenada</font></font></option>
-                                <option value="Guadeloupe"><font><font>Guadeloupe</font></font></option>
-                                <option value="Guam"><font><font>Guam</font></font></option>
-                                <option value="Guatemala" selected="selected"><font><font>Guatemala</font></font></option>
-                                <option value="Guinea"><font><font>Guinea</font></font></option>
-                                <option value="Guinea-bissau"><font><font>Guinea-Bissau</font></font></option>
-                                <option value="Guyana"><font><font>Guyana</font></font></option>
-                                <option value="Haiti"><font><font>Haiti</font></font></option>
-                                <option value="Heard and Mc Donald Islands"><font><font>Heard and McDonald Islands</font></font></option>
-                                <option value="Honduras"><font><font>Honduras</font></font></option>
-                                <option value="Hong Kong"><font><font>Hong Kong</font></font></option>
-                                <option value="Hungary"><font><font>Hungary</font></font></option>
-                                <option value="Iceland"><font><font>Iceland</font></font></option>
-                                <option value="India"><font><font>India</font></font></option>
-                                <option value="Indonesia"><font><font>Indonesia</font></font></option>
-                                <option value="Iran (Islamic Republic of)"><font><font>Iran (Islamic Republic of)</font></font></option>
-                                <option value="Iraq"><font><font>Iraq</font></font></option>
-                                <option value="Ireland"><font><font>Ireland</font></font></option>
-                                <option value="Israel"><font><font>Israel</font></font></option>
-                                <option value="Italy"><font><font>Italy</font></font></option>
-                                <option value="Jamaica"><font><font>Jamaica</font></font></option>
-                                <option value="Japan"><font><font>Japan</font></font></option>
-                                <option value="Jersey"><font><font>Jersey</font></font></option>
-                                <option value="Jordan"><font><font>Jordan</font></font></option>
-                                <option value="Kazakhstan"><font><font>Kazakhstan</font></font></option>
-                                <option value="Kenya"><font><font>Kenya</font></font></option>
-                                <option value="Kiribati"><font><font>Kiribati</font></font></option>
-                                <option value="Korea, Democratic People's Republic of"><font><font>Korea, Democratic People's Republic of</font></font></option>
-                                <option value="Korea, Republic of"><font><font>Korea, Republic of</font></font></option>
-                                <option value="Kuwait"><font><font>Kuwait</font></font></option>
-                                <option value="Kyrgyzstan"><font><font>Kyrgyzstan</font></font></option>
-                                <option value="Lao People's Democratic Republic"><font><font>Lao People's Democratic Republic</font></font></option>
-                                <option value="Latvia"><font><font>Latvia</font></font></option>
-                                <option value="Lebanon"><font><font>Lebanon</font></font></option>
-                                <option value="Lesotho"><font><font>Lesotho</font></font></option>
-                                <option value="Liberia"><font><font>Liberia</font></font></option>
-                                <option value="Libyan Arab Jamahiriya"><font><font>Libyan Arab Jamahiriya</font></font></option>
-                                <option value="Liechtenstein"><font><font>Liechtenstein</font></font></option>
-                                <option value="Lithuania"><font><font>Lithuania</font></font></option>
-                                <option value="Luxembourg"><font><font>Luxembourg</font></font></option>
-                                <option value="Macau"><font><font>Macau</font></font></option>
-                                <option value="Macedonia, The Former Yugoslav Republic of"><font><font>Macedonia, The Former Yugoslav Republic of</font></font></option>
-                                <option value="Madagascar"><font><font>Madagascar</font></font></option>
-                                <option value="Malawi"><font><font>Malawi</font></font></option>
-                                <option value="Malaysia"><font><font>Malaysia</font></font></option>
-                                <option value="Maldives"><font><font>Maldives</font></font></option>
-                                <option value="Mali"><font><font>Mali</font></font></option>
-                                <option value="Malta"><font><font>malt</font></font></option>
-                                <option value="Marshall Islands"><font><font>Marshall Islands</font></font></option>
-                                <option value="Martinique"><font><font>Martinique</font></font></option>
-                                <option value="Mauritania"><font><font>Mauritania</font></font></option>
-                                <option value="Mauritius"><font><font>Mauritius</font></font></option>
-                                <option value="Mayotte"><font><font>Mayotte</font></font></option>
-                                <option value="Mexico"><font><font>Mexico</font></font></option>
-                                <option value="Micronesia, Federated States of"><font><font>Micronesia, Federated States of</font></font></option>
-                                <option value="Moldova, Republic of"><font><font>Moldova, Republic of</font></font></option>
-                                <option value="Monaco"><font><font>Monaco</font></font></option>
-                                <option value="Mongolia"><font><font>Mongolia</font></font></option>
-                                <option value="Montenegro"><font><font>Montenegro</font></font></option>
-                                <option value="Montserrat"><font><font>Montserrat</font></font></option>
-                                <option value="Morocco"><font><font>Morocco</font></font></option>
-                                <option value="Mozambique"><font><font>Mozambique</font></font></option>
-                                <option value="Myanmar"><font><font>Myanmar</font></font></option>
-                                <option value="Namibia"><font><font>Namibia</font></font></option>
-                                <option value="Nauru"><font><font>Nauru</font></font></option>
-                                <option value="Nepal"><font><font>Nepal</font></font></option>
-                                <option value="Netherlands"><font><font>Netherlands</font></font></option>
-                                <option value="Netherlands Antilles"><font><font>Netherlands Antilles</font></font></option>
-                                <option value="New Caledonia"><font><font>New Caledonia</font></font></option>
-                                <option value="New Zealand"><font><font>New Zealand</font></font></option>
-                                <option value="Nicaragua"><font><font>Nicaragua</font></font></option>
-                                <option value="Niger"><font><font>Niger</font></font></option>
-                                <option value="Nigeria"><font><font>Nigeria</font></font></option>
-                                <option value="Niue"><font><font>Niue</font></font></option>
-                                <option value="Norfolk Island"><font><font>Norfolk Island</font></font></option>
-                                <option value="Northern Mariana Islands"><font><font>Northern Mariana Islands</font></font></option>
-                                <option value="Norway"><font><font>Norway</font></font></option>
-                                <option value="Oman"><font><font>Oman</font></font></option>
-                                <option value="Pakistan"><font><font>Pakistan</font></font></option>
-                                <option value="Palau"><font><font>Palau</font></font></option>
-                                <option value="Panama"><font><font>Panama</font></font></option>
-                                <option value="Papua New Guinea"><font><font>Papua New Guinea</font></font></option>
-                                <option value="Paraguay"><font><font>Paraguay</font></font></option>
-                                <option value="Peru"><font><font>Peru</font></font></option>
-                                <option value="Philippines"><font><font>Philippines</font></font></option>
-                                <option value="Pitcairn"><font><font>Pitcairn</font></font></option>
-                                <option value="Poland"><font><font>Poland</font></font></option>
-                                <option value="Portugal"><font><font>Portugal</font></font></option>
-                                <option value="Puerto Rico"><font><font>Puerto Rico</font></font></option>
-                                <option value="Qatar"><font><font>Qatar</font></font></option>
-                                <option value="Reunion"><font><font>Meeting</font></font></option>
-                                <option value="Romania"><font><font>Romania</font></font></option>
-                                <option value="Russian Federation"><font><font>Russian Federation</font></font></option>
-                                <option value="Rwanda"><font><font>Rwanda</font></font></option>
-                                <option value="Saint Kitts and Nevis"><font><font>Saint Kitts and Nevis</font></font></option>
-                                <option value="Saint Lucia"><font><font>Saint Lucia</font></font></option>
-                                <option value="Saint Vincent and the Grenadines"><font><font>Saint Vincent and the Grenadines</font></font></option>
-                                <option value="Samoa"><font><font>Samoa</font></font></option>
-                                <option value="San Marino"><font><font>San Marino</font></font></option>
-                                <option value="Sao Tome and Principe"><font><font>Sao Tome and Principe</font></font></option>
-                                <option value="Saudi Arabia"><font><font>Saudi Arabia</font></font></option>
-                                <option value="Senegal"><font><font>Senegal</font></font></option>
-                                <option value="Serbia"><font><font>Serbia</font></font></option>
-                                <option value="Seychelles"><font><font>Seychelles</font></font></option>
-                                <option value="Sierra Leone"><font><font>Sierra Leone</font></font></option>
-                                <option value="Singapore"><font><font>Singapore</font></font></option>
-                                <option value="Slovakia (Slovak Republic)"><font><font>Slovakia (Slovak Republic)</font></font></option>
-                                <option value="Slovenia"><font><font>Slovenia</font></font></option>
-                                <option value="Solomon Islands"><font><font>Solomon Islands</font></font></option>
-                                <option value="Somalia"><font><font>Somalia</font></font></option>
-                                <option value="South Africa"><font><font>South Africa</font></font></option>
-                                <option value="South Georgia and the South Sandwich Islands"><font><font>South Georgia and the South Sandwich Islands</font></font></option>
-                                <option value="Spain"><font><font>Spain</font></font></option>
-                                <option value="Sri Lanka"><font><font>Sri Lanka</font></font></option>
-                                <option value="St. Barthelemy"><font><font>St. Barthelemy</font></font></option>
-                                <option value="St. Eustatius"><font><font>St. Eustatius</font></font></option>
-                                <option value="St. Helena"><font><font>St. Helena</font></font></option>
-                                <option value="St. Pierre and Miquelon"><font><font>St. Pierre and Miquelon</font></font></option>
-                                <option value="Sudan"><font><font>Sudan</font></font></option>
-                                <option value="Suriname"><font><font>Suriname</font></font></option>
-                                <option value="Svalbard and Jan Mayen Islands"><font><font>Svalbard and Jan Mayen Islands</font></font></option>
-                                <option value="Swaziland"><font><font>Swaziland</font></font></option>
-                                <option value="Sweden"><font><font>Sweden</font></font></option>
-                                <option value="Switzerland"><font><font>Switzerland</font></font></option>
-                                <option value="Syrian Arab Republic"><font><font>Syrian Arab Republic</font></font></option>
-                                <option value="Taiwan"><font><font>Taiwan</font></font></option>
-                                <option value="Tajikistan"><font><font>Tajikistan</font></font></option>
-                                <option value="Tanzania, United Republic of"><font><font>Tanzania, United Republic of</font></font></option>
-                                <option value="Thailand"><font><font>Thailand</font></font></option>
-                                <option value="The Democratic Republic of Congo"><font><font>The Democratic Republic of Congo</font></font></option>
-                                <option value="Togo"><font><font>Togo</font></font></option>
-                                <option value="Tokelau"><font><font>Tokelau</font></font></option>
-                                <option value="Tonga"><font><font>Tonga</font></font></option>
-                                <option value="Trinidad and Tobago"><font><font>Trinidad and Tobago</font></font></option>
-                                <option value="Tunisia"><font><font>Tunisia</font></font></option>
-                                <option value="Turkey"><font><font>Turkey</font></font></option>
-                                <option value="Turkmenistan"><font><font>Turkmenistan</font></font></option>
-                                <option value="Turks and Caicos Islands"><font><font>Turks and Caicos Islands</font></font></option>
-                                <option value="Tuvalu"><font><font>Tuvalu</font></font></option>
-                                <option value="Uganda"><font><font>Uganda</font></font></option>
-                                <option value="Ukraine"><font><font>Ukraine</font></font></option>
-                                <option value="United Arab Emirates"><font><font>United Arab Emirates</font></font></option>
-                                <option value="United Kingdom"><font><font>United Kingdom</font></font></option>
-                                <option value="United States"><font><font>United States</font></font></option>
-                                <option value="United States Minor Outlying Islands"><font><font>United States Minor Outlying Islands</font></font></option>
-                                <option value="Uruguay"><font><font>Uruguay</font></font></option>
-                                <option value="Uzbekistan"><font><font>Uzbekistan</font></font></option>
-                                <option value="Vanuatu"><font><font>Vanuatu</font></font></option>
-                                <option value="Vatican City State (Holy See)"><font><font>Vatican City State (Holy See)</font></font></option>
-                                <option value="Venezuela"><font><font>Venezuela</font></font></option>
-                                <option value="Viet Nam"><font><font>Vietnam</font></font></option>
-                                <option value="Virgin Islands (British)"><font><font>Virgin Islands (British)</font></font></option>
-                                <option value="Virgin Islands (U.S.)"><font><font>Virgin Islands (US)</font></font></option>
-                                <option value="Wallis and Futuna Islands"><font><font>Wallis and Futuna Islands</font></font></option>
-                                <option value="Western Sahara"><font><font>Western Sahara</font></font></option>
-                                <option value="Yemen"><font><font>Yemen</font></font></option>
-                                <option value="Zambia"><font><font>Zambia</font></font></option>
-                                <option value="Zimbabwe"><font><font>Zimbabwe</font></font></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Correo Electrónico</label>
-                        <div class="col-md-8">
-                            <input id="form-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Contraseña</label>
-                        <div class="col-md-8">
-                            <input id="form-password" class="form-control" type="password" name="password" placeholder="contraseña" >
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-4 control-label">Confirmar Contraseña</label>
-                        <div class="col-md-8">
-                            <input id="form-password-confirm" class="form-control" type="password" name="password-confirm" placeholder="confirmar contraseña" >
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Nombre en la Tarjeta</label>
+                            <div class="col-md-8">
+                                <input id="form-name-on-card" class="form-control" type="text" name="name-on-card" placeholder="John Doe" >
+                            </div>
                         </div>
                     </div>
                     <a>
-                        <button id="checkout-submit" class="btn btn-primary btn-md child-intro-btn-sponsor sponsor-button pull-right" type="button">Proceed to Payment</button>
+                        <button id="go-to-step-two" class="btn btn-primary btn-md child-intro-btn-sponsor sponsor-button pull-right" type="button">Continuar</button>
                     </a>
                 </div>
             </div>
