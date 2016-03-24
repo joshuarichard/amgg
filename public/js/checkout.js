@@ -512,28 +512,57 @@ $(document).ready(function() {
         }
     });
 
+    function stepOne() {
+        $('#donor-info-form').css('display', 'block');
+        $('#go-to-step-two').css('display', 'block');
+        $('#delete-child-button').css('display', 'block');
+        $('#donor-credit-form').css('display', 'none');
+        $('#go-to-step-three').css('display', 'none');
+        $('#go-back-to-step-one').css('display', 'none');
+    }
+
     function stepTwo() {
         // delete the donor form and the go to step 2 button
-        $('#donor-info-form').remove();
-        $('#go-to-step-two').remove();
-
-        // show the credit form and add the button to go to step 3
+        $('#donor-info-form').css('display', 'none');
+        $('#go-to-step-two').css('display', 'none');
+        $('#delete-child-button').css('display', 'none');
         $('#donor-credit-form').css('display', 'block');
-        var aTag = document.createElement('a');
+        $('#go-to-step-three').css('display', 'block');
+        $('#go-back-to-step-one').css('display', 'block');
+        $('#go-to-step-three').click(stepThree);
+        $('#go-back-to-step-one').click(stepOne);
+
+        // show the credit form and add naviagtion buttons
+        /*
+        $('#donor-credit-form').css('display', 'block');
+        var aTag1 = document.createElement('a');
+        var aTag2 = document.createElement('a');
         var stepTwoContinueButton = document.createElement('button');
+        var stepTwoBackButton = document.createElement('button');
         stepTwoContinueButton.id = 'go-to-step-three';
+        stepTwoBackButton.id = 'go-back-to-step-two';
         stepTwoContinueButton.type = 'button';
+        stepTwoBackButton.type = 'button';
         stepTwoContinueButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button pull-right';
+        stepTwoBackButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button pull-right';
         stepTwoContinueButton.appendChild(document.createTextNode('Continuar'));
+        stepTwoBackButton.appendChild(document.createTextNode('Anterior'));
         stepTwoContinueButton.onclick = function() {
             stepThree();
         }
-        aTag.appendChild(stepTwoContinueButton);
-        document.getElementById('donor-credit-form').appendChild(aTag);
+        stepTwoBackButton.onclick = function() {
+            goBackToStepOne();
+        }
+        aTag1.appendChild(stepTwoContinueButton);
+        aTag2.appendChild(stepTwoBackButton);
+        document.getElementById('donor-credit-form').appendChild(aTag1);
+        document.getElementById('donor-credit-form').appendChild(aTag2);
+        */
     }
 
     function stepThree() {
         console.log('congrats you\'re at step three');
+
         // displaySuccess();
     }
 
