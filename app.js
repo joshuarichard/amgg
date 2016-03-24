@@ -784,6 +784,110 @@ app.post('/api/v1/donor/delete', function(req, res) {
     }
 });
 
+// GET /api/v1/children/find/:selector find a child's document without an id
+// TODO: error handling
+app.get('/api/v1/children/find/:selector', function(req, res) {
+    var selector = query.format(JSON.parse(req.params.selector));
+
+    // get a child pool
+    mongo.find(selector, childCollection, 100, true, function(children) {
+        var unsponsoredChildrenIds = [];
+        for (var key in children) {
+            unsponsoredChildrenIds.push(key);
+        }
+
+        // get all cart docs...
+        mongo.find({}, cartCollection, 10000, false, function(cartdocs) {
+            // ...and make an array of all child ids currently in carts
+            var idsOfKidsInCarts = [];
+            for (var key in cartdocs) {
+                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+                for (var e = 0; e < kidsInThisCart.length; e++) {
+                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                }
+            }
+
+            // then compare that to the list of ids in the child pool...
+            for (var c = 0; c < idsOfKidsInCarts.length; c++) {
+                if (children.hasOwnProperty(idsOfKidsInCarts[c])) {
+                    // ...and remove them from the child pool if in a cart
+                    delete children[idsOfKidsInCarts[c]];
+                }
+            }
+
+            res.send(children);
+        });
+    });
+});
+
+
+/* POST /api/v1/donor/reset
+ *
+ * emails the user with a temp password they can use to login with
+ * {
+ *   'token': 'token_goes_here',
+ *   'donor_id': donor_id
+ * }
+ */
+app.post('/api/v1/donor/reset', function(req, res) {
+    var donorEmail = req.body.email;
+    var password = Math.random().toString(36).slice(-8);
+    var changes = {
+        'password': '',
+        'salt': ''
+        };
+
+    // get a child pool
+    mongo.find(selector, donorCollection, 10000, true, function(donors) {
+        var donor = null;
+        for (var key in donors) {
+            donorsList.push(key);
+            if (donorEmail === key.body.email) {
+                donor = key;
+            }
+        }
+        mongo.get(donorID, donorCollection, false, function(data) {
+            emailBodyDeleteAccount += password;
+            emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
+                if(didEmail === true) {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Email sent.'
+                    });
+                    //if email sent successfully, change their password to the generated one
+                    // hash the password and store it in the db
+                    password.encrypt(password, function(hash, salt) {
+                        // fix the donor doc a bit before insertion
+                        changes['password'] = hash;
+                        changes['salt'] = salt;
+                    });
+
+                    // if it is valid then perform the donor edit
+                    mongo.edit(id, changes, donorCollection, function(result) {
+                        if (result.hasOwnProperty('err')) {
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
+                            });
+                        } else {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Donor password updated.'
+                            });
+                        }
+                    });
+
+                } else {
+                    res.status(500).send({
+                        success: false,
+                        message: 'An error occured on email.'
+                    });
+                }
+            });
+        });
+    });
+});
+
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
                      cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
       .listen(port, function () {

@@ -613,4 +613,29 @@ $(document).ready(function() {
     }
     $('.create-account-submit').click(createAccount);
     $('.close-create-account-overlay').click(toggleCreateAccount);
+
+    $('.forgot-password').click(function() {
+        // define the request
+        $.ajax({
+            url: '/api/v1/donor/reset',
+            type: 'POST',
+            data: {
+                'email': email
+            },
+            // on successful login, save token and donor id
+            // in session storage and go to the donor portal
+            success: function(res) {
+                alert('Please check your email for your temporary password');
+                console.log(res);
+            },
+            error: function(httpObj) {
+                if(httpObj.status === 401) {
+                    alert('correo o contraseña incorrectos.');
+                } else {
+                    console.log(JSON.stringify(httpObj));
+                    alert('see console for error info.');
+                }
+            }
+        });
+    });
 });
