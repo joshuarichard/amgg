@@ -172,7 +172,7 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
         for (var key in cartdocs) {
-            var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
+            var kidsInThisCart = cartdocs[key].los_niños_en_espera;
             for (var e = 0; e < kidsInThisCart.length; e++) {
                 idsOfKidsInCarts.push(kidsInThisCart[e]);
             }
