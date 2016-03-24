@@ -465,7 +465,7 @@ $(document).ready(function() {
         deleteAccountButtonContainer.className = 'delete-account-button-container';
         var deleteAccountButton = document.createElement('button');
         deleteAccountButton.className = 'btn btn-danger btn-lg';
-        deleteAccountButton.appendChild(document.createTextNode('delete account'));
+        deleteAccountButton.appendChild(document.createTextNode('Delete Account'));
         deleteAccountButtonContainer.appendChild(deleteAccountButton);
 
         // set on click button function
