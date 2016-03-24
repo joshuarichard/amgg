@@ -90,6 +90,8 @@ var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorshi
 var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
 var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
 var emailBodyDeleteAccount = 'A donor is requesting their account be deleted.';
+var emailHeaderTempPassword = 'Temporary password for AMGG';
+var emailBodyTempPassword = 'Your temporary password is: ';
 
 // error email strings
 var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
@@ -830,61 +832,56 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
  * }
  */
 app.post('/api/v1/donor/reset', function(req, res) {
-    var donorEmail = req.body.email;
-    var password = Math.random().toString(36).slice(-8);
-    var changes = {
-        'password': '',
-        'salt': ''
-        };
+    var selector = {'correo_electrónico': req.body.email};
+    var tempPassword = Math.random().toString(36).slice(-8);
+    var changes = { };
+
 
     // get a child pool
     mongo.find(selector, donorCollection, 10000, true, function(donors) {
         var donor = null;
         for (var key in donors) {
-            donorsList.push(key);
-            if (donorEmail === key.body.email) {
-                donor = key;
-            }
-        }
-        mongo.get(donorID, donorCollection, false, function(data) {
-            emailBodyDeleteAccount += password;
-            emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
-                if(didEmail === true) {
-                    res.status(200).send({
-                        success: true,
-                        message: 'Email sent.'
-                    });
-                    //if email sent successfully, change their password to the generated one
-                    // hash the password and store it in the db
-                    password.encrypt(password, function(hash, salt) {
-                        // fix the donor doc a bit before insertion
-                        changes['password'] = hash;
-                        changes['salt'] = salt;
-                    });
+            mongo.get(key, donorCollection, false, function(data) {
+                emailBodyTempPassword += tempPassword;
+                emailModule.email(data['correo_electrónico'], emailBodyDeleteAccount, emailBodyTempPassword, function(didEmail) {
+                    if(didEmail === true) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Email sent.'
+                        });
+                        //if email sent successfully, change their password to the generated one
+                        // hash the password and store it in the db
+                        password.encrypt(tempPassword, function(hash, salt) {
+                            // fix the donor doc a bit before insertion
+                            changes['password'] = hash;
+                            changes['salt'] = salt;
+                        });
 
-                    // if it is valid then perform the donor edit
-                    mongo.edit(id, changes, donorCollection, function(result) {
-                        if (result.hasOwnProperty('err')) {
-                            res.status(500).send({
-                                success: false,
-                                message: 'DB error.'
-                            });
-                        } else {
-                            res.status(200).send({
-                                success: true,
-                                message: 'Donor password updated.'
-                            });
-                        }
-                    });
+                        // if it is valid then perform the donor edit
+                        mongo.edit(key.id, changes, donorCollection, function(result) {
+                            if (result.hasOwnProperty('err')) {
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'DB error.'
+                                });
+                            } else {
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Donor password updated.'
+                                });
+                            }
+                        });
 
-                } else {
-                    res.status(500).send({
-                        success: false,
-                        message: 'An error occured on email.'
-                    });
-                }
+                    } else {
+                        res.status(500).send({
+                            success: false,
+                            message: 'An error occured on email.'
+                        });
+                    }
+                });
             });
-        });
+        }
+        
     });
 });
 

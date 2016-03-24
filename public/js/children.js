@@ -620,7 +620,7 @@ $(document).ready(function() {
             url: '/api/v1/donor/reset',
             type: 'POST',
             data: {
-                'email': email
+                'email': 'jacobbuettner@gmail.com'
             },
             // on successful login, save token and donor id
             // in session storage and go to the donor portal
