@@ -490,7 +490,7 @@ $(document).ready(function() {
                 });
             }
         };
-        
+
         tabD.appendChild(deleteAccountText);
         tabD.appendChild(deleteAccountButtonContainer);
 
