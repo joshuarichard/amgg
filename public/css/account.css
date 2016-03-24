@@ -136,6 +136,20 @@ table {
   text-align: center;
 }
 
+/* TabD styles */
+.delete-account-text {
+  width: 75%;
+  margin-top: 3em;
+  margin-bottom: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.delete-account-button-container {
+  text-align: center;
+}
+
 /* Componenet styles */
 /* spinning CSS loading spinner */
 .spinner {

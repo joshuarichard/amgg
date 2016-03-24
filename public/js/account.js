@@ -20,6 +20,9 @@ $(document).ready(function() {
         var tabC = document.createElement('div');
         tabC.id = 'sectionC';
         tabC.className = 'tab-pane fade in';
+        var tabD = document.createElement('div');
+        tabD.id = 'sectionD';
+        tabD.className = 'tab-pane fade in';
 
         /* create the content for tabA */
         var tabAHeader = document.createElement('span');
@@ -361,14 +364,6 @@ $(document).ready(function() {
                 userInfoContainer.appendChild(cityGroup);
                 userInfoContainer.appendChild(contraseñaContainer);
 
-                // delete account button
-                /* take this out for now, we need to find a better place for it
-                var deleteAccountButton = document.createElement('button');
-                deleteAccountButton.className = 'btn btn-danger btn-sm';
-                deleteAccountButton.appendChild(document.createTextNode('delete account'));
-                userInfoSidebar.appendChild(deleteAccountButton);
-                */
-
                 //change password button
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
@@ -453,31 +448,6 @@ $(document).ready(function() {
                     }
                 };
 
-                // set on click button function
-                /* take this out for now, we need to find a better place for it
-                deleteAccountButton.onclick = function() {
-                    var yesUnsponsor = confirm('Are you sure you want to delete your account?');
-                    if (yesUnsponsor == true) {
-                        $.ajax({
-                            url: '/api/v1/donor/delete',
-                            type: 'POST',
-                            data: {
-                                'token' : sessionStorage.getItem('token'),
-                                'donor_id' : sessionStorage.getItem('id')
-                            },
-                            success: function(res) {
-                                if (res.success === true) {
-                                    alert('your request for the removal of your account has been submitted. you will receive an email when the process has been completed.');
-                                }
-                            },
-                            error: function() {
-                                alert('your request was not received. please try again.');
-                            }
-                        });
-                    }
-                };
-                */
-
                 infoWrapper.appendChild(userInfoContainer);
                 infoWrapper.appendChild(userInfoSidebar);
                 tabB.appendChild(infoWrapper);
@@ -486,10 +456,49 @@ $(document).ready(function() {
             }
         });
 
+        var deleteAccountText = document.createElement('div');
+        deleteAccountText.className = 'delete-account-text';
+        deleteAccountText.innerHTML = 'Clicking the delete button below will send a request to delete your account to the an admin at AMG Guatemala.  Your request should be processed within a week.  AMG Guatemala will not store any of your information after your account has been deleted and all of your sponsorships will be cancelled.';
+
+        // delete account button
+        var deleteAccountButtonContainer = document.createElement('div');
+        deleteAccountButtonContainer.className = 'delete-account-button-container';
+        var deleteAccountButton = document.createElement('button');
+        deleteAccountButton.className = 'btn btn-danger btn-lg';
+        deleteAccountButton.appendChild(document.createTextNode('delete account'));
+        deleteAccountButtonContainer.appendChild(deleteAccountButton);
+
+        // set on click button function
+        deleteAccountButton.onclick = function() {
+            var yesUnsponsor = confirm('Are you sure you want to delete your account?');
+            if (yesUnsponsor == true) {
+                $.ajax({
+                    url: '/api/v1/donor/delete',
+                    type: 'POST',
+                    data: {
+                        'token' : sessionStorage.getItem('token'),
+                        'donor_id' : sessionStorage.getItem('id')
+                    },
+                    success: function(res) {
+                        if (res.success === true) {
+                            alert('your request for the removal of your account has been submitted. you will receive an email when the process has been completed.');
+                        }
+                    },
+                    error: function() {
+                        alert('your request was not received. please try again.');
+                    }
+                });
+            }
+        };
+        
+        tabD.appendChild(deleteAccountText);
+        tabD.appendChild(deleteAccountButtonContainer);
+
         //append tabs to the page
         container.appendChild(tabA);
         container.appendChild(tabB);
         container.appendChild(tabC);
+        container.appendChild(tabD);
     } else {
         console.log('No login information found, please login');
         document.getElementById('myTab').remove();
