@@ -157,6 +157,26 @@ table {
   font-size: 97%;
 }
 
+#go-to-step-three {
+  display: none;
+}
+
+#go-back-to-step-one {
+  display: none;
+}
+
+#go-back-to-step-two {
+  display: none;
+}
+
+#submit-sponsorship {
+  display: none;
+}
+
+#donor-info-confirmation {
+  display: none;
+}
+
 /* Login overlay http://codepen.io/miroot/pen/qwIgC */
 body {
   z-index: 10;
