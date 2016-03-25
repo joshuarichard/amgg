@@ -107,7 +107,14 @@ var cartCollection = nconf.get('mongo:cartCollection');
 // TODO: error handling
 app.get('/api/v1/children/id/:id', function(req, res) {
     mongo.get(req.params.id, childCollection, true, function(doc) {
-        res.status(200).send(doc);
+        if (doc.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                message: doc.err
+            });
+        } else {
+            res.status(200).send(doc);
+        }
     });
 });
 
@@ -206,7 +213,7 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
         if (data.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
-                message: data['err']
+                message: data.err
             });
         } else {
             res.status(200).send({
@@ -347,36 +354,43 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 //if there is a password in the changes, encrypt it
-                if (changes.password != null) {
-                    // hash the password and store it in the db
-                    password.encrypt(changes['password'], function(hash, salt) {
-                        // fix the donor doc a bit before insertion
-                        changes['password'] = hash;
-                        changes['salt'] = salt;
-                    });
-                }
-
-                // if it is valid then perform the donor edit
-                mongo.edit(id, changes, donorCollection, function(result) {
-                    if (result.hasOwnProperty('err')) {
-                        if (result.code === 11000) {
-                            res.status(409).send({
-                                success: false,
-                                message: 'Email already exists.'
-                            });
-                        } else {
-                            res.status(500).send({
-                                success: false,
-                                message: 'DB error.'
-                            });
-                        }
-                    } else {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Donor edited.'
+                if (typeof changes !== 'undefined') {
+                    if (changes.hasOwnProperty('password')) {
+                        // hash the password and store it in the db
+                        password.encrypt(changes['password'], function(hash, salt) {
+                            // fix the donor doc a bit before insertion
+                            changes['password'] = hash;
+                            changes['salt'] = salt;
                         });
                     }
-                });
+
+                    // if it is valid then perform the donor edit
+                    mongo.edit(id, changes, donorCollection, function(result) {
+                        if (result.hasOwnProperty('err')) {
+                            if (result.code === 11000) {
+                                res.status(409).send({
+                                    success: false,
+                                    message: 'Email already exists.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: result.err
+                                });
+                            }
+                        } else {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Donor edited.'
+                            });
+                        }
+                    });
+                } else {
+                    res.status(403).send({
+                        success: false,
+                        message: 'No changes provided.'
+                    });
+                }
             }
         });
     } else {
@@ -436,7 +450,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         if (result.hasOwnProperty('err')) {
                                             res.status(500).send({
                                                 success: false,
-                                                message: result['err']
+                                                message: result.err
                                             });
                                         } else {
                                             // recursive function to manage asynch for each id (change status to sponsored)
@@ -524,7 +538,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     if (result.hasOwnProperty('err')) {
                                         res.status(500).send({
                                             success: false,
-                                            message: result['err']
+                                            message: result.err
                                         });
                                     } else {
                                         // then delete the cart doc
@@ -540,7 +554,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                             if (result.hasOwnProperty('err')) {
                                                 res.status(500).send({
                                                     success: false,
-                                                    message: result['err']
+                                                    message: result.err
                                                 });
                                             } else {
                                                 // recursive function to manage asynch for each id (change status to sponsored)
@@ -628,7 +642,7 @@ app.post('/api/v1/donor/cart', function(req, res) {
         if (result.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
-                message: result['err']
+                message: result.err
             });
         } else {
             res.status(200).send({

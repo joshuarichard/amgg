@@ -58,5 +58,3 @@ exports.delete = function(donorID, callback) {
         }
     });
 };
-
-// TODO: periodically delete expired cart docs
