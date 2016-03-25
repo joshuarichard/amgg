@@ -215,7 +215,7 @@ exports.edit = function(id, changes, collection, callback) {
             });
         } catch (err) {
             log.error('Bad ID in mongo.edit() ID: ' + id);
-            callback({'err': 'Bad ID.'})
+            callback({'err': 'Bad ID.'});
         }
     };
 
@@ -310,29 +310,29 @@ exports.get = function(id, collection, isTrim, callback) {
             var selector = {'_id': o_id};
             var foundOne = false;
 
-                var cursor = db.collection(collection).find(selector);
-                cursor.each(function(err, doc) {
-                    if (err) {
-                        log.error('error in getDoc(). message: ' + err);
-                        callback({
-                            'err': err.errmsg,
-                            code: err.code
-                        });
-                    }
-                    if (doc != null) {
-                        foundOne = true;
-                        callback(doc);
-                    }
-                    // cursor.each() is always going to hit a null value so keep track
-                    // of whether or not we've found one. callback error on lookup fail
-                    if (!foundOne){
-                        log.error('document not found with id: \'' + id + '\'');
-                        callback({'err': 'Not found.'});
-                    }
-                });
+            var cursor = db.collection(collection).find(selector);
+            cursor.each(function(err, doc) {
+                if (err) {
+                    log.error('error in getDoc(). message: ' + err);
+                    callback({
+                        'err': err.errmsg,
+                        code: err.code
+                    });
+                }
+                if (doc != null) {
+                    foundOne = true;
+                    callback(doc);
+                }
+                // cursor.each() is always going to hit a null value so keep track
+                // of whether or not we've found one. callback error on lookup fail
+                if (!foundOne){
+                    log.error('document not found with id: \'' + id + '\'');
+                    callback({'err': 'Not found.'});
+                }
+            });
         } catch (err) {
             log.error('Bad ID in mongo.get(). ID: ' + id);
-            callback({'err': 'Bad ID.'})
+            callback({'err': 'Bad ID.'});
         }
     };
 
@@ -409,7 +409,7 @@ exports.getPic = function(id, collection, callback) {
                         });
                     } catch (err) {
                         log.error('Bad child ID when getting picture.');
-                        callback({'err': 'Bad child ID.'})
+                        callback({'err': 'Bad child ID.'});
                     }
 
                 }
