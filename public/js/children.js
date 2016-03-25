@@ -620,10 +620,8 @@ $(document).ready(function() {
             url: '/api/v1/donor/reset',
             type: 'POST',
             data: {
-                'email': 'jacobbuettner@gmail.com'
+                'correo_electrónico': 'jacobbuettner@gmail.com'
             },
-            // on successful login, save token and donor id
-            // in session storage and go to the donor portal
             success: function(res) {
                 alert('Please check your email for your temporary password');
                 console.log(res);

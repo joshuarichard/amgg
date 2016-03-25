@@ -836,14 +836,12 @@ app.post('/api/v1/donor/reset', function(req, res) {
     var tempPassword = Math.random().toString(36).slice(-8);
     var changes = { };
 
-
     // get a child pool
     mongo.find(selector, donorCollection, 10000, true, function(donors) {
-        var donor = null;
         for (var key in donors) {
             mongo.get(key, donorCollection, false, function(data) {
                 emailBodyTempPassword += tempPassword;
-                emailModule.email(data['correo_electrónico'], emailBodyDeleteAccount, emailBodyTempPassword, function(didEmail) {
+                emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword, function(didEmail) {
                     if(didEmail === true) {
                         res.status(200).send({
                             success: true,
