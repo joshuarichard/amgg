@@ -786,43 +786,6 @@ app.post('/api/v1/donor/delete', function(req, res) {
     }
 });
 
-// GET /api/v1/children/find/:selector find a child's document without an id
-// TODO: error handling
-app.get('/api/v1/children/find/:selector', function(req, res) {
-    var selector = query.format(JSON.parse(req.params.selector));
-
-    // get a child pool
-    mongo.find(selector, childCollection, 100, true, function(children) {
-        var unsponsoredChildrenIds = [];
-        for (var key in children) {
-            unsponsoredChildrenIds.push(key);
-        }
-
-        // get all cart docs...
-        mongo.find({}, cartCollection, 10000, false, function(cartdocs) {
-            // ...and make an array of all child ids currently in carts
-            var idsOfKidsInCarts = [];
-            for (var key in cartdocs) {
-                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
-                for (var e = 0; e < kidsInThisCart.length; e++) {
-                    idsOfKidsInCarts.push(kidsInThisCart[e]);
-                }
-            }
-
-            // then compare that to the list of ids in the child pool...
-            for (var c = 0; c < idsOfKidsInCarts.length; c++) {
-                if (children.hasOwnProperty(idsOfKidsInCarts[c])) {
-                    // ...and remove them from the child pool if in a cart
-                    delete children[idsOfKidsInCarts[c]];
-                }
-            }
-
-            res.send(children);
-        });
-    });
-});
-
-
 /* POST /api/v1/donor/reset
  *
  * emails the user with a temp password they can use to login with
