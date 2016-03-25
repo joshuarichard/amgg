@@ -827,59 +827,50 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
  *
  * emails the user with a temp password they can use to login with
  * {
- *   'token': 'token_goes_here',
- *   'donor_id': donor_id
+ *   'correo_electrónico': 'donor_email'
  * }
  */
 app.post('/api/v1/donor/reset', function(req, res) {
-    var selector = {'correo_electrónico': req.body.email};
-    var tempPassword = Math.random().toString(36).slice(-8);
-    var changes = { };
+    // firstly create a selector based on the email to get the donor's doc
+    var selector = {
+        'correo_electrónico': req.body.correo_electrónico
+    };
 
-    // get a child pool
-    mongo.find(selector, donorCollection, 10000, true, function(donors) {
-        for (var key in donors) {
-            mongo.get(key, donorCollection, false, function(data) {
-                emailBodyTempPassword += tempPassword;
-                emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword, function(didEmail) {
-                    if(didEmail === true) {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Email sent.'
-                        });
-                        //if email sent successfully, change their password to the generated one
-                        // hash the password and store it in the db
-                        password.encrypt(tempPassword, function(hash, salt) {
-                            // fix the donor doc a bit before insertion
-                            changes['password'] = hash;
-                            changes['salt'] = salt;
-                        });
+    // find the doc
+    mongo.find(selector, donorCollection, 10000, true, function(donor) {
+        for (var id in donor) {
+            // get the doc with the id
+            mongo.get(id, donorCollection, false, function(data) {
+                // generate a random password and encrypt it...
+                var tempPassword = Math.random().toString(36).slice(-8);
+                password.encrypt(tempPassword, function(hash, salt) {
+                    // fix the donor doc a bit before insertion
+                    var changes = {};
+                    changes['password'] = hash;
+                    changes['salt'] = salt;
 
-                        // if it is valid then perform the donor edit
-                        mongo.edit(key.id, changes, donorCollection, function(result) {
-                            if (result.hasOwnProperty('err')) {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'DB error.'
-                                });
-                            } else {
+                    // ... then store it in their donor doc
+                    mongo.edit(id, changes, donorCollection, function(result) {
+                        if (result.hasOwnProperty('err')) {
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
+                            });
+                        } else {
+                            // construct the email with the donor's new password and send the email
+                            emailBodyTempPassword += tempPassword;
+                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword, function(didEmail) {
                                 res.status(200).send({
                                     success: true,
-                                    message: 'Donor password updated.'
+                                    message: 'Donor password reset.'
                                 });
-                            }
-                        });
-
-                    } else {
-                        res.status(500).send({
-                            success: false,
-                            message: 'An error occured on email.'
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
             });
         }
-        
+
     });
 });
 
