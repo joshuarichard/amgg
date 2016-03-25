@@ -196,30 +196,36 @@ exports.edit = function(id, changes, collection, callback) {
     var changesMod = {};
     changesMod['$set'] = changes;
 
-    var o_id = new mongo.ObjectID(id);
-    var selector = {'_id': o_id};
+    var editDoc = function(id, db, collection, changes, callback) {
+        try {
+            var o_id = new mongo.ObjectID(id);
+            var selector = {'_id': o_id};
 
-    var editDoc = function(db, collection, selector, changes, callback) {
-        db.collection(collection).updateOne(selector, changes,
-        function(err, res) {
-            if (err) {
-                log.error('error in edit().editDoc(). message: ' + err);
-                callback({
-                    'err': err.errmsg,
-                    code: err.code
-                });
-            } else {
-                callback(res);
-            }
-        });
+            db.collection(collection).updateOne(selector, changes,
+            function(err, res) {
+                if (err) {
+                    log.error('error in edit().editDoc(). message: ' + err);
+                    callback({
+                        'err': err.errmsg,
+                        code: err.code
+                    });
+                } else {
+                    callback(res);
+                }
+            });
+        } catch (err) {
+            log.error('Bad ID in mongo.edit() ID: ' + id);
+            callback({'err': 'Bad ID.'})
+        }
     };
+
 
     MongoClient.connect(url, function(err, db) {
         if (err) {
             log.error('Mongo connection error in edit() ' + err);
             callback({'err': 'cannot establish a connection'});
         } else {
-            editDoc(db, collection, selector, changesMod, function(res) {
+            editDoc(id, db, collection, changesMod, function(res) {
                 db.close();
                 log.trace('successfully edited one document with id ' +
                           id + ' from collection ' + collection +
@@ -297,31 +303,37 @@ exports.delete = function(id, collection, callback) {
 exports.get = function(id, collection, isTrim, callback) {
     log.trace('getting document with id ' + id + ' from collection ' +
               collection);
-    var o_id = new mongo.ObjectID(id);
-    var selector = {'_id': o_id};
-    var foundOne = false;
 
     var getDoc = function(db, id, collection, callback) {
-        var cursor = db.collection(collection).find(selector);
-        cursor.each(function(err, doc) {
-            if (err) {
-                log.error('error in getDoc(). message: ' + err);
-                callback({
-                    'err': err.errmsg,
-                    code: err.code
+        try {
+            var o_id = new mongo.ObjectID(id);
+            var selector = {'_id': o_id};
+            var foundOne = false;
+
+                var cursor = db.collection(collection).find(selector);
+                cursor.each(function(err, doc) {
+                    if (err) {
+                        log.error('error in getDoc(). message: ' + err);
+                        callback({
+                            'err': err.errmsg,
+                            code: err.code
+                        });
+                    }
+                    if (doc != null) {
+                        foundOne = true;
+                        callback(doc);
+                    }
+                    // cursor.each() is always going to hit a null value so keep track
+                    // of whether or not we've found one. callback error on lookup fail
+                    if (!foundOne){
+                        log.error('document not found with id: \'' + id + '\'');
+                        callback({'err': 'Not found.'});
+                    }
                 });
-            }
-            if (doc != null) {
-                foundOne = true;
-                callback(doc);
-            }
-            // cursor.each() is always going to hit a null value so keep track
-            // of whether or not we've found one. callback error on lookup fail
-            if (!foundOne){
-                log.error('document not found with id: \'' + id + '\'');
-                callback({'err': 'not found'});
-            }
-        });
+        } catch (err) {
+            log.error('Bad ID in mongo.get(). ID: ' + id);
+            callback({'err': 'Bad ID.'})
+        }
     };
 
     MongoClient.connect(url, function(err, db) {
@@ -330,14 +342,19 @@ exports.get = function(id, collection, isTrim, callback) {
             callback({'err': 'cannot establish a connection.'}); // good start
         } else {
             getDoc(db, id, collection, function(doc) {
-                db.close();
-                if(isTrim) {
-                    doc = trim(doc);
+                if (doc.hasOwnProperty('err')) {
+                    db.close();
+                    callback(doc);
+                } else {
+                    db.close();
+                    if(isTrim) {
+                        doc = trim(doc);
+                    }
+                    log.trace('successfully got document with id ' + id +
+                              ' from collection \'' + collection + '\'. document: '
+                              + JSON.stringify(doc));
+                    callback(doc);
                 }
-                log.trace('successfully got document with id ' + id +
-                          ' from collection \'' + collection + '\'. document: '
-                          + JSON.stringify(doc));
-                callback(doc);
             });
         }
     });
@@ -365,9 +382,7 @@ exports.getPic = function(id, collection, callback) {
         if (doc.hasOwnProperty('err')) {
             log.error('DB error in getting picture. Child possibly nonexistant '
                       + doc['err']);
-            callback({
-                'err': 'error with db. it\'s probable the child doesn\'t exist.'
-            });
+            callback({'err': 'Error with db. It\'s probable the child doesn\'t exist.'});
         } else {
             db.open(function(err, db) {
                 if (err) {
@@ -376,21 +391,27 @@ exports.getPic = function(id, collection, callback) {
                         'err': 'cannot establish a connection.'
                     });
                 } else {
-                    var imageId = new mongo.ObjectID(doc.image_id);
-                    var gridStore = new mongo.GridStore(db, imageId, 'r');
-                    gridStore.open(function(err, gridStore) {
-                        if (typeof gridStore !== 'undefined') {
-                            gridStore.seek(0, function() {
-                                gridStore.read(function(err, data) {
-                                    db.close();
-                                    log.trace('got picture for child with id '+ id);
-                                    callback(data.toString('base64'));
+                    try {
+                        var imageId = new mongo.ObjectID(doc.image_id);
+                        var gridStore = new mongo.GridStore(db, imageId, 'r');
+                        gridStore.open(function(err, gridStore) {
+                            if (typeof gridStore !== 'undefined') {
+                                gridStore.seek(0, function() {
+                                    gridStore.read(function(err, data) {
+                                        db.close();
+                                        log.trace('got picture for child with id '+ id);
+                                        callback(data.toString('base64'));
+                                    });
                                 });
-                            });
-                        } else {
-                            callback({'err': 'picture not found.'});
-                        }
-                    });
+                            } else {
+                                callback({'err': 'picture not found.'});
+                            }
+                        });
+                    } catch (err) {
+                        log.error('Bad child ID when getting picture.');
+                        callback({'err': 'Bad child ID.'})
+                    }
+
                 }
             });
         }
