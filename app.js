@@ -107,7 +107,14 @@ var cartCollection = nconf.get('mongo:cartCollection');
 // TODO: error handling
 app.get('/api/v1/children/id/:id', function(req, res) {
     mongo.get(req.params.id, childCollection, true, function(doc) {
-        res.status(200).send(doc);
+        if (doc.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                message: doc.err
+            });
+        } else {
+            res.status(200).send(doc);
+        }
     });
 });
 
@@ -206,7 +213,7 @@ app.get('/api/v1/pictures/id/:id', function(req, res) {
         if (data.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
-                message: data['err']
+                message: data.err
             });
         } else {
             res.status(200).send({
@@ -308,9 +315,16 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
             } else {
                 // if it is valid then perform the donor get
                 mongo.get(id, donorCollection, false, function(data) {
-                    delete data['password'];
-                    delete data['salt'];
-                    res.send(data);
+                    if (data.hasOwnProperty('err')) {
+                        res.status(500).send({
+                            success: false,
+                            message: data.err
+                        });
+                    } else {
+                        delete data['password'];
+                        delete data['salt'];
+                        res.send(data);
+                    }
                 });
             }
         });
@@ -347,36 +361,43 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 //if there is a password in the changes, encrypt it
-                if (changes.password != null) {
-                    // hash the password and store it in the db
-                    password.encrypt(changes['password'], function(hash, salt) {
-                        // fix the donor doc a bit before insertion
-                        changes['password'] = hash;
-                        changes['salt'] = salt;
-                    });
-                }
-
-                // if it is valid then perform the donor edit
-                mongo.edit(id, changes, donorCollection, function(result) {
-                    if (result.hasOwnProperty('err')) {
-                        if (result.code === 11000) {
-                            res.status(409).send({
-                                success: false,
-                                message: 'Email already exists.'
-                            });
-                        } else {
-                            res.status(500).send({
-                                success: false,
-                                message: 'DB error.'
-                            });
-                        }
-                    } else {
-                        res.status(200).send({
-                            success: true,
-                            message: 'Donor edited.'
+                if (typeof changes !== 'undefined') {
+                    if (changes.hasOwnProperty('password')) {
+                        // hash the password and store it in the db
+                        password.encrypt(changes['password'], function(hash, salt) {
+                            // fix the donor doc a bit before insertion
+                            changes['password'] = hash;
+                            changes['salt'] = salt;
                         });
                     }
-                });
+
+                    // if it is valid then perform the donor edit
+                    mongo.edit(id, changes, donorCollection, function(result) {
+                        if (result.hasOwnProperty('err')) {
+                            if (result.code === 11000) {
+                                res.status(409).send({
+                                    success: false,
+                                    message: 'Email already exists.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: result.err
+                                });
+                            }
+                        } else {
+                            res.status(200).send({
+                                success: true,
+                                message: 'Donor edited.'
+                            });
+                        }
+                    });
+                } else {
+                    res.status(403).send({
+                        success: false,
+                        message: 'No changes provided.'
+                    });
+                }
             }
         });
     } else {
@@ -436,7 +457,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         if (result.hasOwnProperty('err')) {
                                             res.status(500).send({
                                                 success: false,
-                                                message: result['err']
+                                                message: result.err
                                             });
                                         } else {
                                             // recursive function to manage asynch for each id (change status to sponsored)
@@ -496,82 +517,88 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 var realCart = cartdoc[key];
                 var childrenToSponsor = realCart['niños_patrocinadoras'];
 
-                // get the donor's document from the db using the donor_id the
-                // client sent us
+                // get the donor's document from the db using the donor_id the client sent us
                 mongo.get(req.body.donor_id, donorCollection, false, function(donor) {
-                    if (JSON.stringify(donor) !== '{}') {
-                        var saltDB = donor.salt;
-                        var passwordDB = donor.password;
-
-                        // encrypt the password and validate it. if not equal
-                        // send back a 401
-                        password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
-                            if(passwordGiven !== passwordDB) {
-                                res.status(401).send({
-                                    success: false,
-                                    message: 'Incorrect password.'
-                                });
-                            } else {
-                                // push all of the new children to the sponsored
-                                // children array...
-                                var childrenSponsored = donor['niños_patrocinadoras'];
-                                for (var d = 0; d < childrenToSponsor.length; d++) {
-                                    childrenSponsored.push(childrenToSponsor[d]);
-                                }
-
-                                // ... and store it in the donor doc
-                                mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
-                                    if (result.hasOwnProperty('err')) {
-                                        res.status(500).send({
-                                            success: false,
-                                            message: result['err']
-                                        });
-                                    } else {
-                                        // then delete the cart doc
-                                        cart.delete(req.body.donor_id, function(result) {
-                                            if (result === false) {
-                                                emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
-                                                emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
-                                                    if (didEmail === false) {
-                                                        log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
-                                                    }
-                                                });
-                                            }
-                                            if (result.hasOwnProperty('err')) {
-                                                res.status(500).send({
-                                                    success: false,
-                                                    message: result['err']
-                                                });
-                                            } else {
-                                                // recursive function to manage asynch for each id (change status to sponsored)
-                                                changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                    // email donor about their successful confirmation
-                                                    emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor,  function(didEmail) {
-                                                        if(didEmail === true) {
-                                                            // and we're done.
-                                                            res.status(200).send({
-                                                                success: true,
-                                                                message: 'Child sponsored.'
-                                                            });
-                                                        } else {
-                                                            res.status(500).send({
-                                                                success: false,
-                                                                message: 'An error occured on email.'
-                                                            });
-                                                        }
-                                                    });
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                    if (donor.hasOwnProperty('err')) {
+                        res.status(500).send({
+                            success: false,
+                            message: 'Donor not found.'
                         });
                     } else {
-                        res.status(401).send({
-                            success: false,
-                            message: 'Email not found.'
-                        });
+                        if (JSON.stringify(donor) !== '{}') {
+                            var saltDB = donor.salt;
+                            var passwordDB = donor.password;
+
+                            // encrypt the password and validate it. if not equal
+                            // send back a 401
+                            password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
+                                if(passwordGiven !== passwordDB) {
+                                    res.status(401).send({
+                                        success: false,
+                                        message: 'Incorrect password.'
+                                    });
+                                } else {
+                                    // push all of the new children to the sponsored
+                                    // children array...
+                                    var childrenSponsored = donor['niños_patrocinadoras'];
+                                    for (var d = 0; d < childrenToSponsor.length; d++) {
+                                        childrenSponsored.push(childrenToSponsor[d]);
+                                    }
+
+                                    // ... and store it in the donor doc
+                                    mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
+                                        if (result.hasOwnProperty('err')) {
+                                            res.status(500).send({
+                                                success: false,
+                                                message: result.err
+                                            });
+                                        } else {
+                                            // then delete the cart doc
+                                            cart.delete(req.body.donor_id, function(result) {
+                                                if (result === false) {
+                                                    emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
+                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                                        if (didEmail === false) {
+                                                            log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
+                                                        }
+                                                    });
+                                                }
+                                                if (result.hasOwnProperty('err')) {
+                                                    res.status(500).send({
+                                                        success: false,
+                                                        message: result.err
+                                                    });
+                                                } else {
+                                                    // recursive function to manage asynch for each id (change status to sponsored)
+                                                    changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
+                                                        // email donor about their successful confirmation
+                                                        emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor,  function(didEmail) {
+                                                            if(didEmail === true) {
+                                                                // and we're done.
+                                                                res.status(200).send({
+                                                                    success: true,
+                                                                    message: 'Child sponsored.'
+                                                                });
+                                                            } else {
+                                                                res.status(500).send({
+                                                                    success: false,
+                                                                    message: 'An error occured on email.'
+                                                                });
+                                                            }
+                                                        });
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            res.status(401).send({
+                                success: false,
+                                message: 'Email not found.'
+                            });
+                        }
                     }
                 });
             }
@@ -628,7 +655,7 @@ app.post('/api/v1/donor/cart', function(req, res) {
         if (result.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
-                message: result['err']
+                message: result.err
             });
         } else {
             res.status(200).send({
@@ -645,7 +672,7 @@ app.post('/api/v1/donor/cart', function(req, res) {
  * {
  *   'token': 'token_goes_here',
  *   'donor_id': donor_id,
- *   'child_id': child_id_to_unsponsor
+ *   'child_id': child_id
  * }
  */
 app.post('/api/v1/donor/unsponsor', function(req, res) {

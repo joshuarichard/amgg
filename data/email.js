@@ -12,9 +12,7 @@ var exports = module.exports = {};
 
 exports.email = function(toAddress, header, body, callback) {
     // create reusable transporter object using the default SMTP transport
-    /* eslint-disable */
     var transporter = nodemailer.createTransport('smtps://' + adminEmail + ':' + adminPassword + '@smtp.gmail.com');
-    /* eslint-enable */
 
     // setup e-mail data with unicode symbols
     var mailOptions = {

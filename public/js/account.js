@@ -481,7 +481,7 @@ $(document).ready(function() {
                     },
                     success: function(res) {
                         if (res.success === true) {
-                            alert('your request for the removal of your account has been submitted. you will receive an email when the process has been completed.');
+                            alert('Your request for the removal of your account has been submitted. You will receive an email when the process has been completed.');
                         }
                     },
                     error: function() {
