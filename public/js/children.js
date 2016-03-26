@@ -615,25 +615,29 @@ $(document).ready(function() {
     $('.close-create-account-overlay').click(toggleCreateAccount);
 
     $('.forgot-password').click(function() {
-        // define the request
-        $.ajax({
-            url: '/api/v1/donor/reset',
-            type: 'POST',
-            data: {
-                'correo_electrónico': 'jacobbuettner@gmail.com'
-            },
-            success: function(res) {
-                alert('Please check your email for your temporary password');
-                console.log(res);
-            },
-            error: function(httpObj) {
-                if(httpObj.status === 401) {
-                    alert('correo o contraseña incorrectos.');
-                } else {
-                    console.log(JSON.stringify(httpObj));
-                    alert('see console for error info.');
+        if ($('.donor-email').val() != '' || $('.donor-email').val() != null) {
+            // define the request
+            $.ajax({
+                url: '/api/v1/donor/reset',
+                type: 'POST',
+                data: {
+                    'correo_electrónico': $('.donor-email').val()
+                },
+                success: function(res) {
+                    alert('Please check your email for your temporary password');
+                    console.log(res);
+                },
+                error: function(httpObj) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos.');
+                    } else {
+                        console.log(JSON.stringify(httpObj));
+                        alert('see console for error info.');
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            alert("Please enter your email into the email field before clicking Forgot Password");
+        }  
     });
 });
