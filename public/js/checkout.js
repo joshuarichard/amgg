@@ -464,52 +464,53 @@ $(document).ready(function() {
 
     $('#go-to-step-two').click(function() {
         // if anything is null then alert, else submit a post with donor info
-        if (checkForm(document.getElementById('donor-info'))) {
-            if (sessionStorage.getItem('cart') === null ||
-                       sessionStorage.getItem('cart') === '') {
-                alert('no hay niños en el carrito.');
-            } else {
-                var donor = {};
-                if (sessionStorage.getItem('id') != null) {
-                    donor = {
-                        'donor_id': sessionStorage.getItem('id'),
-                        'password': document.getElementById('form-password').value
-                    };
-                } else if (sessionStorage.getItem('assignedDonorID') != null) {
-                    donor = {
-                        'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                        'nombre': document.getElementById('form-first-name').value,
-                        'apellido': document.getElementById('form-last-name').value,
-                        'teléfono': document.getElementById('form-phone').value,
-                        'calle': document.getElementById('form-address-street').value,
-                        'ciudad': document.getElementById('form-address-city').value,
-                        'país': document.getElementById('form-country').value,
-                        'correo_electrónico': document.getElementById('form-email').value,
-                        'password': document.getElementById('form-password').value
-                    };
-                }
-                // POST /api/v1/donor/sponsor
-                var insert = $.ajax({
-                    url: '/api/v1/donor/sponsor',
-                    type: 'POST',
-                    data: donor
-                });
+        // if (checkForm(document.getElementById('donor-info'))) {
+        //     if (sessionStorage.getItem('cart') === null ||
+        //                sessionStorage.getItem('cart') === '') {
+        //         alert('no hay niños en el carrito.');
+        //     } else {
+        //         var donor = {};
+        //         if (sessionStorage.getItem('id') != null) {
+        //             donor = {
+        //                 'donor_id': sessionStorage.getItem('id'),
+        //                 'password': document.getElementById('form-password').value
+        //             };
+        //         } else if (sessionStorage.getItem('assignedDonorID') != null) {
+        //             donor = {
+        //                 'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
+        //                 'nombre': document.getElementById('form-first-name').value,
+        //                 'apellido': document.getElementById('form-last-name').value,
+        //                 'teléfono': document.getElementById('form-phone').value,
+        //                 'calle': document.getElementById('form-address-street').value,
+        //                 'ciudad': document.getElementById('form-address-city').value,
+        //                 'país': document.getElementById('form-country').value,
+        //                 'correo_electrónico': document.getElementById('form-email').value,
+        //                 'password': document.getElementById('form-password').value
+        //             };
+        //         }
+        //         // POST /api/v1/donor/sponsor
+        //         var insert = $.ajax({
+        //             url: '/api/v1/donor/sponsor',
+        //             type: 'POST',
+        //             data: donor
+        //         });
 
-                insert.success(function(res) {
-                    if(res.success === true) {
-                        stepTwo();
-                    }
-                });
+        //         insert.success(function(res) {
+        //             if(res.success === true) {
+        //                 stepTwo();
+        //             }
+        //         });
 
-                insert.error(function(httpObj) {
-                    var mongoError = JSON.parse(httpObj.responseText);
-                    // email already exists exeption
-                    if (httpObj.status === 409 && mongoError.code === 11000) {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
-                    }
-                });
-            }
-        }
+        //         insert.error(function(httpObj) {
+        //             var mongoError = JSON.parse(httpObj.responseText);
+        //             // email already exists exeption
+        //             if (httpObj.status === 409 && mongoError.code === 11000) {
+        //                 alert('el correo electrónico ya está asociada a una cuenta.');
+        //             }
+        //         });
+        //     }
+        // }
+        stepTwo();
     });
 
     function stepOne() {
@@ -568,6 +569,8 @@ $(document).ready(function() {
         $('#donor-info-confirmation').show();
         $('#go-back-to-step-two').show();
         $('#submit-sponsorship').show()
+        $('.password').hide();
+        $('.confirm-password').hide();
 
         console.log('congrats you\'re at step three');
 

@@ -682,13 +682,13 @@
                                 <input id="form-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group password">
                             <label class="col-md-4 control-label">Contraseña</label>
                             <div class="col-md-8">
                                 <input id="form-password" class="form-control" type="password" name="password" placeholder="contraseña" >
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group confirm-password">
                             <label class="col-md-4 control-label">Confirmar Contraseña</label>
                             <div class="col-md-8">
                                 <input id="form-password-confirm" class="form-control" type="password" name="password-confirm" placeholder="confirmar contraseña" >
@@ -769,16 +769,36 @@
                     <a><button id="go-back-to-step-one" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Anterior</button></a>
                     <div id="donor-info-confirmation">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">Nombre</label>
-                            <span id="donor-name" class="col-md-8 form-control">Donor Full Name<span>
+                            <span class="donor-label col-md-5">Nombre:</span>
+                            <span id="donor-name" class="donor-info col-md-7">Donor Full Name</span>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-4 control-label">Correo Electrónico</label>
-                            <span id="donor-email" class="col-md-8 form-control">Donor Email<span>
+                            <span class="donor-label col-md-5">Teléfono:</span>
+                            <span id="donor-phone" class="donor-info col-md-7">123-456-5432</span>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-4 control-label">Número de Tarjeta</label>
-                            <span id="donor-credit-card" class="col-md-8 form-control">xxxx xxxx xxxx 1234<span>
+                            <span class="donor-label col-md-5">Dirección:</span>
+                            <span id="donor-address" class="donor-info col-md-7">Your mom's house</span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5">Correo Electrónico:</span>
+                            <span id="donor-email" class="donor-info col-md-7">Donor Email<span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5">Número de Tarjeta:</span>
+                            <span id="donor-credit-card" class="donor-info col-md-7">xxxx xxxx xxxx 1234<span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5">CVV:</span>
+                            <span id="donor-cvv" class="donor-info col-md-7">999<span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5">Fecha de Caducidad:</span>
+                            <span id="donor-expiration-date" class="donor-info col-md-7">3/16<span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5">Nombre en la Tarjeta:</span>
+                            <span id="donor-name-on-card" class="donor-info col-md-7">Donor Name<span>
                         </div>
                     </div>
                     <a><button id="submit-sponsorship" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Submit</button></a>

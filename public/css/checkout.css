@@ -177,6 +177,23 @@ table {
   display: none;
 }
 
+#donor-name-on-card {
+  margin-bottom: 1.5em;
+}
+
+.donor-label {
+  text-align: right;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.donor-info {
+  text-align: left;
+  padding-left: 4em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
 /* Login overlay http://codepen.io/miroot/pen/qwIgC */
 body {
   z-index: 10;
