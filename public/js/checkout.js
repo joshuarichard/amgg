@@ -561,11 +561,14 @@ $(document).ready(function() {
         */
     }
 
+    //confirm sponsorship details before submitting
     function stepThree() {
-        //confirm sponsorship details before submitting
+        //hide elements from step twp
         $('#donor-credit-form').hide();
         $('#go-back-to-step-one').hide();
         $('#go-to-step-three').hide();
+        //change header
+        document.getElementById('right-header').innerHTML = 'Confirm Your Information';
         $('#donor-info-confirmation').show();
         $('#go-back-to-step-two').show();
         $('#submit-sponsorship').show()
@@ -576,6 +579,14 @@ $(document).ready(function() {
 
         // displaySuccess();
     }
+
+    $('#go-back-to-step-two').click(function() {
+        $('#go-back-to-step-two').hide();
+        $('#submit-sponsorship').hide();
+        $('#donor-info-confirmation').hide();
+        document.getElementById('right-header').innerHTML = 'Datos de Facturación';
+        stepTwo();
+    });
 
     // Displays Success Page after ajax call
     function displaySuccess (){
