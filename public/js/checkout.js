@@ -556,14 +556,14 @@ $(document).ready(function() {
                 'token': sessionStorage.getItem('token')
             },
             success: function(res) {
-                $('#donor-name').val(res.nombre);
-                $('#donor-phone').val(res.teléfono);
-                $('#donor-address').val(res.calle + ' ' + res.ciudad + ', ' + res.país);
-                $('#donor-email').val(res.correo_electrónico);
-                $('#donor-credit-card').val(sessionStorage.getItem('ccnumbers'));
-                $('#donor-cvv').val(sessionStorage.getItem('cvv'));
-                $('#donor-expiration-date').val(sessionStorage.getItem('expiration'));
-                $('#donor-name-on-card').val(sessionStorage.getItem('nameOnCard'));
+                $('#donor-name').text(res.nombre);
+                $('#donor-phone').text(res.teléfono);
+                $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
+                $('#donor-email').text(res.correo_electrónico);
+                $('#donor-credit-card').text(sessionStorage.getItem('ccnumbers'));
+                $('#donor-cvv').text(sessionStorage.getItem('cvv'));
+                $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
+                $('#donor-name-on-card').text(sessionStorage.getItem('nameOnCard'));
             }
         });
         // displaySuccess();
