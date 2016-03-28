@@ -16,11 +16,12 @@ var cartCollection = nconf.get('mongo:cartCollection');
  * childIDs  (array) - string array of child _id's to add to cart
  * callback   (func) - callback function to execute after completion
  */
-exports.update = function(donorID, childIDs, callback) {
+exports.update = function(donorID, childIDs, requestToPay, callback) {
     var cart = {
         'donor_id': donorID,
         'last_modified': new Date(),
-        'los_niños_en_espera': childIDs
+        'requestToPay': requestToPay,
+        'kids_in_cart': childIDs
     };
 
     mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {

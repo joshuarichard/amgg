@@ -177,6 +177,10 @@ table {
   display: none;
 }
 
+#edit-donor-info {
+  display: none;
+}
+
 #donor-name-on-card {
   margin-bottom: 1.5em;
 }

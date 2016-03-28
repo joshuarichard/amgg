@@ -138,9 +138,11 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
             // ...and make an array of all child ids currently in carts
             var idsOfKidsInCarts = [];
             for (var key in cartdocs) {
-                var kidsInThisCart = cartdocs[key].los_niños_en_espera;
-                for (var e = 0; e < kidsInThisCart.length; e++) {
-                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                if (cartdocs[key].hasOwnProperty('kids_in_cart')) {
+                    var kidsInThisCart = cartdocs[key].kids_in_cart;
+                    for (var e = 0; e < kidsInThisCart.length; e++) {
+                        idsOfKidsInCarts.push(kidsInThisCart[e]);
+                    }
                 }
             }
 
@@ -181,9 +183,11 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
         for (var key in cartdocs) {
-            var kidsInThisCart = cartdocs[key].los_niños_en_espera;
-            for (var e = 0; e < kidsInThisCart.length; e++) {
-                idsOfKidsInCarts.push(kidsInThisCart[e]);
+            if (cartdocs[key].hasOwnProperty('kids_in_cart')) {
+                var kidsInThisCart = cartdocs[key].kids_in_cart;
+                for (var e = 0; e < kidsInThisCart.length; e++) {
+                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                }
             }
         }
 
@@ -261,7 +265,7 @@ function changeChildrenStatus(array, newStatus, callback) {
  * }
  */
 app.post('/api/v1/donor/auth', function(req, res) {
-    var email = {'correo_electrónico': req.body['correo_electrónico']};
+    var email = {'correo_electrónico': req.body['email']};
     // find the donor's email
     // if email === null, send res no email
     mongo.find(email, donorCollection, 1, false, function(data) {
@@ -630,7 +634,7 @@ app.post('/api/v1/donor/create', function(req, res) {
  * update the cart document with the new cart from the client
  */
 app.post('/api/v1/donor/cart', function(req, res) {
-    cart.update(req.body.donor_id, req.body.niños_patrocinadoras, function(result) {
+    cart.update(req.body.donor_id, req.body.kids_in_cart, req.body.request_to_pay, function(result) {
         if (result.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
