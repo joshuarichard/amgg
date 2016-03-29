@@ -420,6 +420,7 @@ $(document).ready(function() {
             if (inStorage('cart') === false) {
                 alert('no hay niños en el carrito.');
             } else {
+                  $('#donor-credit-form').show();
                 if (inStorage('token') === true && inStorage('id') === true) {
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -451,6 +452,7 @@ $(document).ready(function() {
                                             $('#donor-info-form').hide();
                                             $('#go-to-step-two').hide();
                                             $('#delete-child-button').hide();
+                                            $('#edit-donor-info').hide();
                                             $('#donor-credit-form').show();
                                             $('#go-to-step-three').show();
                                             $('#go-back-to-step-one').show();
@@ -513,7 +515,6 @@ $(document).ready(function() {
                                         $('#donor-info-form').hide();
                                         $('#go-to-step-two').hide();
                                         $('#delete-child-button').hide();
-                                        $('#donor-credit-form').show();
                                         $('#go-to-step-three').show();
                                         $('#go-back-to-step-one').show();
                                         $('#go-to-step-three').click(goToStepThree);
@@ -539,7 +540,7 @@ $(document).ready(function() {
         $('#donor-credit-form').hide();
         $('#go-back-to-step-one').hide();
         $('#go-to-step-three').hide();
-        //change header
+        // change header
         document.getElementById('right-header').innerHTML = 'Confirm Your Information';
 
         // show elements for step three
@@ -560,13 +561,31 @@ $(document).ready(function() {
                 $('#donor-phone').text(res.teléfono);
                 $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
                 $('#donor-email').text(res.correo_electrónico);
-                $('#donor-credit-card').text(sessionStorage.getItem('ccnumbers'));
+                $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                 $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                 $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
                 $('#donor-name-on-card').text(sessionStorage.getItem('nameOnCard'));
             }
         });
         // displaySuccess();
+    }
+
+    $('#submit-sponsorship').click(sponsorThatKid);
+
+    function sponsorThatKid() {
+        $.ajax({
+            url: 'https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go',
+            data: '<FORM name = "CredomaticPost" method = "post" action = "https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go" /><INPUT type = "text" name = "username" value = "SomeUsername" /><INPUT type = "text" name = "type" value = "auth" /><INPUT type = "text" name = "key_id" value = "49338953" /><INPUT type = "text" name = "hash" value = "28519d58218c0a43a300b538c7303836" /><INPUT type = "text" name = "time" value = "1366839938" /><INPUT type = "text" name = "amount" value = "100.00" /><INPUT type = "text" name = "orderid" value = "CredomaticTest" /><INPUT type = "text" name = "processor_id" value = "" /><INPUT type = "text" name = "ccnumber" value = "4111111111111111" /><INPUT type = "text" name = "ccexp" value = "1220" /><INPUT type = "text" name = "cvv" value = "123" /><INPUT type = "text" name = "avs" value = "12 Calle San Jose" /><INPUT type = "text" name = "zip" value = "2361011" /><INPUT type = "text" name = "redirect"<INPUT type = "submit" value = "Submit Transaction" /></ FORM>',
+            contentType: 'text/xml',
+            dataType: 'xml',
+            success: function(res) {
+                console.log(res);
+            },
+            error: function(res) {
+                console.log('there was an error');
+                console.log(res);
+            }
+        });
     }
 
     $('#go-back-to-step-two').click(function() {
