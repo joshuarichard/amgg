@@ -837,7 +837,7 @@ $(document).ready(function() {
             url: '/api/v1/donor/auth',
             type: 'POST',
             data: {
-                'correo_electrónico': email,
+                'email': email,
                 'password': password
             }
         });
