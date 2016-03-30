@@ -5,6 +5,85 @@ $(document).ready(function() {
     /* get the element to put the tabs in */
     var container = document.getElementById('tab-content');
 
+    /* Check to make sure all the fields are filled in and ensure the
+     * user's password passes the constraints
+     */
+    function checkInfo(form) {
+        // get all form info
+        var firstName = $('[name=first-name]', form)[0];
+        var lastName = $('[name=last-name]', form)[0];
+        var phone = $('[name=phone]', form)[0];
+        var street = $('[name=address]', form)[0];
+        var city = $('[name=address-city]', form)[0];
+        var email = $('[name=email]', form)[0];
+
+        if(firstName.value == '') {
+            alert('Error: First name cannot be blank!');
+            firstName.focus();
+            return false;
+        } else if(lastName.value == '') {
+            alert('Error: Last name cannot be blank!');
+            lastName.focus();
+            return false;
+        } else if(phone.value == '') {
+            alert('Error: Phone number cannot be blank!');
+            phone.focus();
+            return false;
+        } else if(street.value == '') {
+            alert('Error: Street address cannot be blank!');
+            street.focus();
+            return false;
+        } else if(city.value == '') {
+            alert('Error: City cannot be blank!');
+            city.focus();
+            return false;
+        } else if(email.value == '') {
+            alert('Error: Email cannot be blank!');
+            email.focus();
+            return false;
+        } else {
+            //form passed all constraints
+            return true;
+        }
+    }
+
+    function checkPassword (form) {
+        var oldPassword = $('[name=password-old]', form)[0];
+        var password = $('[name=password]', form)[0];
+        var confirmPassword = $('[name=password-confirm]', form)[0];
+
+        if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
+            if(password.value.length < 6) {
+                alert('Error: Password must contain at least six characters!');
+                password.focus();
+                return false;
+            }
+            re = /[0-9]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one number (0-9)!');
+                password.focus();
+                return false;
+            }
+            re = /[a-z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one lowercase letter (a-z)!');
+                password.focus();
+                return false;
+            }
+            re = /[A-Z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one uppercase letter (A-Z)!');
+                password.focus();
+                return false;
+            }
+        } else {
+            alert('Error: Please check that you\'ve entered and confirmed your password!');
+            password.focus();
+            return false;
+        }
+        return true;
+    }
+
     /* check to see that there is a login token
      *   if not, prompt user to login
      */
@@ -88,85 +167,6 @@ $(document).ready(function() {
         tabC.appendChild(tabAHeaderhr);
         tabC.appendChild(letterForm);
         tabC.appendChild(childrenSelectContainer);
-
-        /* Check to make sure all the fields are filled in and ensure the
-         * user's password passes the constraints
-         */
-        function checkInfo(form) {
-            // get all form info
-            var firstName = $('[name=first-name]', form)[0];
-            var lastName = $('[name=last-name]', form)[0];
-            var phone = $('[name=phone]', form)[0];
-            var street = $('[name=address]', form)[0];
-            var city = $('[name=address-city]', form)[0];
-            var email = $('[name=email]', form)[0];
-
-            if(firstName.value == '') {
-                alert('Error: First name cannot be blank!');
-                firstName.focus();
-                return false;
-            } else if(lastName.value == '') {
-                alert('Error: Last name cannot be blank!');
-                lastName.focus();
-                return false;
-            } else if(phone.value == '') {
-                alert('Error: Phone number cannot be blank!');
-                phone.focus();
-                return false;
-            } else if(street.value == '') {
-                alert('Error: Street address cannot be blank!');
-                street.focus();
-                return false;
-            } else if(city.value == '') {
-                alert('Error: City cannot be blank!');
-                city.focus();
-                return false;
-            } else if(email.value == '') {
-                alert('Error: Email cannot be blank!');
-                email.focus();
-                return false;
-            } else {
-                //form passed all constraints
-                return true;
-            }
-        }
-
-        function checkPassword (form) {
-            var oldPassword = $('[name=password-old]', form)[0];
-            var password = $('[name=password]', form)[0];
-            var confirmPassword = $('[name=password-confirm]', form)[0];
-
-            if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
-                if(password.value.length < 6) {
-                    alert('Error: Password must contain at least six characters!');
-                    password.focus();
-                    return false;
-                }
-                re = /[0-9]/;
-                if(!re.test(password.value)) {
-                    alert('Error: password must contain at least one number (0-9)!');
-                    password.focus();
-                    return false;
-                }
-                re = /[a-z]/;
-                if(!re.test(password.value)) {
-                    alert('Error: password must contain at least one lowercase letter (a-z)!');
-                    password.focus();
-                    return false;
-                }
-                re = /[A-Z]/;
-                if(!re.test(password.value)) {
-                    alert('Error: password must contain at least one uppercase letter (A-Z)!');
-                    password.focus();
-                    return false;
-                }
-            } else {
-                alert("Error: Please check that you've entered and confirmed your password!");
-                password.focus();
-                return false;
-            }
-            return true;
-        }
 
         /* get children using donor id */
         $.ajax({
@@ -485,10 +485,6 @@ $(document).ready(function() {
                 // check that their old password is correct, then update donor
                 // doc with new password
                 submitPasswordChanges.onclick = function() {
-                    var oldPassword = document.getElementById('form-old-password').value;
-                    var newPassword = document.getElementById('form-password').value;
-                    var confirmNewPassword = document.getElementById('form-confirm-password').value;
-
                     //make sure their new password is not '' and make sure
                     //the two passwords match, then send new password to db
                     if (checkPassword(document.getElementById('user-info-container'))) {
@@ -496,7 +492,7 @@ $(document).ready(function() {
                             url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                             type: 'POST',
                             data: {
-                                'token' : sessionStorage.getItem('token'),
+                                'token' : sessionStorage.getItem('token')
                             },
                             success: function(res) {
                                 $.ajax({
@@ -504,7 +500,7 @@ $(document).ready(function() {
                                     type: 'POST',
                                     data: {
                                         'correo_electrónico': res.correo_electrónico,
-                                        'password': oldPassword
+                                        'password': document.getElementById('form-old-password').value
                                     },
                                     success: function(res) {
                                         //update the users token and id which will reset their session timer
@@ -537,7 +533,7 @@ $(document).ready(function() {
                             }
                         });
                     } else {
-                        console.log("form validation failed");
+                        console.log('form validation failed');
                     }
                 };
 
