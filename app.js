@@ -817,7 +817,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                             });
                         } else {
                             // construct the email with the donor's new password and send the email
-                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword + tempPassword, function(didEmail) {
+                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword + tempPassword, function() {
                                 res.status(200).send({
                                     success: true,
                                     message: 'Donor password reset.'

@@ -624,8 +624,10 @@ $(document).ready(function() {
                     'correo_electrónico': $('.donor-email').val()
                 },
                 success: function(res) {
-                    alert('Please check your email for your temporary password');
-                    toggleLogin();
+                    if (res.status === 200) {
+                        alert('Please check your email for your temporary password');
+                        toggleLogin();
+                    }
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {
@@ -637,7 +639,7 @@ $(document).ready(function() {
                 }
             });
         } else {
-            alert("Please enter your email into the email field before clicking Forgot Password");
-        }  
+            alert('Please enter your email into the email field before clicking Forgot Password');
+        }
     });
 });
