@@ -420,7 +420,6 @@ $(document).ready(function() {
             if (inStorage('cart') === false) {
                 alert('no hay niños en el carrito.');
             } else {
-                  $('#donor-credit-form').show();
                 if (inStorage('token') === true && inStorage('id') === true) {
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -516,6 +515,7 @@ $(document).ready(function() {
                                         $('#go-to-step-two').hide();
                                         $('#delete-child-button').hide();
                                         $('#go-to-step-three').show();
+                                        $('#donor-credit-form').show();
                                         $('#go-back-to-step-one').show();
                                         $('#go-to-step-three').click(goToStepThree);
                                         $('#go-back-to-step-one').click(goToStepOne);

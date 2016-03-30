@@ -578,7 +578,7 @@ $(document).ready(function() {
                             url: '/api/v1/donor/auth',
                             type: 'POST',
                             data: {
-                                'correo_electrónico': document.getElementById('create-account-email').value,
+                                'email': document.getElementById('create-account-email').value,
                                 'password': document.getElementById('create-account-password').value
                             },
                             success: function(res) {
