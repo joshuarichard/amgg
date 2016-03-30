@@ -24,7 +24,7 @@ $(document).ready(function() {
         /* create the content for tabA */
         var tabAHeader = document.createElement('span');
         tabAHeader.className = 'header';
-        tabAHeader.innerHTML = 'niños apadrinados';
+        tabAHeader.innerHTML = 'Niños Apadrinados';
 
         var tabAHeaderhr = document.createElement('hr');
         tabA.appendChild(tabAHeader);
@@ -71,7 +71,7 @@ $(document).ready(function() {
         var letter = document.createElement('textarea');
         letter.className = 'letter';
         var submitLetter = document.createElement('button');
-        submitLetter.className = 'letter-submit pull-right';
+        submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
         submitLetter.title = 'Send letter to your sponsored child';
         submitLetter.innerHTML = 'Send';
 
@@ -148,7 +148,7 @@ $(document).ready(function() {
                 //tabB header
                 tabBHeader = document.createElement('span');
                 tabBHeader.className = 'header';
-                tabBHeader.innerHTML = 'datos de facturación';
+                tabBHeader.innerHTML = 'Datos De Facturación';
                 var tabBHeaderhr = document.createElement('hr');
 
                 //create container for user info
@@ -373,7 +373,7 @@ $(document).ready(function() {
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
                 changePasswordButton.className = 'btn btn-success btn-sm';
-                changePasswordButton.appendChild(document.createTextNode('change password'));
+                changePasswordButton.appendChild(document.createTextNode('Change Password'));
                 userInfoSidebar.appendChild(changePasswordButton);
 
                 //toggle the password form
