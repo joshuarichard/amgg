@@ -338,7 +338,7 @@ $(document).ready(function() {
                 var submitPasswordChanges = document.createElement('button');
                 submitPasswordChanges.id = 'submit-new-password';
                 submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
-                submitPasswordChanges.innerHTML = 'submit password';
+                submitPasswordChanges.innerHTML = 'Submit Password';
                 submitContainer.appendChild(submitPasswordChanges);
 
                 //combine the password elements into one block so we can target them together with css
