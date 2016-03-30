@@ -615,7 +615,7 @@ $(document).ready(function() {
     $('.close-create-account-overlay').click(toggleCreateAccount);
 
     $('.forgot-password').click(function() {
-        if ($('.donor-email').val() != '' || $('.donor-email').val() != null) {
+        if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {
             // define the request
             $.ajax({
                 url: '/api/v1/donor/reset',
@@ -625,7 +625,7 @@ $(document).ready(function() {
                 },
                 success: function(res) {
                     alert('Please check your email for your temporary password');
-                    console.log(res);
+                    toggleLogin();
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {

@@ -449,8 +449,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     // then delete the cart doc
                                     cart.delete(assignedDonorID, function(result) {
                                         if (result === false) {
-                                            emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + assignedDonorID;
-                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + assignedDonorID, function(didEmail) {
                                                 if (didEmail === false) {
                                                     log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
                                                 }
@@ -552,14 +551,13 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         if (result.hasOwnProperty('err')) {
                                             res.status(500).send({
                                                 success: false,
-                                                message: result.err
+                                                message: result['err']
                                             });
                                         } else {
                                             // then delete the cart doc
                                             cart.delete(req.body.donor_id, function(result) {
                                                 if (result === false) {
-                                                    emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
-                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + req.body.donor_id, function(didEmail) {
                                                         if (didEmail === false) {
                                                             log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
                                                         }
@@ -568,7 +566,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 if (result.hasOwnProperty('err')) {
                                                     res.status(500).send({
                                                         success: false,
-                                                        message: result.err
+                                                        message: result['err']
                                                     });
                                                 } else {
                                                     // recursive function to manage asynch for each id (change status to sponsored)
@@ -701,8 +699,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, donorCollection, false, function(data) {
-                        emailBodyRemoveSponsorship += '\n\ndonor: ' + donorID + '\nchild: ' + childID;
-                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
+                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
@@ -759,8 +756,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, donorCollection, false, function(data) {
-                        emailBodyDeleteAccount += '\n\ndonor: ' + donorID;
-                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount, function(didEmail) {
+                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
@@ -821,8 +817,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                             });
                         } else {
                             // construct the email with the donor's new password and send the email
-                            emailBodyTempPassword += tempPassword;
-                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword, function(didEmail) {
+                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword + tempPassword, function(didEmail) {
                                 res.status(200).send({
                                     success: true,
                                     message: 'Donor password reset.'
