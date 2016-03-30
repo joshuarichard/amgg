@@ -4,6 +4,7 @@ body {
   margin: 0;
   min-height: 100%;
   font-family: 'Gotham', 'Gotham Book', 'Gotham Light';
+  color: #2C429B;
 }
 
 .header {
@@ -14,7 +15,8 @@ body {
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 0;
-  font-family: 'Damion';
+  font-family: 'Damion', 'Gotham bold italic';
+  color: #2C429B;
 }
 
 .nav {
