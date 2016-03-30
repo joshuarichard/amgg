@@ -623,7 +623,7 @@ app.post('/api/v1/donor/create', function(req, res) {
                 if (result.insertedCount === 1) {
                     res.status(200).send({
                         success: true,
-                        message: 'Child sponsored.'
+                        message: 'Donor created.'
                     });
                 } else {
                     res.status(500).send({
