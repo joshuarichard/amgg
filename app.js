@@ -90,6 +90,8 @@ var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorshi
 var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
 var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
 var emailBodyDeleteAccount = 'A donor is requesting their account be deleted.';
+var emailHeaderTempPassword = 'Temporary password for AMGG';
+var emailBodyTempPassword = 'Your temporary password is: ';
 
 // error email strings
 var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
@@ -447,8 +449,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                     // then delete the cart doc
                                     cart.delete(assignedDonorID, function(result) {
                                         if (result === false) {
-                                            emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + assignedDonorID;
-                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + assignedDonorID, function(didEmail) {
                                                 if (didEmail === false) {
                                                     log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
                                                 }
@@ -556,8 +557,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                             // then delete the cart doc
                                             cart.delete(req.body.donor_id, function(result) {
                                                 if (result === false) {
-                                                    emailErrorBodyDeletingCart += ' Donor id for the cart is: ' + req.body.donor_id;
-                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart, function(didEmail) {
+                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + req.body.donor_id, function(didEmail) {
                                                         if (didEmail === false) {
                                                             log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
                                                         }
@@ -699,8 +699,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, donorCollection, false, function(data) {
-                        emailBodyRemoveSponsorship += '\n\ndonor: ' + donorID + '\nchild: ' + childID;
-                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship, function(didEmail) {
+                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
@@ -757,8 +756,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, donorCollection, false, function(data) {
-                        emailBodyDeleteAccount += '\n\ndonor: ' + donorID;
-                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount, function(didEmail) {
+                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
@@ -782,6 +780,56 @@ app.post('/api/v1/donor/delete', function(req, res) {
             });
         }
     }
+});
+
+/* POST /api/v1/donor/reset
+ *
+ * emails the user with a temp password they can use to login with
+ * {
+ *   'correo_electrónico': 'donor_email'
+ * }
+ */
+app.post('/api/v1/donor/reset', function(req, res) {
+    // firstly create a selector based on the email to get the donor's doc
+    var selector = {
+        'correo_electrónico': req.body.correo_electrónico
+    };
+
+    // find the doc
+    mongo.find(selector, donorCollection, 10000, true, function(donor) {
+        for (var id in donor) {
+            // get the doc with the id
+            mongo.get(id, donorCollection, false, function(data) {
+                // generate a random password and encrypt it...
+                var tempPassword = Math.random().toString(36).slice(-8);
+                password.encrypt(tempPassword, function(hash, salt) {
+                    // fix the donor doc a bit before insertion
+                    var changes = {};
+                    changes['password'] = hash;
+                    changes['salt'] = salt;
+
+                    // ... then store it in their donor doc
+                    mongo.edit(id, changes, donorCollection, function(result) {
+                        if (result.hasOwnProperty('err')) {
+                            res.status(500).send({
+                                success: false,
+                                message: 'DB error.'
+                            });
+                        } else {
+                            // construct the email with the donor's new password and send the email
+                            emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword + tempPassword, function() {
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Donor password reset.'
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+    });
 });
 
 https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
