@@ -551,7 +551,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         if (result.hasOwnProperty('err')) {
                                             res.status(500).send({
                                                 success: false,
-                                                message: result['err']
+                                                message: result.err
                                             });
                                         } else {
                                             // then delete the cart doc
@@ -566,7 +566,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 if (result.hasOwnProperty('err')) {
                                                     res.status(500).send({
                                                         success: false,
-                                                        message: result['err']
+                                                        message: result.err
                                                     });
                                                 } else {
                                                     // recursive function to manage asynch for each id (change status to sponsored)
