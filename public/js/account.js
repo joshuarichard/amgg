@@ -435,7 +435,15 @@ $(document).ready(function() {
                                     },
                                     success: function() {
                                         alert('Password successful changed.');
-                                        removePasswordInfo();
+                                        $('#form-old-password').val('');
+                                        $('#form-password').val('');
+                                        $('#form-confirm-password').val('');
+                                        $('#form-first-name').prop('disabled', false);
+                                        $('#form-last-name').prop('disabled', false);
+                                        $('#form-phone').prop('disabled', false);
+                                        $('#form-email').prop('disabled', false);
+                                        $('#form-street').prop('disabled', false);
+                                        $('#form-city').prop('disabled', false);
                                         contraseñaContainer.style.display = 'none';
                                     },
                                     error: function() {
@@ -457,18 +465,6 @@ $(document).ready(function() {
                 infoChange();
             }
         });
-
-        function removePasswordInfo() {
-            $('#form-old-password').val('');
-            $('#form-password').val('');
-            $('#form-confirm-password').val('');
-            $('#form-first-name').prop('disabled', false);
-            $('#form-last-name').prop('disabled', false);
-            $('#form-phone').prop('disabled', false);
-            $('#form-email').prop('disabled', false);
-            $('#form-street').prop('disabled', false);
-            $('#form-city').prop('disabled', false);
-        };
 
         var deleteAccountText = document.createElement('div');
         deleteAccountText.className = 'delete-account-text';
