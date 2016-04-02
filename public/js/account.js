@@ -435,16 +435,19 @@ $(document).ready(function() {
                                     },
                                     success: function() {
                                         alert('Password successful changed.');
+                                        //empty password forms
                                         $('#form-old-password').val('');
                                         $('#form-password').val('');
                                         $('#form-confirm-password').val('');
+                                        //re-enable the user info forms
                                         $('#form-first-name').prop('disabled', false);
                                         $('#form-last-name').prop('disabled', false);
                                         $('#form-phone').prop('disabled', false);
                                         $('#form-email').prop('disabled', false);
                                         $('#form-street').prop('disabled', false);
                                         $('#form-city').prop('disabled', false);
-                                        contraseñaContainer.style.display = 'none';
+                                        //hide password forms
+                                        $('.contraseña-container').hide();
                                     },
                                     error: function() {
                                         alert('Couldn\'t change your password.');
