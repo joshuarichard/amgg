@@ -6,43 +6,43 @@
 
     <head>
         <title>AMG Guatemala</title>
-        
+
         <meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-        
+
         <meta name="description" content="AMG Guatemala" />
 		<meta name="keywords" content="AMG, Guatemala, niños, ayuda, donación" />
 		<meta name="author" content="InfowareGT" />
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-        
+
         <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-        
+
         <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
         <link href="css/bootstrap.min.css" rel="stylesheet" />
-            
+
 		<!-- LOAD JQUERY LIBRARY -->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.js"></script>
-		
+
 		<link rel="stylesheet" type="text/css" href="revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css">
 		<link rel="stylesheet" type="text/css" href="revolution/fonts/font-awesome/css/font-awesome.min.css">
-		
+
 		<!-- REVOLUTION STYLE SHEETS -->
 		<link rel="stylesheet" type="text/css" href="revolution/css/settings.css">
 		<!-- REVOLUTION LAYERS STYLES -->
 		<link rel="stylesheet" type="text/css" href="revolution/css/layers.css">
-			
+
 		<!-- REVOLUTION NAVIGATION STYLES -->
 		<link rel="stylesheet" type="text/css" href="revolution/css/navigation.css">
-		
+
 		<link rel="stylesheet" type="text/css" href="assets/css/noneed.css">
-		
+
 		<!-- REVOLUTION JS FILES -->
 		<script type="text/javascript" src="revolution/js/jquery.themepunch.tools.min.js"></script>
 		<script type="text/javascript" src="revolution/js/jquery.themepunch.revolution.min.js"></script>
 
-		<!-- SLIDER REVOLUTION 5.0 EXTENSIONS  
-			(Load Extensions only on Local File Systems !  
-			The following part can be removed on Server for On Demand Loading) -->	
+		<!-- SLIDER REVOLUTION 5.0 EXTENSIONS
+			(Load Extensions only on Local File Systems !
+			The following part can be removed on Server for On Demand Loading) -->
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.actions.min.js"></script>
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.carousel.min.js"></script>
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.kenburn.min.js"></script>
@@ -52,7 +52,7 @@
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.parallax.min.js"></script>
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.slideanims.min.js"></script>
 		<script type="text/javascript" src="revolution/js/extensions/revolution.extension.video.min.js"></script>
-        
+
         <link href="css/Site.css" rel="stylesheet" />
     </head>
     <body>
@@ -60,28 +60,358 @@
             <div class="content">
                 <div class="row vcenter">
                     <div class="col-sm-2 col-sm-offset-1">
-                        <a class="vcenter" href="en.amgg.org">English</a>
+                        <a class="vcenter" href="http://en.amgg.org">English</a>
                     </div>
                     <div class="col-sm-2">
                         <a style="text-align: right" href="https://www.facebook.com/Guates-Best-Store-1431567437168029/" target="_blank">Guates Best</a>
                     </div>
                     <div class="col-sm-2">
-                        <a class="vcenter" href="pdf/boletin.pdf" target="_blank">Boletin</a>
+                        <a class="vcenter" href="../pdf/boletin.pdf" target="_blank">Boletin</a>
                     </div>
                     <div class="col-sm-2">
-                        <a class="vcenter" href="https://amgg.org/donacion/">Donar</a>
+                        <a class="vcenter" href="../views/children.html">Donar</a>
                     </div>
                     <div class="col-sm-2 pre-active" style="text-align: center" >
                         <a style="text-align: center"  href="involucrate.html#Apadrina">Apadrina</a>
                     </div>
+                    <div class="col-sm-1 pre-active">
+                        <a href="#" class="vcenter" id="toggle-login">Log in</a>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <!-- begin code the gordon team added -->
+        <div class="login" algin="right">
+            <div class="login-triangle"></div>
+            <h1>Log in</h1>
+            <form>
+                <input class="donor-email" type="email" placeholder="Email" />
+                <input class="donor-password" type="password" placeholder="Password" />
+                <button class="login-submit btn btn-primary" type="submit" value="Log in">  Log in </button>
+                <a class="create-account" href="#">Create Account</a>
+                <a class="forgot-password pull-right" href="#">Forgot Password</a>
+            </form>
+        </div>
+
+        <div class="create-account-overlay" align="center">
+            <div class="close-create-account-overlay-container pull-right">
+                <span class="close-create-account-overlay col-md-12 glyphicon glyphicon-remove"></span>
+            </div>
+            <div id="create-account-form" class="form">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Nombre</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-first-name" class="form-control" type="text" name="first-name" placeholder="First Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Apellido</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-last-name" class="form-control" type="text" name="last-name" placeholder="Last Name">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Teléfono</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-phone" class="form-control" type="text" name="phone-number" placeholder="(978) 927-2300">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Dirección</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-address-street" class="form-control" type="text" name="address" placeholder="Street">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-address-city" class="form-control" type="text" name="address-city" placeholder="City">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">País</label>
+                    <div class="col-md-8 create-account-input">
+                        <select id="create-account-country" name="country" class="inputbox form-control validate[required]">
+                            <option value="">Select country</option>
+                            <option value="Afghanistan">Afghanistan</option>
+                            <option value="Albania">Albania</option>
+                            <option value="Algeria">Algeria</option>
+                            <option value="American Samoa">American Samoa</option>
+                            <option value="Andorra">Andorra</option>
+                            <option value="Angola">Angola</option>
+                            <option value="Anguilla">Anguilla</option>
+                            <option value="Antarctica">Antarctica</option>
+                            <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Armenia">Armenia</option>
+                            <option value="Aruba">Aruba</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Austria">Austria</option>
+                            <option value="Azerbaijan">Azerbaijan</option>
+                            <option value="Bahamas">Bahamas</option>
+                            <option value="Bahrain">Bahrain</option>
+                            <option value="Bangladesh">Bangladesh</option>
+                            <option value="Barbados">Barbados</option>
+                            <option value="Belarus">Belarus</option>
+                            <option value="Belgium">Belgium</option>
+                            <option value="Belize">Belize</option>
+                            <option value="Benin">Benin</option>
+                            <option value="Bermuda">Bermuda</option>
+                            <option value="Bhutan">Bhutan</option>
+                            <option value="Bolivia">Bolivia</option>
+                            <option value="Bosnia and Herzegowina">Bosnia and Herzegowina</option>
+                            <option value="Botswana">Botswana</option>
+                            <option value="Bouvet Island">Bouvet Island</option>
+                            <option value="Brazil">Brazil</option>
+                            <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+                            <option value="Brunei Darussalam">Brunei Darussalam</option>
+                            <option value="Bulgaria">Bulgaria</option>
+                            <option value="Burkina Faso">Burkina Faso</option>
+                            <option value="Burundi">Burundi</option>
+                            <option value="Cambodia">Cambodia</option>
+                            <option value="Cameroon">Cameroon</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Canary Islands">Canary Islands</option>
+                            <option value="Cape Verde">Cape Verde</option>
+                            <option value="Cayman Islands">Cayman Islands</option>
+                            <option value="Central African Republic">Central African Republic</option>
+                            <option value="Chad">Chad</option>
+                            <option value="Chile">Chile</option>
+                            <option value="China">China</option>
+                            <option value="Christmas Island">Christmas Island</option>
+                            <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+                            <option value="Colombia">Colombia</option>
+                            <option value="Comoros">Comoros</option>
+                            <option value="Congo">Congo</option>
+                            <option value="Cook Islands">Cook Islands</option>
+                            <option value="Costa Rica">Costa Rica</option>
+                            <option value="Cote D'Ivoire">Cote D'Ivoire</option>
+                            <option value="Croatia">Croatia</option>
+                            <option value="Cuba">Cuba</option>
+                            <option value="Cyprus">Cyprus</option>
+                            <option value="Czech Republic">Czech Republic</option>
+                            <option value="Denmark">Denmark</option>
+                            <option value="Djibouti">Djibouti</option>
+                            <option value="Dominica">Dominica</option>
+                            <option value="Dominican Republic">Dominican Republic</option>
+                            <option value="East Timor">East Timor</option>
+                            <option value="East Timor">East Timor</option>
+                            <option value="Ecuador">Ecuador</option>
+                            <option value="Egypt">Egypt</option>
+                            <option value="El Salvador">The Savior</option>
+                            <option value="Equatorial Guinea">Equatorial Guinea</option>
+                            <option value="Eritrea">Eritrea</option>
+                            <option value="Estonia">Estonia</option>
+                            <option value="Ethiopia">Ethiopia</option>
+                            <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+                            <option value="Faroe Islands">Faroe Islands</option>
+                            <option value="Fiji">Fiji</option>
+                            <option value="Finland">Finland</option>
+                            <option value="France">France</option>
+                            <option value="France, Metropolitan">France, Metropolitan</option>
+                            <option value="French Guiana">French Guiana</option>
+                            <option value="French Polynesia">French Polynesia</option>
+                            <option value="French Southern Territories">French Southern Territories</option>
+                            <option value="Gabon">Gabon</option>
+                            <option value="Gambia">Gambia</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Ghana">Ghana</option>
+                            <option value="Gibraltar">Gibraltar</option>
+                            <option value="Greece">Greece</option>
+                            <option value="Greenland">Greenland</option>
+                            <option value="Grenada">Grenada</option>
+                            <option value="Guadeloupe">Guadeloupe</option>
+                            <option value="Guam">Guam</option>
+                            <option value="Guatemala" selected="selected">Guatemala</option>
+                            <option value="Guinea">Guinea</option>
+                            <option value="Guinea-bissau">Guinea-Bissau</option>
+                            <option value="Guyana">Guyana</option>
+                            <option value="Haiti">Haiti</option>
+                            <option value="Heard and Mc Donald Islands">Heard and McDonald Islands</option>
+                            <option value="Honduras">Honduras</option>
+                            <option value="Hong Kong">Hong Kong</option>
+                            <option value="Hungary">Hungary</option>
+                            <option value="Iceland">Iceland</option>
+                            <option value="India">India</option>
+                            <option value="Indonesia">Indonesia</option>
+                            <option value="Iran (Islamic Republic of)">Iran (Islamic Republic of)</option>
+                            <option value="Iraq">Iraq</option>
+                            <option value="Ireland">Ireland</option>
+                            <option value="Israel">Israel</option>
+                            <option value="Italy">Italy</option>
+                            <option value="Jamaica">Jamaica</option>
+                            <option value="Japan">Japan</option>
+                            <option value="Jersey">Jersey</option>
+                            <option value="Jordan">Jordan</option>
+                            <option value="Kazakhstan">Kazakhstan</option>
+                            <option value="Kenya">Kenya</option>
+                            <option value="Kiribati">Kiribati</option>
+                            <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+                            <option value="Korea, Republic of">Korea, Republic of</option>
+                            <option value="Kuwait">Kuwait</option>
+                            <option value="Kyrgyzstan">Kyrgyzstan</option>
+                            <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+                            <option value="Latvia">Latvia</option>
+                            <option value="Lebanon">Lebanon</option>
+                            <option value="Lesotho">Lesotho</option>
+                            <option value="Liberia">Liberia</option>
+                            <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+                            <option value="Liechtenstein">Liechtenstein</option>
+                            <option value="Lithuania">Lithuania</option>
+                            <option value="Luxembourg">Luxembourg</option>
+                            <option value="Macau">Macau</option>
+                            <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+                            <option value="Madagascar">Madagascar</option>
+                            <option value="Malawi">Malawi</option>
+                            <option value="Malaysia">Malaysia</option>
+                            <option value="Maldives">Maldives</option>
+                            <option value="Mali">Mali</option>
+                            <option value="Malta">malt</option>
+                            <option value="Marshall Islands">Marshall Islands</option>
+                            <option value="Martinique">Martinique</option>
+                            <option value="Mauritania">Mauritania</option>
+                            <option value="Mauritius">Mauritius</option>
+                            <option value="Mayotte">Mayotte</option>
+                            <option value="Mexico">Mexico</option>
+                            <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+                            <option value="Moldova, Republic of">Moldova, Republic of</option>
+                            <option value="Monaco">Monaco</option>
+                            <option value="Mongolia">Mongolia</option>
+                            <option value="Montenegro">Montenegro</option>
+                            <option value="Montserrat">Montserrat</option>
+                            <option value="Morocco">Morocco</option>
+                            <option value="Mozambique">Mozambique</option>
+                            <option value="Myanmar">Myanmar</option>
+                            <option value="Namibia">Namibia</option>
+                            <option value="Nauru">Nauru</option>
+                            <option value="Nepal">Nepal</option>
+                            <option value="Netherlands">Netherlands</option>
+                            <option value="Netherlands Antilles">Netherlands Antilles</option>
+                            <option value="New Caledonia">New Caledonia</option>
+                            <option value="New Zealand">New Zealand</option>
+                            <option value="Nicaragua">Nicaragua</option>
+                            <option value="Niger">Niger</option>
+                            <option value="Nigeria">Nigeria</option>
+                            <option value="Niue">Niue</option>
+                            <option value="Norfolk Island">Norfolk Island</option>
+                            <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+                            <option value="Norway">Norway</option>
+                            <option value="Oman">Oman</option>
+                            <option value="Pakistan">Pakistan</option>
+                            <option value="Palau">Palau</option>
+                            <option value="Panama">Panama</option>
+                            <option value="Papua New Guinea">Papua New Guinea</option>
+                            <option value="Paraguay">Paraguay</option>
+                            <option value="Peru">Peru</option>
+                            <option value="Philippines">Philippines</option>
+                            <option value="Pitcairn">Pitcairn</option>
+                            <option value="Poland">Poland</option>
+                            <option value="Portugal">Portugal</option>
+                            <option value="Puerto Rico">Puerto Rico</option>
+                            <option value="Qatar">Qatar</option>
+                            <option value="Reunion">Meeting</option>
+                            <option value="Romania">Romania</option>
+                            <option value="Russian Federation">Russian Federation</option>
+                            <option value="Rwanda">Rwanda</option>
+                            <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+                            <option value="Saint Lucia">Saint Lucia</option>
+                            <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                            <option value="Samoa">Samoa</option>
+                            <option value="San Marino">San Marino</option>
+                            <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                            <option value="Saudi Arabia">Saudi Arabia</option>
+                            <option value="Senegal">Senegal</option>
+                            <option value="Serbia">Serbia</option>
+                            <option value="Seychelles">Seychelles</option>
+                            <option value="Sierra Leone">Sierra Leone</option>
+                            <option value="Singapore">Singapore</option>
+                            <option value="Slovakia (Slovak Republic)">Slovakia (Slovak Republic)</option>
+                            <option value="Slovenia">Slovenia</option>
+                            <option value="Solomon Islands">Solomon Islands</option>
+                            <option value="Somalia">Somalia</option>
+                            <option value="South Africa">South Africa</option>
+                            <option value="South Georgia and the South Sandwich Islands">South Georgia and the South Sandwich Islands</option>
+                            <option value="Spain">Spain</option>
+                            <option value="Sri Lanka">Sri Lanka</option>
+                            <option value="St. Barthelemy">St. Barthelemy</option>
+                            <option value="St. Eustatius">St. Eustatius</option>
+                            <option value="St. Helena">St. Helena</option>
+                            <option value="St. Pierre and Miquelon">St. Pierre and Miquelon</option>
+                            <option value="Sudan">Sudan</option>
+                            <option value="Suriname">Suriname</option>
+                            <option value="Svalbard and Jan Mayen Islands">Svalbard and Jan Mayen Islands</option>
+                            <option value="Swaziland">Swaziland</option>
+                            <option value="Sweden">Sweden</option>
+                            <option value="Switzerland">Switzerland</option>
+                            <option value="Syrian Arab Republic">Syrian Arab Republic</option>
+                            <option value="Taiwan">Taiwan</option>
+                            <option value="Tajikistan">Tajikistan</option>
+                            <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+                            <option value="Thailand">Thailand</option>
+                            <option value="The Democratic Republic of Congo">The Democratic Republic of Congo</option>
+                            <option value="Togo">Togo</option>
+                            <option value="Tokelau">Tokelau</option>
+                            <option value="Tonga">Tonga</option>
+                            <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                            <option value="Tunisia">Tunisia</option>
+                            <option value="Turkey">Turkey</option>
+                            <option value="Turkmenistan">Turkmenistan</option>
+                            <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+                            <option value="Tuvalu">Tuvalu</option>
+                            <option value="Uganda">Uganda</option>
+                            <option value="Ukraine">Ukraine</option>
+                            <option value="United Arab Emirates">United Arab Emirates</option>
+                            <option value="United Kingdom">United Kingdom</option>
+                            <option value="United States">United States</option>
+                            <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+                            <option value="Uruguay">Uruguay</option>
+                            <option value="Uzbekistan">Uzbekistan</option>
+                            <option value="Vanuatu">Vanuatu</option>
+                            <option value="Vatican City State (Holy See)">Vatican City State (Holy See)</option>
+                            <option value="Venezuela">Venezuela</option>
+                            <option value="Viet Nam">Vietnam</option>
+                            <option value="Virgin Islands (British)">Virgin Islands (British)</option>
+                            <option value="Virgin Islands (U.S.)">Virgin Islands (US)</option>
+                            <option value="Wallis and Futuna Islands">Wallis and Futuna Islands</option>
+                            <option value="Western Sahara">Western Sahara</option>
+                            <option value="Yemen">Yemen</option>
+                            <option value="Zambia">Zambia</option>
+                            <option value="Zimbabwe">Zimbabwe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Correo Electrónico</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Contraseña</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-password" class="form-control" type="password" name="password-one" placeholder="contraseña">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">Confirmar Contraseña</label>
+                    <div class="col-md-8 create-account-input">
+                        <input id="create-account-password-confirm" class="form-control" type="password" name="password-confirm" placeholder="confirmar contraseña">
+                    </div>
+                </div>
+                <a>
+                    <button class="btn btn-primary btn-md create-account-submit pull-right" type="button">enviar</button>
+                </a>
+            </div>
+        </div>
+        <!-- end code the gordon team added -->
+
         <header class="navbar navbar-default navbar-fixed-top navbar-static-top" role="navigation">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" 
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
@@ -127,30 +457,30 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </header>
-		<!-- Sección Educación -->   
+		<!-- Sección Educación -->
         <section id="primera" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_educacion" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-1" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-1" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-educacion.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-educacion.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-1-id"
-                                data-x="left" 
+                                data-x="left"
                                 data-hoffset="[50,40,30,10]"
-                                data-y="top" 
+                                data-y="top"
                                 data-voffset="[100,90,50,40]"
                                 data-width="none"
                                 data-height="none"
@@ -164,15 +494,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-educacion.png" alt=""
-                                        data-ww="[456,364.8,273.6,182.4]" 
-                                        data-hh="[111,88.8,66.6,44.4]" 
+                                        data-ww="[456,364.8,273.6,182.4]"
+                                        data-hh="[111,88.8,66.6,44.4]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_educacion").revolution == undefined){
@@ -221,7 +551,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -234,16 +564,16 @@
 				</div>
 				<div class="col-xs-8 col-sm-7 col-centered">
 					<p>
-						•	Centros de formación estudiantil <br/> 
-						•	Guarderías infantiles <br/> 
-						•	Educación cristiana<br/> 
-						•	Preparación vocacional<br/> 
-						•	Actividades extracurriculares<br/>  
-						•	Habilidades para la vida<br/> 
-						•	Becas para básicos, diversificado y universidad<br/> 
-						•	Refuerzo y tutoría escolares<br/> 
-						•	Escuela para Padres<br/> 
-						•	Apoyo espiritual y discipulado<br/> 
+						•	Centros de formación estudiantil <br/>
+						•	Guarderías infantiles <br/>
+						•	Educación cristiana<br/>
+						•	Preparación vocacional<br/>
+						•	Actividades extracurriculares<br/>
+						•	Habilidades para la vida<br/>
+						•	Becas para básicos, diversificado y universidad<br/>
+						•	Refuerzo y tutoría escolares<br/>
+						•	Escuela para Padres<br/>
+						•	Apoyo espiritual y discipulado<br/>
                     </p>
                     <div class="row">
 						<div class="col-xs-2">
@@ -264,30 +594,30 @@
 				</div>
 			</article>
 		</section>
-        <!-- Sección Familia -->   
+        <!-- Sección Familia -->
         <section id="Familia" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_familia" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-2" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-2" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-familia.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-familia.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-2-id"
-                                data-x="left" 
+                                data-x="left"
                                 data-hoffset="[100,90,80,60]"
-                                data-y="bottom" 
+                                data-y="bottom"
                                 data-voffset="0"
                                 data-width="none"
                                 data-height="none"
@@ -301,15 +631,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-familia.png" alt=""
-                                        data-ww="[370,296,222,148]" 
-                                        data-hh="[109,87.2,65.4,43.6]" 
+                                        data-ww="[370,296,222,148]"
+                                        data-hh="[109,87.2,65.4,43.6]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_familia").revolution == undefined){
@@ -358,7 +688,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -416,30 +746,30 @@
 				</div>
 			</article>
 		</section>
-		<!-- Sección Salud -->   
+		<!-- Sección Salud -->
         <section id="Salud" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_salud" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-3" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-3" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-salud.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-salud.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-3-id"
-                                data-x="right" 
+                                data-x="right"
                                 data-hoffset="[50,40,30,10]"
-                                data-y="top" 
+                                data-y="top"
                                 data-voffset="[100,90,50,40]"
                                 data-width="none"
                                 data-height="none"
@@ -453,15 +783,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-salud.png" alt=""
-                                        data-ww="[338,270.4,202.8,135.2]" 
-                                        data-hh="[109,87.2,65.4,43.6]" 
+                                        data-ww="[338,270.4,202.8,135.2]"
+                                        data-hh="[109,87.2,65.4,43.6]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_salud").revolution == undefined){
@@ -510,7 +840,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -535,30 +865,30 @@
 				</div>
 			</article>
 		</section>
-        <!-- Sección Protección -->   
+        <!-- Sección Protección -->
         <section id="Proteccion" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_proteccion" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-4" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-4" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-proteccion.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-proteccion.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-4-id"
-                                data-x="left" 
+                                data-x="left"
                                 data-hoffset="[50,40,30,10]"
-                                data-y="bottom" 
+                                data-y="bottom"
                                 data-voffset="0"
                                 data-width="none"
                                 data-height="none"
@@ -572,15 +902,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-proteccion.png" alt=""
-                                        data-ww="[484,387.2,290.4,193.6]" 
-                                        data-hh="[110,88,66,44]" 
+                                        data-ww="[484,387.2,290.4,193.6]"
+                                        data-hh="[110,88,66,44]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_proteccion").revolution == undefined){
@@ -629,7 +959,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -672,7 +1002,7 @@
 						<div class="col-xs-10">
 							<p>
 								En AMG valoramos la vida y a cada persona que forma parte del futuro de la sociedad guatemalteca. Es por eso que trabajamos con niños, jóvenes y adultos que viven en las calles y que son drogadictos.
-							</p>  
+							</p>
 						</div>
 					</div>
 					<br/>
@@ -683,7 +1013,7 @@
 						<div class="col-xs-10">
 							<p>
 								Nos enfocamos en el individuo, visitándole personalmente en la calle o reuniéndonos en otro lugar para construir una relación de confianza con ellos. Hacemos esto recordándoles el valor que tienen para Dios y apoyándoles en su decisión de salir de las calles.
-							</p>  
+							</p>
 						</div>
 					</div>
 					<br/>
@@ -694,7 +1024,7 @@
 						<div class="col-xs-10">
 							<p>
 								Creemos que las personas pueden salir de las calles y sabemos la importancia de construir una relación de confianza con niños y jóvenes de alto riesgo para evitar que terminen en las calles. Necesitamos personas comprometidas que quieran construir relaciones significativas con niños y jóvenes, mostrando interés especial en ellos, hablándoles del amor de Dios y animándoles a seguir adelante.
-							</p>  
+							</p>
 						</div>
 					</div>
 					<br/>
@@ -705,36 +1035,36 @@
 						<div class="col-xs-10">
 							<p>
 								Tenemos un programa de educación creado específicamente para niños y adolescentes en riesgo de calle, el cual se enfoca en darles formación de calidad y la atención que necesitan.
-							</p>  
+							</p>
 						</div>
 					</div>
 				</div>
 			</article>
 		</section>
-        <!-- Sección Empleo -->   
+        <!-- Sección Empleo -->
         <section id="Empleo" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_empleo" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-5" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-5" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-empleo.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-empleo.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-5-id"
-                                data-x="left" 
+                                data-x="left"
                                 data-hoffset="[50,40,30,10]"
-                                data-y="top" 
+                                data-y="top"
                                 data-voffset="[100,90,50,40]"
                                 data-width="none"
                                 data-height="none"
@@ -748,15 +1078,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-empleo.png" alt=""
-                                        data-ww="[386,308.8,231.6,154.4]" 
-                                        data-hh="[109,87.2,65.4,43.6]" 
+                                        data-ww="[386,308.8,231.6,154.4]"
+                                        data-hh="[109,87.2,65.4,43.6]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_empleo").revolution == undefined){
@@ -805,7 +1135,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -818,7 +1148,7 @@
 				<div class="col-xs-8 col-sm-7 col-centered">
 					<h2>Plan Vocacional</h2>
 					<p>
-						AMG opera dos pequeños proyectos vocacionales capacitando a jóvenes en carpinterías, sastrería y cocina. Muchos de estos estudiantes pueden quedarse dentro de sus comunidades mientras están ganando y viviendo. Las becas se proveen a varias estudiantes para que asistan al Intecap y Centro Vocacional William Cornelius. Los estudiantes aprender a ser higienistas dentales, chef, electricistas y otras importantes profesiones. 
+						AMG opera dos pequeños proyectos vocacionales capacitando a jóvenes en carpinterías, sastrería y cocina. Muchos de estos estudiantes pueden quedarse dentro de sus comunidades mientras están ganando y viviendo. Las becas se proveen a varias estudiantes para que asistan al Intecap y Centro Vocacional William Cornelius. Los estudiantes aprender a ser higienistas dentales, chef, electricistas y otras importantes profesiones.
                     </p>
 					<br/>
                     <div class="row">
@@ -840,7 +1170,7 @@
 				<div class="col-xs-8 col-sm-7 col-centered">
 					<h2>Coloca</h2>
 					<p>
-						<span class="enfasis">COLOCA</span> Guatemala consiste en una oficina de colocación de personal con prioridad a jóvenes egresados de los programas de AMG. Se capacita a los jóvenes con habilidades para la vida, presentación en una entrevista, como realizar un currículum y ética en el área laboral, para insertarlos como candidatos exitosos al mercado laboral. 
+						<span class="enfasis">COLOCA</span> Guatemala consiste en una oficina de colocación de personal con prioridad a jóvenes egresados de los programas de AMG. Se capacita a los jóvenes con habilidades para la vida, presentación en una entrevista, como realizar un currículum y ética en el área laboral, para insertarlos como candidatos exitosos al mercado laboral.
 						<span class="enfasis">COLOCA</span> cuenta con una base de datos de cientos de hojas de vida segmentadas por profesión y oficio, ofreciendo una amplia gama de candidatos a empresas guatemaltecas.
                     </p>
 					<br/>
@@ -848,30 +1178,30 @@
 				</div>
 			</article>
 		</section>
-        <!-- Sección Discipulado -->   
+        <!-- Sección Discipulado -->
         <section id="Discipulado" class="container">
-			<article class="rev_slider_wrapper fullwidthbanner-container"  
+			<article class="rev_slider_wrapper fullwidthbanner-container"
                 style="margin:0px auto;background-color:#ffffff;padding:0px;margin-top:0px;margin-bottom:0px;">
 				<div id="slider_discipulado" class="rev_slider fullwidthabanner"  data-version="5.0">
 					<ul>
-						<!-- SLIDE 1 -->   
-						<li data-index="rs-6" data-transition="parallaxvertical" data-slotamount="default"  
-                            data-easein="default" data-easeout="default" data-masterspeed="default"  
-                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"  
-                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" 
+						<!-- SLIDE 1 -->
+						<li data-index="rs-6" data-transition="parallaxvertical" data-slotamount="default"
+                            data-easein="default" data-easeout="default" data-masterspeed="default"
+                            data-thumb="assets/images/newscarousel1-100x50.jpg"  data-rotate="0"
+                            data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7"
                             data-saveperformance="off"  data-title="Intro" data-description="">
 							<!-- MAIN IMAGE -->
-							<img src="image/fondo-discipulado.jpg"  data-bgposition="center center" 
-                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10" 
+							<img src="image/fondo-discipulado.jpg"  data-bgposition="center center"
+                                data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="10"
                                 class="rev-slidebg" data-no-retina>
 							<!-- LAYERS -->
-                                
+
                             <!-- LAYER 1 -->
                                 <div class="tp-caption tp-resizeme furtherclasses"
                                 id="layer-6-id"
-                                data-x="right" 
+                                data-x="right"
                                 data-hoffset="[50,40,30,10]"
-                                data-y="bottom" 
+                                data-y="bottom"
                                 data-voffset="0"
                                 data-width="none"
                                 data-height="none"
@@ -885,15 +1215,15 @@
                                 data-responsive_offset="on"
                                 style="z-index: 5;">
                                     <img src="image/titulo-discipulado.png" alt=""
-                                        data-ww="[496,396.8,297.6,198.4]" 
-                                        data-hh="[106,84.8,63.6,42.4]" 
+                                        data-ww="[496,396.8,297.6,198.4]"
+                                        data-hh="[106,84.8,63.6,42.4]"
                                         data-no-retina />
                             </div>
-						</li>    
-					</ul>	
+						</li>
+					</ul>
 				</div>
 				<script type="text/javascript">
-					var tpj=jQuery;			
+					var tpj=jQuery;
 					var revapi4;
 					tpj(document).ready(function() {
 						if(tpj("#slider_discipulado").revolution == undefined){
@@ -942,7 +1272,7 @@
 							});
 						}
 					});	/*ready*/
-				</script>	
+				</script>
 			</article>
 			<!-- END REVOLUTION SLIDER -->
 		</section>
@@ -955,7 +1285,7 @@
 				<div class="col-xs-8 col-sm-7 col-centered" style="vertical-align: top;">
 					<p>
 						Dios nos creo a su imagen y semejanza, pero esto ha sido dañado por el pecado. Por esto AMG comparte la esperanza que hay en Cristo Jesus y el puente de vida busca ayudar a los jovenes a vivir en una relacion restaurada con El. Dando a nuestros jovenes propósito y visión para sus vidas.
-					</p>  
+					</p>
 					<br/>
 					<div class="row">
 						<div class="col-xs-2">
@@ -964,7 +1294,7 @@
 						<div class="col-xs-10">
 							<p>
 								AMG brinda clases de educacion cristiana a todos sus alumnos, buscando tener una enseñanaza sistemática de la Biblia, para que el jóven aprenda principios para su vida y viva disfrutando de una comunión con Dios.
-							</p>  
+							</p>
 						</div>
 					</div>
 					<br/>
@@ -975,7 +1305,7 @@
 						<div class="col-xs-10">
 							<p>
 								AMG está relacionado con diferentes ministerios, iglesias locales y voluntarios junto con los cuales buscamos tener discipulado y mentoreo en grupos pequeños, relacionándonos uno a uno y con diferentes actividades especiales. Para animar a los jóvenes a disfrutar de la vida cristiana.
-							</p>  
+							</p>
 						</div>
 					</div>
 					<br/>
@@ -986,7 +1316,7 @@
 						<div class="col-xs-10">
 							<p>
 								Cada joven de AMG participa con nuestro programa de campamento. Donde realizamos todo tipo de actividades recreativas y buscamos que cada jóven tenga un encuentro personal con el Señor Jesucristo.
-							</p>  
+							</p>
 						</div>
 					</div>
 				</div>
@@ -1026,12 +1356,12 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/Site.js"></script>
     <script>
-        $(document).ready(function(){       
+        $(document).ready(function(){
                 var scroll_start = 0;
                 var startchange = $('#startchange');
                 var offset = startchange.offset();
                     if (startchange.length){
-                        $(document).scroll(function() { 
+                        $(document).scroll(function() {
                             scroll_start = $(this).scrollTop();
                             if(scroll_start > offset.top) {
                                $(".dropdown-toggle").css('color', '#15274D');

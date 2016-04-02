@@ -14,7 +14,7 @@
  * to a go to account page link, else create login overlay
  */
 if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-    document.getElementById('toggle-login').href = '/views/account.html';
+    document.getElementById('toggle-login').href = '../views/account.html';
     document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
 } else {
     /* Toggle the login box when login link is clicked */
@@ -65,7 +65,7 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
             },
             complete: function() {
                 if (worked === true) {
-                    window.location = 'account.html';
+                    window.location = '../views/account.html';
                 }
             }
         });
@@ -202,7 +202,7 @@ function createAccount() {
                             sessionStorage.setItem('token', res.token);
                             sessionStorage.setItem('id', res.id);
                             //change login button to account button
-                            document.getElementById('toggle-login').href = 'account.html';
+                            document.getElementById('toggle-login').href = '../views/account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
                             alert('Your account has successful been created, you are now logged in');
@@ -254,5 +254,5 @@ $('.forgot-password').click(function() {
         });
     } else {
         alert("Please enter your email into the email field before clicking Forgot Password");
-    }  
+    }
 });
