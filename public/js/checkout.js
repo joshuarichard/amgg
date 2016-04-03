@@ -340,11 +340,10 @@ $(document).ready(function() {
 
         function deleteButton(callback) {
             var buttonTD = document.createElement('td');
-            buttonTD.id = 'delete-child-button';
 
             // create button, add classname for styling, append text
             var button = document.createElement('button');
-            button.className = 'btn btn-primary btn-sm';
+            button.className = 'btn btn-primary btn-sm delete-child-button';
             button.appendChild(document.createTextNode('Eliminar'));
 
             // set on click button function
@@ -412,7 +411,7 @@ $(document).ready(function() {
         $('#donor-info-form').show();
         $('#edit-donor-info').show();
         $('#go-to-step-two').show();
-        $('#delete-child-button').show();
+        $('.delete-child-button').show();
         $('#donor-credit-form').hide();
         $('#go-to-step-three').hide();
         $('#go-back-to-step-one').hide();
@@ -433,6 +432,7 @@ $(document).ready(function() {
             if (inStorage('cart') === false) {
                 alert('no hay niños en el carrito.');
             } else {
+                // donor is currently logged in so auth (PUT donor data if edited info) and send cart
                 if (inStorage('token') === true && inStorage('id') === true) {
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -458,12 +458,54 @@ $(document).ready(function() {
                                         }
                                     },
                                     success: function(res) {
-                                        sendCart(true, function() {
+                                        var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                        // check for locked kids
+                                        checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                            if (lockedChildren.length > 0) {
+                                                for (var q = 0; q < lockedChildren.length; q++) {
+                                                    // ... then remove it from the table
+                                                    removeChildFromCart(lockedChildren[q]);
+                                                }
+                                                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                            } else {
+                                                // if there aren't any children that are locked then send the cart
+                                                sendCart(false, function() {
+                                                    // hide elements from step one and show step two
+                                                    // hide change info button
+                                                    $('#donor-info-form').hide();
+                                                    $('#go-to-step-two').hide();
+                                                    $('.delete-child-button').hide();
+                                                    $('#edit-donor-info').hide();
+                                                    $('#donor-credit-form').show();
+                                                    $('#go-to-step-three').show();
+                                                    $('#go-back-to-step-one').show();
+                                                    $('#go-to-step-three').click(goToStepThree);
+                                                    $('#go-back-to-step-one').click(goToStepOne);
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                // check for locked kids
+                                checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                    if (lockedChildren.length > 0) {
+                                        for (var q = 0; q < lockedChildren.length; q++) {
+                                            // ... then remove it from the table
+                                            removeChildFromCart(lockedChildren[q]);
+                                        }
+                                        alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                    } else {
+                                        // if there aren't any children that are locked then send the cart
+                                        sendCart(false, function() {
                                             // hide elements from step one and show step two
                                             // hide change info button
                                             $('#donor-info-form').hide();
                                             $('#go-to-step-two').hide();
-                                            $('#delete-child-button').hide();
+                                            $('.delete-child-button').hide();
                                             $('#edit-donor-info').hide();
                                             $('#donor-credit-form').show();
                                             $('#go-to-step-three').show();
@@ -472,19 +514,6 @@ $(document).ready(function() {
                                             $('#go-back-to-step-one').click(goToStepOne);
                                         });
                                     }
-                                });
-                            } else {
-                                sendCart(true, function() {
-                                    // hide elements from step one and show step two
-                                    // hide change info button
-                                    $('#donor-info-form').hide();
-                                    $('#go-to-step-two').hide();
-                                    $('#delete-child-button').hide();
-                                    $('#donor-credit-form').show();
-                                    $('#go-to-step-three').show();
-                                    $('#go-back-to-step-one').show();
-                                    $('#go-to-step-three').click(goToStepThree);
-                                    $('#go-back-to-step-one').click(goToStepOne);
                                 });
                             }
                         }
@@ -521,17 +550,32 @@ $(document).ready(function() {
                                     document.getElementById('toggle-login').href = 'account.html';
                                     document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
 
-                                    // ajax auth
-                                    sendCart(true, function() {
-                                        // hide elements from step one and show step two
-                                        $('#donor-info-form').hide();
-                                        $('#go-to-step-two').hide();
-                                        $('#delete-child-button').hide();
-                                        $('#go-to-step-three').show();
-                                        $('#donor-credit-form').show();
-                                        $('#go-back-to-step-one').show();
-                                        $('#go-to-step-three').click(goToStepThree);
-                                        $('#go-back-to-step-one').click(goToStepOne);
+                                    var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                    // check for locked kids
+                                    checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                        if (lockedChildren.length > 0) {
+                                            for (var q = 0; q < lockedChildren.length; q++) {
+                                                // ... then remove it from the table
+                                                removeChildFromCart(lockedChildren[q]);
+                                            }
+                                            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                        } else {
+                                            // if there aren't any children that are locked then send the cart
+                                            sendCart(false, function() {
+                                                // hide elements from step one and show step two
+                                                // hide change info button
+                                                $('#donor-info-form').hide();
+                                                $('#go-to-step-two').hide();
+                                                $('.delete-child-button').hide();
+                                                $('#edit-donor-info').hide();
+                                                $('#donor-credit-form').show();
+                                                $('#go-to-step-three').show();
+                                                $('#go-back-to-step-one').show();
+                                                $('#go-to-step-three').click(goToStepThree);
+                                                $('#go-back-to-step-one').click(goToStepOne);
+                                            });
+                                        }
                                     });
                                 }
                             });
@@ -563,22 +607,25 @@ $(document).ready(function() {
         $('.password').hide();
         $('.confirm-password').hide();
 
-        $.ajax({
-            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-            type: 'POST',
-            data: {
-                'token': sessionStorage.getItem('token')
-            },
-            success: function(res) {
-                $('#donor-name').text(res.nombre);
-                $('#donor-phone').text(res.teléfono);
-                $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
-                $('#donor-email').text(res.correo_electrónico);
-                $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
-                $('#donor-cvv').text(sessionStorage.getItem('cvv'));
-                $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                $('#donor-name-on-card').text(sessionStorage.getItem('nameOnCard'));
-            }
+        // send the cart one final time but this time with the requestToPay = true
+        sendCart(true, function() {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'POST',
+                data: {
+                    'token': sessionStorage.getItem('token')
+                },
+                success: function(res) {
+                    $('#donor-name').text(res.nombre);
+                    $('#donor-phone').text(res.teléfono);
+                    $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
+                    $('#donor-email').text(res.correo_electrónico);
+                    $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
+                    $('#donor-cvv').text(sessionStorage.getItem('cvv'));
+                    $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
+                    $('#donor-name-on-card').text(sessionStorage.getItem('nameOnCard'));
+                }
+            });
         });
         // displaySuccess();
     }

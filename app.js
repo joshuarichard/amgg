@@ -336,7 +336,6 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
             }
         });
     } else {
-        console.log(token);
         res.status(400).send({
             success: false,
             message: 'No token provided.'
