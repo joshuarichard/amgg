@@ -6,18 +6,52 @@ $(document).ready(function() {
     // manage their cart and lock children as they add them to the cart.
     var donorID = '';
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
-    if (inStorage('cart') === true && inStorage('id') === false && inStorage('assignedDonorID') === false) {
-        donorID = generateDonorID();
-        sessionStorage.setItem('assignedDonorID', donorID);
-    }
 
-    // secondly, check if they have both an assigned ID and a real ID. if they have both, then they've
-    // logged in since adding a child to their cart. nuke the cart, delete the assigned ID, and reroute to child page
-    if (inStorage('id') === true && inStorage('assignedDonorID') === true) {
-        // we shouldn't have to do this, but right now we do
-        sessionStorage.removeItem('assignedDonorID');
-        sessionStorage.removeItem('cart');
-        window.location = 'children.html';
+    /* If there is a login token in session storage
+     * then the form should be auto-populated with
+     * the donors information
+     */
+    if (inStorage('token') === true) {
+        $.ajax({
+            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+            type: 'POST',
+            data: {
+                'token' : sessionStorage.getItem('token')
+            },
+            success: function(res) {
+                $('#form-first-name').val(res.nombre);
+                $('#form-first-name').prop('disabled', true);
+                $('#form-last-name').val(res.apellido);
+                $('#form-last-name').prop('disabled', true);
+                $('#form-phone').val(res.teléfono);
+                $('#form-phone').prop('disabled', true);
+                $('#form-address-street').val(res.calle);
+                $('#form-address-street').prop('disabled', true);
+                $('#form-address-city').val(res.ciudad);
+                $('#form-address-city').prop('disabled', true);
+                $('#form-email').val(res.correo_electrónico);
+                $('#form-email').prop('disabled', true);
+                $('#form-country').prop('disabled', true);
+            },
+            error: function(res) {
+                if (jqxhr.readyState !== 0 || jqxhr.status !== 0) {
+                    alert('Your session has expired. Please login again.');
+                    // if getting in here that means that the id and token has
+                    // been set but it's since expired. nuke everything and
+                    // make them login again.
+                    if (inStorage('token') === true) {
+                        sessionStorage.removeItem('token');
+                    }
+                    if (inStorage('cart') === true) {
+                        sessionStorage.removeItem('cart');
+                    }
+                    if (inStorage('id') === true) {
+                        sessionStorage.removeItem('id');
+                    }
+                    window.location = 'children.html';
+                }
+            }
+        });
     }
 
     // secondly, check the lock status of all children currently in the cart.
@@ -34,22 +68,6 @@ $(document).ready(function() {
                     removeChildFromCart(lockedChildren[q]);
                 }
                 alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
-            }
-        });
-    }
-
-    // thirdly, send the current cart's contents
-    // NOTE: when you remove a child from the table it will send the cart to the
-    // db. if it's the case that all children currently in the cart are clear to be
-    // sponsored (i.e. they are not locked), then it will not send the cart,
-    // therefore, it is required we send the contents of the cart at least once
-    if (inStorage('cart') === true) {
-        sendCart(false, function(result) {
-            if (result === true) {
-                console.log('successfully sent cart to db.');
-            } else {
-                console.log('cart not successfully sent to db.');
-                $('#checkout-go-to-step-two').prop('disabled', true);
             }
         });
     }
@@ -71,6 +89,30 @@ $(document).ready(function() {
         }
     } else {
         $('.spinner').remove();
+    }
+
+    // lastly, check to see if the donor has a cart and if they do then
+    // add any kids in that cart
+    if (inStorage('id') === true) {
+        $.ajax({
+            url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+            type: 'GET',
+            success: function(res) {
+                if (JSON.stringify(res) !== '{}') {
+                    var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                    for (var key in res) {
+                        var kidsInCartInDB = res[key]['kids_in_cart'];
+                        for (var c = 0; c < kidsInCartInDB.length; c++) {
+                            if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                addChildToCart(kidsInCartInDB[c]);
+                            }
+                        }
+                        sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                    }
+                }
+            }
+        });
     }
 
     // after all that append the 'add a child' button
@@ -137,36 +179,19 @@ $(document).ready(function() {
         });
     }
 
-    function generateDonorID() {
-        var text = '';
-        // there are 2^62 possiblities here and they're recycleable after an hour...
-        // that should be enough.
-        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        for(var i = 0; i < 24; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-
-        return text;
-    }
-
     // checks the status of all kids in the cart. takes the cart from sessionStorage
     // as an array, not a string.
     function checkCartsLockedStatus(array, callback) {
         array = array.slice(0);
+        var lockedChildren = [];
 
         function checkForLockedStatus() {
             var childID = array.pop();
-            var lockedChildren = [];
 
             var donorIDjson = {};
             if (inStorage('id') === true) {
                 donorIDjson = {
                     'donor_id': sessionStorage.getItem('id')
-                };
-            } else {
-                donorIDjson = {
-                    'donor_id': sessionStorage.getItem('assignedDonorID')
                 };
             }
 
@@ -199,9 +224,6 @@ $(document).ready(function() {
         // if the donor is logged in then use their donor id in the cart doc
         if (inStorage('id') === true && inStorage('cart') === true) {
             donorIDinCart = sessionStorage.getItem('id');
-        // else if the donor has an assigned donor id then use that
-        } else if (inStorage('assignedDonorID') === true && inStorage('cart') === true) {
-            donorIDinCart = sessionStorage.getItem('assignedDonorID');
         }
 
         $.ajax({
@@ -368,15 +390,6 @@ $(document).ready(function() {
                 ids.splice(ids.indexOf(id), 1);
                 sessionStorage.setItem('cart', ids.toString());
             }
-
-            sendCart(false, function(result) {
-                if (result === true) {
-                    console.log('successfully sent cart to db.');
-                } else {
-                    console.log('cart not successfully sent to db.');
-                    $('#go-to-step-two').prop('disabled', true);
-                }
-            });
         });
     }
 
@@ -476,7 +489,7 @@ $(document).ready(function() {
                             }
                         }
                     });
-                } else if (inStorage('assignedDonorID') === true) {
+                } else {
                     var newDonor = {
                         'nombre': document.getElementById('form-first-name').value,
                         'apellido': document.getElementById('form-last-name').value,
@@ -617,57 +630,6 @@ $(document).ready(function() {
         $('.content').append(centerDiv);
     }
 
-    /* If there is a login token in session storage
-     * then the form should be auto-populated with
-     * the donors information
-     */
-    function autoPopulate () {
-        if (inStorage('token') === true) {
-            $.ajax({
-                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                type: 'POST',
-                data: {
-                    'token' : sessionStorage.getItem('token')
-                },
-                success: function(res) {
-                    $('#form-first-name').val(res.nombre);
-                    $('#form-first-name').prop('disabled', true);
-                    $('#form-last-name').val(res.apellido);
-                    $('#form-last-name').prop('disabled', true);
-                    $('#form-phone').val(res.teléfono);
-                    $('#form-phone').prop('disabled', true);
-                    $('#form-address-street').val(res.calle);
-                    $('#form-address-street').prop('disabled', true);
-                    $('#form-address-city').val(res.ciudad);
-                    $('#form-address-city').prop('disabled', true);
-                    $('#form-email').val(res.correo_electrónico);
-                    $('#form-email').prop('disabled', true);
-                    $('#form-country').prop('disabled', true);
-                },
-                error: function(res) {
-                    alert('Your session has expired. Please login again.');
-                    // if getting in here that means that the id and token has
-                    // been set but it's since expired. nuke everything and
-                    // make them login again.
-                    if (inStorage('token') === true) {
-                        sessionStorage.removeItem('token');
-                    }
-                    if (inStorage('cart') === true) {
-                        sessionStorage.removeItem('cart');
-                    }
-                    if (inStorage('id') === true) {
-                        sessionStorage.removeItem('id');
-                    }
-                    // this shouldn't be set but check anyway
-                    if (inStorage('assignedDonorID') === true) {
-                        sessionStorage.removeItem('assignedDonorID');
-                    }
-                    window.location = 'children.html';
-                }
-            });
-        }
-    }
-
     // =========================================================================
     // =========================================================================
     // ==================== Deleting the below soon ============================
@@ -697,69 +659,59 @@ $(document).ready(function() {
 
     function createAccount() {
         if (checkForm(document.getElementById('create-account-form'))) {
-            if (inStorage('assignedDonorID')) {
-                var deleteCart = confirm('you are currently in the process of sponsoring children. please create your account by completing the sponsorship process. if you would like to create an account without sponsoring a child, please click yes below and your cart will be deleted.');
-                if (deleteCart === true) {
-                    // we shouldn't have to do this, but right now we do
-                    sessionStorage.removeItem('assignedDonorID');
-                    sessionStorage.removeItem('cart');
-                }
-            } else {
-                var donor = {
-                    'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                    'nombre': document.getElementById('create-account-first-name').value,
-                    'apellido': document.getElementById('create-account-last-name').value,
-                    'teléfono': document.getElementById('create-account-phone').value,
-                    'calle': document.getElementById('create-account-address-street').value,
-                    'ciudad': document.getElementById('create-account-address-city').value,
-                    'país': document.getElementById('create-account-country').value,
-                    'correo_electrónico': document.getElementById('create-account-email').value,
-                    'password': document.getElementById('create-account-password').value
-                };
+            var donor = {
+                'nombre': document.getElementById('create-account-first-name').value,
+                'apellido': document.getElementById('create-account-last-name').value,
+                'teléfono': document.getElementById('create-account-phone').value,
+                'calle': document.getElementById('create-account-address-street').value,
+                'ciudad': document.getElementById('create-account-address-city').value,
+                'país': document.getElementById('create-account-country').value,
+                'correo_electrónico': document.getElementById('create-account-email').value,
+                'password': document.getElementById('create-account-password').value
+            };
 
-                // POST /api/v1/donor/create
-                $.ajax({
-                    url: '/api/v1/donor/create',
-                    type: 'POST',
-                    data: donor,
-                    success: function() {
-                        $('.create-account-overlay').hide();
-                        //log user into their new account
-                        $.ajax({
-                            url: '/api/v1/donor/auth',
-                            type: 'POST',
-                            data: {
-                                'correo_electrónico': document.getElementById('create-account-email').value,
-                                'password': document.getElementById('create-account-password').value
-                            },
-                            success: function() {
-                                //put token and donor id into sessionStorage
-                                sessionStorage.setItem('token', res.token);
-                                sessionStorage.setItem('id', res.id);
-                                //change login button to account button
-                                document.getElementById('toggle-login').href = 'account.html';
-                                document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-                                //notify user they are now logged into their new account
-                                alert('Your account has successful been created, you are now logged in');
-                            },
-                            error: function() {
-                                alert('Your account has been created but we were unable to log you in at this time, please try again later');
-                            }
-                        });
-                    },
-                    statusCode: {
-                        404: function() {
-                            alert('page not found');
+            // POST /api/v1/donor/create
+            $.ajax({
+                url: '/api/v1/donor/create',
+                type: 'POST',
+                data: donor,
+                success: function() {
+                    $('.create-account-overlay').hide();
+                    //log user into their new account
+                    $.ajax({
+                        url: '/api/v1/donor/auth',
+                        type: 'POST',
+                        data: {
+                            'correo_electrónico': document.getElementById('create-account-email').value,
+                            'password': document.getElementById('create-account-password').value
                         },
-                        409: function() {
-                            alert('An account already exists under this email, please log in');
+                        success: function() {
+                            //put token and donor id into sessionStorage
+                            sessionStorage.setItem('token', res.token);
+                            sessionStorage.setItem('id', res.id);
+                            //change login button to account button
+                            document.getElementById('toggle-login').href = 'account.html';
+                            document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+                            //notify user they are now logged into their new account
+                            alert('Your account has successful been created, you are now logged in');
                         },
-                        500: function() {
-                            alert('An error occured, please try again or contact an admin');
+                        error: function() {
+                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
                         }
+                    });
+                },
+                statusCode: {
+                    404: function() {
+                        alert('page not found');
+                    },
+                    409: function() {
+                        alert('An account already exists under this email, please log in');
+                    },
+                    500: function() {
+                        alert('An error occured, please try again or contact an admin');
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -884,6 +836,4 @@ $(document).ready(function() {
             alert('Please enter your email into the email field before clicking Forgot Password');
         }
     });
-
-    $(document).ready(autoPopulate());
 });

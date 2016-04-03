@@ -650,6 +650,19 @@ app.post('/api/v1/donor/cart', function(req, res) {
     });
 });
 
+app.get('/api/v1/donor/cart/id/:id', function(req, res) {
+    cart.find(req.params.id, function(cartdoc) {
+        if (cartdoc.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                message: result.err
+            });
+        } else {
+            res.status(200).send(cartdoc);
+        }
+    });
+});
+
 /* POST /api/v1/donor/unsponsor
  *
  * emails the admin saying a donor wants to unsponsor a child
