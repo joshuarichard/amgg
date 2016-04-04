@@ -9,7 +9,6 @@ body {
   text-align: left;
   font-size: 1.7rem;
   font-weight: bold;
-  margin-left: 3.5em;
   margin-right: auto;
   margin-top: 0;
   margin-bottom: 0;
@@ -69,6 +68,7 @@ table {
   max-width: 100%;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 20px;
 }
 
 .child-img {

@@ -25,13 +25,17 @@ $(document).ready(function() {
         tabD.className = 'tab-pane fade in';
 
         /* create the content for tabA */
+        var tabAInfoWrapper = document.createElement('div');
+        tabAInfoWrapper.id = 'tabA-content';
+        tabAInfoWrapper.className = 'content-wrapper row row-centered';
         var tabAHeader = document.createElement('span');
         tabAHeader.className = 'header';
         tabAHeader.innerHTML = 'Niños Apadrinados';
 
         var tabAHeaderhr = document.createElement('hr');
-        tabA.appendChild(tabAHeader);
-        tabA.appendChild(tabAHeaderhr);
+        tabAInfoWrapper.appendChild(tabAHeader);
+        tabAInfoWrapper.appendChild(tabAHeaderhr);
+        tabA.appendChild(tabAInfoWrapper);
 
         //create table that will contain a child
         var table = document.createElement('table');
@@ -63,6 +67,9 @@ $(document).ready(function() {
          * the DB when creating tabC
          */
         //create header
+        var tabCInfoWrapper = document.createElement('div');
+        tabCInfoWrapper.id = 'tabC-content';
+        tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
         tabCHeader.className = 'header';
         tabCHeader.innerHTML = 'Letter to Child';
@@ -84,10 +91,11 @@ $(document).ready(function() {
 
         letterForm.appendChild(letter);
         letterForm.appendChild(submitLetter);
-        tabC.appendChild(tabCHeader);
-        tabC.appendChild(tabAHeaderhr);
-        tabC.appendChild(letterForm);
-        tabC.appendChild(childrenSelectContainer);
+        tabCInfoWrapper.appendChild(tabCHeader);
+        tabCInfoWrapper.appendChild(tabAHeaderhr);
+        tabCInfoWrapper.appendChild(letterForm);
+        tabCInfoWrapper.appendChild(childrenSelectContainer);
+        tabC.appendChild(tabCInfoWrapper);
 
         /* get children using donor id */
         $.ajax({
