@@ -578,7 +578,7 @@ $(document).ready(function() {
         editInfoSubmit.onclick = function() {
             submitInfoChanges();
         };
-        editInforContainer.appendChild(editInfoSubmit)
+        editInforContainer.appendChild(editInfoSubmit);
         $('.user-info-container').append(editInforContainer);
     }
 
