@@ -5,6 +5,85 @@ $(document).ready(function() {
     /* get the element to put the tabs in */
     var container = document.getElementById('tab-content');
 
+    /* Check to make sure all the fields are filled in and ensure the
+     * user's password passes the constraints
+     */
+    function checkInfo(form) {
+        // get all form info
+        var firstName = $('[name=first-name]', form)[0];
+        var lastName = $('[name=last-name]', form)[0];
+        var phone = $('[name=phone]', form)[0];
+        var street = $('[name=address]', form)[0];
+        var city = $('[name=address-city]', form)[0];
+        var email = $('[name=email]', form)[0];
+
+        if(firstName.value == '') {
+            alert('Error: First name cannot be blank!');
+            firstName.focus();
+            return false;
+        } else if(lastName.value == '') {
+            alert('Error: Last name cannot be blank!');
+            lastName.focus();
+            return false;
+        } else if(phone.value == '') {
+            alert('Error: Phone number cannot be blank!');
+            phone.focus();
+            return false;
+        } else if(street.value == '') {
+            alert('Error: Street address cannot be blank!');
+            street.focus();
+            return false;
+        } else if(city.value == '') {
+            alert('Error: City cannot be blank!');
+            city.focus();
+            return false;
+        } else if(email.value == '') {
+            alert('Error: Email cannot be blank!');
+            email.focus();
+            return false;
+        } else {
+            //form passed all constraints
+            return true;
+        }
+    }
+
+    function checkPassword (form) {
+        var oldPassword = $('[name=password-old]', form)[0];
+        var password = $('[name=password]', form)[0];
+        var confirmPassword = $('[name=password-confirm]', form)[0];
+
+        if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
+            if(password.value.length < 6) {
+                alert('Error: Password must contain at least six characters!');
+                password.focus();
+                return false;
+            }
+            re = /[0-9]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one number (0-9)!');
+                password.focus();
+                return false;
+            }
+            re = /[a-z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one lowercase letter (a-z)!');
+                password.focus();
+                return false;
+            }
+            re = /[A-Z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one uppercase letter (A-Z)!');
+                password.focus();
+                return false;
+            }
+        } else {
+            alert('Error: Please check that you\'ve entered and confirmed your password!');
+            password.focus();
+            return false;
+        }
+        return true;
+    }
+
     /* check to see that there is a login token
      *   if not, prompt user to login
      */
@@ -156,7 +235,7 @@ $(document).ready(function() {
 
                 //create container for user info
                 var userInfoContainer = document.createElement('div');
-                userInfoContainer.className = 'user-info-container col-md-10';
+                userInfoContainer.className = 'form user-info-container col-md-10';
 
                 //create container for buttons to the right of user info
                 var userInfoSidebar = document.createElement('div');
@@ -254,7 +333,7 @@ $(document).ready(function() {
                 street.id = 'form-street';
                 street.className = 'form-control';
                 street.type = 'text';
-                street.name = 'street';
+                street.name = 'address';
                 street.value = res.calle;
 
                 //combine everything into one element
@@ -273,7 +352,7 @@ $(document).ready(function() {
                 city.id = 'form-city';
                 city.className = 'form-control';
                 city.type = 'text';
-                city.name = 'city';
+                city.name = 'address-city';
                 city.value = res.ciudad;
 
                 //combine everything into one element
@@ -293,6 +372,7 @@ $(document).ready(function() {
                 oldPassword.id = 'form-old-password';
                 oldPassword.className = 'form-control password-form';
                 oldPassword.type = 'password';
+                oldPassword.name = 'password-old';
 
                 //combine password elements into one element
                 oldPasswordWrapper.appendChild(oldPassword);
@@ -311,6 +391,7 @@ $(document).ready(function() {
                 contraseña.id = 'form-password';
                 contraseña.className = 'form-control password-form';
                 contraseña.type = 'password';
+                contraseña.name = 'password';
 
                 //combine password elements into one element
                 contraseñaWrapper.appendChild(contraseña);
@@ -329,6 +410,7 @@ $(document).ready(function() {
                 confirmarContraseña.id = 'form-confirm-password';
                 confirmarContraseña.className = 'form-control password-form';
                 confirmarContraseña.type = 'password';
+                confirmarContraseña.name = 'password-confirm';
 
                 //combine password elements into one element
                 confirmarContraseñaWrapper.appendChild(confirmarContraseña);
@@ -346,7 +428,8 @@ $(document).ready(function() {
 
                 //combine the password elements into one block so we can target them together with css
                 var contraseñaContainer = document.createElement('div');
-                contraseñaContainer.className = 'contraseña-container';
+                contraseñaContainer.id = 'contraseña-container';
+                contraseñaContainer.className = 'form-group contraseña-container';
                 contraseñaContainer.style.display = 'none';
                 contraseñaContainer.appendChild(oldPasswordGroup);
                 contraseñaContainer.appendChild(contraseñaGroup);
@@ -402,17 +485,9 @@ $(document).ready(function() {
                 // check that their old password is correct, then update donor
                 // doc with new password
                 submitPasswordChanges.onclick = function() {
-                    var oldPassword = document.getElementById('form-old-password').value;
-                    var newPassword = document.getElementById('form-password').value;
-                    var confirmNewPassword = document.getElementById('form-confirm-password').value;
-
                     //make sure their new password is not '' and make sure
                     //the two passwords match, then send new password to db
-                    if (oldPassword === '' || newPassword === '' || confirmNewPassword === '') {
-                        alert('Missing fields.');
-                    } else if (newPassword !== confirmNewPassword) {
-                        alert('Las contraseñas no coinciden.');
-                    } else {
+                    if (checkPassword(document.getElementById('user-info-container'))) {
                         $.ajax({
                             url: '/api/v1/donor/auth',
                             type: 'POST',
