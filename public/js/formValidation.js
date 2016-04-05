@@ -12,7 +12,6 @@ function checkForm(form) {
     var password = $('[name=password]', form)[0];
     var confirmPassword = $('[name=password-confirm]', form)[0];
 
-    console.log(firstName);
     if(firstName.value == '') {
         alert('Error: First name cannot be blank!');
         firstName.focus();
