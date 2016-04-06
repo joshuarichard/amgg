@@ -641,11 +641,33 @@ $(document).ready(function() {
         // displaySuccess();
     }
 
-    $('#submit-sponsorship').click(sponsorThatKid);
+    $('#submit-sponsorship').click(sendPayment);
 
-    function sponsorThatKid() {
+    function sendPayment() {
+        var donor = {
+            'donor_id': sessionStorage.getItem('id'),
+            'token': sessionStorage.getItem('token'),
+            'child_id': sessionStorage.getItem('cart').split(','),
+            'ccnumber': sessionStorage.getItem('ccnumber'),
+            'cvv': sessionStorage.getItem('cvv'),
+            'expiration': sessionStorage.getItem('expiration'),
+            'name_on_card': sessionStorage.getItem('nameOnCard')
+        };
         $.ajax({
-            url: 'https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go',
+            url: '/api/v1/donor/sponsor',
+            type: 'POST',
+            data: donor,
+            success: function(res) {
+                console.log(res);
+            }
+        });
+        //$('#bank-time').val(Math.floor(new Date().getTime() / 1000));
+        //$('#bank-hash').val(md5($('#bank-id').val() + "|" + $('#bank-amount') + "|" + $('#bank-time') + "|" + ));
+        /*
+        $.ajax({
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
             data: '<FORM name = "CredomaticPost" method = "post" action = "https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go" /><INPUT type = "text" name = "username" value = "SomeUsername" /><INPUT type = "text" name = "type" value = "auth" /><INPUT type = "text" name = "key_id" value = "49338953" /><INPUT type = "text" name = "hash" value = "28519d58218c0a43a300b538c7303836" /><INPUT type = "text" name = "time" value = "1366839938" /><INPUT type = "text" name = "amount" value = "100.00" /><INPUT type = "text" name = "orderid" value = "CredomaticTest" /><INPUT type = "text" name = "processor_id" value = "" /><INPUT type = "text" name = "ccnumber" value = "4111111111111111" /><INPUT type = "text" name = "ccexp" value = "1220" /><INPUT type = "text" name = "cvv" value = "123" /><INPUT type = "text" name = "avs" value = "12 Calle San Jose" /><INPUT type = "text" name = "zip" value = "2361011" /><INPUT type = "text" name = "redirect"<INPUT type = "submit" value = "Submit Transaction" /></ FORM>',
             contentType: 'text/xml',
             dataType: 'xml',
@@ -657,6 +679,16 @@ $(document).ready(function() {
                 console.log(res);
             }
         });
+        */
+        /*
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.example.org/ajax.php", true);
+        xhr.setRequestHeader("X-My-Custom-Header", "some value");
+        xhr.onload = function () {
+            console.log(xhr.responseText);
+        };
+        xhr.send();
+        */
     }
 
     $('#go-back-to-step-two').click(function() {

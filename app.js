@@ -8,6 +8,8 @@ var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 var mongodb = require('mongodb');
+var request = require("request");
+var crypto = require('crypto');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -82,7 +84,6 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-var adminEmail = nconf.get('admin:email');
 
 // email strings
 var emailHeaderSponsor =  'Thank you for your sponsorship';
@@ -100,16 +101,23 @@ var emailErrorBodyDeletingCart = 'Error deleting donor cart.';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
-var childCollection = nconf.get('mongo:childCollection');
-var donorCollection = nconf.get('mongo:donorCollection');
-var cartCollection = nconf.get('mongo:cartCollection');
+//var adminEmail = nconf.get('admin:email');
+var CHILD_COLLECTION = nconf.get('mongo:childCollection');
+var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
+var CART_COLLECTION = nconf.get('mongo:cartCollection');
+var CHILD_COST = nconf.get('amgg:childCost');
+var TOKEN_KEY = nconf.get('keys:token');
+var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
+var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
+var SSL_KEY = nconf.get('keys:sslKey');
+var SSL_CERT = nconf.get('keys:sslCert');
 
 /*** child api routes ***/
 
 // GET /api/v1/children/id/:id get a child with their id
 // TODO: error handling
 app.get('/api/v1/children/id/:id', function(req, res) {
-    mongo.get(req.params.id, childCollection, true, function(doc) {
+    mongo.get(req.params.id, CHILD_COLLECTION, true, function(doc) {
         if (doc.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
@@ -127,14 +135,14 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = query.format(JSON.parse(req.params.selector));
 
     // get a child pool
-    mongo.find(selector, childCollection, 100, true, function(children) {
+    mongo.find(selector, CHILD_COLLECTION, 100, true, function(children) {
         var unsponsoredChildrenIds = [];
         for (var key in children) {
             unsponsoredChildrenIds.push(key);
         }
 
         // get all cart docs...
-        mongo.find({}, cartCollection, 10000, false, function(cartdocs) {
+        mongo.find({}, CART_COLLECTION, 10000, false, function(cartdocs) {
             // ...and make an array of all child ids currently in carts
             var idsOfKidsInCarts = [];
             for (var key in cartdocs) {
@@ -179,7 +187,7 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     };
 
     // get all cart docs...
-    mongo.find(selector, cartCollection, 10000, false, function(cartdocs) {
+    mongo.find(selector, CART_COLLECTION, 10000, false, function(cartdocs) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
         for (var key in cartdocs) {
@@ -216,7 +224,7 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
 
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, childCollection, function(data) {
+    mongo.getPic(req.params.id, CHILD_COLLECTION, function(data) {
         if (data.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
@@ -238,7 +246,7 @@ function changeChildrenStatus(array, newStatus, callback) {
 
     function editChild() {
         var id = array.pop();
-        mongo.edit(id, {'status': newStatus}, childCollection, function() {
+        mongo.edit(id, {'status': newStatus}, CHILD_COLLECTION, function() {
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
@@ -268,7 +276,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
     var email = {'correo_electrónico': req.body['email']};
     // find the donor's email
     // if email === null, send res no email
-    mongo.find(email, donorCollection, 1, false, function(data) {
+    mongo.find(email, DONOR_COLLECTION, 1, false, function(data) {
         if (JSON.stringify(data) !== '{}') {
             for (var key in data) {
                 var saltDB = data[key].salt;
@@ -282,7 +290,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '5h'}, function(token) {
+                        jwt.sign(data, TOKEN_KEY, {expiresIn: '5h'}, function(token) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Authenticated.',
@@ -313,7 +321,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 
     // confirm token sent in request is valid
     if (token) {
-        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+        jwt.verify(token, TOKEN_KEY, function(err) {
             if (err) {
                 res.status(401).send({
                     success: false,
@@ -321,7 +329,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.get(id, donorCollection, false, function(data) {
+                mongo.get(id, DONOR_COLLECTION, false, function(data) {
                     if (data.hasOwnProperty('err')) {
                         res.status(500).send({
                             success: false,
@@ -359,7 +367,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
 
     if (token) {
         // confirm token sent in request is valid
-        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+        jwt.verify(token, TOKEN_KEY, function(err) {
             if (err) {
                 res.status(401).send({
                     success: false,
@@ -378,7 +386,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                     }
 
                     // if it is valid then perform the donor edit
-                    mongo.edit(id, changes, donorCollection, function(result) {
+                    mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
                             if (result.code === 11000) {
                                 res.status(409).send({
@@ -588,47 +596,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
     }
 });
 
-// POST /api/v1/donor/create to create a donor
-app.post('/api/v1/donor/create', function(req, res) {
-    var donor = req.body;
-
-    // hash the password and store it in the db
-    password.encrypt(donor['password'], function(hash, salt) {
-        // fix the donor doc a bit before insertion
-        donor['password'] = hash;
-        donor['salt'] = salt;
-
-        // now insert donor into db
-        mongo.insert(donor, donorCollection, function(result) {
-            // if mongo confirms success and n = 1 where n is inserted docs
-            if (result.hasOwnProperty('insertedCount')) {
-                if (result.insertedCount === 1) {
-                    res.status(200).send({
-                        success: true,
-                        message: 'Donor created.'
-                    });
-                } else {
-                    res.status(500).send({
-                        success: false,
-                        message: 'Donor could not be created.'
-                    });
-                }
-            } else if (result.code === 11000) {
-
-                res.status(409).send({
-                    success: false,
-                    message: 'Email already exists.'
-                });
-            } else {
-                res.status(500).send({
-                    success: false,
-                    message: result.errmsg
-                });
-            }
-        });
-    });
-});
-
 /* POST /api/v1/donor/cart
  *
  * update the cart document with the new cart from the client
@@ -685,7 +652,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
     } else {
         if (token) {
             // confirm token sent in request is valid
-            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            jwt.verify(token, TOKEN_KEY, function(err) {
                 if (err) {
                     res.status(401).send({
                         success: false,
@@ -694,7 +661,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                 } else {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, donorCollection, false, function(data) {
+                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
                         emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
@@ -742,7 +709,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
     } else {
         if (token) {
             // confirm token sent in request is valid
-            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            jwt.verify(token, TOKEN_KEY, function(err) {
                 if (err) {
                     res.status(401).send({
                         success: false,
@@ -751,7 +718,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                 } else {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, donorCollection, false, function(data) {
+                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
                         emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
@@ -792,10 +759,10 @@ app.post('/api/v1/donor/reset', function(req, res) {
     };
 
     // find the doc
-    mongo.find(selector, donorCollection, 10000, true, function(donor) {
+    mongo.find(selector, DONOR_COLLECTION, 10000, true, function(donor) {
         for (var id in donor) {
             // get the doc with the id
-            mongo.get(id, donorCollection, false, function(data) {
+            mongo.get(id, DONOR_COLLECTION, false, function(data) {
                 // generate a random password and encrypt it...
                 var tempPassword = Math.random().toString(36).slice(-8);
                 password.encrypt(tempPassword, function(hash, salt) {
@@ -805,7 +772,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                     changes['salt'] = salt;
 
                     // ... then store it in their donor doc
-                    mongo.edit(id, changes, donorCollection, function(result) {
+                    mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
                             res.status(500).send({
                                 success: false,
@@ -828,8 +795,8 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
-                     cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
+https.createServer({ key: fs.readFileSync(SSL_KEY),
+                     cert: fs.readFileSync(SSL_CERT)}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });

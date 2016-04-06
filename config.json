@@ -4,7 +4,7 @@
         "port": "27017",
         "username": "x",
         "password": "x",
-        "db": "endgame",
+        "db": "gh4",
         "childCollection": "children",
         "donorCollection": "donors",
         "cartCollection": "carts"
@@ -13,20 +13,23 @@
         "port": 3000
     },
     "autofill": {
-        "db": "endgame",
+        "db": "gh4",
         "childCollection": "children",
         "donorCollection": "donors",
         "numOfDocs": "10"
     },
-    "auth": {
-        "secret": "x"
-    },
     "keys": {
-        "key": "./keys/key.pem",
-        "cert": "./keys/cert.pem"
+        "sslKey": "./keys/key.pem",
+        "sslCert": "./keys/cert.pem",
+        "token": "x",
+        "bankPublic": "x",
+        "bankPrivate": "x"
     },
     "admin": {
         "email": "eos.josh.richard@gmail.com",
         "password": "x"
+    },
+    "amgg": {
+        "childCost": 19.99
     }
 }
