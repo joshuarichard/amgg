@@ -99,17 +99,28 @@ $(document).ready(function() {
             type: 'GET',
             success: function(res) {
                 if (JSON.stringify(res) !== '{}') {
-                    var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
-                    for (var key in res) {
-                        var kidsInCartInDB = res[key]['kids_in_cart'];
-                        for (var c = 0; c < kidsInCartInDB.length; c++) {
-                            if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
-                                kidsInCartOnPage.push(kidsInCartInDB[c]);
+                    if (inStorage('cart')) {
+                        var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                        for (var key in res) {
+                            var kidsInCartInDB = res[key]['kids_in_cart'];
+                            for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                    kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    addChildToCart(kidsInCartInDB[c]);
+                                }
+                            }
+                            sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                        }
+                    } else {
+                        for (var key in res) {
+                            var kidsInCartInDB = res[key]['kids_in_cart'];
+                            for (var c = 0; c < kidsInCartInDB.length; c++) {
                                 addChildToCart(kidsInCartInDB[c]);
                             }
+                            sessionStorage.setItem('cart', kidsInCartInDB.toString());
                         }
-                        sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                     }
+
                 }
             }
         });
