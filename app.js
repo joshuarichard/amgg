@@ -8,8 +8,9 @@ var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 var mongodb = require('mongodb');
-var request = require("request");
+var request = require('request');
 var crypto = require('crypto');
+var querystring = require('querystring');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -111,6 +112,7 @@ var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
 var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
 var SSL_KEY = nconf.get('keys:sslKey');
 var SSL_CERT = nconf.get('keys:sslCert');
+var AMGG_USERNAME = nconf.get('keys:username');
 
 /*** child api routes ***/
 

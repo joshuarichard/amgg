@@ -23,13 +23,14 @@
         "sslCert": "./keys/cert.pem",
         "token": "x",
         "bankPublic": "x",
-        "bankPrivate": "x"
+        "bankPrivate": "x",
+        "username": "x"
     },
     "admin": {
         "email": "eos.josh.richard@gmail.com",
         "password": "x"
     },
     "amgg": {
-        "childCost": 19.99
+        "childCost": 200
     }
 }
