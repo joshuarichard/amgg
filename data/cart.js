@@ -20,7 +20,7 @@ exports.update = function(donorID, childIDs, requestToPay, callback) {
     var cart = {
         'donor_id': donorID,
         'last_modified': new Date(),
-        'requestToPay': requestToPay,
+        'request_to_pay': requestToPay,
         'kids_in_cart': childIDs
     };
 

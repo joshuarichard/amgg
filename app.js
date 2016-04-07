@@ -76,6 +76,22 @@ var log = bunyan.createLogger({
     ]
 });
 
+var eventlog = bunyan.createLogger({
+    name: 'app',
+    streams: [
+        {
+            level: 'info',
+            path: './log/event_info.log',
+        },
+        {
+            level: 'error',
+            path: './log/app_error.log',
+            period: '1d',   // daily rotation
+            count: 10
+        }
+    ]
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -97,8 +113,6 @@ var emailHeaderTempPassword = 'Temporary password for AMGG';
 var emailBodyTempPassword = 'Your temporary password is: ';
 
 // error email strings
-var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
-var emailErrorBodyDeletingCart = 'Error deleting donor cart.';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
