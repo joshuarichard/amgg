@@ -617,6 +617,46 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
     }
 });
 
+// POST /api/v1/donor/create to create a donor
+app.post('/api/v1/donor/create', function(req, res) {
+    var donor = req.body;
+
+    // hash the password and store it in the db
+    password.encrypt(donor['password'], function(hash, salt) {
+        // fix the donor doc a bit before insertion
+        donor['password'] = hash;
+        donor['salt'] = salt;
+
+        // now insert donor into db
+        mongo.insert(donor, DONOR_COLLECTION, function(result) {
+            // if mongo confirms success and n = 1 where n is inserted docs
+            if (result.hasOwnProperty('insertedCount')) {
+                if (result.insertedCount === 1) {
+                    res.status(200).send({
+                        success: true,
+                        message: 'Child sponsored.'
+                    });
+                } else {
+                    res.status(500).send({
+                        success: false,
+                        message: 'Donor could not be inserted.'
+                    });
+                }
+            } else if (result.code === 11000) {
+                res.status(409).send({
+                    success: false,
+                    message: 'Email already exists.'
+                });
+            } else {
+                res.status(500).send({
+                    success: false,
+                    message: result.errmsg
+                });
+            }
+        });
+    });
+});
+
 /* POST /api/v1/donor/cart
  *
  * update the cart document with the new cart from the client
@@ -691,7 +731,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                                     message: 'Email send. Child removal is processing.'
                                 });
                             } else {
-                                res.status(500).send({
+                              res.status(500).send({
                                     success: false,
                                     message: 'An error occured on email.'
                                 });

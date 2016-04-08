@@ -23,10 +23,11 @@ exports.email = function(toAddress, header, body, callback) {
     };
 
     // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error){
+    transporter.sendMail(mailOptions, function(error) {
         if(error){
             callback(false);
+        } else {
+            callback(true);
         }
-        callback(true);
     });
 };
