@@ -591,9 +591,14 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                             } else {
                                 res.status(500).send({
                                     success: false,
-                                    message: 'Card not successfully charged.'
+                                    message: 'Unsuccessful sponsorship. Card not charged.'
                                 });
                             }
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'Unsuccessful sponsorship. Card not charged.'
+                            });
                         }
                     });
                 });
