@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
-var mongodb = require('mongodb');
 var request = require('request');
 var crypto = require('crypto');
 var querystring = require('querystring');
@@ -81,7 +80,7 @@ var eventlog = bunyan.createLogger({
     streams: [
         {
             level: 'info',
-            path: './log/event_info.log',
+            path: './log/event_info.log'
         },
         {
             level: 'error',
@@ -103,8 +102,8 @@ app.get('/', function(req, res) {
 
 
 // email strings
-var emailHeaderSponsor =  'Thank you for your sponsorship';
-var emailBodySponsor = 'You sponsored a child!!!!!';
+//var emailHeaderSponsor =  'Thank you for your sponsorship';
+//var emailBodySponsor = 'You sponsored a child!!!!!';
 var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorship.';
 var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
 var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
@@ -438,6 +437,18 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
+// equalArrays used for /api/v1/donor/sponsor... here temporarily until
+// we move all of this crap out of app.js
+function equalArrays(arr1, arr2) {
+    if(arr1.length !== arr2.length)
+        return false;
+    for(var i = arr1.length; i--;) {
+        if(arr1[i] !== arr2[i])
+            return false;
+    }
+    return true;
+}
+
 // POST /api/v1/donor/sponsor to sponsor a child[ren]
 app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
@@ -454,7 +465,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 var ccnumber = donor.ccnumber;
                 var cvv = donor.cvv;
                 var expiration = donor.expiration.replace('/', '');
-                var name = donor.name_on_card;
 
                 // other bank parameters
                 var amount = children.length * CHILD_COST;
@@ -503,7 +513,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                         redirect: 'http://localhost/'
                     };
 
-                    request.post({ url: url, form: bankData }, function(error, response, body) {
+                    request.post({ url: url, form: bankData }, function(error, response) {
                         var location = response.headers.location;
                         var start = location.indexOf('?') + 1;
                         var qs = location.substr(start);
@@ -539,16 +549,6 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         var orderKids = [];
                                         for (var e = 1; e < orderIDarray.length; e++) {
                                             orderKids.push(orderIDarray[e]);
-                                        }
-
-                                        function equalArrays(arr1, arr2) {
-                                            if(arr1.length !== arr2.length)
-                                                return false;
-                                            for(var i = arr1.length; i--;) {
-                                                if(arr1[i] !== arr2[i])
-                                                    return false;
-                                            }
-                                            return true;
                                         }
 
                                         if ((equalArrays(cartKids, orderKids) === true) && (cartdoc[key].request_to_pay === 'true')) {
@@ -642,7 +642,7 @@ app.get('/api/v1/donor/cart/id/:id', function(req, res) {
         if (cartdoc.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
-                message: result.err
+                message: cartdoc.err
             });
         } else {
             res.status(200).send(cartdoc);

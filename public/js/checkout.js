@@ -4,7 +4,6 @@
 $(document).ready(function() {
     // firstly, set a donor id if the user isn't logged in. this will be used to
     // manage their cart and lock children as they add them to the cart.
-    var donorID = '';
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
 
     /* If there is a login token in session storage
@@ -33,7 +32,7 @@ $(document).ready(function() {
                 $('#form-email').prop('disabled', true);
                 $('#form-country').prop('disabled', true);
             },
-            error: function(res) {
+            error: function() {
                 if (jqxhr.readyState !== 0 || jqxhr.status !== 0) {
                     alert('Your session has expired. Please login again.');
                     // if getting in here that means that the id and token has
@@ -99,10 +98,11 @@ $(document).ready(function() {
             type: 'GET',
             success: function(res) {
                 if (JSON.stringify(res) !== '{}') {
+                    var kidsInCartInDB = [];
                     if (inStorage('cart')) {
                         var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
                         for (var key in res) {
-                            var kidsInCartInDB = res[key]['kids_in_cart'];
+                            kidsInCartInDB = res[key]['kids_in_cart'];
                             for (var c = 0; c < kidsInCartInDB.length; c++) {
                                 if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
                                     kidsInCartOnPage.push(kidsInCartInDB[c]);
@@ -112,9 +112,9 @@ $(document).ready(function() {
                             sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                         }
                     } else {
-                        for (var key in res) {
-                            var kidsInCartInDB = res[key]['kids_in_cart'];
-                            for (var c = 0; c < kidsInCartInDB.length; c++) {
+                        for (key in res) {
+                            kidsInCartInDB = res[key]['kids_in_cart'];
+                            for (var s = 0; s < kidsInCartInDB.length; s++) {
                                 addChildToCart(kidsInCartInDB[c]);
                             }
                             sessionStorage.setItem('cart', kidsInCartInDB.toString());
@@ -454,7 +454,7 @@ $(document).ready(function() {
                             'email': document.getElementById('form-email').value,
                             'password': document.getElementById('form-password').value
                         },
-                        success: function(res) {
+                        success: function() {
                             if (editInfoClicked === true) {
                                 $.ajax({
                                     url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
@@ -470,7 +470,7 @@ $(document).ready(function() {
                                             'país': document.getElementById('form-country').value
                                         }
                                     },
-                                    success: function(res) {
+                                    success: function() {
                                         editInfoClicked = false;
                                         var cartArray = sessionStorage.getItem('cart').split(',');
 
@@ -548,7 +548,7 @@ $(document).ready(function() {
                         url: '/api/v1/donor/create',
                         type: 'POST',
                         data: newDonor,
-                        success: function(res) {
+                        success: function() {
                             $.ajax({
                                 url: '/api/v1/donor/auth',
                                 type: 'POST',
@@ -605,7 +605,6 @@ $(document).ready(function() {
         sessionStorage.setItem('ccnumber', $('#form-credit').val());
         sessionStorage.setItem('cvv', $('#form-cvv').val());
         sessionStorage.setItem('expiration', $('#form-expiration-1').val() + '/' + $('#form-expiration-2').val());
-        sessionStorage.setItem('nameOnCard', $('#form-name-on-card').val());
 
         //hide elements from step two
         $('#donor-credit-form').hide();
@@ -617,7 +616,7 @@ $(document).ready(function() {
         // show elements for step three
         $('#donor-info-confirmation').show();
         $('#go-back-to-step-two').show();
-        $('#submit-sponsorship').show()
+        $('#submit-sponsorship').show();
 
         // send the cart one final time but this time with the requestToPay = true
         sendCart(true, function() {
@@ -635,7 +634,6 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                    $('#donor-name-on-card').text(sessionStorage.getItem('nameOnCard'));
                 }
             });
         });
@@ -663,7 +661,7 @@ $(document).ready(function() {
                     displaySuccess();
                 }
             },
-            error: function(res) {
+            error: function() {
                 alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
                 window.location = 'children.html';
             }
