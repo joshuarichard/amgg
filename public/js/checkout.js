@@ -653,6 +653,7 @@ $(document).ready(function() {
             'expiration': sessionStorage.getItem('expiration'),
             'name_on_card': sessionStorage.getItem('nameOnCard')
         };
+        $('#submit-sponsorship').prop('disabled', true);
         $.ajax({
             url: '/api/v1/donor/sponsor',
             type: 'POST',
