@@ -231,6 +231,7 @@ $(document).ready(function() {
     }
 
     function sendCart(requestToPay, callback) {
+        console.log('sending cart');
         var donorIDinCart = '';
         // if the donor is logged in then use their donor id in the cart doc
         if (inStorage('id') === true && inStorage('cart') === true) {
@@ -427,6 +428,7 @@ $(document).ready(function() {
         $('#go-to-step-three').hide();
         $('#go-back-to-step-one').hide();
 
+        // disable form if logged in
         if (inStorage('token') === true && inStorage('id') === true) {
             $('#form-first-name').prop('disabled', true);
             $('#form-last-name').prop('disabled', true);
@@ -469,6 +471,7 @@ $(document).ready(function() {
                                         }
                                     },
                                     success: function(res) {
+                                        editInfoClicked = false;
                                         var cartArray = sessionStorage.getItem('cart').split(',');
 
                                         // check for locked kids
@@ -491,8 +494,8 @@ $(document).ready(function() {
                                                     $('#donor-credit-form').show();
                                                     $('#go-to-step-three').show();
                                                     $('#go-back-to-step-one').show();
-                                                    $('#go-to-step-three').click(goToStepThree);
-                                                    $('#go-back-to-step-one').click(goToStepOne);
+                                                    $('#go-to-step-three').unbind().click(goToStepThree);
+                                                    $('#go-back-to-step-one').unbind().click(goToStepOne);
                                                 });
                                             }
                                         });
@@ -521,8 +524,8 @@ $(document).ready(function() {
                                             $('#donor-credit-form').show();
                                             $('#go-to-step-three').show();
                                             $('#go-back-to-step-one').show();
-                                            $('#go-to-step-three').click(goToStepThree);
-                                            $('#go-back-to-step-one').click(goToStepOne);
+                                            $('#go-to-step-three').unbind().click(goToStepThree);
+                                            $('#go-back-to-step-one').unbind().click(goToStepOne);
                                         });
                                     }
                                 });
@@ -583,8 +586,8 @@ $(document).ready(function() {
                                                 $('#donor-credit-form').show();
                                                 $('#go-to-step-three').show();
                                                 $('#go-back-to-step-one').show();
-                                                $('#go-to-step-three').click(goToStepThree);
-                                                $('#go-back-to-step-one').click(goToStepOne);
+                                                $('#go-to-step-three').unbind().click(goToStepThree);
+                                                $('#go-back-to-step-one').unbind().click(goToStepOne);
                                             });
                                         }
                                     });
@@ -615,8 +618,6 @@ $(document).ready(function() {
         $('#donor-info-confirmation').show();
         $('#go-back-to-step-two').show();
         $('#submit-sponsorship').show()
-        $('.password').hide();
-        $('.confirm-password').hide();
 
         // send the cart one final time but this time with the requestToPay = true
         sendCart(true, function() {
@@ -638,7 +639,6 @@ $(document).ready(function() {
                 }
             });
         });
-        // displaySuccess();
     }
 
     $('#submit-sponsorship').click(sendPayment);
@@ -658,7 +658,13 @@ $(document).ready(function() {
             type: 'POST',
             data: donor,
             success: function(res) {
-                console.log(res);
+                if (res.success === true) {
+                    displaySuccess();
+                }
+            },
+            error: function(res) {
+                alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
+                window.location = 'children.html';
             }
         });
         //$('#bank-time').val(Math.floor(new Date().getTime() / 1000));

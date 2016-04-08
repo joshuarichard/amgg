@@ -85,7 +85,7 @@ var eventlog = bunyan.createLogger({
         },
         {
             level: 'error',
-            path: './log/app_error.log',
+            path: './log/event_error.log',
             period: '1d',   // daily rotation
             count: 10
         }
