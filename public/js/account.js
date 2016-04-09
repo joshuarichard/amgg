@@ -80,9 +80,11 @@ $(document).ready(function() {
         letterForm.className = 'letter-form col-md-10';
         var letter = document.createElement('textarea');
         letter.className = 'letter';
+        letter.id = 'letterbox';
         var submitLetter = document.createElement('button');
         submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
         submitLetter.title = 'Send letter to your sponsored child';
+        submitLetter.type = 'button';
         submitLetter.innerHTML = 'Send';
 
         //create child select table
@@ -95,6 +97,7 @@ $(document).ready(function() {
         tabCInfoWrapper.appendChild(tabAHeaderhr);
         tabCInfoWrapper.appendChild(letterForm);
         tabCInfoWrapper.appendChild(childrenSelectContainer);
+
         tabC.appendChild(tabCInfoWrapper);
 
         /* get children using donor id */
@@ -746,6 +749,31 @@ $(document).ready(function() {
                     inputGroupSpan.appendChild(selectChild);
                     inputGroup.appendChild(inputGroupSpan);
                     childrenSelectContainer.appendChild(selectChild);
+
+                    //Submits a letter to admin complete with donorID, child_id, and plaintext letter.
+                    submitLetter.onclick = function() {
+                      var makeSure = confirm('Are you sure you want to send this letter?');
+                      if (makeSure == true) {
+                          $.ajax({
+                              url: '/api/v1/donor/letter',
+                              type: 'POST',
+                              data: {
+                                  'token' : sessionStorage.getItem('token'),
+                                  'donor_id' : sessionStorage.getItem('id'),
+                                  'child_id': id,
+                                  'letter_text' : letterbox.value
+                              },
+                              success: function(res) {
+                                  if (res.success === true) {
+                                      alert('You have made a childs day.');
+                                  }
+                              },
+                              error: function() {
+                                  alert('your letter was not received. please try again.');
+                              }
+                          });
+                      }
+                  };
 
                     callback(true);
                 }
