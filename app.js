@@ -731,7 +731,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                                     message: 'Email send. Child removal is processing.'
                                 });
                             } else {
-                              res.status(500).send({
+                                res.status(500).send({
                                     success: false,
                                     message: 'An error occured on email.'
                                 });
