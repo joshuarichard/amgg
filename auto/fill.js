@@ -144,7 +144,7 @@ function generateDocument(callback) {
             'provincia': provincia[Math.floor(Math.random() *
                                    provincia.length)],
             'código_postal': Math.floor((Math.random() * (99999) + 1)),
-            'aficiones': 'Reading, playing baseball, and swinging.',
+            'pastiempos': 'Reading, playing baseball, and swinging.',
             'biodata': 'He/she needs help because...'
         };
         callback(doc);

@@ -299,7 +299,7 @@ $(document).ready(function() {
                     var gender = res[id].género;
                     var provincia = res[id].provincia;
                     var center = res[id].centro_de_ninos;
-                    var aficiones = res[id].aficiones;
+                    var hobbies = res[id].pastiempos;
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -311,7 +311,7 @@ $(document).ready(function() {
                     var genderDiv = document.createElement('div');
                     var provinciaDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
-                    var aficionesDiv = document.createElement('div');
+                    var hobbiesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
@@ -320,7 +320,7 @@ $(document).ready(function() {
                     genderDiv.className = 'child-info';
                     provinciaDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
-                    aficionesDiv.className = 'child-info';
+                    hobbiesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
@@ -329,7 +329,7 @@ $(document).ready(function() {
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     provinciaDiv.innerHTML = '<b> Provincia: </b>' + provincia;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
-                    aficionesDiv.innerHTML = '<b> Aficiones: </b>' + aficiones;
+                    hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
@@ -338,7 +338,7 @@ $(document).ready(function() {
                     dataTD.appendChild(genderDiv);
                     dataTD.appendChild(provinciaDiv);
                     dataTD.appendChild(centerDiv);
-                    dataTD.appendChild(aficionesDiv);
+                    dataTD.appendChild(hobbiesDiv);
 
                     // append dataTD to the dataDiv for styling, then append to row
                     dataDiv.appendChild(dataTD);

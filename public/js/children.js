@@ -65,7 +65,7 @@ $(document).ready(function() {
             var age = childPool[id].años;
             var gender = childPool[id].género;
             var location = childPool[id].provincia;
-            var aficiones = childPool[id].aficiones;
+            var hobbies = childPool[id].pastiempos;
             var biodata = childPool[id].biodata;
 
             // get the picture and load it in
@@ -76,7 +76,7 @@ $(document).ready(function() {
                     'age': age,
                     'gender': gender,
                     'location': location,
-                    'aficiones': aficiones,
+                    'pastiempos': hobbies,
                     'biodata': biodata,
                     'picture': res.data
                 };
@@ -105,7 +105,7 @@ $(document).ready(function() {
      *    age: int,
      *    gender: string,
      *    location: string,
-     *    aficiones: string,
+     *    pastiempos: string,
      *    biodata: string,
      *    picture: base64 string
      * }
@@ -118,7 +118,7 @@ $(document).ready(function() {
         var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
-        var aficiones = child.aficiones;
+        var hobbies = child.pastiempos;
         var biodata = child.biodata;
 
         // create the slide
@@ -152,7 +152,7 @@ $(document).ready(function() {
         var pData2 = document.createElement('p');
         pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
         var pData3 = document.createElement('p');
-        pData3.innerHTML = 'My hobbies include ' + aficiones;
+        pData3.innerHTML = 'My hobbies include ' + hobbies;
         var pData4 = document.createElement('p');
         pData4.innerHTML = 'You should sponsor me because ' + biodata;
         divDescription.appendChild(pData1);
