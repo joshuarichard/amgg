@@ -7,6 +7,9 @@ var bodyParser = require('body-parser');
 var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
+var request = require('request');
+var crypto = require('crypto');
+var querystring = require('querystring');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -72,6 +75,22 @@ var log = bunyan.createLogger({
     ]
 });
 
+var eventlog = bunyan.createLogger({
+    name: 'app',
+    streams: [
+        {
+            level: 'info',
+            path: './log/event_info.log'
+        },
+        {
+            level: 'error',
+            path: './log/event_error.log',
+            period: '1d',   // daily rotation
+            count: 10
+        }
+    ]
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -81,11 +100,10 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-var adminEmail = nconf.get('admin:email');
 
 // email strings
-var emailHeaderSponsor =  'Thank you for your sponsorship';
-var emailBodySponsor = 'You sponsored a child!!!!!';
+//var emailHeaderSponsor =  'Thank you for your sponsorship';
+//var emailBodySponsor = 'You sponsored a child!!!!!';
 var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorship.';
 var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
 var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
@@ -94,21 +112,27 @@ var emailHeaderTempPassword = 'Temporary password for AMGG';
 var emailBodyTempPassword = 'Your temporary password is: ';
 
 // error email strings
-var emailErrorHeaderDeletingCart = 'Error deleting donor cart.';
-var emailErrorBodyDeletingCart = 'Error deleting donor cart.';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
-var childCollection = nconf.get('mongo:childCollection');
-var donorCollection = nconf.get('mongo:donorCollection');
-var cartCollection = nconf.get('mongo:cartCollection');
+//var adminEmail = nconf.get('admin:email');
+var CHILD_COLLECTION = nconf.get('mongo:childCollection');
+var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
+var CART_COLLECTION = nconf.get('mongo:cartCollection');
+var CHILD_COST = nconf.get('amgg:childCost');
+var TOKEN_KEY = nconf.get('keys:token');
+var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
+var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
+var SSL_KEY = nconf.get('keys:sslKey');
+var SSL_CERT = nconf.get('keys:sslCert');
+var AMGG_USERNAME = nconf.get('keys:username');
 
 /*** child api routes ***/
 
 // GET /api/v1/children/id/:id get a child with their id
 // TODO: error handling
 app.get('/api/v1/children/id/:id', function(req, res) {
-    mongo.get(req.params.id, childCollection, true, function(doc) {
+    mongo.get(req.params.id, CHILD_COLLECTION, true, function(doc) {
         if (doc.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
@@ -126,20 +150,22 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = query.format(JSON.parse(req.params.selector));
 
     // get a child pool
-    mongo.find(selector, childCollection, 100, true, function(children) {
+    mongo.find(selector, CHILD_COLLECTION, 100, true, function(children) {
         var unsponsoredChildrenIds = [];
         for (var key in children) {
             unsponsoredChildrenIds.push(key);
         }
 
         // get all cart docs...
-        mongo.find({}, cartCollection, 10000, false, function(cartdocs) {
+        mongo.find({}, CART_COLLECTION, 10000, false, function(cartdocs) {
             // ...and make an array of all child ids currently in carts
             var idsOfKidsInCarts = [];
             for (var key in cartdocs) {
-                var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
-                for (var e = 0; e < kidsInThisCart.length; e++) {
-                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                if (cartdocs[key].hasOwnProperty('kids_in_cart')) {
+                    var kidsInThisCart = cartdocs[key].kids_in_cart;
+                    for (var e = 0; e < kidsInThisCart.length; e++) {
+                        idsOfKidsInCarts.push(kidsInThisCart[e]);
+                    }
                 }
             }
 
@@ -176,13 +202,15 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     };
 
     // get all cart docs...
-    mongo.find(selector, cartCollection, 10000, false, function(cartdocs) {
+    mongo.find(selector, CART_COLLECTION, 10000, false, function(cartdocs) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
         for (var key in cartdocs) {
-            var kidsInThisCart = cartdocs[key].niños_patrocinadoras;
-            for (var e = 0; e < kidsInThisCart.length; e++) {
-                idsOfKidsInCarts.push(kidsInThisCart[e]);
+            if (cartdocs[key].hasOwnProperty('kids_in_cart')) {
+                var kidsInThisCart = cartdocs[key].kids_in_cart;
+                for (var e = 0; e < kidsInThisCart.length; e++) {
+                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+                }
             }
         }
 
@@ -211,7 +239,7 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
 
 // GET /api/v1/pictures/id/:id get and child's picture with the child's id
 app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, childCollection, function(data) {
+    mongo.getPic(req.params.id, CHILD_COLLECTION, function(data) {
         if (data.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
@@ -233,7 +261,7 @@ function changeChildrenStatus(array, newStatus, callback) {
 
     function editChild() {
         var id = array.pop();
-        mongo.edit(id, {'status': newStatus}, childCollection, function() {
+        mongo.edit(id, {'status': newStatus}, CHILD_COLLECTION, function() {
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
@@ -260,10 +288,10 @@ function changeChildrenStatus(array, newStatus, callback) {
  * }
  */
 app.post('/api/v1/donor/auth', function(req, res) {
-    var email = {'correo_electrónico': req.body['correo_electrónico']};
+    var email = {'correo_electrónico': req.body['email']};
     // find the donor's email
     // if email === null, send res no email
-    mongo.find(email, donorCollection, 1, false, function(data) {
+    mongo.find(email, DONOR_COLLECTION, 1, false, function(data) {
         if (JSON.stringify(data) !== '{}') {
             for (var key in data) {
                 var saltDB = data[key].salt;
@@ -277,7 +305,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, nconf.get('auth:secret'), {expiresIn: '1h'}, function(token) {
+                        jwt.sign(data, TOKEN_KEY, {expiresIn: '5h'}, function(token) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Authenticated.',
@@ -308,7 +336,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
 
     // confirm token sent in request is valid
     if (token) {
-        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+        jwt.verify(token, TOKEN_KEY, function(err) {
             if (err) {
                 res.status(401).send({
                     success: false,
@@ -316,7 +344,7 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                 });
             } else {
                 // if it is valid then perform the donor get
-                mongo.get(id, donorCollection, false, function(data) {
+                mongo.get(id, DONOR_COLLECTION, false, function(data) {
                     if (data.hasOwnProperty('err')) {
                         res.status(500).send({
                             success: false,
@@ -331,7 +359,6 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
             }
         });
     } else {
-        console.log(token);
         res.status(400).send({
             success: false,
             message: 'No token provided.'
@@ -355,7 +382,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
 
     if (token) {
         // confirm token sent in request is valid
-        jwt.verify(token, nconf.get('auth:secret'), function(err) {
+        jwt.verify(token, TOKEN_KEY, function(err) {
             if (err) {
                 res.status(401).send({
                     success: false,
@@ -374,7 +401,7 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                     }
 
                     // if it is valid then perform the donor edit
-                    mongo.edit(id, changes, donorCollection, function(result) {
+                    mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
                             if (result.code === 11000) {
                                 res.status(409).send({
@@ -410,198 +437,182 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
     }
 });
 
-// POST /api/v1/donor/insert to insert donor
+// equalArrays used for /api/v1/donor/sponsor... here temporarily until
+// we move all of this crap out of app.js
+function equalArrays(arr1, arr2) {
+    if(arr1.length !== arr2.length)
+        return false;
+    for(var i = arr1.length; i--;) {
+        if(arr1[i] !== arr2[i])
+            return false;
+    }
+    return true;
+}
+
+// POST /api/v1/donor/sponsor to sponsor a child[ren]
 app.post('/api/v1/donor/sponsor', function(req, res) {
     var donor = req.body;
 
-    // firstly check if this is real donor or a to-be donor
-    // if it's a to-be donor the client will send along an 'assigned_donor_id'
-    // if it's a real donor the client will send the donor's actual id
-    if (req.body.hasOwnProperty('assigned_donor_id')) {
-        // NEW DONOR
-        // ---------
-        // find the donor's cart in the cart collection
-        // and get the children to sponsor
-        cart.find(req.body.assigned_donor_id, function(cartdoc) {
-            // if the cart is empty then send back 500
-            if (JSON.stringify(cartdoc) !== '{}') {
-                for (var key in cartdoc) {
-                    var realCart = cartdoc[key];
-                    var childrenToSponsor = realCart['niños_patrocinadoras'];
+    if (donor.token) {
+        // confirm token sent in request is valid
+        jwt.verify(donor.token, TOKEN_KEY, function(err) {
+            if (!err) {
+                // then define some variables...
 
-                    // hash the password and store it in the db
-                    password.encrypt(donor['password'], function(hash, salt) {
-                        // fix the donor doc a bit before insertion
-                        donor['password'] = hash;
-                        donor['salt'] = salt;
-                        donor['niños_patrocinadoras'] = childrenToSponsor;
+                // bank parameters from the client
+                var donor_id = donor.donor_id;
+                var children = donor.child_id;
+                var ccnumber = donor.ccnumber;
+                var cvv = donor.cvv;
+                var expiration = donor.expiration.replace('/', '');
 
-                        // store this as a variable because need to delete from
-                        // donor doc before insert.
-                        var assignedDonorID = donor['assigned_donor_id'];
-                        delete donor['assigned_donor_id'];
+                // other bank parameters
+                var amount = children.length * CHILD_COST;
+                var user = AMGG_USERNAME;
+                var url = 'https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go';
 
-                        // now insert donor into db
-                        mongo.insert(donor, donorCollection, function(result) {
-                            // if mongo confirms success and n = 1 where n is inserted docs
-                            if (result.hasOwnProperty('insertedCount')) {
-                                if (result.insertedCount === 1) {
-                                    // then delete the cart doc
-                                    cart.delete(assignedDonorID, function(result) {
-                                        if (result === false) {
-                                            emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + assignedDonorID, function(didEmail) {
-                                                if (didEmail === false) {
-                                                    log.error('error emailing admin about error when deleting cart for donor ' + req.body.assigned_donor_id);
-                                                }
-                                            });
+                // calculated bank parameters
+                var orderid = donor_id + '-' + children.toString().replace(/,/g, '-');
+                var timeNow = Math.floor(new Date().getTime() / 1000);
+                var hash = crypto.createHash('md5')
+                                 .update(orderid + '|' +
+                                         amount + '|' +
+                                         timeNow + '|' +
+                                         BANK_PRIVATE_KEY)
+                                 .digest('hex');
+
+                mongo.get(donor_id, DONOR_COLLECTION, false, function(donordoc) {
+                    var firstname = donordoc.nombre;
+                    var lastname = donordoc.apellido;
+                    var address1 = donordoc.calle;
+                    var city = donordoc.ciudad;
+                    var country = donordoc.país;
+                    var phone = donordoc.teléfono;
+                    var email = donordoc.correo_electrónico;
+                    // var zip = donordoc.zip?;
+
+                    var bankData = {
+                        username: user,
+                        type: 'auth',
+                        key_id: BANK_PUBLIC_KEY,
+                        hash: hash,
+                        time: timeNow,
+                        amount: amount,
+                        orderid: orderid,
+                        processor_id: null,
+                        ccnumber: ccnumber,
+                        ccexp: expiration,
+                        cvv: cvv,
+                        firstname: firstname,
+                        lastname: lastname,
+                        address1: address1,
+                        city: city,
+                        country: country,
+                        phone: phone,
+                        email: email,
+                        redirect: 'http://localhost/'
+                    };
+
+                    request.post({ url: url, form: bankData }, function(error, response) {
+                        var location = response.headers.location;
+                        var start = location.indexOf('?') + 1;
+                        var qs = location.substr(start);
+
+                        var bankResult = querystring.parse(qs);
+
+                        var responseHash = bankResult.hash;
+                        var responseCode = bankResult.response;
+                        var transactionid = bankResult.transactionid;
+                        var avsresponse = bankResult.avsresponse;
+                        var cvvresponse = bankResult.cvvresponse;
+                        var time = bankResult.time;
+                        var computedResponseHash = crypto.createHash('md5')
+                                                         .update(orderid + '|' +
+                                                                 amount + '|' +
+                                                                 responseCode + '|' +
+                                                                 transactionid + '|' +
+                                                                 avsresponse + '|' +
+                                                                 cvvresponse + '|' +
+                                                                 time + '|' +
+                                                                 BANK_PRIVATE_KEY)
+                                                         .digest('hex');
+
+                        if (responseHash === computedResponseHash) {
+                            if (responseCode === '2') {
+                                // find the donor's cart in the cart collection
+                                // and get the children to sponsor
+                                cart.find(donor_id, function(cartdoc) {
+                                    for (var key in cartdoc) {
+                                        var cartKids = cartdoc[key].kids_in_cart;
+                                        var orderIDarray = orderid.split('-');
+
+                                        var orderKids = [];
+                                        for (var e = 1; e < orderIDarray.length; e++) {
+                                            orderKids.push(orderIDarray[e]);
                                         }
-                                        if (result.hasOwnProperty('err')) {
-                                            res.status(500).send({
-                                                success: false,
-                                                message: result.err
-                                            });
-                                        } else {
-                                            // recursive function to manage asynch for each id (change status to sponsored)
-                                            changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                // email donor about their successful confirmation
-                                                emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor, function(didEmail) {
-                                                    if(didEmail === true) {
+
+                                        if ((equalArrays(cartKids, orderKids) === true) && (cartdoc[key].request_to_pay === 'true')) {
+                                            // ... and store it in the donor doc
+                                            var donorPayments = [];
+                                            if (donordoc.hasOwnProperty('transacciones')) {
+                                                donorPayments = donordoc.transacciones;
+                                            }
+                                            bankResult['time'] = new Date(parseInt(bankResult.time * 1000));
+                                            donorPayments.push(bankResult);
+
+                                            var donorKids = [];
+                                            if (donordoc.hasOwnProperty('niños_patrocinadoras')) {
+                                                donorKids = donordoc.niños_patrocinadoras;
+                                            }
+
+                                            for (var kid = 0; kid < cartKids.length; kid++) {
+                                                donorKids.push(cartKids[kid]);
+                                            }
+                                            mongo.edit(donor_id, {'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
+                                                if (result.hasOwnProperty('err')) {
+                                                    // log lack of editing and response appropriately...
+                                                    eventlog.error('Error editing database. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + JSON.stringify({'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}));
+                                                }
+                                                // then delete the cart doc
+                                                cart.delete(donor_id, function() {
+                                                    // recursive function to manage asynch for each id (change status to sponsored)
+                                                    changeChildrenStatus(cartKids, 'Sponsored', function() {
                                                         // and we're done.
                                                         res.status(200).send({
                                                             success: true,
-                                                            message: 'Child sponsored.'
+                                                            message: 'Child Sponsored.'
                                                         });
-                                                    } else {
-                                                        res.status(500).send({
-                                                            success: false,
-                                                            message: 'An error occured on email.'
-                                                        });
-                                                    }
+                                                    });
                                                 });
                                             });
                                         }
-                                    });
-                                } else {
-                                    res.status(500).send({
-                                        success: false,
-                                        message: 'Donor could not be inserted.'
-                                    });
-                                }
-                            } else if (result.code === 11000) {
-                                res.status(409).send({
-                                    success: false,
-                                    message: 'Email already exists.'
+                                    }
                                 });
                             } else {
                                 res.status(500).send({
                                     success: false,
-                                    message: result.errmsg
+                                    message: 'Unsuccessful sponsorship. Card not charged.'
                                 });
                             }
-                        });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'Unsuccessful sponsorship. Card not charged.'
+                            });
+                        }
                     });
-                }
+                });
             } else {
-                res.status(500).send({
+                res.status(401).send({
                     success: false,
-                    message: 'Cart not found.'
+                    message: 'Failed to authenticate token.'
                 });
             }
         });
     } else {
-        // EXISTING DONOR
-        // --------------
-        // find the donor's cart in the cart collection
-        // and get the children to sponsor
-        cart.find(req.body.donor_id, function(cartdoc) {
-            for (var key in cartdoc) {
-                var realCart = cartdoc[key];
-                var childrenToSponsor = realCart['niños_patrocinadoras'];
-
-                // get the donor's document from the db using the donor_id the client sent us
-                mongo.get(req.body.donor_id, donorCollection, false, function(donor) {
-                    if (donor.hasOwnProperty('err')) {
-                        res.status(500).send({
-                            success: false,
-                            message: 'Donor not found.'
-                        });
-                    } else {
-                        if (JSON.stringify(donor) !== '{}') {
-                            var saltDB = donor.salt;
-                            var passwordDB = donor.password;
-
-                            // encrypt the password and validate it. if not equal
-                            // send back a 401
-                            password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
-                                if(passwordGiven !== passwordDB) {
-                                    res.status(401).send({
-                                        success: false,
-                                        message: 'Incorrect password.'
-                                    });
-                                } else {
-                                    // push all of the new children to the sponsored
-                                    // children array...
-                                    var childrenSponsored = donor['niños_patrocinadoras'];
-                                    for (var d = 0; d < childrenToSponsor.length; d++) {
-                                        childrenSponsored.push(childrenToSponsor[d]);
-                                    }
-
-                                    // ... and store it in the donor doc
-                                    mongo.edit(req.body.donor_id, {'niños_patrocinadoras': childrenSponsored}, donorCollection, function(result) {
-                                        if (result.hasOwnProperty('err')) {
-                                            res.status(500).send({
-                                                success: false,
-                                                message: result.err
-                                            });
-                                        } else {
-                                            // then delete the cart doc
-                                            cart.delete(req.body.donor_id, function(result) {
-                                                if (result === false) {
-                                                    emailModule.email(adminEmail, emailErrorHeaderDeletingCart, emailErrorBodyDeletingCart + ' Donor id for the cart is: ' + req.body.donor_id, function(didEmail) {
-                                                        if (didEmail === false) {
-                                                            log.error('error emailing admin about error when deleting cart for donor ' + req.body.donor_id);
-                                                        }
-                                                    });
-                                                }
-                                                if (result.hasOwnProperty('err')) {
-                                                    res.status(500).send({
-                                                        success: false,
-                                                        message: result.err
-                                                    });
-                                                } else {
-                                                    // recursive function to manage asynch for each id (change status to sponsored)
-                                                    changeChildrenStatus(childrenToSponsor, 'Sponsored', function() {
-                                                        // email donor about their successful confirmation
-                                                        emailModule.email(donor['correo_electrónico'], emailHeaderSponsor, emailBodySponsor,  function(didEmail) {
-                                                            if(didEmail === true) {
-                                                                // and we're done.
-                                                                res.status(200).send({
-                                                                    success: true,
-                                                                    message: 'Child sponsored.'
-                                                                });
-                                                            } else {
-                                                                res.status(500).send({
-                                                                    success: false,
-                                                                    message: 'An error occured on email.'
-                                                                });
-                                                            }
-                                                        });
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            res.status(401).send({
-                                success: false,
-                                message: 'Email not found.'
-                            });
-                        }
-                    }
-                });
-            }
+        res.status(403).send({
+            success: false,
+            message: 'No token provided.'
         });
     }
 });
@@ -617,7 +628,7 @@ app.post('/api/v1/donor/create', function(req, res) {
         donor['salt'] = salt;
 
         // now insert donor into db
-        mongo.insert(donor, donorCollection, function(result) {
+        mongo.insert(donor, DONOR_COLLECTION, function(result) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
@@ -651,7 +662,7 @@ app.post('/api/v1/donor/create', function(req, res) {
  * update the cart document with the new cart from the client
  */
 app.post('/api/v1/donor/cart', function(req, res) {
-    cart.update(req.body.donor_id, req.body.niños_patrocinadoras, function(result) {
+    cart.update(req.body.donor_id, req.body.kids_in_cart, req.body.request_to_pay, function(result) {
         if (result.hasOwnProperty('err')) {
             res.status(500).send({
                 success: false,
@@ -662,6 +673,19 @@ app.post('/api/v1/donor/cart', function(req, res) {
                 success: true,
                 message: 'Cart updated.'
             });
+        }
+    });
+});
+
+app.get('/api/v1/donor/cart/id/:id', function(req, res) {
+    cart.find(req.params.id, function(cartdoc) {
+        if (cartdoc.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                message: cartdoc.err
+            });
+        } else {
+            res.status(200).send(cartdoc);
         }
     });
 });
@@ -689,7 +713,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
     } else {
         if (token) {
             // confirm token sent in request is valid
-            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            jwt.verify(token, TOKEN_KEY, function(err) {
                 if (err) {
                     res.status(401).send({
                         success: false,
@@ -698,7 +722,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                 } else {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, donorCollection, false, function(data) {
+                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
                         emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
@@ -746,7 +770,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
     } else {
         if (token) {
             // confirm token sent in request is valid
-            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            jwt.verify(token, TOKEN_KEY, function(err) {
                 if (err) {
                     res.status(401).send({
                         success: false,
@@ -755,7 +779,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                 } else {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, donorCollection, false, function(data) {
+                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
                         emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
@@ -796,10 +820,10 @@ app.post('/api/v1/donor/reset', function(req, res) {
     };
 
     // find the doc
-    mongo.find(selector, donorCollection, 10000, true, function(donor) {
+    mongo.find(selector, DONOR_COLLECTION, 10000, true, function(donor) {
         for (var id in donor) {
             // get the doc with the id
-            mongo.get(id, donorCollection, false, function(data) {
+            mongo.get(id, DONOR_COLLECTION, false, function(data) {
                 // generate a random password and encrypt it...
                 var tempPassword = Math.random().toString(36).slice(-8);
                 password.encrypt(tempPassword, function(hash, salt) {
@@ -809,7 +833,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                     changes['salt'] = salt;
 
                     // ... then store it in their donor doc
-                    mongo.edit(id, changes, donorCollection, function(result) {
+                    mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
                             res.status(500).send({
                                 success: false,
@@ -832,8 +856,8 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-https.createServer({ key: fs.readFileSync(nconf.get('keys:key')),
-                     cert: fs.readFileSync(nconf.get('keys:cert'))}, app)
+https.createServer({ key: fs.readFileSync(SSL_KEY),
+                     cert: fs.readFileSync(SSL_CERT)}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });

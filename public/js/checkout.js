@@ -4,28 +4,58 @@
 $(document).ready(function() {
     // firstly, set a donor id if the user isn't logged in. this will be used to
     // manage their cart and lock children as they add them to the cart.
-    var donorID = '';
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
-    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '' &&
-        (sessionStorage.getItem('id') === null || sessionStorage.getItem('id') === '') &&
-        (sessionStorage.getItem('assignedDonorID') === null || sessionStorage.getItem('assignedDonorID' === ''))) {
-        donorID = generateDonorID();
-        sessionStorage.setItem('assignedDonorID', donorID);
-    }
 
-    // secondly, check if they have both an assigned ID and a real ID. if they have both, then they've
-    // logged in since adding a child to their cart. nuke the cart, delete the assigned ID, and reroute to child page
-    if (sessionStorage.getItem('id') !== null && sessionStorage.getItem('id') !== '' &&
-        sessionStorage.getItem('assignedDonorID') !== null && sessionStorage.getItem('assignedDonorID') !== '') {
-        // we shouldn't have to do this, but right now we do
-        sessionStorage.removeItem('assignedDonorID');
-        sessionStorage.removeItem('cart');
-        window.location = 'children.html';
+    /* If there is a login token in session storage
+     * then the form should be auto-populated with
+     * the donors information
+     */
+    if (inStorage('token') === true) {
+        $.ajax({
+            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+            type: 'POST',
+            data: {
+                'token' : sessionStorage.getItem('token')
+            },
+            success: function(res) {
+                $('#form-first-name').val(res.nombre);
+                $('#form-first-name').prop('disabled', true);
+                $('#form-last-name').val(res.apellido);
+                $('#form-last-name').prop('disabled', true);
+                $('#form-phone').val(res.teléfono);
+                $('#form-phone').prop('disabled', true);
+                $('#form-address-street').val(res.calle);
+                $('#form-address-street').prop('disabled', true);
+                $('#form-address-city').val(res.ciudad);
+                $('#form-address-city').prop('disabled', true);
+                $('#form-email').val(res.correo_electrónico);
+                $('#form-email').prop('disabled', true);
+                $('#form-country').prop('disabled', true);
+            },
+            error: function() {
+                if (jqxhr.readyState !== 0 || jqxhr.status !== 0) {
+                    alert('Your session has expired. Please login again.');
+                    // if getting in here that means that the id and token has
+                    // been set but it's since expired. nuke everything and
+                    // make them login again.
+                    if (inStorage('token') === true) {
+                        sessionStorage.removeItem('token');
+                    }
+                    if (inStorage('cart') === true) {
+                        sessionStorage.removeItem('cart');
+                    }
+                    if (inStorage('id') === true) {
+                        sessionStorage.removeItem('id');
+                    }
+                    window.location = 'children.html';
+                }
+            }
+        });
     }
 
     // secondly, check the lock status of all children currently in the cart.
     // if the child is locked, remove the child and alert the donor accordingly
-    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
+    if (inStorage('cart') === true) {
         var cartArray = sessionStorage.getItem('cart').split(',');
 
         // check the locked status of every child in the cart. lockedChildren is
@@ -41,22 +71,6 @@ $(document).ready(function() {
         });
     }
 
-    // thirdly, send the current cart's contents
-    // NOTE: when you remove a child from the table it will send the cart to the
-    // db. if it's the case that all children currently in the cart are clear to be
-    // sponsored (i.e. they are not locked), then it will not send the cart,
-    // therefore, it is required we send the contents of the cart at least once
-    if (sessionStorage.getItem('cart') !== null && sessionStorage.getItem('cart') !== '') {
-        sendCart(function(result) {
-            if (result === true) {
-                console.log('successfully sent cart to db.');
-            } else {
-                console.log('cart not successfully sent to db.');
-                $('#checkout-submit').prop('disabled', true);
-            }
-        });
-    }
-
     // fourthly, begin creating the UI and make some api calls to get child
     // and donor data.
     var container = document.getElementById('children-to-sponsor');
@@ -66,7 +80,7 @@ $(document).ready(function() {
 
     // fifthly, insert all children in session storage into the cart.
     // if no children in the cart, the remove the spinner
-    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+    if (inStorage('cart') === true) {
         var ids = sessionStorage.getItem('cart').split(',');
         for (var i = 0; i < ids.length; i++) {
             addChildToCart(ids[i]);
@@ -76,22 +90,59 @@ $(document).ready(function() {
         $('.spinner').remove();
     }
 
+    // lastly, check to see if the donor has a cart and if they do then
+    // add any kids in that cart
+    if (inStorage('id') === true) {
+        $.ajax({
+            url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+            type: 'GET',
+            success: function(res) {
+                if (JSON.stringify(res) !== '{}') {
+                    var kidsInCartInDB = [];
+                    if (inStorage('cart')) {
+                        var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                        for (var key in res) {
+                            kidsInCartInDB = res[key]['kids_in_cart'];
+                            for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                    kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    addChildToCart(kidsInCartInDB[c]);
+                                }
+                            }
+                            sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                        }
+                    } else {
+                        for (key in res) {
+                            kidsInCartInDB = res[key]['kids_in_cart'];
+                            for (var s = 0; s < kidsInCartInDB.length; s++) {
+                                addChildToCart(kidsInCartInDB[c]);
+                            }
+                            sessionStorage.setItem('cart', kidsInCartInDB.toString());
+                        }
+                    }
+
+                }
+            }
+        });
+    }
+
     // after all that append the 'add a child' button
     var addButton = document.createElement('button');
-    addButton.className = 'btn btn-primary btn-md child-intro-btn-sponsor sponsor-button';
+    addButton.className = 'btn btn-primary btn-md';
     addButton.onclick = function() {
         window.location = 'children.html';
     };
 
-    addButton.appendChild(document.createTextNode('agregar otro niño'));
+    addButton.appendChild(document.createTextNode('Agregar otro Niño'));
     container.appendChild(addButton);
 
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
      */
-    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+    if (inStorage('token') === true) {
         document.getElementById('toggle-login').href = 'account.html';
         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+        $('#edit-donor-info').show();
     } else {
         /* When login link is clicked, call toggleLogin */
         $('#toggle-login').click(toggleLogin);
@@ -110,7 +161,7 @@ $(document).ready(function() {
                 url: '/api/v1/donor/auth',
                 type: 'POST',
                 data: {
-                    'correo_electrónico': email,
+                    'email': email,
                     'password': password
                 },
                 // on successful login, save token and donor id
@@ -139,36 +190,19 @@ $(document).ready(function() {
         });
     }
 
-    function generateDonorID() {
-        var text = '';
-        // there are 2^62 possiblities here and they're recycleable after an hour...
-        // that should be enough.
-        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        for(var i = 0; i < 24; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-
-        return text;
-    }
-
     // checks the status of all kids in the cart. takes the cart from sessionStorage
     // as an array, not a string.
     function checkCartsLockedStatus(array, callback) {
         array = array.slice(0);
+        var lockedChildren = [];
 
         function checkForLockedStatus() {
             var childID = array.pop();
-            var lockedChildren = [];
 
             var donorIDjson = {};
-            if (sessionStorage.getItem('id') !== null && sessionStorage.getItem('id') !== '') {
+            if (inStorage('id') === true) {
                 donorIDjson = {
                     'donor_id': sessionStorage.getItem('id')
-                };
-            } else {
-                donorIDjson = {
-                    'donor_id': sessionStorage.getItem('assignedDonorID')
                 };
             }
 
@@ -196,16 +230,12 @@ $(document).ready(function() {
         }
     }
 
-    function sendCart(callback) {
+    function sendCart(requestToPay, callback) {
+        console.log('sending cart');
         var donorIDinCart = '';
         // if the donor is logged in then use their donor id in the cart doc
-        if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '' &&
-            sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+        if (inStorage('id') === true && inStorage('cart') === true) {
             donorIDinCart = sessionStorage.getItem('id');
-        // else if the donor has an assigned donor id then use that
-        } else if (sessionStorage.getItem('assignedDonorID') && sessionStorage.getItem('assignedDonorID') != '' &&
-                   sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
-            donorIDinCart = sessionStorage.getItem('assignedDonorID');
         }
 
         $.ajax({
@@ -213,7 +243,8 @@ $(document).ready(function() {
             type: 'POST',
             data: {
                 'donor_id' : donorIDinCart,
-                'niños_patrocinadoras' : sessionStorage.getItem('cart').split(',')
+                'kids_in_cart' : sessionStorage.getItem('cart').split(','),
+                'request_to_pay': requestToPay
             },
             success: function() {
                 callback(true);
@@ -324,8 +355,8 @@ $(document).ready(function() {
 
             // create button, add classname for styling, append text
             var button = document.createElement('button');
-            button.className = 'btn btn-primary btn-sm child-intro-btn-sponsor sponsor-button';
-            button.appendChild(document.createTextNode('eliminar'));
+            button.className = 'btn btn-primary btn-sm delete-child-button';
+            button.appendChild(document.createTextNode('Eliminar'));
 
             // set on click button function
             button.onclick = function() {
@@ -356,6 +387,427 @@ $(document).ready(function() {
                 });
             }
         });
+    }
+
+    function removeChildFromCart(id) {
+        // if the table entry hasn't already been deleted then delete it now
+        // but wait for it using arrive.js if it's not there yet
+        $(document).arrive('[id=\'' + id + '\']', {onceOnly: true, existing: true}, function() {
+            $(this).remove();
+
+            // remove child from sessionStorage
+            var ids = sessionStorage.getItem('cart').split(',');
+            if (ids.indexOf(id) != -1) {
+                ids.splice(ids.indexOf(id), 1);
+                sessionStorage.setItem('cart', ids.toString());
+            }
+        });
+    }
+
+    var editInfoClicked = false;
+    $('#edit-donor-info').click(function() {
+        $('#form-first-name').prop('disabled', false);
+        $('#form-last-name').prop('disabled', false);
+        $('#form-phone').prop('disabled', false);
+        $('#form-address-street').prop('disabled', false);
+        $('#form-address-city').prop('disabled', false);
+        $('#form-country').prop('disabled', false);
+
+        editInfoClicked = true;
+    });
+
+    $('#go-to-step-two').click(goToStepTwo);
+
+    function goToStepOne() {
+        // show change info button
+        $('#donor-info-form').show();
+        $('#edit-donor-info').show();
+        $('#go-to-step-two').show();
+        $('.delete-child-button').show();
+        $('#donor-credit-form').hide();
+        $('#go-to-step-three').hide();
+        $('#go-back-to-step-one').hide();
+
+        // disable form if logged in
+        if (inStorage('token') === true && inStorage('id') === true) {
+            $('#form-first-name').prop('disabled', true);
+            $('#form-last-name').prop('disabled', true);
+            $('#form-phone').prop('disabled', true);
+            $('#form-address-street').prop('disabled', true);
+            $('#form-address-city').prop('disabled', true);
+            $('#form-email').prop('disabled', true);
+            $('#form-country').prop('disabled', true);
+        }
+    }
+
+    function goToStepTwo() {
+        if (checkForm(document.getElementById('donor-info'))) {
+            if (inStorage('cart') === false) {
+                alert('no hay niños en el carrito.');
+            } else {
+                // donor is currently logged in so auth (PUT donor data if edited info) and send cart
+                if (inStorage('token') === true && inStorage('id') === true) {
+                    $.ajax({
+                        url: '/api/v1/donor/auth',
+                        type: 'POST',
+                        data: {
+                            'email': document.getElementById('form-email').value,
+                            'password': document.getElementById('form-password').value
+                        },
+                        success: function() {
+                            if (editInfoClicked === true) {
+                                $.ajax({
+                                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                                    type: 'PUT',
+                                    data: {
+                                        'token' : sessionStorage.getItem('token'),
+                                        'changes' : {
+                                            'nombre': document.getElementById('form-first-name').value,
+                                            'apellido': document.getElementById('form-last-name').value,
+                                            'teléfono': document.getElementById('form-phone').value,
+                                            'calle': document.getElementById('form-address-street').value,
+                                            'ciudad': document.getElementById('form-address-city').value,
+                                            'país': document.getElementById('form-country').value
+                                        }
+                                    },
+                                    success: function() {
+                                        editInfoClicked = false;
+                                        var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                        // check for locked kids
+                                        checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                            if (lockedChildren.length > 0) {
+                                                for (var q = 0; q < lockedChildren.length; q++) {
+                                                    // ... then remove it from the table
+                                                    removeChildFromCart(lockedChildren[q]);
+                                                }
+                                                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                            } else {
+                                                // if there aren't any children that are locked then send the cart
+                                                sendCart(false, function() {
+                                                    // hide elements from step one and show step two
+                                                    // hide change info button
+                                                    $('#donor-info-form').hide();
+                                                    $('#go-to-step-two').hide();
+                                                    $('.delete-child-button').hide();
+                                                    $('#edit-donor-info').hide();
+                                                    $('#donor-credit-form').show();
+                                                    $('#go-to-step-three').show();
+                                                    $('#go-back-to-step-one').show();
+                                                    $('#go-to-step-three').unbind().click(goToStepThree);
+                                                    $('#go-back-to-step-one').unbind().click(goToStepOne);
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                // check for locked kids
+                                checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                    if (lockedChildren.length > 0) {
+                                        for (var q = 0; q < lockedChildren.length; q++) {
+                                            // ... then remove it from the table
+                                            removeChildFromCart(lockedChildren[q]);
+                                        }
+                                        alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                    } else {
+                                        // if there aren't any children that are locked then send the cart
+                                        sendCart(false, function() {
+                                            // hide elements from step one and show step two
+                                            // hide change info button
+                                            $('#donor-info-form').hide();
+                                            $('#go-to-step-two').hide();
+                                            $('.delete-child-button').hide();
+                                            $('#edit-donor-info').hide();
+                                            $('#donor-credit-form').show();
+                                            $('#go-to-step-three').show();
+                                            $('#go-back-to-step-one').show();
+                                            $('#go-to-step-three').unbind().click(goToStepThree);
+                                            $('#go-back-to-step-one').unbind().click(goToStepOne);
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    var newDonor = {
+                        'nombre': document.getElementById('form-first-name').value,
+                        'apellido': document.getElementById('form-last-name').value,
+                        'teléfono': document.getElementById('form-phone').value,
+                        'calle': document.getElementById('form-address-street').value,
+                        'ciudad': document.getElementById('form-address-city').value,
+                        'país': document.getElementById('form-country').value,
+                        'correo_electrónico': document.getElementById('form-email').value,
+                        'password': document.getElementById('form-password').value
+                    };
+
+                    $.ajax({
+                        url: '/api/v1/donor/create',
+                        type: 'POST',
+                        data: newDonor,
+                        success: function() {
+                            $.ajax({
+                                url: '/api/v1/donor/auth',
+                                type: 'POST',
+                                data: {
+                                    'email': document.getElementById('form-email').value,
+                                    'password': document.getElementById('form-password').value
+                                },
+                                success: function(res) {
+                                    //put token and donor id into sessionStorage
+                                    sessionStorage.setItem('token', res.token);
+                                    sessionStorage.setItem('id', res.id);
+                                    //change login button to account button
+                                    document.getElementById('toggle-login').href = 'account.html';
+                                    document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+
+                                    var cartArray = sessionStorage.getItem('cart').split(',');
+
+                                    // check for locked kids
+                                    checkCartsLockedStatus(cartArray, function(lockedChildren) {
+                                        if (lockedChildren.length > 0) {
+                                            for (var q = 0; q < lockedChildren.length; q++) {
+                                                // ... then remove it from the table
+                                                removeChildFromCart(lockedChildren[q]);
+                                            }
+                                            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                        } else {
+                                            // if there aren't any children that are locked then send the cart
+                                            sendCart(false, function() {
+                                                // hide elements from step one and show step two
+                                                // hide change info button
+                                                $('#donor-info-form').hide();
+                                                $('#go-to-step-two').hide();
+                                                $('.delete-child-button').hide();
+                                                $('#edit-donor-info').hide();
+                                                $('#donor-credit-form').show();
+                                                $('#go-to-step-three').show();
+                                                $('#go-back-to-step-one').show();
+                                                $('#go-to-step-three').unbind().click(goToStepThree);
+                                                $('#go-back-to-step-one').unbind().click(goToStepOne);
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    //confirm sponsorship details before submitting
+    function goToStepThree() {
+        sessionStorage.setItem('ccnumber', $('#form-credit').val());
+        sessionStorage.setItem('cvv', $('#form-cvv').val());
+        sessionStorage.setItem('expiration', $('#form-expiration-1').val() + '/' + $('#form-expiration-2').val());
+
+        //hide elements from step two
+        $('#donor-credit-form').hide();
+        $('#go-back-to-step-one').hide();
+        $('#go-to-step-three').hide();
+        // change header
+        document.getElementById('right-header').innerHTML = 'Confirm Your Information';
+
+        // show elements for step three
+        $('#donor-info-confirmation').show();
+        $('#go-back-to-step-two').show();
+        $('#submit-sponsorship').show();
+
+        // send the cart one final time but this time with the requestToPay = true
+        sendCart(true, function() {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'POST',
+                data: {
+                    'token': sessionStorage.getItem('token')
+                },
+                success: function(res) {
+                    $('#donor-name').text(res.nombre);
+                    $('#donor-phone').text(res.teléfono);
+                    $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
+                    $('#donor-email').text(res.correo_electrónico);
+                    $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
+                    $('#donor-cvv').text(sessionStorage.getItem('cvv'));
+                    $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
+                }
+            });
+        });
+    }
+
+    $('#submit-sponsorship').click(sendPayment);
+
+    function sendPayment() {
+        var donor = {
+            'donor_id': sessionStorage.getItem('id'),
+            'token': sessionStorage.getItem('token'),
+            'child_id': sessionStorage.getItem('cart').split(','),
+            'ccnumber': sessionStorage.getItem('ccnumber'),
+            'cvv': sessionStorage.getItem('cvv'),
+            'expiration': sessionStorage.getItem('expiration'),
+            'name_on_card': sessionStorage.getItem('nameOnCard')
+        };
+        $('#submit-sponsorship').prop('disabled', true);
+        $.ajax({
+            url: '/api/v1/donor/sponsor',
+            type: 'POST',
+            data: donor,
+            success: function(res) {
+                if (res.success === true) {
+                    displaySuccess();
+                }
+            },
+            error: function() {
+                alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
+                window.location = 'children.html';
+            }
+        });
+        //$('#bank-time').val(Math.floor(new Date().getTime() / 1000));
+        //$('#bank-hash').val(md5($('#bank-id').val() + "|" + $('#bank-amount') + "|" + $('#bank-time') + "|" + ));
+        /*
+        $.ajax({
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            },
+            data: '<FORM name = "CredomaticPost" method = "post" action = "https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go" /><INPUT type = "text" name = "username" value = "SomeUsername" /><INPUT type = "text" name = "type" value = "auth" /><INPUT type = "text" name = "key_id" value = "49338953" /><INPUT type = "text" name = "hash" value = "28519d58218c0a43a300b538c7303836" /><INPUT type = "text" name = "time" value = "1366839938" /><INPUT type = "text" name = "amount" value = "100.00" /><INPUT type = "text" name = "orderid" value = "CredomaticTest" /><INPUT type = "text" name = "processor_id" value = "" /><INPUT type = "text" name = "ccnumber" value = "4111111111111111" /><INPUT type = "text" name = "ccexp" value = "1220" /><INPUT type = "text" name = "cvv" value = "123" /><INPUT type = "text" name = "avs" value = "12 Calle San Jose" /><INPUT type = "text" name = "zip" value = "2361011" /><INPUT type = "text" name = "redirect"<INPUT type = "submit" value = "Submit Transaction" /></ FORM>',
+            contentType: 'text/xml',
+            dataType: 'xml',
+            success: function(res) {
+                console.log(res);
+            },
+            error: function(res) {
+                console.log('there was an error');
+                console.log(res);
+            }
+        });
+        */
+        /*
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://www.example.org/ajax.php", true);
+        xhr.setRequestHeader("X-My-Custom-Header", "some value");
+        xhr.onload = function () {
+            console.log(xhr.responseText);
+        };
+        xhr.send();
+        */
+    }
+
+    $('#go-back-to-step-two').click(function() {
+        $('#go-back-to-step-two').hide();
+        $('#submit-sponsorship').hide();
+        $('#donor-info-confirmation').hide();
+        document.getElementById('right-header').innerHTML = 'Datos de Facturación';
+        goToStepTwo();
+    });
+
+    // displays success once the transaction is complete
+    function displaySuccess() {
+        // empty child _id's from session storage cart
+        sessionStorage.removeItem('cart');
+
+        $('#children-to-sponsor').remove();
+        $('#donor-info').remove();
+
+        var centerDiv = document.createElement('div');
+        var h1Thing = document.createElement('h1');
+        var pThing = document.createElement('p');
+
+        centerDiv.className = 'center';
+        h1Thing.innerHTML = '¡Muchas gracias!';
+        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
+        h1Thing.appendChild(pThing);
+        centerDiv.appendChild(h1Thing);
+
+        $('.content').append(centerDiv);
+    }
+
+    // =========================================================================
+    // =========================================================================
+    // ==================== Deleting the below soon ============================
+    // =========================================================================
+    // =========================================================================
+
+    /* Toggle the login box when login link is clicked */
+    function toggleLogin () {
+        if ($('.login').css('display') == 'none') {
+            $('.login').show();
+        }
+        else {
+            $('.login').hide();
+        }
+    }
+
+    function toggleCreateAccount () {
+        if ($('.create-account-overlay').css('display') == 'none') {
+            $('.create-account-overlay').show();
+            $('.login').hide();
+        }
+        else {
+            $('.create-account-overlay').hide();
+        }
+    }
+    $('.create-account').click(toggleCreateAccount);
+
+    function createAccount() {
+        if (checkForm(document.getElementById('create-account-form'))) {
+            var donor = {
+                'nombre': document.getElementById('create-account-first-name').value,
+                'apellido': document.getElementById('create-account-last-name').value,
+                'teléfono': document.getElementById('create-account-phone').value,
+                'calle': document.getElementById('create-account-address-street').value,
+                'ciudad': document.getElementById('create-account-address-city').value,
+                'país': document.getElementById('create-account-country').value,
+                'correo_electrónico': document.getElementById('create-account-email').value,
+                'password': document.getElementById('create-account-password').value
+            };
+
+            // POST /api/v1/donor/create
+            $.ajax({
+                url: '/api/v1/donor/create',
+                type: 'POST',
+                data: donor,
+                success: function() {
+                    $('.create-account-overlay').hide();
+                    //log user into their new account
+                    $.ajax({
+                        url: '/api/v1/donor/auth',
+                        type: 'POST',
+                        data: {
+                            'correo_electrónico': document.getElementById('create-account-email').value,
+                            'password': document.getElementById('create-account-password').value
+                        },
+                        success: function() {
+                            //put token and donor id into sessionStorage
+                            sessionStorage.setItem('token', res.token);
+                            sessionStorage.setItem('id', res.id);
+                            //change login button to account button
+                            document.getElementById('toggle-login').href = 'account.html';
+                            document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+                            //notify user they are now logged into their new account
+                            alert('Your account has successful been created, you are now logged in');
+                        },
+                        error: function() {
+                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
+                        }
+                    });
+                },
+                statusCode: {
+                    404: function() {
+                        alert('page not found');
+                    },
+                    409: function() {
+                        alert('An account already exists under this email, please log in');
+                    },
+                    500: function() {
+                        alert('An error occured, please try again or contact an admin');
+                    }
+                }
+            });
+        }
     }
 
     /* Check to make sure all the fields are filled in and ensure the
@@ -436,245 +888,18 @@ $(document).ready(function() {
         return true;
     }
 
-    function removeChildFromCart(id) {
-        // if the table entry hasn't already been deleted then delete it now
-        // but wait for it using arrive.js if it's not there yet
-        $(document).arrive('[id=\'' + id + '\']', {onceOnly: true, existing: true}, function() {
-            $(this).remove();
-
-            // remove child from sessionStorage
-            var ids = sessionStorage.getItem('cart').split(',');
-            if (ids.indexOf(id) != -1) {
-                ids.splice(ids.indexOf(id), 1);
-                sessionStorage.setItem('cart', ids.toString());
-            }
-
-            sendCart(function(result) {
-                if (result === true) {
-                    console.log('successfully sent cart to db.');
-                } else {
-                    console.log('cart not successfully sent to db.');
-                    $('#checkout-submit').prop('disabled', true);
-                }
-            });
-        });
-    }
-
-    $('#checkout-submit').click(function() {
-        // if anything is null then alert, else submit a post with donor info
-        if (checkForm(document.getElementById('donor-info'))) {
-            if (sessionStorage.getItem('cart') === null ||
-                       sessionStorage.getItem('cart') === '') {
-                alert('no hay niños en el carrito.');
-            } else {
-                var donor = {};
-                if (sessionStorage.getItem('id') != null) {
-                    donor = {
-                        'donor_id': sessionStorage.getItem('id'),
-                        'password': document.getElementById('form-password').value
-                    };
-                } else if (sessionStorage.getItem('assignedDonorID') != null) {
-                    donor = {
-                        'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                        'nombre': document.getElementById('form-first-name').value,
-                        'apellido': document.getElementById('form-last-name').value,
-                        'teléfono': document.getElementById('form-phone').value,
-                        'calle': document.getElementById('form-address-street').value,
-                        'ciudad': document.getElementById('form-address-city').value,
-                        'país': document.getElementById('form-country').value,
-                        'correo_electrónico': document.getElementById('form-email').value,
-                        'password': document.getElementById('form-password').value
-                    };
-                }
-                // POST /api/v1/donor/sponsor
-                var insert = $.ajax({
-                    url: '/api/v1/donor/sponsor',
-                    type: 'POST',
-                    data: donor
-                });
-
-                insert.success(function(res) {
-                    if(res.success === true) {
-                        if (displayed === false) {
-                            displayed = true;
-                            displaySuccess();
-                        }
-                    }
-                });
-
-                insert.error(function(httpObj) {
-                    var mongoError = JSON.parse(httpObj.responseText);
-                    // email already exists exeption
-                    if (httpObj.status === 409 && mongoError.code === 11000) {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
-                    }
-                });
-            }
-        }
-    });
-
-    var displayed = false;
-    // Displays Success Page after ajax call
-    function displaySuccess (){
-        // empty child _id's from session storage cart
-        sessionStorage.setItem('cart', '');
-
-        $('#children-to-sponsor').remove();
-        $('#donor-info').remove();
-
-        var centerDiv = document.createElement('div');
-        var h1Thing = document.createElement('h1');
-        var pThing = document.createElement('p');
-
-        centerDiv.className = 'center';
-        h1Thing.innerHTML = '¡Muchas gracias!';
-        pThing.innerHTML = 'Usted ha cambiado la vida de un niño hoy.';
-        h1Thing.appendChild(pThing);
-        centerDiv.appendChild(h1Thing);
-
-        $('.content').append(centerDiv);
-    }
-
-    /* If there is a login token in session storage
-     * then the form should be auto-populated with
-     * the donors information
-     */
-    function autoPopulate () {
-        if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-            $.ajax({
-                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                type: 'POST',
-                data: {
-                    'token' : sessionStorage.getItem('token'),
-                    'id' : sessionStorage.getItem('id')
-                },
-                success: function(res) {
-                    $('#form-first-name').val(res.nombre);
-                    $('#form-first-name').prop('disabled', true);
-                    $('#form-last-name').val(res.apellido);
-                    $('#form-last-name').prop('disabled', true);
-                    $('#form-phone').val(res.teléfono);
-                    $('#form-phone').prop('disabled', true);
-                    $('#form-address-street').val(res.calle);
-                    $('#form-address-street').prop('disabled', true);
-                    $('#form-address-city').val(res.ciudad);
-                    $('#form-address-city').prop('disabled', true);
-                    $('#form-email').val(res.correo_electrónico);
-                    $('#form-email').prop('disabled', true);
-                    $('#form-country').prop('disabled', true);
-                },
-                error: function() {
-                    alert('Your session has expired. Please login again.');
-                    // if getting in here that means that the id and token has
-                    // been set but it's since expired. nuke everything and
-                    // make them login again.
-                    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-                        sessionStorage.removeItem('token');
-                    }
-                    if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
-                        sessionStorage.removeItem('cart');
-                    }
-                    if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
-                        sessionStorage.removeItem('id');
-                    }
-                    // this shouldn't be set but check anyway
-                    if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
-                        sessionStorage.removeItem('assignedDonorID');
-                    }
-                    window.location = 'children.html';
-                }
-            });
+    // helper function - check session storage element
+    function inStorage(object) {
+        if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
+            return true;
+        } else {
+            return false;
         }
     }
 
-    /* Toggle the login box when login link is clicked */
-    function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').show();
-        }
-        else {
-            $('.login').hide();
-        }
-    }
+    // =========================================================================
+    // =========================================================================
 
-    function toggleCreateAccount () {
-        if ($('.create-account-overlay').css('display') == 'none') {
-            $('.create-account-overlay').show();
-            $('.login').hide();
-        }
-        else {
-            $('.create-account-overlay').hide();
-        }
-    }
-    $('.create-account').click(toggleCreateAccount);
-
-    function createAccount() {
-        if (checkForm(document.getElementById('create-account-form'))) {
-            if (sessionStorage.getItem('assignedDonorID') !== null || sessionStorage.getItem('assignedDonorID') === '') {
-                var deleteCart = confirm('you are currently in the process of sponsoring children. please create your account by completing the sponsorship process. if you would like to create an account without sponsoring a child, please click yes below and your cart will be deleted.');
-                if (deleteCart === true) {
-                    // we shouldn't have to do this, but right now we do
-                    sessionStorage.removeItem('assignedDonorID');
-                    sessionStorage.removeItem('cart');
-                }
-            } else {
-                var donor = {
-                    'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                    'nombre': document.getElementById('create-account-first-name').value,
-                    'apellido': document.getElementById('create-account-last-name').value,
-                    'teléfono': document.getElementById('create-account-phone').value,
-                    'calle': document.getElementById('create-account-address-street').value,
-                    'ciudad': document.getElementById('create-account-address-city').value,
-                    'país': document.getElementById('create-account-country').value,
-                    'correo_electrónico': document.getElementById('create-account-email').value,
-                    'password': document.getElementById('create-account-password').value
-                };
-
-                // POST /api/v1/donor/create
-                $.ajax({
-                    url: '/api/v1/donor/create',
-                    type: 'POST',
-                    data: donor,
-                    success: function() {
-                        $('.create-account-overlay').hide();
-                        //log user into their new account
-                        $.ajax({
-                            url: '/api/v1/donor/auth',
-                            type: 'POST',
-                            data: {
-                                'correo_electrónico': document.getElementById('create-account-email').value,
-                                'password': document.getElementById('create-account-password').value
-                            },
-                            success: function() {
-                                //put token and donor id into sessionStorage
-                                sessionStorage.setItem('token', res.token);
-                                sessionStorage.setItem('id', res.id);
-                                //change login button to account button
-                                document.getElementById('toggle-login').href = 'account.html';
-                                document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-                                //notify user they are now logged into their new account
-                                alert('Your account has successful been created, you are now logged in');
-                            },
-                            error: function() {
-                                alert('Your account has been created but we were unable to log you in at this time, please try again later');
-                            }
-                        });
-                    },
-                    statusCode: {
-                        404: function() {
-                            alert('page not found');
-                        },
-                        409: function() {
-                            alert('An account already exists under this email, please log in');
-                        },
-                        500: function() {
-                            alert('An error occured, please try again or contact an admin');
-                        }
-                    }
-                });
-            }
-        }
-    }
     $('.create-account-submit').click(createAccount);
     $('.close-create-account-overlay').click(toggleCreateAccount);
 
@@ -706,6 +931,4 @@ $(document).ready(function() {
             alert('Please enter your email into the email field before clicking Forgot Password');
         }
     });
-
-    $(document).ready(autoPopulate());
 });

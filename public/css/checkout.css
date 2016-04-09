@@ -119,7 +119,7 @@ table {
 }
 
 /*ID Styles*/
-#checkout-submit {
+.checkout-nav {
 	margin-top: 1em;
 	margin-bottom: 1em;
 	margin-right: 1em;
@@ -155,6 +155,47 @@ table {
   margin-bottom: 0;
   padding: 2%;
   font-size: 97%;
+}
+
+#go-to-step-three {
+  display: none;
+}
+
+#go-back-to-step-one {
+  display: none;
+}
+
+#go-back-to-step-two {
+  display: none;
+}
+
+#submit-sponsorship {
+  display: none;
+}
+
+#donor-info-confirmation {
+  display: none;
+}
+
+#edit-donor-info {
+  display: none;
+}
+
+#donor-name-on-card {
+  margin-bottom: 1.5em;
+}
+
+.donor-label {
+  text-align: right;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.donor-info {
+  text-align: left;
+  padding-left: 2em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
 }
 
 /* Login overlay http://codepen.io/miroot/pen/qwIgC */
