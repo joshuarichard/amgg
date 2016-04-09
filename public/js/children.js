@@ -473,60 +473,60 @@ $(document).ready(function() {
         var confirmPassword = $('[name=password-confirm]', form)[0];
 
         if(firstName.value == '') {
-          alert('Error: El primer nombre no puede ir en blanco.');
+            alert('Error: El primer nombre no puede ir en blanco.');
             firstName.focus();
             return false;
         } else if(lastName.value == '') {
-          alert('Error: Apellido no puede ir en blanco.');
+            alert('Error: Apellido no puede ir en blanco.');
             lastName.focus();
             return false;
         } else if(phone.value == '') {
-          alert('Error: No. de telefono no debe ir en blanco.');
+            alert('Error: No. de telefono no debe ir en blanco.');
             phone.focus();
             return false;
         } else if(street.value == '') {
-          alert('Error: Calle no puede ir en blanco.');
+            alert('Error: Calle no puede ir en blanco.');
             street.focus();
             return false;
         } else if(city.value == '') {
-          alert('Error: Ciudad no puede ir en blanco.');
+            alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
             return false;
         } else if(email.value == '') {
-          alert('Error: Correo electrónico no puede ir en blanco.');
+            alert('Error: Correo electrónico no puede ir en blanco.');
             email.focus();
             return false;
         } else if(password.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
-              alert('Error: La contraseña debe contener al menos 6 carácteres.');
+                alert('Error: La contraseña debe contener al menos 6 carácteres.');
                 password.focus();
                 return false;
             }
             if(password.value == firstName.value || password.value == lastName.value) {
-              alert('Error: La contraseña debe ser diferente a su nombre.');
+                alert('Error: La contraseña debe ser diferente a su nombre.');
                 password.focus();
                 return false;
             }
             re = /[0-9]/;
             if(!re.test(password.value)) {
-              alert('Error: La contraseña debe contener al menos un  número (0-9).');
+                alert('Error: La contraseña debe contener al menos un  número (0-9).');
                 password.focus();
                 return false;
             }
             re = /[a-z]/;
             if(!re.test(password.value)) {
-              alert('Error: La contraseña debe contener al menos una letra en minuscula (a-z).');
+                alert('Error: La contraseña debe contener al menos una letra en minuscula (a-z).');
                 password.focus();
                 return false;
             }
             re = /[A-Z]/;
             if(!re.test(password.value)) {
-              alert('Error: La  contraseña debe contener al menos una letra en mayuscula (A-Z).');
+                alert('Error: La  contraseña debe contener al menos una letra en mayuscula (A-Z).');
                 password.focus();
                 return false;
             }
         } else {
-            alert("Error: Por favor revise que usted haya ingresado y confirme su contraseña.");
+            alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
         }
