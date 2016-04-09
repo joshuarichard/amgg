@@ -70,7 +70,7 @@ var ciudad = [
     'Momostenango', 'Ostuncalco', 'Santa Cruz del Quiche', 'San Marcos'
 ];
 
-var provincia = [
+var departamento = [
     'Alta Verapaz', 'Baja Verapaz', 'Chimaltenango', 'Chiquimula',
     'El Progreso', 'Escuintla', 'Guatemala', 'Huehuetenango',
     'Izabal', 'Jalapa', 'Jutiapa', 'Peten', 'Quetzaltenango',
@@ -121,8 +121,7 @@ function generateDocument(callback) {
     var name = nombre[Math.floor(Math.random() * nombre.length)];
     var lastName = apellido[Math.floor(Math.random() * apellido.length)];
 
-    console.log('INFO: inserting ' + name + ' ' + lastName +
-                ' with amg_id ' + amgId);
+    console.log('INFO: inserting ' + name + ' ' + lastName + ' with amg_id ' + amgId);
 
     // insert picture for this child and get the image_id
     pics.insert(name + '_' + lastName, {}, function(fileId) {
@@ -141,8 +140,8 @@ function generateDocument(callback) {
                                 centro_de_ninos.length)],
             'direccion_de_casa': generateAddress(),
             'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
-            'provincia': provincia[Math.floor(Math.random() *
-                                   provincia.length)],
+            'departamento': departamento[Math.floor(Math.random() *
+                                   departamento.length)],
             'código_postal': Math.floor((Math.random() * (99999) + 1)),
             'pastiempos': 'Reading, playing baseball, and swinging.',
             'biodata': 'He/she needs help because...'

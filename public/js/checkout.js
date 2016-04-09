@@ -34,7 +34,7 @@ $(document).ready(function() {
             },
             error: function() {
                 if (jqxhr.readyState !== 0 || jqxhr.status !== 0) {
-                    alert('Your session has expired. Please login again.');
+                    alert('La sesión ha expirado, por favor ingrese de nuevo');
                     // if getting in here that means that the id and token has
                     // been set but it's since expired. nuke everything and
                     // make them login again.
@@ -133,7 +133,7 @@ $(document).ready(function() {
         window.location = 'children.html';
     };
 
-    addButton.appendChild(document.createTextNode('Agregar otro Niño'));
+    addButton.appendChild(document.createTextNode('Apadrinar a otro niño/a'));
     container.appendChild(addButton);
 
     /* if the user is already logged in, change the login button
@@ -297,7 +297,7 @@ $(document).ready(function() {
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
-                    var provincia = res[id].provincia;
+                    var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
 
@@ -309,7 +309,7 @@ $(document).ready(function() {
                     var ageDiv = document.createElement('div');
                     var birthdayDiv = document.createElement('div');
                     var genderDiv = document.createElement('div');
-                    var provinciaDiv = document.createElement('div');
+                    var departamentoDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
                     var hobbiesDiv = document.createElement('div');
 
@@ -318,7 +318,7 @@ $(document).ready(function() {
                     ageDiv.className = 'child-info';
                     birthdayDiv.className = 'child-info';
                     genderDiv.className = 'child-info';
-                    provinciaDiv.className = 'child-info';
+                    departamentoDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
                     hobbiesDiv.className = 'child-info';
 
@@ -327,8 +327,8 @@ $(document).ready(function() {
                     ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
-                    provinciaDiv.innerHTML = '<b> Provincia: </b>' + provincia;
-                    centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
+                    departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
+                    centerDiv.innerHTML = '<b> Centro/Colegio:  </b>' + center;
                     hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
                     // append children to div
@@ -336,7 +336,7 @@ $(document).ready(function() {
                     dataTD.appendChild(ageDiv);
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
-                    dataTD.appendChild(provinciaDiv);
+                    dataTD.appendChild(departamentoDiv);
                     dataTD.appendChild(centerDiv);
                     dataTD.appendChild(hobbiesDiv);
 
@@ -443,7 +443,7 @@ $(document).ready(function() {
     function goToStepTwo() {
         if (checkForm(document.getElementById('donor-info'))) {
             if (inStorage('cart') === false) {
-                alert('no hay niños en el carrito.');
+                alert('No hay niños seleccionados en la carreta.');
             } else {
                 // donor is currently logged in so auth (PUT donor data if edited info) and send cart
                 if (inStorage('token') === true && inStorage('id') === true) {
@@ -511,7 +511,7 @@ $(document).ready(function() {
                                             // ... then remove it from the table
                                             removeChildFromCart(lockedChildren[q]);
                                         }
-                                        alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                        alert('Lo sentimos, pero algunos de los niños seleccionados ya no estan disponibles para ser apadrinados.');
                                     } else {
                                         // if there aren't any children that are locked then send the cart
                                         sendCart(false, function() {
@@ -648,8 +648,7 @@ $(document).ready(function() {
             'child_id': sessionStorage.getItem('cart').split(','),
             'ccnumber': sessionStorage.getItem('ccnumber'),
             'cvv': sessionStorage.getItem('cvv'),
-            'expiration': sessionStorage.getItem('expiration'),
-            'name_on_card': sessionStorage.getItem('nameOnCard')
+            'expiration': sessionStorage.getItem('expiration')
         };
         $('#submit-sponsorship').prop('disabled', true);
         $.ajax({
@@ -666,34 +665,6 @@ $(document).ready(function() {
                 window.location = 'children.html';
             }
         });
-        //$('#bank-time').val(Math.floor(new Date().getTime() / 1000));
-        //$('#bank-hash').val(md5($('#bank-id').val() + "|" + $('#bank-amount') + "|" + $('#bank-time') + "|" + ));
-        /*
-        $.ajax({
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            },
-            data: '<FORM name = "CredomaticPost" method = "post" action = "https://paycom.credomatic.com/PayComBackEndWeb/common/requestPaycomService.go" /><INPUT type = "text" name = "username" value = "SomeUsername" /><INPUT type = "text" name = "type" value = "auth" /><INPUT type = "text" name = "key_id" value = "49338953" /><INPUT type = "text" name = "hash" value = "28519d58218c0a43a300b538c7303836" /><INPUT type = "text" name = "time" value = "1366839938" /><INPUT type = "text" name = "amount" value = "100.00" /><INPUT type = "text" name = "orderid" value = "CredomaticTest" /><INPUT type = "text" name = "processor_id" value = "" /><INPUT type = "text" name = "ccnumber" value = "4111111111111111" /><INPUT type = "text" name = "ccexp" value = "1220" /><INPUT type = "text" name = "cvv" value = "123" /><INPUT type = "text" name = "avs" value = "12 Calle San Jose" /><INPUT type = "text" name = "zip" value = "2361011" /><INPUT type = "text" name = "redirect"<INPUT type = "submit" value = "Submit Transaction" /></ FORM>',
-            contentType: 'text/xml',
-            dataType: 'xml',
-            success: function(res) {
-                console.log(res);
-            },
-            error: function(res) {
-                console.log('there was an error');
-                console.log(res);
-            }
-        });
-        */
-        /*
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "http://www.example.org/ajax.php", true);
-        xhr.setRequestHeader("X-My-Custom-Header", "some value");
-        xhr.onload = function () {
-            console.log(xhr.responseText);
-        };
-        xhr.send();
-        */
     }
 
     $('#go-back-to-step-two').click(function() {
@@ -788,19 +759,19 @@ $(document).ready(function() {
                             document.getElementById('toggle-login').href = 'account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
-                            alert('Your account has successful been created, you are now logged in');
+                            alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
                         },
                         error: function() {
-                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
+                            alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde');
                         }
                     });
                 },
                 statusCode: {
                     404: function() {
-                        alert('page not found');
+                        alert('Página no encontrada.');
                     },
                     409: function() {
-                        alert('An account already exists under this email, please log in');
+                        alert('Ya existe un cuenta con la misma dirección de correo. Por favor ingrese.');
                     },
                     500: function() {
                         alert('An error occured, please try again or contact an admin');
@@ -825,61 +796,61 @@ $(document).ready(function() {
         var confirmPassword = $('[name=password-confirm]', form)[0];
 
         if(firstName.value == '') {
-            alert('Error: First name cannot be blank!');
+            alert('Error: El primer nombre no puede ir en blanco.');
             firstName.focus();
             return false;
         } else if(lastName.value == '') {
-            alert('Error: Last name cannot be blank!');
+            alert('Error: Apellido no puede ir en blanco.');
             lastName.focus();
             return false;
         } else if(phone.value == '') {
-            alert('Error: Phone number cannot be blank!');
+            alert('Error: No. de telefono no debe ir en blanco.');
             phone.focus();
             return false;
         } else if(street.value == '') {
-            alert('Error: Street address cannot be blank!');
+            alert('Error: Calle no puede ir en blanco.');
             street.focus();
             return false;
         } else if(city.value == '') {
-            alert('Error: City cannot be blank!');
+            alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
             return false;
         } else if(email.value == '') {
-            alert('Error: Email cannot be blank!');
+            alert('Error: Correo electrónico no puede ir en blanco.');
             email.focus();
             return false;
         } else if(password.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
-                alert('Error: Password must contain at least six characters!');
+                alert('Error: La contraseña debe contener al menos 6 carácteres.');
                 password.focus();
                 return false;
             }
             if(password.value == firstName.value || password.value == lastName.value) {
-                alert('Error: Password must be different from your name!');
+                alert('Error: La contraseña debe ser diferente a su nombre.');
                 password.focus();
                 return false;
             }
             re = /[0-9]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one number (0-9)!');
+                alert('Error: La contraseña debe contener al menos un  número (0-9).');
                 password.focus();
                 return false;
             }
             re = /[a-z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one lowercase letter (a-z)!');
+                alert('Error: La contraseña debe contener al menos una letra en minuscula (a-z).');
                 password.focus();
                 return false;
             }
             re = /[A-Z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one uppercase letter (A-Z)!');
+                alert('Error: La  contraseña debe contener al menos una letra en mayuscula (A-Z).');
                 password.focus();
                 return false;
             }
         } else {
             /* eslint-disable */
-            alert("Error: Please check that you've entered and confirmed your password!");
+            alert("Error: Por favor revise que usted haya ingresado y confirme su contraseña.");
             /*eslint-enable */
             password.focus();
             return false;

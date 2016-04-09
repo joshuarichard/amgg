@@ -72,7 +72,7 @@ $(document).ready(function() {
         tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
         tabCHeader.className = 'header';
-        tabCHeader.innerHTML = 'Letter to Child';
+        tabCHeader.innerHTML = 'Carta al Niño';
         // eslint says this is never being used... is it needed?
         // var tabCHeaderhr = document.createElement('hr');
         //create letter form
@@ -82,8 +82,8 @@ $(document).ready(function() {
         letter.className = 'letter';
         var submitLetter = document.createElement('button');
         submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
-        submitLetter.title = 'Send letter to your sponsored child';
-        submitLetter.innerHTML = 'Send';
+        submitLetter.title = 'Enviar una carta a su niño apadrinado.';
+        submitLetter.innerHTML = 'Enviar';
 
         //create child select table
         var childrenSelectContainer = document.createElement('div');
@@ -122,7 +122,7 @@ $(document).ready(function() {
 
             },
             error: function() {
-                alert('Your session has expired. Please login again.');
+                alert('La sesión ha expirado, por favor ingrese de nuevo');
                 // if getting in here that means that the id and token has
                 // been set but it's since expired. nuke everything and
                 // make them login again.
@@ -294,7 +294,7 @@ $(document).ready(function() {
                 oldPasswordGroup.className = 'form-group';
                 var oldPasswordLabel = document.createElement('label');
                 oldPasswordLabel.className = 'col-md-4 control-label';
-                oldPasswordLabel.innerHTML = 'Old Password';
+                oldPasswordLabel.innerHTML = 'Contraseña Anterior';
                 var oldPasswordWrapper = document.createElement('div');
                 oldPasswordWrapper.className = 'info-form col-md-6';
                 var oldPassword = document.createElement('input');
@@ -376,7 +376,7 @@ $(document).ready(function() {
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
                 changePasswordButton.className = 'btn btn-success btn-sm';
-                changePasswordButton.appendChild(document.createTextNode('Change Password'));
+                changePasswordButton.appendChild(document.createTextNode('Cambia la Contraseña'));
                 userInfoSidebar.appendChild(changePasswordButton);
 
                 //toggle the password form
@@ -417,7 +417,7 @@ $(document).ready(function() {
                     //make sure their new password is not '' and make sure
                     //the two passwords match, then send new password to db
                     if (oldPassword === '' || newPassword === '' || confirmNewPassword === '') {
-                        alert('Missing fields.');
+                        alert('Campos que hacen falta.');
                     } else if (newPassword !== confirmNewPassword) {
                         alert('Las contraseñas no coinciden.');
                     } else {
@@ -442,7 +442,7 @@ $(document).ready(function() {
                                         }
                                     },
                                     success: function() {
-                                        alert('Password successful changed.');
+                                        alert('La constraseña ha sido cambiada exitosamente.');
                                         //empty password forms
                                         $('#form-old-password').val('');
                                         $('#form-password').val('');
@@ -458,12 +458,12 @@ $(document).ready(function() {
                                         $('.contraseña-container').hide();
                                     },
                                     error: function() {
-                                        alert('Couldn\'t change your password.');
+                                        alert('La contraseña no ha sido cambiada.');
                                     }
                                 });
                             },
                             error: function() {
-                                alert('Incorrect old password.');
+                                alert('Contraseña anterior incorrecta.');
                             }
                         });
                     }
@@ -502,11 +502,11 @@ $(document).ready(function() {
                     },
                     success: function(res) {
                         if (res.success === true) {
-                            alert('Your request for the removal of your account has been submitted. You will receive an email when the process has been completed.');
+                            alert('Su solicitud para remover su cuenta ha sido enviada, usted recibira un correo electronico cuando el proceso haya sido completado.');
                         }
                     },
                     error: function() {
-                        alert('your request was not received. please try again.');
+                        alert('Su solicitud no fue recibido. Inténtelo de nuevo.');
                     }
                 });
             }
@@ -683,7 +683,7 @@ $(document).ready(function() {
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
-                    var provincia = res[id].provincia;
+                    var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
 
@@ -695,7 +695,7 @@ $(document).ready(function() {
                     var ageDiv = document.createElement('div');
                     var birthdayDiv = document.createElement('div');
                     var genderDiv = document.createElement('div');
-                    var provinciaDiv = document.createElement('div');
+                    var departamentoDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
                     var hobbiesDiv = document.createElement('div');
 
@@ -704,7 +704,7 @@ $(document).ready(function() {
                     ageDiv.className = 'child-info';
                     birthdayDiv.className = 'child-info';
                     genderDiv.className = 'child-info';
-                    provinciaDiv.className = 'child-info';
+                    departamentoDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
                     hobbiesDiv.className = 'child-info';
 
@@ -713,7 +713,7 @@ $(document).ready(function() {
                     ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
-                    provinciaDiv.innerHTML = '<b> Provincia: </b>' + provincia;
+                    departamentoDiv.innerHTML = '<b> departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
                     hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
@@ -723,7 +723,7 @@ $(document).ready(function() {
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
                     dataDiv.appendChild(dataTD);
-                    dataTD.appendChild(provinciaDiv);
+                    dataTD.appendChild(departamentoDiv);
                     dataTD.appendChild(centerDiv);
                     dataTD.appendChild(hobbiesDiv);
 
