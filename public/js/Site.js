@@ -94,65 +94,61 @@ $('.create-account').click(toggleCreateAccount);
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
 
-        console.log(firstName);
         if(firstName.value == '') {
-            alert('Error: First name cannot be blank!');
+          alert('Error: El primer nombre no puede ir en blanco.');
             firstName.focus();
             return false;
-        } if(lastName.value == '') {
-            alert('Error: Last name cannot be blank!');
+        } else if(lastName.value == '') {
+          alert('Error: Apellido no puede ir en blanco.');
             lastName.focus();
             return false;
         } else if(phone.value == '') {
-            alert('Error: Phone number cannot be blank!');
+          alert('Error: No. de telefono no debe ir en blanco.');
             phone.focus();
             return false;
         } else if(street.value == '') {
-            alert('Error: Street address cannot be blank!');
+          alert('Error: Calle no puede ir en blanco.');
             street.focus();
             return false;
         } else if(city.value == '') {
-            alert('Error: City cannot be blank!');
+          alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
             return false;
         } else if(email.value == '') {
-            alert('Error: Email cannot be blank!');
+          alert('Error: Correo electrónico no puede ir en blanco.');
             email.focus();
             return false;
-        }
-        else if(password.value != '' && password.value == confirmPassword.value) {
+        } else if(password.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
-                alert('Error: Password must contain at least six characters!');
+              alert('Error: La contraseña debe contener al menos 6 carácteres.');
                 password.focus();
                 return false;
             }
             if(password.value == firstName.value || password.value == lastName.value) {
-                alert('Error: Password must be different from your name!');
+              alert('Error: La contraseña debe ser diferente a su nombre.');
                 password.focus();
                 return false;
             }
             re = /[0-9]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one number (0-9)!');
+              alert('Error: La contraseña debe contener al menos un  número (0-9).');
                 password.focus();
                 return false;
             }
             re = /[a-z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one lowercase letter (a-z)!');
+              alert('Error: La contraseña debe contener al menos una letra en minuscula (a-z).');
                 password.focus();
                 return false;
             }
             re = /[A-Z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one uppercase letter (A-Z)!');
+              alert('Error: La  contraseña debe contener al menos una letra en mayuscula (A-Z).');
                 password.focus();
                 return false;
             }
         } else {
-            /* eslint-disable */
-            alert("Error: Please check that you've entered and confirmed your password!");
-            /*eslint-enable */
+            alert("Error: Por favor revise que usted haya ingresado y confirme su contraseña.");
             password.focus();
             return false;
         }
@@ -205,19 +201,19 @@ function createAccount() {
                             document.getElementById('toggle-login').href = '../views/account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
-                            alert('Your account has successful been created, you are now logged in');
+                            alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
                         },
                         error: function() {
-                            alert('Your account has been created but we were unable to log you in at this time, please try again later');
+                            alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde');
                         }
                     });
                 },
                 statusCode: {
                     404: function() {
-                        alert('page not found');
+                        alert('Página no encontrada.');
                     },
                     409: function() {
-                        alert('An account already exists under this email, please log in');
+                        alert('Ya existe un cuenta con la misma dirección de correo. Por favor ingrese.');
                     },
                     500: function() {
                         alert('An error occured, please try again or contact an admin');

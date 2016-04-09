@@ -437,9 +437,8 @@ function trim(doc) {
                 'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
                 'centro_de_ninos': doc[miniDoc].centro_de_ninos,
-                'provincia': doc[miniDoc].provincia,
-                'aficiones': doc[miniDoc].aficiones,
-                'biodata': doc[miniDoc].biodata
+                'departamento': doc[miniDoc].departamento,
+                'pastiempos': doc[miniDoc].pastiempos
             };
         // else this is only one document
         } else {
@@ -449,9 +448,8 @@ function trim(doc) {
                 'cumpleaños': doc.cumpleaños,
                 'género': doc.género,
                 'centro_de_ninos': doc.centro_de_ninos,
-                'provincia': doc.provincia,
-                'aficiones': doc.aficiones,
-                'biodata': doc.biodata
+                'departamento': doc.departamento,
+                'pastiempos': doc.pastiempos
             };
             break;
         }
