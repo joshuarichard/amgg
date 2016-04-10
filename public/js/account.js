@@ -71,6 +71,7 @@ $(document).ready(function() {
         tabCInfoWrapper.id = 'tabC-content';
         tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
+        tabCHeader.id = 'tabCHeader';
         tabCHeader.className = 'header';
         tabCHeader.innerHTML = 'Letter to Child';
         // eslint says this is never being used... is it needed?
@@ -750,30 +751,36 @@ $(document).ready(function() {
                     inputGroup.appendChild(inputGroupSpan);
                     childrenSelectContainer.appendChild(selectChild);
 
-                    //Submits a letter to admin complete with donorID, child_id, and plaintext letter.
-                    submitLetter.onclick = function() {
-                      var makeSure = confirm('Are you sure you want to send this letter?');
-                      if (makeSure == true) {
-                          $.ajax({
-                              url: '/api/v1/donor/letter',
-                              type: 'POST',
-                              data: {
-                                  'token' : sessionStorage.getItem('token'),
-                                  'donor_id' : sessionStorage.getItem('id'),
-                                  'child_id': id,
-                                  'letter_text' : letterbox.value
-                              },
-                              success: function(res) {
-                                  if (res.success === true) {
-                                      alert('You have made a childs day.');
-                                  }
-                              },
-                              error: function() {
-                                  alert('your letter was not received. please try again.');
-                              }
-                          });
-                      }
-                  };
+                    //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
+                    submitLetter.onclick = function(req) {
+                      if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('')) {
+                          alert('Be sure to choose a child and fill in the letter');
+                      } else {
+                        //  var selector = {'id': req.body};
+                          var makeSure = confirm('Are you sure you want to send this letter?');
+                          if (makeSure == true) {
+                            $.ajax({
+                                url: '/api/v1/donor/letter',
+                                type: 'POST',
+                                data: {
+                                    'token' : sessionStorage.getItem('token'),
+                                    'donor_id' : sessionStorage.getItem('id'),
+                                    'child_id': name,
+                                    'letter_text' : letterbox.value
+                                },
+                                success: function(res) {
+                                    if (res.success === true) {
+                                        alert('You have made a childs day.');
+                                        $('#letterbox').val('');
+
+                                    }
+                                },
+                                error: function() {
+                                    alert('your letter was not received. please try again.');
+                                }
+                            });
+                        }
+                    }};
 
                     callback(true);
                 }
