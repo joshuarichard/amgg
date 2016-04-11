@@ -115,7 +115,7 @@ var emailBodyTempPassword = 'Your temporary password is: ';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
-//var adminEmail = nconf.get('admin:email');
+var ADMIN_EMAIL = nconf.get('admin:email');
 var CHILD_COLLECTION = nconf.get('mongo:childCollection');
 var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
@@ -720,23 +720,19 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    // get the donor's information
-                    // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
-                            if(didEmail === true) {
-                                // and we're done.
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Email send. Child removal is processing.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'An error occured on email.'
-                                });
-                            }
-                        });
+                    emailModule.email(ADMIN_EMAIL, emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Email send. Child removal is processing.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
                     });
                 }
             });
@@ -777,23 +773,19 @@ app.post('/api/v1/donor/delete', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    // get the donor's information
-                    // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
-                            if(didEmail === true) {
-                                // and we're done.
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Email send. Child removal is processing.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'An error occured on email.'
-                                });
-                            }
-                        });
+                    emailModule.email(ADMIN_EMAIL, emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Email send. Child removal is processing.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
                     });
                 }
             });
