@@ -744,19 +744,14 @@ $(document).ready(function() {
                     selectChild.type = 'button';
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                        tabCHeader.innerHTML = 'Letter to ' + this.innerHTML;
-                    };
-                    selectChild.innerHTML = name;
-                    inputGroupSpan.appendChild(selectChild);
-                    inputGroup.appendChild(inputGroupSpan);
-                    childrenSelectContainer.appendChild(selectChild);
+                        tabCHeader.innerHTML = 'Letter to ' + name ;
+
 
                     //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
-                    submitLetter.onclick = function(req) {
-                      if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('')) {
+                    submitLetter.onclick = function() {
+                      if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('') || tabCHeader.innerHTML != 'Letter to ' + name ) {
                           alert('Be sure to choose a child and fill in the letter');
                       } else {
-                        //  var selector = {'id': req.body};
                           var makeSure = confirm('Are you sure you want to send this letter?');
                           if (makeSure == true) {
                             $.ajax({
@@ -765,14 +760,14 @@ $(document).ready(function() {
                                 data: {
                                     'token' : sessionStorage.getItem('token'),
                                     'donor_id' : sessionStorage.getItem('id'),
-                                    'child_id': name,
+                                    'child_id': id,
                                     'letter_text' : letterbox.value
                                 },
                                 success: function(res) {
                                     if (res.success === true) {
                                         alert('You have made a childs day.');
                                         $('#letterbox').val('');
-
+                                        tabCHeader.innerHTML = 'Letter to Child';
                                     }
                                 },
                                 error: function() {
@@ -780,7 +775,12 @@ $(document).ready(function() {
                                 }
                             });
                         }
-                    }};
+                    }}};
+
+                    selectChild.innerHTML = name;
+                    inputGroupSpan.appendChild(selectChild);
+                    inputGroup.appendChild(inputGroupSpan);
+                    childrenSelectContainer.appendChild(selectChild);
 
                     callback(true);
                 }
