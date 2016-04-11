@@ -745,37 +745,36 @@ $(document).ready(function() {
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
                         tabCHeader.innerHTML = 'Letter to ' + name ;
-
-
                     //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
-                    submitLetter.onclick = function() {
-                      if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('') || tabCHeader.innerHTML != 'Letter to ' + name ) {
-                          alert('Be sure to choose a child and fill in the letter');
-                      } else {
-                          var makeSure = confirm('Are you sure you want to send this letter?');
-                          if (makeSure == true) {
-                            $.ajax({
-                                url: '/api/v1/donor/letter',
-                                type: 'POST',
-                                data: {
-                                    'token' : sessionStorage.getItem('token'),
-                                    'donor_id' : sessionStorage.getItem('id'),
-                                    'child_id': id,
-                                    'letter_text' : letterbox.value
-                                },
-                                success: function(res) {
-                                    if (res.success === true) {
-                                        alert('You have made a childs day.');
-                                        $('#letterbox').val('');
-                                        tabCHeader.innerHTML = 'Letter to Child';
-                                    }
-                                },
-                                error: function() {
-                                    alert('your letter was not received. please try again.');
+                        submitLetter.onclick = function() {
+                            if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('') || tabCHeader.innerHTML != 'Letter to ' + name ) {
+                                alert('Be sure to choose a child and fill in the letter');
+                            } else {
+                                var makeSure = confirm('Are you sure you want to send this letter?');
+                                if (makeSure == true) {
+                                    $.ajax({
+                                        url: '/api/v1/donor/letter',
+                                        type: 'POST',
+                                        data: {
+                                            'token' : sessionStorage.getItem('token'),
+                                            'donor_id' : sessionStorage.getItem('id'),
+                                            'child_id': id,
+                                            'letter_text' : letterbox.value
+                                        },
+                                        success: function(res) {
+                                            if (res.success === true) {
+                                                alert('You have made a childs day.');
+                                                $('#letterbox').val('');
+                                                tabCHeader.innerHTML = 'Letter to Child';
+                                            }
+                                        },
+                                        error: function() {
+                                            alert('your letter was not received. please try again.');
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    }}};
+                            }};
+                    };
 
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);

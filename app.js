@@ -745,7 +745,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
     var letterText = req.body.letter_text;
 
     // if missing information then throw malformed request
-    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' || typeof req.body.letter_text === null) {
+    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
         res.status(400).send({
             success: false,
             message: 'Malformed request.'
