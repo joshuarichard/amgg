@@ -720,23 +720,19 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    // get the donor's information
-                    // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(ADMIN_EMAIL, emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
-                            if(didEmail === true) {
-                                // and we're done.
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Email send. Child removal is processing.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'An error occured on email.'
-                                });
-                            }
-                        });
+                    emailModule.email(ADMIN_EMAIL, emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Email send. Child removal is processing.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
                     });
                 }
             });
@@ -777,23 +773,19 @@ app.post('/api/v1/donor/delete', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    // get the donor's information
-                    // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(ADMIN_EMAIL, emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
-                            if(didEmail === true) {
-                                // and we're done.
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Email send. Child removal is processing.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'An error occured on email.'
-                                });
-                            }
-                        });
+                    emailModule.email(ADMIN_EMAIL, emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Email send. Child removal is processing.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
                     });
                 }
             });
