@@ -780,7 +780,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(data['correo_electrónico'], emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
+                        emailModule.email(ADMIN_EMAIL, emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({
