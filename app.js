@@ -115,7 +115,7 @@ var emailBodyTempPassword = 'Your temporary password is: ';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
-//var adminEmail = nconf.get('admin:email');
+var ADMIN_EMAIL = nconf.get('admin:email');
 var CHILD_COLLECTION = nconf.get('mongo:childCollection');
 var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
@@ -723,7 +723,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                     // get the donor's information
                     // just too much callback hell to deal with running over 80 chars
                     mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(data['correo_electrónico'], emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
+                        emailModule.email(ADMIN_EMAIL, emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                             if(didEmail === true) {
                                 // and we're done.
                                 res.status(200).send({

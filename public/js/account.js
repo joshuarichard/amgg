@@ -491,7 +491,7 @@ $(document).ready(function() {
 
         // set on click button function
         deleteAccountButton.onclick = function() {
-            var yesUnsponsor = confirm('Are you sure you want to delete your account?');
+            var yesUnsponsor = confirm('¿Está seguro de que quiere eliminar su cuenta?');
             if (yesUnsponsor == true) {
                 $.ajax({
                     url: '/api/v1/donor/delete',
@@ -769,7 +769,7 @@ $(document).ready(function() {
 
                         // set on click button function
                         button.onclick = function() {
-                            var yesUnsponsor = confirm('Are you sure you want to remove your sponsorship for this child?');
+                            var yesUnsponsor = confirm('¿Está seguro de que desea eliminar su patrocinio para este niño?');
                             if (yesUnsponsor == true) {
                                 $.ajax({
                                     url: '/api/v1/donor/unsponsor',
@@ -781,13 +781,13 @@ $(document).ready(function() {
                                     },
                                     success: function(res) {
                                         if (res.success === true) {
-                                            alert('your request for the removal of your sponsorship has been submitted. you will receive an email when the process has been completed.');
+                                            alert('Su solicitud de la eliminación de su patrocinio se ha presentado. Usted recibirá un correo electrónico cuando el proceso se ha completado.');
                                             button.disabled = true;
                                             button.title = 'Your request has been received, please wait for it to be processed by an AMG admin';
                                         }
                                     },
                                     error: function() {
-                                        alert('your request was not received. please try again.');
+                                        alert('Su petición no fue recibido. Por favor, inténtelo de nuevo.');
                                     }
                                 });
                             }
