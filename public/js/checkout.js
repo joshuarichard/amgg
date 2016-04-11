@@ -642,29 +642,34 @@ $(document).ready(function() {
     $('#submit-sponsorship').click(sendPayment);
 
     function sendPayment() {
-        var donor = {
-            'donor_id': sessionStorage.getItem('id'),
-            'token': sessionStorage.getItem('token'),
-            'child_id': sessionStorage.getItem('cart').split(','),
-            'ccnumber': sessionStorage.getItem('ccnumber'),
-            'cvv': sessionStorage.getItem('cvv'),
-            'expiration': sessionStorage.getItem('expiration')
-        };
-        $('#submit-sponsorship').prop('disabled', true);
-        $.ajax({
-            url: '/api/v1/donor/sponsor',
-            type: 'POST',
-            data: donor,
-            success: function(res) {
-                if (res.success === true) {
-                    displaySuccess();
+        if ($('#confirm-payment').prop('checked') === true) {
+            var donor = {
+                'donor_id': sessionStorage.getItem('id'),
+                'token': sessionStorage.getItem('token'),
+                'child_id': sessionStorage.getItem('cart').split(','),
+                'ccnumber': sessionStorage.getItem('ccnumber'),
+                'cvv': sessionStorage.getItem('cvv'),
+                'expiration': sessionStorage.getItem('expiration')
+            };
+
+            $('#submit-sponsorship').prop('disabled', true);
+            $.ajax({
+                url: '/api/v1/donor/sponsor',
+                type: 'POST',
+                data: donor,
+                success: function(res) {
+                    if (res.success === true) {
+                        displaySuccess();
+                    }
+                },
+                error: function() {
+                    alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
+                    window.location = 'children.html';
                 }
-            },
-            error: function() {
-                alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
-                window.location = 'children.html';
-            }
-        });
+            });
+        } else {
+            alert('Por favor, estar de acuerdo con los término.');
+        }
     }
 
     $('#go-back-to-step-two').click(function() {
