@@ -454,19 +454,7 @@ $(document).ready(function() {
         }
     }
 
-    function toggleCreateAccount() {
-        if ($('.create-account-overlay').css('display') == 'none') {
-            $('.create-account-overlay').show();
-            $('.login').hide();
-        }
-        else {
-            $('.create-account-overlay').hide();
-        }
-    }
-
     $('.create-account').click(toggleCreateAccount);
-    $('.create-account-submit').click(createAccount);
-    $('.close-create-account-overlay').click(toggleCreateAccount);
 
     // password reset functionality
     // takes user's email from login form

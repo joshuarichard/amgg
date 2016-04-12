@@ -4,6 +4,22 @@
  *
  * requires formValidation.js for form checking (checkForm(form))
  */
+
+/* loads the create account overlay and removes the loaded elements
+ * when the the overlay is closed
+ */
+function toggleCreateAccount() {
+    if ($('.create-account-overlay').children().length < 1) {
+        $('.create-account-overlay').load('createAccountOverlay.html');
+        $('.create-account-overlay').show();
+        $('.login').hide();
+    }
+    else {
+        $('.create-account-overlay').hide();
+        $('.create-account-overlay').children().remove();
+    }
+}
+
 function createAccount() {
     if (checkForm(document.getElementById('create-account-form'))) {
         if (sessionStorage.getItem('assignedDonorID') !== null || sessionStorage.getItem('assignedDonorID') === '') {
@@ -71,3 +87,6 @@ function createAccount() {
         }
     }
 }
+
+$('.create-account-submit').click(createAccount);
+$('.close-create-account-overlay').click(toggleCreateAccount);
