@@ -765,48 +765,48 @@ app.post('/api/v1/donor/letter', function(req, res) {
     var letterText = req.body.letter_text;
 
      // if missing information then throw malformed request
-  if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
-          res.status(400).send({
-              success: false,
-              message: 'Malformed request.'
-         });
-      } else {
-          if (token) {
+    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
+        res.status(400).send({
+            success: false,
+            message: 'Malformed request.'
+        });
+    } else {
+        if (token) {
              // confirm token sent in request is valid
-             jwt.verify(token, nconf.get('auth:secret'), function(err) {
-                 if (err) {
-                     res.status(401).send({
-                         success: false,
-                         message: 'Failed to authenticate token.'
-                     });
-                 } else {
+            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+                if (err) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
                      // get the donor's information
                      // just too much callback hell to deal with running over 80 chars
-                     mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                         emailModule.email(data['correo_electrónico'], emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
-                             if(didEmail === true) {
-                                 // and we're done.
-                                 res.status(200).send({
-                                     success: true,
-                                     message: 'Letter Sent!.'
-                                 });
-                             } else {
-                                 res.status(500).send({
-                                     success: false,
-                                     message: 'An error occured on email.'
-                                 });
-                             }
-                         });
-                     });
-                 }
-             });
-         } else {
-             res.status(400).send({
-                 success: false,
-                 message: 'No token provided.'
-             });
-         }
-      }
+                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
+                        emailModule.email(data['correo_electrónico'], emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
+                            if(didEmail === true) {
+                                // and we're done.
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Letter Sent!.'
+                                });
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'An error occured on email.'
+                                });
+                            }
+                        });
+                    });
+                }
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+    }
 });
 
 /* POST /api/v1/donor/delete

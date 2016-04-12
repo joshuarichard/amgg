@@ -743,7 +743,7 @@ $(document).ready(function() {
                     selectChild.type = 'button';
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                      tabCHeader.innerHTML = 'Letter to ' + name ;
+                        tabCHeader.innerHTML = 'Letter to ' + name ;
                     //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
                         submitLetter.onclick = function() {
                             if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('') || tabCHeader.innerHTML != 'Letter to ' + name ) {
@@ -772,7 +772,7 @@ $(document).ready(function() {
                                         }
                                     });
                                 }
-                            }}
+                            }};
                     };
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);
