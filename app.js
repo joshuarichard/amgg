@@ -748,30 +748,30 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
 });
 
 /* POST /api/v1/donor/letter
-  *
-  * emails the admin with a letter to a child
-  * {
-  *   'token': 'token_goes_here',
-  *   'donor_id': donor_id,
-  *   'child_id': child_id,
-  *   'letterText': letter_text
-  * }
-  */
+ *
+ * emails the admin with a letter to a child
+ * {
+ *   'token': 'token_goes_here',
+ *   'donor_id': donor_id,
+ *   'child_id': child_id,
+ *   'letterText': letter_text
+ * }
+ */
 
- app.post('/api/v1/donor/letter', function(req, res) {
-     var donorID = req.body.donor_id;
-     var token = req.body.token;
-     var childID = req.body.child_id;
-     var letterText = req.body.letter_text;
+app.post('/api/v1/donor/letter', function(req, res) {
+    var donorID = req.body.donor_id;
+    var token = req.body.token;
+    var childID = req.body.child_id;
+    var letterText = req.body.letter_text;
 
      // if missing information then throw malformed request
-     if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
-         res.status(400).send({
-             success: false,
-             message: 'Malformed request.'
+  if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
+          res.status(400).send({
+              success: false,
+              message: 'Malformed request.'
          });
-     } else {
-         if (token) {
+      } else {
+          if (token) {
              // confirm token sent in request is valid
              jwt.verify(token, nconf.get('auth:secret'), function(err) {
                  if (err) {
@@ -782,7 +782,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                  } else {
                      // get the donor's information
                      // just too much callback hell to deal with running over 80 chars
-                     mongo.get(donorID, donorCollection, false, function(data) {
+                     mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
                          emailModule.email(data['correo_electrónico'], emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
                              if(didEmail === true) {
                                  // and we're done.
@@ -806,9 +806,8 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                  message: 'No token provided.'
              });
          }
-     }
- });
-
+      }
+});
 
 /* POST /api/v1/donor/delete
  *
