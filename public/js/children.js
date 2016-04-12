@@ -155,7 +155,7 @@ $(document).ready(function() {
         divData.appendChild(divDescription);
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
-        sponsorButton.className = 'btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button';
+        sponsorButton.className = 'btn btn-primary btn-lg';
         sponsorButton.href = 'checkout.html';
         sponsorButton.innerHTML = 'Conviértase Mi Padrino';
 
