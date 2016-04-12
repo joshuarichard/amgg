@@ -743,13 +743,13 @@ $(document).ready(function() {
                     selectChild.type = 'button';
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                        tabCHeader.innerHTML = 'Letter to ' + name ;
-                    //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
+                        tabCHeader.innerHTML = 'Carta a ' + name ;
+                        //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
                         submitLetter.onclick = function() {
-                            if (tabCHeader.innerHTML == 'Letter to Child' || letterbox.value == ('') || tabCHeader.innerHTML != 'Letter to ' + name ) {
-                                alert('Be sure to choose a child and fill in the letter');
+                            if (tabCHeader.innerHTML == 'Carta a un niño.' || letterbox.value == ('') || tabCHeader.innerHTML != 'Carta a' + name ) {
+                                alert('Asegúrese de elegir un niño y rellene la carta.');
                             } else {
-                                var makeSure = confirm('Are you sure you want to send this letter?');
+                                var makeSure = confirm('¿Está seguro de que desea enviar la carta?');
                                 if (makeSure == true) {
                                     $.ajax({
                                         url: '/api/v1/donor/letter',
@@ -762,13 +762,13 @@ $(document).ready(function() {
                                         },
                                         success: function(res) {
                                             if (res.success === true) {
-                                                alert('You have made a childs day.');
+                                                alert('Un niño es ahora más feliz gracias a ti!');
                                                 $('#letterbox').val('');
-                                                tabCHeader.innerHTML = 'Letter to Child';
+                                                tabCHeader.innerHTML = 'Carta a un niño.';
                                             }
                                         },
                                         error: function() {
-                                            alert('your letter was not received. please try again.');
+                                            alert('Su carta no fue recibido.');
                                         }
                                     });
                                 }

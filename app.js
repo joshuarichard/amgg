@@ -773,30 +773,26 @@ app.post('/api/v1/donor/letter', function(req, res) {
     } else {
         if (token) {
              // confirm token sent in request is valid
-            jwt.verify(token, nconf.get('auth:secret'), function(err) {
+            jwt.verify(token, TOKEN_KEY, function(err) {
                 if (err) {
                     res.status(401).send({
                         success: false,
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                     // get the donor's information
-                     // just too much callback hell to deal with running over 80 chars
-                    mongo.get(donorID, DONOR_COLLECTION, false, function(data) {
-                        emailModule.email(data['correo_electrónico'], emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
-                            if(didEmail === true) {
-                                // and we're done.
-                                res.status(200).send({
-                                    success: true,
-                                    message: 'Letter Sent!.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: 'An error occured on email.'
-                                });
-                            }
-                        });
+                    emailModule.email(ADMIN_EMAIL, emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Letter Sent!'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
                     });
                 }
             });
