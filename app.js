@@ -17,12 +17,6 @@ var query = require('./data/query.js');
 var emailModule = require('./data/email.js');
 var cart = require('./data/cart.js');
 
-/** stuff TODO here:
-    1. write sendError() function for use all over app.js
-       - there is way to much lack of code reuse w/ all of these
-         res.status(500) errors, or whatever.
-*/
-
 /** api routes:
  *
  * children
@@ -34,11 +28,17 @@ var cart = require('./data/cart.js');
  *
  * donors (^ denotes required token)
  * ---------------------------------
- * GET /api/v1/donor/auth - get a token with email + password to get donor info
+ * GET /api/v1/donor/auth - get a token with email + password
  * ^POST /api/v1/donor/id/:id - get a donor by their id
  * ^PUT /api/v1/donor/id/:id - edit a donor
- * POST /api/v1/donor/sponsor - inserts a donor and sponsors kids (optional)
+ * ^POST /api/v1/donor/sponsor - sponsors kids
  * POST /api/v1/donor/create - create a new donor account
+ * POST /api/v1/donor/cart - updates donor cart
+ * GET /api/v1/donor/cart/id/:id - gets donor cart from donor id
+ * ^POST /api/v1/donor/unsponsor - sends email to admin notifying unsponsorship
+ * ^POST /api/v1/donor/delete - sends email to admin notifying account deletion
+ * ^POST /api/v1/donor/letter - sends letter to admin from donor to kid
+ * POST /api/v1/donor/reset - resets donor password and sends them an email with it
  */
 
 var app = express();
@@ -132,7 +132,6 @@ var AMGG_USERNAME = nconf.get('keys:username');
 /*** child api routes ***/
 
 // GET /api/v1/children/id/:id get a child with their id
-// TODO: error handling
 app.get('/api/v1/children/id/:id', function(req, res) {
     mongo.get(req.params.id, CHILD_COLLECTION, true, function(doc) {
         if (doc.hasOwnProperty('err')) {
@@ -147,7 +146,6 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 });
 
 // GET /api/v1/children/find/:selector find a child's document without an id
-// TODO: error handling
 app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = query.format(JSON.parse(req.params.selector));
 
@@ -747,64 +745,6 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
     }
 });
 
-/* POST /api/v1/donor/letter
- *
- * emails the admin with a letter to a child
- * {
- *   'token': 'token_goes_here',
- *   'donor_id': donor_id,
- *   'child_id': child_id,
- *   'letterText': letter_text
- * }
- */
-
-app.post('/api/v1/donor/letter', function(req, res) {
-    var donorID = req.body.donor_id;
-    var token = req.body.token;
-    var childID = req.body.child_id;
-    var letterText = req.body.letter_text;
-
-     // if missing information then throw malformed request
-    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
-        res.status(400).send({
-            success: false,
-            message: 'Malformed request.'
-        });
-    } else {
-        if (token) {
-             // confirm token sent in request is valid
-            jwt.verify(token, TOKEN_KEY, function(err) {
-                if (err) {
-                    res.status(401).send({
-                        success: false,
-                        message: 'Failed to authenticate token.'
-                    });
-                } else {
-                    emailModule.email(ADMIN_EMAIL, emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
-                        if(didEmail === true) {
-                            // and we're done.
-                            res.status(200).send({
-                                success: true,
-                                message: 'Letter Sent!'
-                            });
-                        } else {
-                            res.status(500).send({
-                                success: false,
-                                message: 'An error occured on email.'
-                            });
-                        }
-                    });
-                }
-            });
-        } else {
-            res.status(400).send({
-                success: false,
-                message: 'No token provided.'
-            });
-        }
-    }
-});
-
 /* POST /api/v1/donor/delete
  *
  * emails the admin saying a donor wants to delete their account
@@ -839,6 +779,63 @@ app.post('/api/v1/donor/delete', function(req, res) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Email send. Child removal is processing.'
+                            });
+                        } else {
+                            res.status(500).send({
+                                success: false,
+                                message: 'An error occured on email.'
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+    }
+});
+
+/* POST /api/v1/donor/letter
+ *
+ * emails the admin with a letter to a child
+ * {
+ *   'token': 'token_goes_here',
+ *   'donor_id': donor_id,
+ *   'child_id': child_id,
+ *   'letterText': letter_text
+ * }
+ */
+app.post('/api/v1/donor/letter', function(req, res) {
+    var donorID = req.body.donor_id;
+    var token = req.body.token;
+    var childID = req.body.child_id;
+    var letterText = req.body.letter_text;
+
+     // if missing information then throw malformed request
+    if (typeof req.body.donor_id === 'undefined' || typeof req.body.child_id === 'undefined' ) {
+        res.status(400).send({
+            success: false,
+            message: 'Malformed request.'
+        });
+    } else {
+        if (token) {
+             // confirm token sent in request is valid
+            jwt.verify(token, TOKEN_KEY, function(err) {
+                if (err) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    emailModule.email(ADMIN_EMAIL, emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
+                        if(didEmail === true) {
+                            // and we're done.
+                            res.status(200).send({
+                                success: true,
+                                message: 'Letter Sent!'
                             });
                         } else {
                             res.status(500).send({
