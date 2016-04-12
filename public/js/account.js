@@ -104,13 +104,17 @@ $(document).ready(function() {
         tabD.className = 'tab-pane fade in';
 
         /* create the content for tabA */
+        var tabAInfoWrapper = document.createElement('div');
+        tabAInfoWrapper.id = 'tabA-content';
+        tabAInfoWrapper.className = 'content-wrapper row row-centered';
         var tabAHeader = document.createElement('span');
         tabAHeader.className = 'header';
-        tabAHeader.innerHTML = 'niños apadrinados';
+        tabAHeader.innerHTML = 'Niños Apadrinados';
 
         var tabAHeaderhr = document.createElement('hr');
-        tabA.appendChild(tabAHeader);
-        tabA.appendChild(tabAHeaderhr);
+        tabAInfoWrapper.appendChild(tabAHeader);
+        tabAInfoWrapper.appendChild(tabAHeaderhr);
+        tabA.appendChild(tabAInfoWrapper);
 
         //create table that will contain a child
         var table = document.createElement('table');
@@ -142,6 +146,9 @@ $(document).ready(function() {
          * the DB when creating tabC
          */
         //create header
+        var tabCInfoWrapper = document.createElement('div');
+        tabCInfoWrapper.id = 'tabC-content';
+        tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
         tabCHeader.className = 'header';
         tabCHeader.innerHTML = 'Letter to Child';
@@ -153,7 +160,7 @@ $(document).ready(function() {
         var letter = document.createElement('textarea');
         letter.className = 'letter';
         var submitLetter = document.createElement('button');
-        submitLetter.className = 'letter-submit pull-right';
+        submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
         submitLetter.title = 'Send letter to your sponsored child';
         submitLetter.innerHTML = 'Send';
 
@@ -163,10 +170,11 @@ $(document).ready(function() {
 
         letterForm.appendChild(letter);
         letterForm.appendChild(submitLetter);
-        tabC.appendChild(tabCHeader);
-        tabC.appendChild(tabAHeaderhr);
-        tabC.appendChild(letterForm);
-        tabC.appendChild(childrenSelectContainer);
+        tabCInfoWrapper.appendChild(tabCHeader);
+        tabCInfoWrapper.appendChild(tabAHeaderhr);
+        tabCInfoWrapper.appendChild(letterForm);
+        tabCInfoWrapper.appendChild(childrenSelectContainer);
+        tabC.appendChild(tabCInfoWrapper);
 
         /* get children using donor id */
         $.ajax({
@@ -230,7 +238,7 @@ $(document).ready(function() {
                 //tabB header
                 tabBHeader = document.createElement('span');
                 tabBHeader.className = 'header';
-                tabBHeader.innerHTML = 'datos de facturación';
+                tabBHeader.innerHTML = 'Datos de Facturación';
                 var tabBHeaderhr = document.createElement('hr');
 
                 //create container for user info
@@ -423,7 +431,7 @@ $(document).ready(function() {
                 var submitPasswordChanges = document.createElement('button');
                 submitPasswordChanges.id = 'submit-new-password';
                 submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
-                submitPasswordChanges.innerHTML = 'submit password';
+                submitPasswordChanges.innerHTML = 'Submit Password';
                 submitContainer.appendChild(submitPasswordChanges);
 
                 //combine the password elements into one block so we can target them together with css
@@ -451,7 +459,7 @@ $(document).ready(function() {
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
                 changePasswordButton.className = 'btn btn-success btn-sm';
-                changePasswordButton.appendChild(document.createTextNode('change password'));
+                changePasswordButton.appendChild(document.createTextNode('Change Password'));
                 userInfoSidebar.appendChild(changePasswordButton);
 
                 //toggle the password form
@@ -643,15 +651,18 @@ $(document).ready(function() {
         if ($('.contraseña-container').css('display') == 'block') {
             $('.contraseña-container').hide();
         }
+        var editInforContainer = document.createElement('div');
+        editInforContainer.className = 'col-md-11';
         var editInfoSubmit = document.createElement('button');
         editInfoSubmit.id = 'edit-info-submit';
-        editInfoSubmit.className = 'col-md-12 btn btn-primary pull-right';
-        editInfoSubmit.innerHTML = 'enviar';
+        editInfoSubmit.className = 'btn btn-md btn-primary pull-right';
+        editInfoSubmit.innerHTML = 'Enviar';
         editInfoSubmit.title = 'submit changes to your information';
         editInfoSubmit.onclick = function() {
             submitInfoChanges();
         };
-        $('#tabB-content').append(editInfoSubmit);
+        editInforContainer.appendChild(editInfoSubmit);
+        $('.user-info-container').append(editInforContainer);
     }
 
     function infoChange () {
@@ -829,7 +840,7 @@ $(document).ready(function() {
                         // create button, add classname for styling, append text
                         var button = document.createElement('button');
                         button.className = 'btn btn-primary btn-sm';
-                        button.appendChild(document.createTextNode('eliminar'));
+                        button.appendChild(document.createTextNode('Eliminar'));
 
                         // set on click button function
                         button.onclick = function() {
