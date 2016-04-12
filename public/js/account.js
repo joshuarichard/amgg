@@ -71,6 +71,7 @@ $(document).ready(function() {
         tabCInfoWrapper.id = 'tabC-content';
         tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
+        tabCHeader.id = 'tabCHeader';
         tabCHeader.className = 'header';
         tabCHeader.innerHTML = 'Carta al Niño';
         // eslint says this is never being used... is it needed?
@@ -80,9 +81,11 @@ $(document).ready(function() {
         letterForm.className = 'letter-form col-md-10';
         var letter = document.createElement('textarea');
         letter.className = 'letter';
+        letter.id = 'letterbox';
         var submitLetter = document.createElement('button');
         submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
         submitLetter.title = 'Enviar una carta a su niño apadrinado.';
+        submitLetter.type = 'button';
         submitLetter.innerHTML = 'Enviar';
 
         //create child select table
@@ -740,7 +743,36 @@ $(document).ready(function() {
                     selectChild.type = 'button';
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                        tabCHeader.innerHTML = 'Letter to ' + this.innerHTML;
+                        tabCHeader.innerHTML = 'Carta a ' + name ;
+                        //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
+                        submitLetter.onclick = function() {
+                            if (tabCHeader.innerHTML == 'Carta a un niño.' || letterbox.value == ('') || tabCHeader.innerHTML != 'Carta a' + name ) {
+                                alert('Asegúrese de elegir un niño y rellene la carta.');
+                            } else {
+                                var makeSure = confirm('¿Está seguro de que desea enviar la carta?');
+                                if (makeSure == true) {
+                                    $.ajax({
+                                        url: '/api/v1/donor/letter',
+                                        type: 'POST',
+                                        data: {
+                                            'token' : sessionStorage.getItem('token'),
+                                            'donor_id' : sessionStorage.getItem('id'),
+                                            'child_id': id,
+                                            'letter_text' : letterbox.value
+                                        },
+                                        success: function(res) {
+                                            if (res.success === true) {
+                                                alert('Un niño es ahora más feliz gracias a ti!');
+                                                $('#letterbox').val('');
+                                                tabCHeader.innerHTML = 'Carta a un niño.';
+                                            }
+                                        },
+                                        error: function() {
+                                            alert('Su carta no fue recibido.');
+                                        }
+                                    });
+                                }
+                            }};
                     };
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);
