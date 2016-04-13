@@ -292,6 +292,17 @@ $(document).ready(function() {
                 cityGroup.appendChild(cityLabel);
                 cityGroup.appendChild(cityWrapper);
 
+                //create departamento element
+                var departamentoGroup = document.createElement('div');
+                departamentoGroup.className = 'form-group';
+                var departamentoLabel = document.createElement('label');
+                departamentoLabel.className = 'col-md-4 control-label';
+                var departamento = document.createElement('div');
+                departamento.className = 'info-form col-md-6 departamento';
+
+                departamentoGroup.appendChild(departamentoLabel);
+                departamentoGroup.appendChild(departamento);
+                
                 //create old password form
                 var oldPasswordGroup = document.createElement('div');
                 oldPasswordGroup.className = 'form-group';
@@ -373,7 +384,16 @@ $(document).ready(function() {
                 userInfoContainer.appendChild(emailGroup);
                 userInfoContainer.appendChild(streetGroup);
                 userInfoContainer.appendChild(cityGroup);
+                userInfoContainer.appendChild(departamentoGroup);
                 userInfoContainer.appendChild(contraseñaContainer);
+
+                //load departemento element and set value
+                $(document).arrive('.departamento', {onceOnly: true, existing: true}, function() {
+                    $(this).load('departamento.html');
+                    $(document).arrive('#departamento', {onceOnly: true, existing: true}, function() {
+                        document.getElementById('departamento').value = res.departamento;
+                    });
+                });
 
                 //change password button
                 var changePasswordButton = document.createElement('button');
@@ -541,13 +561,15 @@ $(document).ready(function() {
                     'teléfono': document.getElementById('form-phone').value,
                     'calle': document.getElementById('form-street').value,
                     'ciudad': document.getElementById('form-city').value,
+                    'departamento': document.getElementById('departamento').value,
                     'correo_electrónico': document.getElementById('form-email').value
                 }
             },
             success: function(res) {
                 console.log(res);
-                // TODO: need to actually confirm success from the res here
-                alert('Su información ha sido actualizada.');
+                if (res.status === 200) {
+                    alert('Su información ha sido actualizada.');
+                }
             },
             error: function(res) {
                 if (res.status === 409) {
@@ -642,6 +664,15 @@ $(document).ready(function() {
                 createButton();
             }
         };
+        $(document).arrive('#departamento', {onceOnly: true, existing: true}, function() {
+            document.getElementById('departamento').onchange = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                } else {
+                    createButton();
+                }
+            };
+        });
     }
 
     function addChildToDonorList(id) {

@@ -6,6 +6,9 @@ $(document).ready(function() {
     // manage their cart and lock children as they add them to the cart.
     // if the donor is not logged in and currently doesn't have an assigned donor id then assign them one
 
+    //load the departamento element
+    $('.departamento').load('departamento.html');
+
     /* If there is a login token in session storage
      * then the form should be auto-populated with
      * the donors information
