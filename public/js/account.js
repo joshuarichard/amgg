@@ -54,30 +54,34 @@ $(document).ready(function() {
 
         if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
-                alert('Error: Password must contain at least six characters!');
+                alert('Error: Password must contain at least six characters');
                 password.focus();
                 return false;
             }
             re = /[0-9]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one number (0-9)!');
+                alert('Error: password must contain at least one number (0-9)');
                 password.focus();
                 return false;
             }
             re = /[a-z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one lowercase letter (a-z)!');
+                alert('Error: password must contain at least one lowercase letter (a-z)');
                 password.focus();
                 return false;
             }
             re = /[A-Z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one uppercase letter (A-Z)!');
+                alert('Error: password must contain at least one uppercase letter (A-Z)');
                 password.focus();
                 return false;
             }
+        } else if(oldPassword.value == '') {
+            alert('Error: Please enter your old password');
+            oldPassword.focus();
+            return false;
         } else {
-            alert('Error: Please check that you\'ve entered and confirmed your password!');
+            alert('Error: Please check that you\'ve entered and confirmed your password');
             password.focus();
             return false;
         }
@@ -602,49 +606,51 @@ $(document).ready(function() {
     }
 
     function submitInfoChanges() {
-        $.ajax({
-            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-            type: 'PUT',
-            data: {
-                'token' : sessionStorage.getItem('token'),
-                'changes' : {
-                    'nombre': document.getElementById('form-first-name').value,
-                    'apellido': document.getElementById('form-last-name').value,
-                    'teléfono': document.getElementById('form-phone').value,
-                    'calle': document.getElementById('form-street').value,
-                    'ciudad': document.getElementById('form-city').value,
-                    'correo_electrónico': document.getElementById('form-email').value
-                }
-            },
-            success: function(res) {
-                console.log(res);
-                // TODO: need to actually confirm success from the res here
-                alert('Su información ha sido actualizada.');
-            },
-            error: function(res) {
-                if (res.status === 409) {
-                    alert('el correo electrónico ya está asociada a una cuenta.');
-                }
-
-                //put old info back in
-                $.ajax({
-                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                    type: 'POST',
-                    data: {
-                        'token' : sessionStorage.getItem('token'),
-                        'id' : sessionStorage.getItem('id')
-                    },
-                    success: function(res) {
-                        document.getElementById('form-first-name').value = res.nombre;
-                        document.getElementById('form-last-name').value = res.apellido;
-                        document.getElementById('form-phone').value = res.teléfono;
-                        document.getElementById('form-email').value = res.correo_electrónico;
-                        document.getElementById('form-street').value = res.calle;
-                        document.getElementById('form-city').value = res.ciudad;
+        if (checkInfo(document.getElementById('user-info-container'))) {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'PUT',
+                data: {
+                    'token' : sessionStorage.getItem('token'),
+                    'changes' : {
+                        'nombre': document.getElementById('form-first-name').value,
+                        'apellido': document.getElementById('form-last-name').value,
+                        'teléfono': document.getElementById('form-phone').value,
+                        'calle': document.getElementById('form-street').value,
+                        'ciudad': document.getElementById('form-city').value,
+                        'correo_electrónico': document.getElementById('form-email').value
                     }
-                });
-            }
-        });
+                },
+                success: function(res) {
+                    console.log(res);
+                    // TODO: need to actually confirm success from the res here
+                    alert('Su información ha sido actualizada.');
+                },
+                error: function(res) {
+                    if (res.status === 409) {
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                    }
+
+                    //put old info back in
+                    $.ajax({
+                        url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                        type: 'POST',
+                        data: {
+                            'token' : sessionStorage.getItem('token'),
+                            'id' : sessionStorage.getItem('id')
+                        },
+                        success: function(res) {
+                            document.getElementById('form-first-name').value = res.nombre;
+                            document.getElementById('form-last-name').value = res.apellido;
+                            document.getElementById('form-phone').value = res.teléfono;
+                            document.getElementById('form-email').value = res.correo_electrónico;
+                            document.getElementById('form-street').value = res.calle;
+                            document.getElementById('form-city').value = res.ciudad;
+                        }
+                    });
+                }
+            });
+        }        
     }
 
     function createButton () {
