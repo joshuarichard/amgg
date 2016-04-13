@@ -116,6 +116,10 @@ table {
   border-bottom: 1px solid #DDDDDD;
 }
 
+.checkout-total {
+  margin-bottom: 1.5em;
+}
+
 /*ID Styles*/
 .checkout-nav {
 	margin-top: 1em;

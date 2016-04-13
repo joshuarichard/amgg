@@ -126,7 +126,18 @@ $(document).ready(function() {
         });
     }
 
+    //append total cost after the last child
+    var total = document.createElement('div');
+    total.className = 'col-md-12 checkout-total';
+    var amount = document.createElement('span');
+    amount.className = 'pull-right';
+    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').length/24) * 200) + ' quetzal';
+    total.appendChild(amount);
+    container.appendChild(total);
+
     // after all that append the 'add a child' button
+    var addButtonContainer = document.createElement('div');
+    addButtonContainer.className = 'col-md-12';
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-primary btn-md';
     addButton.onclick = function() {
@@ -134,7 +145,8 @@ $(document).ready(function() {
     };
 
     addButton.appendChild(document.createTextNode('Apadrinar a otro niño/a'));
-    container.appendChild(addButton);
+    addButtonContainer.appendChild(addButton)
+    container.appendChild(addButtonContainer);
 
     /* if the user is already logged in, change the login button
      * to a go to account page link, else create login overlay
