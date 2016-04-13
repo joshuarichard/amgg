@@ -650,7 +650,7 @@ $(document).ready(function() {
                     });
                 }
             });
-        }        
+        }
     }
 
     function createButton () {
