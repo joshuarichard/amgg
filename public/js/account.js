@@ -302,7 +302,7 @@ $(document).ready(function() {
 
                 departamentoGroup.appendChild(departamentoLabel);
                 departamentoGroup.appendChild(departamento);
-                
+
                 //create old password form
                 var oldPasswordGroup = document.createElement('div');
                 oldPasswordGroup.className = 'form-group';
@@ -565,7 +565,7 @@ $(document).ready(function() {
                     'correo_electrónico': document.getElementById('form-email').value
                 }
             },
-            success: function(res) {
+            success: function() {
                 alert('Su información ha sido actualizada.');
                 $('#edit-info-submit').remove();
             },
