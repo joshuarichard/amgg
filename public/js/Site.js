@@ -75,6 +75,7 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
 function toggleCreateAccount () {
     if ($('.create-account-overlay').css('display') == 'none') {
         $('.create-account-overlay').show();
+        $('.departamento').load('./views/departamento.html');
         $('.login').hide();
     }
     else {

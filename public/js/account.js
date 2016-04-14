@@ -566,16 +566,10 @@ $(document).ready(function() {
                 }
             },
             success: function(res) {
-                console.log(res);
-                if (res.status === 200) {
-                    alert('Su información ha sido actualizada.');
-                }
+                alert('Su información ha sido actualizada.');
+                $('#edit-info-submit').remove();
             },
             error: function(res) {
-                if (res.status === 409) {
-                    alert('el correo electrónico ya está asociada a una cuenta.');
-                }
-
                 //put old info back in
                 $.ajax({
                     url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
@@ -593,6 +587,9 @@ $(document).ready(function() {
                         document.getElementById('form-city').value = res.ciudad;
                     }
                 });
+                if (res.status === 409) {
+                    alert('el correo electrónico ya está asociada a una cuenta.');
+                }
             }
         });
     }
