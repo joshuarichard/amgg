@@ -154,8 +154,9 @@ $(document).ready(function() {
         tabCInfoWrapper.id = 'tabC-content';
         tabCInfoWrapper.className = 'content-wrapper row row-centered';
         tabCHeader = document.createElement('span');
+        tabCHeader.id = 'tabCHeader';
         tabCHeader.className = 'header';
-        tabCHeader.innerHTML = 'Letter to Child';
+        tabCHeader.innerHTML = 'Carta al Niño';
         // eslint says this is never being used... is it needed?
         // var tabCHeaderhr = document.createElement('hr');
         //create letter form
@@ -163,10 +164,12 @@ $(document).ready(function() {
         letterForm.className = 'letter-form col-md-10';
         var letter = document.createElement('textarea');
         letter.className = 'letter';
+        letter.id = 'letterbox';
         var submitLetter = document.createElement('button');
         submitLetter.className = 'btn btn-md btn-primary letter-submit pull-right';
-        submitLetter.title = 'Send letter to your sponsored child';
-        submitLetter.innerHTML = 'Send';
+        submitLetter.title = 'Enviar una carta a su niño apadrinado.';
+        submitLetter.type = 'button';
+        submitLetter.innerHTML = 'Enviar';
 
         //create child select table
         var childrenSelectContainer = document.createElement('div');
@@ -205,7 +208,7 @@ $(document).ready(function() {
 
             },
             error: function() {
-                alert('Your session has expired. Please login again.');
+                alert('La sesión ha expirado, por favor ingrese de nuevo');
                 // if getting in here that means that the id and token has
                 // been set but it's since expired. nuke everything and
                 // make them login again.
@@ -377,7 +380,7 @@ $(document).ready(function() {
                 oldPasswordGroup.className = 'form-group';
                 var oldPasswordLabel = document.createElement('label');
                 oldPasswordLabel.className = 'col-md-4 control-label';
-                oldPasswordLabel.innerHTML = 'Old Password';
+                oldPasswordLabel.innerHTML = 'Contraseña Anterior';
                 var oldPasswordWrapper = document.createElement('div');
                 oldPasswordWrapper.className = 'info-form col-md-6';
                 var oldPassword = document.createElement('input');
@@ -463,7 +466,7 @@ $(document).ready(function() {
                 var changePasswordButton = document.createElement('button');
                 changePasswordButton.id = 'change-password-button';
                 changePasswordButton.className = 'btn btn-success btn-sm';
-                changePasswordButton.appendChild(document.createTextNode('Change Password'));
+                changePasswordButton.appendChild(document.createTextNode('Cambia la Contraseña'));
                 userInfoSidebar.appendChild(changePasswordButton);
 
                 //toggle the password form
@@ -504,7 +507,7 @@ $(document).ready(function() {
                             url: '/api/v1/donor/auth',
                             type: 'POST',
                             data: {
-                                'correo_electrónico': document.getElementById('form-email').value,
+                                'email': document.getElementById('form-email').value,
                                 'password': oldPassword
                             },
                             success: function(res) {
@@ -521,7 +524,7 @@ $(document).ready(function() {
                                         }
                                     },
                                     success: function() {
-                                        alert('Password successful changed.');
+                                        alert('La constraseña ha sido cambiada exitosamente.');
                                         //empty password forms
                                         $('#form-old-password').val('');
                                         $('#form-password').val('');
@@ -537,12 +540,12 @@ $(document).ready(function() {
                                         $('.contraseña-container').hide();
                                     },
                                     error: function() {
-                                        alert('Couldn\'t change your password.');
+                                        alert('La contraseña no ha sido cambiada.');
                                     }
                                 });
                             },
                             error: function() {
-                                alert('Incorrect old password.');
+                                alert('Contraseña anterior incorrecta.');
                             }
                         });
                     }
@@ -570,7 +573,7 @@ $(document).ready(function() {
 
         // set on click button function
         deleteAccountButton.onclick = function() {
-            var yesUnsponsor = confirm('Are you sure you want to delete your account?');
+            var yesUnsponsor = confirm('¿Está seguro de que quiere eliminar su cuenta?');
             if (yesUnsponsor == true) {
                 $.ajax({
                     url: '/api/v1/donor/delete',
@@ -581,11 +584,11 @@ $(document).ready(function() {
                     },
                     success: function(res) {
                         if (res.success === true) {
-                            alert('Your request for the removal of your account has been submitted. You will receive an email when the process has been completed.');
+                            alert('Su solicitud para remover su cuenta ha sido enviada, usted recibira un correo electronico cuando el proceso haya sido completado.');
                         }
                     },
                     error: function() {
-                        alert('your request was not received. please try again.');
+                        alert('Su solicitud no fue recibido. Inténtelo de nuevo.');
                     }
                 });
             }
@@ -764,9 +767,9 @@ $(document).ready(function() {
                     var name = res[id].nombre;
                     var age = res[id].años;
                     var gender = res[id].género;
-                    var provincia = res[id].provincia;
+                    var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
-                    var aficiones = res[id].aficiones;
+                    var hobbies = res[id].pastiempos;
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -776,27 +779,27 @@ $(document).ready(function() {
                     var ageDiv = document.createElement('div');
                     var birthdayDiv = document.createElement('div');
                     var genderDiv = document.createElement('div');
-                    var provinciaDiv = document.createElement('div');
+                    var departamentoDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
-                    var aficionesDiv = document.createElement('div');
+                    var hobbiesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
                     ageDiv.className = 'child-info';
                     birthdayDiv.className = 'child-info';
                     genderDiv.className = 'child-info';
-                    provinciaDiv.className = 'child-info';
+                    departamentoDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
-                    aficionesDiv.className = 'child-info';
+                    hobbiesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
                     ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
-                    provinciaDiv.innerHTML = '<b> Provincia: </b>' + provincia;
+                    departamentoDiv.innerHTML = '<b> departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
-                    aficionesDiv.innerHTML = '<b> Aficiones: </b>' + aficiones;
+                    hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
@@ -804,9 +807,9 @@ $(document).ready(function() {
                     dataTD.appendChild(birthdayDiv);
                     dataTD.appendChild(genderDiv);
                     dataDiv.appendChild(dataTD);
-                    dataTD.appendChild(provinciaDiv);
+                    dataTD.appendChild(departamentoDiv);
                     dataTD.appendChild(centerDiv);
-                    dataTD.appendChild(aficionesDiv);
+                    dataTD.appendChild(hobbiesDiv);
 
                     //append child info
                     tr.appendChild(dataDiv);
@@ -821,7 +824,36 @@ $(document).ready(function() {
                     selectChild.type = 'button';
                     // this will change the header on tabC based on the child selected
                     selectChild.onclick = function() {
-                        tabCHeader.innerHTML = 'Letter to ' + this.innerHTML;
+                        tabCHeader.innerHTML = 'Carta a ' + name ;
+                        //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
+                        submitLetter.onclick = function() {
+                            if (tabCHeader.innerHTML == 'Carta a un niño.' || letterbox.value == ('') || tabCHeader.innerHTML != 'Carta a' + name ) {
+                                alert('Asegúrese de elegir un niño y rellene la carta.');
+                            } else {
+                                var makeSure = confirm('¿Está seguro de que desea enviar la carta?');
+                                if (makeSure == true) {
+                                    $.ajax({
+                                        url: '/api/v1/donor/letter',
+                                        type: 'POST',
+                                        data: {
+                                            'token' : sessionStorage.getItem('token'),
+                                            'donor_id' : sessionStorage.getItem('id'),
+                                            'child_id': id,
+                                            'letter_text' : letterbox.value
+                                        },
+                                        success: function(res) {
+                                            if (res.success === true) {
+                                                alert('Un niño es ahora más feliz gracias a ti!');
+                                                $('#letterbox').val('');
+                                                tabCHeader.innerHTML = 'Carta a un niño.';
+                                            }
+                                        },
+                                        error: function() {
+                                            alert('Su carta no fue recibido.');
+                                        }
+                                    });
+                                }
+                            }};
                     };
                     selectChild.innerHTML = name;
                     inputGroupSpan.appendChild(selectChild);
@@ -850,7 +882,7 @@ $(document).ready(function() {
 
                         // set on click button function
                         button.onclick = function() {
-                            var yesUnsponsor = confirm('Are you sure you want to remove your sponsorship for this child?');
+                            var yesUnsponsor = confirm('¿Está seguro de que desea eliminar su patrocinio para este niño?');
                             if (yesUnsponsor == true) {
                                 $.ajax({
                                     url: '/api/v1/donor/unsponsor',
@@ -862,13 +894,13 @@ $(document).ready(function() {
                                     },
                                     success: function(res) {
                                         if (res.success === true) {
-                                            alert('your request for the removal of your sponsorship has been submitted. you will receive an email when the process has been completed.');
+                                            alert('Su solicitud de la eliminación de su patrocinio se ha presentado. Usted recibirá un correo electrónico cuando el proceso se ha completado.');
                                             button.disabled = true;
                                             button.title = 'Your request has been received, please wait for it to be processed by an AMG admin';
                                         }
                                     },
                                     error: function() {
-                                        alert('your request was not received. please try again.');
+                                        alert('Su petición no fue recibido. Por favor, inténtelo de nuevo.');
                                     }
                                 });
                             }
@@ -918,7 +950,7 @@ $(document).ready(function() {
             url: '/api/v1/donor/auth',
             type: 'POST',
             data: {
-                'correo_electrónico': email,
+                'email': email,
                 'password': password
             }
         });

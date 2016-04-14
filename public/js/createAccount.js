@@ -50,6 +50,7 @@ function createAccount() {
                 success: function() {
                     $('.create-account-overlay').hide();
                     //log user into their new account
+                    console.log(donor);
                     $.ajax({
                         url: '/api/v1/donor/auth',
                         type: 'POST',

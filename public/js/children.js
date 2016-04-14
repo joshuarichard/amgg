@@ -64,9 +64,8 @@ $(document).ready(function() {
             var name = childPool[id].nombre;
             var age = childPool[id].años;
             var gender = childPool[id].género;
-            var location = childPool[id].provincia;
-            var aficiones = childPool[id].aficiones;
-            var biodata = childPool[id].biodata;
+            var location = childPool[id].departamento;
+            var hobbies = childPool[id].pastiempos;
 
             // get the picture and load it in
             $.getJSON('/api/v1/pictures/id/' + id, function(res) {
@@ -76,8 +75,7 @@ $(document).ready(function() {
                     'age': age,
                     'gender': gender,
                     'location': location,
-                    'aficiones': aficiones,
-                    'biodata': biodata,
+                    'pastiempos': hobbies,
                     'picture': res.data
                 };
                 childrenCurrentlyInSlider.push(id);
@@ -105,8 +103,7 @@ $(document).ready(function() {
      *    age: int,
      *    gender: string,
      *    location: string,
-     *    aficiones: string,
-     *    biodata: string,
+     *    pastiempos: string,
      *    picture: base64 string
      * }
      */
@@ -118,8 +115,7 @@ $(document).ready(function() {
         var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
-        var aficiones = child.aficiones;
-        var biodata = child.biodata;
+        var hobbies = child.pastiempos;
 
         // create the slide
         var slide = document.createElement('div');
@@ -152,19 +148,16 @@ $(document).ready(function() {
         var pData2 = document.createElement('p');
         pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
         var pData3 = document.createElement('p');
-        pData3.innerHTML = 'My hobbies include ' + aficiones;
-        var pData4 = document.createElement('p');
-        pData4.innerHTML = 'You should sponsor me because ' + biodata;
+        pData3.innerHTML = 'My hobbies include ' + hobbies;
         divDescription.appendChild(pData1);
         divDescription.appendChild(pData2);
         divDescription.appendChild(pData3);
-        divDescription.appendChild(pData4);
         divData.appendChild(divDescription);
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
-        sponsorButton.className = 'btn btn-primary btn-lg child-intro-btn-sponsor sponsor-button';
+        sponsorButton.className = 'btn btn-primary btn-lg';
         sponsorButton.href = 'checkout.html';
-        sponsorButton.innerHTML = 'Conviértase Mi Patrocinador';
+        sponsorButton.innerHTML = 'Conviértase Mi Padrino';
 
         // add the function for the sponsor button. clicking this should add
         // the child's id from the parent-most div into sessionStorage
@@ -239,8 +232,8 @@ $(document).ready(function() {
         if($('#genderSearch').text() !== 'género') {
             selector['género'] = $('#genderSearch').text();
         }
-        if($('#locationSearch').text() !== 'provincia') {
-            selector['provincia'] = $('#locationSearch').text();
+        if($('#locationSearch').text() !== 'departamento') {
+            selector['departamento'] = $('#locationSearch').text();
         }
         if($('#ageSearch').text() !== 'años') {
             selector['años'] = $('#ageSearch').text();
@@ -415,7 +408,7 @@ $(document).ready(function() {
                 url: '/api/v1/donor/auth',
                 type: 'POST',
                 data: {
-                    'correo_electrónico': email,
+                    'email': email,
                     'password': password
                 },
                 // on successful login, save token and donor id
