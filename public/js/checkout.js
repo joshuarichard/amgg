@@ -277,9 +277,13 @@ $(document).ready(function() {
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
+
                     var birthdayISO = new Date(res[id].cumpleaños);
-                    var ageUncorrected = 2016 - birthdayISO.getFullYear();
-                    var ageCorrected = ageUncorrected; // temporary NOT ALWAYS CORRECT <-----------------==============-------------------
+                    var today = new Date();
+                    var age = today.getFullYear() - birthdayISO.getFullYear();
+                    birthdayISO.setFullYear(today.getFullYear());
+                    if (today < birthdayISO) { age--; }
+
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
@@ -316,7 +320,7 @@ $(document).ready(function() {
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
-                    ageDiv.innerHTML = '<b> Años:  </b>' + ageCorrected;
+                    ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;

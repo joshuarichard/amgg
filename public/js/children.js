@@ -60,9 +60,13 @@ $(document).ready(function() {
         if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
             // then add the child to the slider
             var name = childPool[id].nombre;
-            var birthdayISO = new Date(childPool[id].cumpleaños);
-            var ageUncorrected = 2016 - birthdayISO.getFullYear();
-            var ageCorrected = ageUncorrected; // temporary NOT ALWAYS CORRECT <-----------------==============--------------------
+
+            var birthday = new Date(childPool[id].cumpleaños);
+            var today = new Date();
+            var age = today.getFullYear() - birthday.getFullYear();
+            birthday.setFullYear(today.getFullYear());
+            if (today < birthday) { age--; }
+
             var gender = childPool[id].género;
             var location = childPool[id].departamento;
             var hobbies = childPool[id].pastiempos;
@@ -71,7 +75,7 @@ $(document).ready(function() {
             var child = {
                 'id': id,
                 'name': name,
-                'age': ageCorrected,
+                'age': age,
                 'gender': gender,
                 'location': location,
                 'pastiempos': hobbies,
