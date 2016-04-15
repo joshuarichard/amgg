@@ -28,6 +28,8 @@ $(document).ready(function() {
                 $('#form-address-street').prop('disabled', true);
                 $('#form-address-city').val(res.ciudad);
                 $('#form-address-city').prop('disabled', true);
+                $('#departamento-checkout').val(res.departamento);
+                $('#departamento-checkout').prop('disabled', true);
                 $('#form-email').val(res.correo_electrónico);
                 $('#form-email').prop('disabled', true);
                 $('#form-country').prop('disabled', true);
@@ -411,6 +413,7 @@ $(document).ready(function() {
         $('#form-phone').prop('disabled', false);
         $('#form-address-street').prop('disabled', false);
         $('#form-address-city').prop('disabled', false);
+        $('#departamento-checkout').prop('disabled', false);
         $('#form-country').prop('disabled', false);
 
         editInfoClicked = true;
@@ -435,6 +438,7 @@ $(document).ready(function() {
             $('#form-phone').prop('disabled', true);
             $('#form-address-street').prop('disabled', true);
             $('#form-address-city').prop('disabled', true);
+            $('#departamento-checkout').prop('disabled', true);
             $('#form-email').prop('disabled', true);
             $('#form-country').prop('disabled', true);
         }
@@ -467,6 +471,7 @@ $(document).ready(function() {
                                             'teléfono': document.getElementById('form-phone').value,
                                             'calle': document.getElementById('form-address-street').value,
                                             'ciudad': document.getElementById('form-address-city').value,
+                                            'departamento': document.getElementById('departamento-checkout').value,
                                             'país': document.getElementById('form-country').value
                                         }
                                     },
@@ -485,6 +490,9 @@ $(document).ready(function() {
                                             } else {
                                                 // if there aren't any children that are locked then send the cart
                                                 sendCart(false, function() {
+                                                    //clear password form
+                                                    document.getElementById('form-password').value = '';
+                                                    document.getElementById('form-password-confirm').value = '';
                                                     // hide elements from step one and show step two
                                                     // hide change info button
                                                     $('#donor-info-form').hide();
@@ -515,6 +523,9 @@ $(document).ready(function() {
                                     } else {
                                         // if there aren't any children that are locked then send the cart
                                         sendCart(false, function() {
+                                            //clear password form
+                                            document.getElementById('form-password').value = '';
+                                            document.getElementById('form-password-confirm').value = '';
                                             // hide elements from step one and show step two
                                             // hide change info button
                                             $('#donor-info-form').hide();
@@ -530,6 +541,11 @@ $(document).ready(function() {
                                     }
                                 });
                             }
+                        },
+                        statusCode: {
+                            401: function() {
+                                alert('La contraseña introducida es incorrecta, por favor, introduzca la contraseña correcta.');
+                            }
                         }
                     });
                 } else {
@@ -539,6 +555,7 @@ $(document).ready(function() {
                         'teléfono': document.getElementById('form-phone').value,
                         'calle': document.getElementById('form-address-street').value,
                         'ciudad': document.getElementById('form-address-city').value,
+                        'departamento': document.getElementById('departamento-checkout').value,
                         'país': document.getElementById('form-country').value,
                         'correo_electrónico': document.getElementById('form-email').value,
                         'password': document.getElementById('form-password').value
@@ -627,9 +644,10 @@ $(document).ready(function() {
                     'token': sessionStorage.getItem('token')
                 },
                 success: function(res) {
-                    $('#donor-name').text(res.nombre);
+                    $('#donor-name').text(res.nombre + ' ' + res.apellido);
                     $('#donor-phone').text(res.teléfono);
-                    $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
+                    $('#donor-address').text(res.calle + ' ' + res.ciudad);
+                    $('#donor-address-2').text(res.departamento + ', ' + res.país);
                     $('#donor-email').text(res.correo_electrónico);
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
@@ -736,6 +754,7 @@ $(document).ready(function() {
                 'teléfono': document.getElementById('create-account-phone').value,
                 'calle': document.getElementById('create-account-address-street').value,
                 'ciudad': document.getElementById('create-account-address-city').value,
+                'departamento': document.getElementById('departamento').value,
                 'país': document.getElementById('create-account-country').value,
                 'correo_electrónico': document.getElementById('create-account-email').value,
                 'password': document.getElementById('create-account-password').value
@@ -796,6 +815,8 @@ $(document).ready(function() {
         var phone = $('[name=phone]', form)[0];
         var street = $('[name=address]', form)[0];
         var city = $('[name=address-city]', form)[0];
+        var departamento = $('[name=departamento]', form)[0];
+        var country = $('[name=country]', form)[0];
         var email = $('[name=email]', form)[0];
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
@@ -819,6 +840,14 @@ $(document).ready(function() {
         } else if(city.value == '') {
             alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
+            return false;
+        } else if(departamento.value == '') {
+            alert('Error: Por favor seleccione una departamento.');
+            departamento.focus();
+            return false;
+        } else if(country.value == '') {
+            alert('Error: Por favor seleccione un país.');
+            country.focus();
             return false;
         } else if(email.value == '') {
             alert('Error: Correo electrónico no puede ir en blanco.');
