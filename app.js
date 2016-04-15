@@ -133,8 +133,8 @@ var CHILD_COST = nconf.get('amgg:childCost');
 var TOKEN_KEY = nconf.get('keys:token');
 var BANK_PUBLIC_KEY = decrypt(nconf.get('keys:bankPublic'));
 var BANK_PRIVATE_KEY = decrypt(nconf.get('keys:bankPrivate'));
-var SSL_KEY = nconf.get('keys:sslKey');
-var SSL_CERT = nconf.get('keys:sslCert');
+var SSL_KEY_PATH = nconf.get('keys:sslKey');
+var SSL_CERT_PATH = nconf.get('keys:sslCert');
 var AMGG_USERNAME = decrypt(nconf.get('keys:username'));
 
 // email strings
@@ -937,8 +937,8 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-https.createServer({ key: fs.readFileSync(SSL_KEY),
-                     cert: fs.readFileSync(SSL_CERT)}, app)
+https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
+                     cert: fs.readFileSync(SSL_CERT_PATH)}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });
