@@ -541,10 +541,10 @@ $(document).ready(function() {
                             }
                         },
                         statusCode: {
-                        401: function() {
-                            alert('La contraseña introducida es incorrecta, por favor, introduzca la contraseña correcta.');
+                            401: function() {
+                                alert('La contraseña introducida es incorrecta, por favor, introduzca la contraseña correcta.');
+                            }
                         }
-                    }
                     });
                 } else {
                     var newDonor = {
