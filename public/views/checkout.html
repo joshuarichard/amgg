@@ -100,7 +100,34 @@
                 </div>
                 <div class="form-group">
                     <label class="col-md-4 control-label"></label>
-                    <div class="col-md-8 departamento"></div>
+                    <div class="col-md-8 departamento">
+                        <select id="departamento" class="form-control" name="departamento" style="margin-bottom: .05em; margin-top: .05em;">
+                            <option value="" disabled selected>Departamento</option>
+                            <option value="Alta Verapaz">Alta Verapaz</option>
+                            <option value="Baja Verapaz">Baja Verapaz</option>
+                            <option value="Chimaltenango">Chimaltenango</option>
+                            <option value="Chiquimula">Chiquimula</option>
+                            <option value="El Progreso">El Progreso</option>
+                            <option value="Escuintla">Escuintla</option>
+                            <option value="Guatemala">Guatemala</option>
+                            <option value="Huehuetenango">Huehuetenango</option>
+                            <option value="Izabal">Izabal</option>
+                            <option value="Jalapa">Jalapa</option>
+                            <option value="Jutiapa">Jutiapa</option>
+                            <option value="Petén">Petén</option>
+                            <option value="Quetzaltenango">Quetzaltenango</option>
+                            <option value="Quiché">Quiché</option>
+                            <option value="Huehuetenango">Huehuetenango</option>
+                            <option value="Quiche">Quiche</option>
+                            <option value="Retalhuleu">Retalhuleu</option>
+                            <option value="Sacatepequez">Sacatepequez</option>
+                            <option value="San Marcos">San Marcos</option>
+                            <option value="Solola">Solola</option>
+                            <option value="Suchitepequez">Suchitepequez</option>
+                            <option value="Totonicapán">Totonicapán</option>
+                            <option value="Zacapa">Zacapa</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-4 control-label">País</label>
@@ -399,39 +426,68 @@
                     <div id="donor-info-form">
                         <div class="form-group">
                             <label class="col-md-4 control-label">Nombre</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-first-name" class="form-control" type="text" name="first-name" placeholder="Nombre" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Apellido</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-last-name" class="form-control" type="text" name="last-name" placeholder="Apellidos" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Tel&#233;fono</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-phone" class="form-control" type="text" name="phone" placeholder="(978) 927-2300" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Dirección</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-address-street" class="form-control" type="text" name="address" placeholder="Direccion de Casa" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label"></label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-address-city" class="form-control" type="text" name="address-city" placeholder="Ciudad" >
                             </div>
                         </div>
-                        <label class="col-md-4 control-label"></label>
-                        <div class="col-md-8 child-input departamento"></div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label"></label>
+                            <div class="col-md-8 checkout-input departamento">
+                                <select id="departamento-checkout" class="form-control" name="departamento" style="margin-bottom: .05em; margin-top: .05em;">
+                                    <option value="" disabled selected>Departamento</option>
+                                    <option value="Alta Verapaz">Alta Verapaz</option>
+                                    <option value="Baja Verapaz">Baja Verapaz</option>
+                                    <option value="Chimaltenango">Chimaltenango</option>
+                                    <option value="Chiquimula">Chiquimula</option>
+                                    <option value="El Progreso">El Progreso</option>
+                                    <option value="Escuintla">Escuintla</option>
+                                    <option value="Guatemala">Guatemala</option>
+                                    <option value="Huehuetenango">Huehuetenango</option>
+                                    <option value="Izabal">Izabal</option>
+                                    <option value="Jalapa">Jalapa</option>
+                                    <option value="Jutiapa">Jutiapa</option>
+                                    <option value="Petén">Petén</option>
+                                    <option value="Quetzaltenango">Quetzaltenango</option>
+                                    <option value="Quiché">Quiché</option>
+                                    <option value="Huehuetenango">Huehuetenango</option>
+                                    <option value="Quiche">Quiche</option>
+                                    <option value="Retalhuleu">Retalhuleu</option>
+                                    <option value="Sacatepequez">Sacatepequez</option>
+                                    <option value="San Marcos">San Marcos</option>
+                                    <option value="Solola">Solola</option>
+                                    <option value="Suchitepequez">Suchitepequez</option>
+                                    <option value="Totonicapán">Totonicapán</option>
+                                    <option value="Zacapa">Zacapa</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">País</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <select id="form-country" name="country" class="inputbox form-control validate[required]">
                                     <option value=""><font><font>Select country</font></font></option>
                                     <option value="Afghanistan"><font><font>Afghanistan</font></font></option>
@@ -684,19 +740,19 @@
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Correo Electrónico</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-email" class="form-control" type="text" name="email" placeholder="goodsamaritan@gmail.com" >
                             </div>
                         </div>
                         <div class="form-group password">
                             <label class="col-md-4 control-label">Contraseña</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-password" class="form-control" type="password" name="password" placeholder="contraseña" >
                             </div>
                         </div>
                         <div class="form-group confirm-password">
                             <label class="col-md-4 control-label">Confirmar Contraseña</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-password-confirm" class="form-control" type="password" name="password-confirm" placeholder="confirmar contraseña" >
                             </div>
                         </div>
@@ -704,20 +760,20 @@
                     <div id="donor-credit-form" style="display: none;">
                         <div class="form-group">
                             <label class="col-md-4 control-label">Número de Tarjeta</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-credit" class="form-control" type="text" name="credit" placeholder="xxxx xxxx xxxx xxxx" disabled="true" value="4111111111111111">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">CVV</label>
-                            <div class="col-md-8">
+                            <div class="col-md-8 checkout-input">
                                 <input id="form-cvv" class="form-control" type="text" name="cvv" placeholder="123" disabled="true" value="111">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">Fecha de Caducidad</label>
                             <div class="expiration-date">
-                                <div class="col-md-8">
+                                <div class="col-md-8 checkout-input">
                                     <div class="dropdown">
                                         <button id="form-expiration-1" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled="true" value="10">
                                         01
@@ -780,6 +836,10 @@
                         <div class="form-group">
                             <span class="donor-label col-md-5">Dirección:</span>
                             <span id="donor-address" class="donor-info col-md-7">Dirección</span>
+                        </div>
+                        <div class="form-group">
+                            <span class="donor-label col-md-5"></span>
+                            <span id="donor-address-2" class="donor-info col-md-7">Dirección</span>
                         </div>
                         <div class="form-group">
                             <span class="donor-label col-md-5">Correo Electrónico:</span>
