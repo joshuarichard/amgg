@@ -111,7 +111,7 @@ if (typeof argvPassword === 'undefined') {
 
 // encrypt and decrypt functions taken from:
 // http://lollyrock.com/articles/nodejs-encryption/
-function decrypt(text, pass){
+function decrypt(text, pass) {
     var decipher = crypto.createDecipher(algorithm, pass);
     var decrypted = decipher.update(text, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
