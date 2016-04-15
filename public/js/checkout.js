@@ -259,24 +259,6 @@ $(document).ready(function() {
         // create child's table row
         var tr = document.createElement('tr');
 
-        function pic(callback) {
-            var picTD = document.createElement('td');
-            var picIMG = document.createElement('img');
-            picIMG.className = 'child-img';
-
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                if (res.data.hasOwnProperty('err')){
-                    console.log(res.data.err);
-                    callback(false);
-                } else if (res.data !== undefined) {
-                    picIMG.src = 'data:image/image;base64,' + res.data;
-                    picTD.appendChild(picIMG);
-                    tr.appendChild(picTD);
-                    callback(true);
-                }
-            });
-        }
-
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/id/' + id, function(res) {
@@ -295,11 +277,25 @@ $(document).ready(function() {
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
-                    var age = res[id].años;
+
+                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var today = new Date();
+                    var age = today.getFullYear() - birthdayISO.getFullYear();
+                    birthdayISO.setFullYear(today.getFullYear());
+                    if (today < birthdayISO) { age--; }
+
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
+                    var picture = res[id].foto;
+
+                    var picTD = document.createElement('td');
+                    var picIMG = document.createElement('img');
+                    picIMG.className = 'child-img';
+                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picTD.appendChild(picIMG);
+                    tr.appendChild(picTD);
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -370,20 +366,14 @@ $(document).ready(function() {
             callback(true);
         }
 
-        // first insert pic
-        pic(function(success) {
+        data(function(success)  {
             if(success === true) {
-                // then append data
-                data(function(success)  {
-                    if(success === true) {
-                        // then append delete button
-                        deleteButton(function() {
-                            // append the row to the tbody, and
-                            // add the tbody to the table
-                            tbody.appendChild(tr);
-                            table.appendChild(tbody);
-                        });
-                    }
+                // then append delete button
+                deleteButton(function() {
+                    // append the row to the tbody, and
+                    // add the tbody to the table
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
                 });
             }
         });

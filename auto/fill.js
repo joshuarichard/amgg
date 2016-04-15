@@ -1,8 +1,7 @@
 /* eslint-env node */
-
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
-var pics = require('./pics.js');
+var fs = require('fs');
 
 var nconf = require('nconf');
 nconf.env()
@@ -12,11 +11,9 @@ var dbName = nconf.get('autofill:db');
 var collectionName = nconf.get('autofill:childCollection');
 var numOfDocs = nconf.get('autofill:numOfDocs');
 
-var url = 'mongodb://' + nconf.get('mongo:host') + ':' +
-           nconf.get('mongo:port') + '/' + dbName;
+var url = 'mongodb://' + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + dbName;
 
-console.log('Importing ' + numOfDocs + ' documents into db:' + dbName +
-            ' and collection:' + collectionName + ' at ' + url + '.');
+console.log('Importing ' + numOfDocs + ' documents into db:' + dbName + ' and collection:' + collectionName + ' at ' + url + '.');
 
 var centro_de_ninos = [
     'Filadelfia Childcare Center', 'Getsemani Childcare Center',
@@ -80,8 +77,7 @@ var departamento = [
 ];
 
 function randomDate(start, end) {
-    return new Date(start.getTime() + Math.random() *
-                   (end.getTime() - start.getTime()));
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
 function randomNumber(min, max) {
@@ -104,9 +100,8 @@ function generateAddress() {
     address += upper_letters[Math.floor(Math.random() * upper_letters.length)];
 
     var street_length = randomNumber(3, 15);
-    for(var b = 0; b < street_length; b++) {
-        address += lower_letters.charAt(Math.floor(Math.random() *
-                   lower_letters.length));
+    for (var b = 0; b < street_length; b++) {
+        address += lower_letters.charAt(Math.floor(Math.random() * lower_letters.length));
     }
 
     address += ' ';
@@ -121,33 +116,31 @@ function generateDocument(callback) {
     var name = nombre[Math.floor(Math.random() * nombre.length)];
     var lastName = apellido[Math.floor(Math.random() * apellido.length)];
 
+    var filePath = './auto/pics/birds/bird_' + Math.floor(Math.random() * (30 - 1) + 1) + '.jpg';
+    var picture = Buffer(fs.readFileSync(filePath)).toString('base64');
+
     console.log('INFO: inserting ' + name + ' ' + lastName + ' with amg_id ' + amgId);
 
-    // insert picture for this child and get the image_id
-    pics.insert(name + '_' + lastName, {}, function(fileId) {
-        var doc = {
-            'amg_id':  amgId,
-            'image_id': fileId,
-            'status': status[Math.floor(Math.random() * status.length)],
-            'nombre': name,
-            'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
-            'apellido': lastName,
-            'género': genero[Math.floor(Math.random() * genero.length)],
-            'cumpleaños': birthday,
-            'años': Math.abs((new Date(Date.now() - birthday.getTime()))
-                                                    .getUTCFullYear() - 1970),
-            'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
-                                centro_de_ninos.length)],
-            'direccion_de_casa': generateAddress(),
-            'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
-            'departamento': departamento[Math.floor(Math.random() *
-                                   departamento.length)],
-            'código_postal': Math.floor((Math.random() * (99999) + 1)),
-            'pastiempos': 'Reading, playing baseball, and swinging.',
-            'biodata': 'He/she needs help because...'
-        };
-        callback(doc);
-    });
+    var doc = {
+        'estado': status[Math.floor(Math.random() * status.length)],
+        'nombre': name,
+        'segundo_nombre': nombre[Math.floor(Math.random() * nombre.length)],
+        'apellido': lastName,
+        'género': genero[Math.floor(Math.random() * genero.length)],
+        'cumpleaños': birthday,
+        'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
+                            centro_de_ninos.length)],
+        'direccion_de_casa': generateAddress(),
+        'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
+        'departamento': departamento[Math.floor(Math.random() *
+                               departamento.length)],
+        'código_postal': Math.floor((Math.random() * (99999) + 1)),
+        'pastiempos': 'Reading, playing baseball, and swinging. Other stuff too.',
+        'foto': picture,
+        'sueños': 'I just want to be a real boy.',
+        'biodata': 'Child biodata goes here. This is where a lot of the child\'s other information will go.'
+    };
+    callback(doc);
 }
 
 var insertDocument = function(db, callback) {
