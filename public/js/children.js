@@ -260,9 +260,6 @@ $(document).ready(function() {
                 selector['mes_de_nacimiento'] = monthInt;
             }
         }
-        if($('#birthdaySearch').text() !== 'día del nacimiento') {
-            selector['día_del_nacimiento'] = $('#birthdaySearch').text();
-        }
 
         return selector;
     }
