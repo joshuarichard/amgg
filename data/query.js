@@ -20,9 +20,12 @@ exports.format = function(selector) {
     if (selector.hasOwnProperty('años')) {
         var ageRequested = parseInt(selector['años']);
         currentYear = new Date().getFullYear();
-        var yearToLookFor = currentYear - ageRequested - 1;
-        gteDate = new Date(yearToLookFor + '-01-01T00:00:00');
-        ltDate  = new Date(yearToLookFor + '-12-31T00:00:00');
+        var yearToLookFor = currentYear - ageRequested;
+        gteDate = new Date();
+        gteDate.setFullYear(yearToLookFor - 1);
+        gteDate.setDate(gteDate.getDate() - 1);
+        ltDate  = new Date();
+        ltDate.setFullYear(yearToLookFor);
 
         var year = {
             'cumpleaños': {
