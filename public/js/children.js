@@ -8,9 +8,9 @@ $(document).ready(function() {
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
         var ors = [{
-            '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                    {'status': 'Waiting for Sponsor - Discontinued'},
-                    {'status': 'Additional Sponsor Needed'}]
+            '$or': [{'estado': 'Waiting for Sponsor - No Prior Sponsor'},
+                    {'estado': 'Waiting for Sponsor - Discontinued'},
+                    {'estado': 'Additional Sponsor Needed'}]
         }];
 
         selector['$and'] = ors;
@@ -18,7 +18,7 @@ $(document).ready(function() {
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
             function(res){
-                if(res.err !== undefined) {
+                if (res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
                 } else if (JSON.stringify(res) === '{}') {
@@ -42,8 +42,7 @@ $(document).ready(function() {
      * }
      */
     function getChild(childPool, callback) {
-        // get an array of child ids by mapping the keys in the child pool
-        // to an array called 'ids'
+        // get an array of child ids by mapping the keys in the child pool to an array called 'ids'
         var ids = $.map(childPool, function (value, key) {
             return key;
         });
@@ -53,37 +52,35 @@ $(document).ready(function() {
 
         // init the cart as an array from sessionStorage
         var cart = [];
-        if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+        if (inStorage('cart') === true) {
             cart = sessionStorage.getItem('cart').split(',');
         }
 
         // if the child isn't in the cart and also isn't in the slider
         if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
-
             // then add the child to the slider
             var name = childPool[id].nombre;
-            var age = childPool[id].años;
+            var birthdayISO = new Date(childPool[id].cumpleaños);
+            var ageUncorrected = 2016 - birthdayISO.getFullYear();
+            var ageCorrected = ageUncorrected; // temporary NOT ALWAYS CORRECT <-----------------==============--------------------
             var gender = childPool[id].género;
             var location = childPool[id].departamento;
             var hobbies = childPool[id].pastiempos;
+            var picture = childPool[id].foto;
 
-            // get the picture and load it in
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                var child = {
-                    'id': id,
-                    'name': name,
-                    'age': age,
-                    'gender': gender,
-                    'location': location,
-                    'pastiempos': hobbies,
-                    'picture': res.data
-                };
-                childrenCurrentlyInSlider.push(id);
-                callback(child);
-            });
+            var child = {
+                'id': id,
+                'name': name,
+                'age': ageCorrected,
+                'gender': gender,
+                'location': location,
+                'pastiempos': hobbies,
+                'picture': picture
+            };
+
+            callback(child);
         } else {
-             // if the child is already in the slider or cart but there
-             // are more children in the child pool
+             // if the child is already in the slider or cart but there are more children in the child pool
             if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
                 getChild(childPool, function(child) {
                     callback(child);
@@ -633,3 +630,12 @@ $(document).ready(function() {
         }
     });
 });
+
+// helper function - check session storage element
+function inStorage(object) {
+    if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
+        return true;
+    } else {
+        return false;
+    }
+}

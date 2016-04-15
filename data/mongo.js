@@ -438,7 +438,8 @@ function trim(doc) {
                 'género': doc[miniDoc].género,
                 'centro_de_ninos': doc[miniDoc].centro_de_ninos,
                 'departamento': doc[miniDoc].departamento,
-                'pastiempos': doc[miniDoc].pastiempos
+                'pastiempos': doc[miniDoc].pastiempos,
+                'foto': doc[miniDoc].foto
             };
         // else this is only one document
         } else {
@@ -449,7 +450,8 @@ function trim(doc) {
                 'género': doc.género,
                 'centro_de_ninos': doc.centro_de_ninos,
                 'departamento': doc.departamento,
-                'pastiempos': doc.pastiempos
+                'pastiempos': doc.pastiempos,
+                'foto': doc.foto
             };
             break;
         }

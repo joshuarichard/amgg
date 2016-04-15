@@ -24,7 +24,6 @@ var cart = require('./data/cart.js');
  * GET /api/v1/children/id/:id - get a child by their id
  * GET /api/v1/children/find/:selector - get children by a selector
  * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
- * GET /api/v1/pictures/id/:id - get a child's picture by their doc _id
  *
  * donors (^ denotes required token)
  * ---------------------------------
@@ -232,24 +231,6 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
             res.status(200).send({
                 success: true,
                 islocked: false
-            });
-        }
-    });
-});
-
-// GET /api/v1/pictures/id/:id get and child's picture with the child's id
-app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, CHILD_COLLECTION, function(data) {
-        if (data.hasOwnProperty('err')) {
-            res.status(500).send({
-                success: false,
-                message: data.err
-            });
-        } else {
-            res.status(200).send({
-                success: true,
-                id: req.params.id,
-                'data': data
             });
         }
     });
