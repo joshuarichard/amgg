@@ -648,25 +648,6 @@ $(document).ready(function() {
         // create child's table row
         var tr = document.createElement('tr');
 
-        function pic(id, callback) {
-            //create elements for child picture
-            var picTD = document.createElement('td');
-            var picIMG = document.createElement('img');
-            picIMG.className = 'child-img';
-
-            //get child picture
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                if (res.data.hasOwnProperty('err')){
-                    console.log(res.data.err);
-                } else if (res.data !== undefined) {
-                    picIMG.src = 'data:image/image;base64,' + res.data;
-                    picTD.appendChild(picIMG);
-                    tr.appendChild(picTD);
-                    callback(true);
-                }
-            });
-        }
-
         function data(id, callback) {
             // get child data using api
             $.getJSON('/api/v1/children/id/' + id, function(res) {

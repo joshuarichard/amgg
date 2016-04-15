@@ -259,24 +259,6 @@ $(document).ready(function() {
         // create child's table row
         var tr = document.createElement('tr');
 
-        function pic(callback) {
-            var picTD = document.createElement('td');
-            var picIMG = document.createElement('img');
-            picIMG.className = 'child-img';
-
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                if (res.data.hasOwnProperty('err')){
-                    console.log(res.data.err);
-                    callback(false);
-                } else if (res.data !== undefined) {
-                    picIMG.src = 'data:image/image;base64,' + res.data;
-                    picTD.appendChild(picIMG);
-                    tr.appendChild(picTD);
-                    callback(true);
-                }
-            });
-        }
-
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/id/' + id, function(res) {
@@ -380,27 +362,17 @@ $(document).ready(function() {
             callback(true);
         }
 
-        // first insert pic
-        /*
-        pic(function(success) {
+        data(function(success)  {
             if(success === true) {
-                // then append data
-                */
-                data(function(success)  {
-                    if(success === true) {
-                        // then append delete button
-                        deleteButton(function() {
-                            // append the row to the tbody, and
-                            // add the tbody to the table
-                            tbody.appendChild(tr);
-                            table.appendChild(tbody);
-                        });
-                    }
+                // then append delete button
+                deleteButton(function() {
+                    // append the row to the tbody, and
+                    // add the tbody to the table
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
                 });
-                /*
             }
         });
-        */
     }
 
     function removeChildFromCart(id) {
