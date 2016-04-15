@@ -22,9 +22,9 @@
         "sslKey": "./keys/key.pem",
         "sslCert": "./keys/cert.pem",
         "token": "x",
-        "bankPublic": "x",
-        "bankPrivate": "x",
-        "username": "x"
+        "bankPublic": "6f6a8ed30c751ab1",
+        "bankPrivate": "3610d192561773e96d4df38058d0c98baa30d0f6a13582411381a0b3df62f9c4",
+        "username": "2f34ca84552e43e6696f85f838"
     },
     "admin": {
         "email": "eos.josh.richard@gmail.com",

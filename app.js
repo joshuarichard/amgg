@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var request = require('request');
 var crypto = require('crypto');
 var querystring = require('querystring');
+var argv = require('minimist')(process.argv.slice(2));
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -100,6 +101,41 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
+var algorithm = 'aes-256-ctr';
+var argvPassword = argv.password;
+
+if (typeof argvPassword === 'undefined') {
+    log.error('Add password with the --password option.');
+    process.exit();
+}
+
+function encrypt(text){
+    var cipher = crypto.createCipher(algorithm, argvPassword)
+    var crypted = cipher.update(text, 'utf8', 'hex')
+    crypted += cipher.final('hex');
+    return crypted;
+}
+
+function decrypt(text){
+    var decipher = crypto.createDecipher(algorithm, argvPassword)
+    var decrypted = decipher.update(text, 'hex', 'utf8')
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+var ADMIN_EMAIL = nconf.get('admin:email');
+var CHILD_COLLECTION = nconf.get('mongo:childCollection');
+var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
+var CART_COLLECTION = nconf.get('mongo:cartCollection');
+var CHILD_COST = nconf.get('amgg:childCost');
+var TOKEN_KEY = nconf.get('keys:token');
+var BANK_PUBLIC_KEY = decrypt(nconf.get('keys:bankPublic'));
+var BANK_PRIVATE_KEY = decrypt(nconf.get('keys:bankPrivate'));
+var SSL_KEY = nconf.get('keys:sslKey');
+var SSL_CERT = nconf.get('keys:sslCert');
+var AMGG_USERNAME = decrypt(nconf.get('keys:username'));
 
 // email strings
 //var emailHeaderSponsor =  'Thank you for your sponsorship';
@@ -116,18 +152,6 @@ var emailBodyLetter = ' Contents of the Letter';
 // error email strings
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
-
-var ADMIN_EMAIL = nconf.get('admin:email');
-var CHILD_COLLECTION = nconf.get('mongo:childCollection');
-var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
-var CART_COLLECTION = nconf.get('mongo:cartCollection');
-var CHILD_COST = nconf.get('amgg:childCost');
-var TOKEN_KEY = nconf.get('keys:token');
-var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
-var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
-var SSL_KEY = nconf.get('keys:sslKey');
-var SSL_CERT = nconf.get('keys:sslCert');
-var AMGG_USERNAME = nconf.get('keys:username');
 
 /*** child api routes ***/
 
