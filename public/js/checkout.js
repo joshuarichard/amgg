@@ -413,7 +413,7 @@ $(document).ready(function() {
         $('#form-phone').prop('disabled', false);
         $('#form-address-street').prop('disabled', false);
         $('#form-address-city').prop('disabled', false);
-        $('#departamento').prop('disabled', false);
+        $('#departamento-checkout').prop('disabled', false);
         $('#form-country').prop('disabled', false);
 
         editInfoClicked = true;
@@ -471,7 +471,7 @@ $(document).ready(function() {
                                             'teléfono': document.getElementById('form-phone').value,
                                             'calle': document.getElementById('form-address-street').value,
                                             'ciudad': document.getElementById('form-address-city').value,
-                                            'departamento': document.getElementById('departamento').value,
+                                            'departamento': document.getElementById('departamento-checkout').value,
                                             'país': document.getElementById('form-country').value
                                         }
                                     },
@@ -555,7 +555,7 @@ $(document).ready(function() {
                         'teléfono': document.getElementById('form-phone').value,
                         'calle': document.getElementById('form-address-street').value,
                         'ciudad': document.getElementById('form-address-city').value,
-                        'departamento': document.getElementById('departamento').value,
+                        'departamento': document.getElementById('departamento-checkout').value,
                         'país': document.getElementById('form-country').value,
                         'correo_electrónico': document.getElementById('form-email').value,
                         'password': document.getElementById('form-password').value

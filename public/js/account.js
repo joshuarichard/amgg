@@ -426,6 +426,7 @@ $(document).ready(function() {
                         $('#form-phone').prop('disabled', false);
                         $('#form-email').prop('disabled', false);
                         $('#form-street').prop('disabled', false);
+                        $('#departamento').prop('disabled', false);
                         $('#form-city').prop('disabled', false);
                         // $('#form-country').prop('disabled', false); need country eventually?
                     }
