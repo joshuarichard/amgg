@@ -111,31 +111,37 @@ if (typeof argvPassword === 'undefined') {
     process.exit();
 }
 
-function encrypt(text){
-    var cipher = crypto.createCipher(algorithm, argvPassword)
-    var crypted = cipher.update(text, 'utf8', 'hex')
-    crypted += cipher.final('hex');
-    return crypted;
-}
-
-function decrypt(text){
-    var decipher = crypto.createDecipher(algorithm, argvPassword)
+function decrypt(text, pass){
+    var decipher = crypto.createDecipher(algorithm, pass)
     var decrypted = decipher.update(text, 'hex', 'utf8')
     decrypted += decipher.final('utf8');
     return decrypted;
 }
 
+var decrypted = decrypt(nconf.get('keys:credomatic'), argv.password);
+decrypted = decrypted.split('|');
+var credomaticHash = crypto.createHash('md5')
+                           .update(decrypted[0] + '|' +
+                                   decrypted[1] + '|' +
+                                   decrypted[2])
+                           .digest('hex');
+
+if (credomaticHash !== decrypted[3]) {
+    log.error('Incorrect password given at startup.');
+    process.exit();
+}
+
+var BANK_PUBLIC_KEY = decrypted[0];
+var BANK_PRIVATE_KEY = decrypted[1];
+var AMGG_USERNAME = decrypted[2];
 var ADMIN_EMAIL = nconf.get('admin:email');
 var CHILD_COLLECTION = nconf.get('mongo:childCollection');
 var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
 var CHILD_COST = nconf.get('amgg:childCost');
 var TOKEN_KEY = nconf.get('keys:token');
-var BANK_PUBLIC_KEY = decrypt(nconf.get('keys:bankPublic'));
-var BANK_PRIVATE_KEY = decrypt(nconf.get('keys:bankPrivate'));
 var SSL_KEY_PATH = nconf.get('keys:sslKey');
 var SSL_CERT_PATH = nconf.get('keys:sslCert');
-var AMGG_USERNAME = decrypt(nconf.get('keys:username'));
 
 // email strings
 //var emailHeaderSponsor =  'Thank you for your sponsorship';
