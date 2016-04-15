@@ -101,8 +101,6 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
-// encrypt and decrypt functions taken from:
-// http://lollyrock.com/articles/nodejs-encryption/
 var algorithm = 'aes-256-ctr';
 var argvPassword = argv.password;
 
@@ -111,9 +109,11 @@ if (typeof argvPassword === 'undefined') {
     process.exit();
 }
 
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
 function decrypt(text, pass){
-    var decipher = crypto.createDecipher(algorithm, pass)
-    var decrypted = decipher.update(text, 'hex', 'utf8')
+    var decipher = crypto.createDecipher(algorithm, pass);
+    var decrypted = decipher.update(text, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
 }
