@@ -450,7 +450,6 @@ $(document).ready(function() {
     function toggleCreateAccount() {
         if ($('.create-account-overlay').css('display') == 'none') {
             $('.create-account-overlay').show();
-            $('.departamento').load('departamento.html');
             $('.login').hide();
         }
         else {

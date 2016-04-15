@@ -415,6 +415,7 @@ $(document).ready(function() {
                         $('#form-phone').prop('disabled', true);
                         $('#form-email').prop('disabled', true);
                         $('#form-street').prop('disabled', true);
+                        $('#departamento').prop('disabled', true);
                         $('#form-city').prop('disabled', true);
                         // $('#form-country').prop('disabled', true); need country eventually?
                         contraseñaContainer.style.display = 'block';
