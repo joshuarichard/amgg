@@ -684,11 +684,22 @@ $(document).ready(function() {
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
-                    var age = res[id].años;
+                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var ageUncorrected = 2016 - birthdayISO.getFullYear();
+                    var ageCorrected = ageUncorrected; // temporary NOT ALWAYS CORRECT <-----------------==============-------------------
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
+                    var picture = res[id].foto;
+
+                    //create elements for child picture
+                    var picTD = document.createElement('td');
+                    var picIMG = document.createElement('img');
+                    picIMG.className = 'child-img';
+                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picTD.appendChild(picIMG);
+                    tr.appendChild(picTD);
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -713,7 +724,7 @@ $(document).ready(function() {
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
-                    ageDiv.innerHTML = '<b> Años:  </b>' + age;
+                    ageDiv.innerHTML = '<b> Años:  </b>' + ageCorrected;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> departamento: </b>' + departamento;
@@ -784,54 +795,49 @@ $(document).ready(function() {
             });
         }
 
-        pic(id, function(success) {
+        data(id, function(success)  {
             if(success === true) {
-                // then append data
-                data(id, function(success)  {
-                    if(success === true) {
-                        $('.spinner').remove();
+                $('.spinner').remove();
 
-                        var buttonTD = document.createElement('td');
+                var buttonTD = document.createElement('td');
 
-                        // remove child sponsorship button
-                        // create button, add classname for styling, append text
-                        var button = document.createElement('button');
-                        button.className = 'btn btn-primary btn-sm';
-                        button.appendChild(document.createTextNode('Eliminar'));
+                // remove child sponsorship button
+                // create button, add classname for styling, append text
+                var button = document.createElement('button');
+                button.className = 'btn btn-primary btn-sm';
+                button.appendChild(document.createTextNode('Eliminar'));
 
-                        // set on click button function
-                        button.onclick = function() {
-                            var yesUnsponsor = confirm('¿Está seguro de que desea eliminar su patrocinio para este niño?');
-                            if (yesUnsponsor == true) {
-                                $.ajax({
-                                    url: '/api/v1/donor/unsponsor',
-                                    type: 'POST',
-                                    data: {
-                                        'token' : sessionStorage.getItem('token'),
-                                        'donor_id' : sessionStorage.getItem('id'),
-                                        'child_id': button.parentNode.parentNode.id
-                                    },
-                                    success: function(res) {
-                                        if (res.success === true) {
-                                            alert('Su solicitud de la eliminación de su patrocinio se ha presentado. Usted recibirá un correo electrónico cuando el proceso se ha completado.');
-                                            button.disabled = true;
-                                            button.title = 'Your request has been received, please wait for it to be processed by an AMG admin';
-                                        }
-                                    },
-                                    error: function() {
-                                        alert('Su petición no fue recibido. Por favor, inténtelo de nuevo.');
-                                    }
-                                });
+                // set on click button function
+                button.onclick = function() {
+                    var yesUnsponsor = confirm('¿Está seguro de que desea eliminar su patrocinio para este niño?');
+                    if (yesUnsponsor == true) {
+                        $.ajax({
+                            url: '/api/v1/donor/unsponsor',
+                            type: 'POST',
+                            data: {
+                                'token' : sessionStorage.getItem('token'),
+                                'donor_id' : sessionStorage.getItem('id'),
+                                'child_id': button.parentNode.parentNode.id
+                            },
+                            success: function(res) {
+                                if (res.success === true) {
+                                    alert('Su solicitud de la eliminación de su patrocinio se ha presentado. Usted recibirá un correo electrónico cuando el proceso se ha completado.');
+                                    button.disabled = true;
+                                    button.title = 'Your request has been received, please wait for it to be processed by an AMG admin';
+                                }
+                            },
+                            error: function() {
+                                alert('Su petición no fue recibido. Por favor, inténtelo de nuevo.');
                             }
-                        };
-
-                        // add button to table entry and add table entry to row
-                        buttonTD.appendChild(button);
-                        tr.appendChild(buttonTD);
-                        tbody.appendChild(tr);
-                        table.appendChild(tbody);
+                        });
                     }
-                });
+                };
+
+                // add button to table entry and add table entry to row
+                buttonTD.appendChild(button);
+                tr.appendChild(buttonTD);
+                tbody.appendChild(tr);
+                table.appendChild(tbody);
             }
         });
     }

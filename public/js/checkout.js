@@ -295,11 +295,21 @@ $(document).ready(function() {
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
-                    var age = res[id].años;
+                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var ageUncorrected = 2016 - birthdayISO.getFullYear();
+                    var ageCorrected = ageUncorrected; // temporary NOT ALWAYS CORRECT <-----------------==============-------------------
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
+                    var picture = res[id].foto;
+
+                    var picTD = document.createElement('td');
+                    var picIMG = document.createElement('img');
+                    picIMG.className = 'child-img';
+                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picTD.appendChild(picIMG);
+                    tr.appendChild(picTD);
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -324,7 +334,7 @@ $(document).ready(function() {
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
-                    ageDiv.innerHTML = '<b> Años:  </b>' + age;
+                    ageDiv.innerHTML = '<b> Años:  </b>' + ageCorrected;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
@@ -371,9 +381,11 @@ $(document).ready(function() {
         }
 
         // first insert pic
+        /*
         pic(function(success) {
             if(success === true) {
                 // then append data
+                */
                 data(function(success)  {
                     if(success === true) {
                         // then append delete button
@@ -385,8 +397,10 @@ $(document).ready(function() {
                         });
                     }
                 });
+                /*
             }
         });
+        */
     }
 
     function removeChildFromCart(id) {
