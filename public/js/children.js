@@ -614,22 +614,22 @@ $(document).ready(function() {
                     'correo_electrónico': $('.donor-email').val()
                 },
                 success: function(res) {
-                    if (res.status === 200) {
-                        alert('Please check your email for your temporary password');
+                    if (res.success === true) {
+                        alert('Por favor, consultar su correo electrónico para su contraseña temporal.');
                         toggleLogin();
                     }
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos.');
+                        alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
-                        alert('see console for error info.');
+                        alert('Error.');
                     }
                 }
             });
         } else {
-            alert('Please enter your email into the email field before clicking Forgot Password');
+            alert('Por favor, introduzca su correo electrónico en el campo de correo electrónico antes de hacer clic "Olvidé mi contraseña".');
         }
     });
 });
