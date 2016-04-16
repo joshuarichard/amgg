@@ -75,6 +75,7 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
 function toggleCreateAccount () {
     if ($('.create-account-overlay').css('display') == 'none') {
         $('.create-account-overlay').show();
+        $('.departamento').load('./views/departamento.html');
         $('.login').hide();
     }
     else {
@@ -90,6 +91,8 @@ $('.create-account').click(toggleCreateAccount);
         var phone = $('[name=phone]', form)[0];
         var street = $('[name=address]', form)[0];
         var city = $('[name=address-city]', form)[0];
+        var departamento = $('[name=departamento]', form)[0];
+        var country = $('[name=country]', form)[0];
         var email = $('[name=email]', form)[0];
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
@@ -113,6 +116,14 @@ $('.create-account').click(toggleCreateAccount);
         } else if(city.value == '') {
           alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
+            return false;
+        } else if(departamento.value == '') {
+            alert('Error: Por favor seleccione una departamento.');
+            departamento.focus();
+            return false;
+        } else if(country.value == '') {
+            alert('Error: Por favor seleccione un país.');
+            country.focus();
             return false;
         } else if(email.value == '') {
           alert('Error: Correo electrónico no puede ir en blanco.');
@@ -158,69 +169,60 @@ $('.create-account').click(toggleCreateAccount);
 
 function createAccount() {
     if (checkForm(document.getElementById('create-account-form'))) {
-        if (sessionStorage.getItem('assignedDonorID') !== null || sessionStorage.getItem('assignedDonorID') === '') {
-            var deleteCart = confirm('you are currently in the process of sponsoring children. please create your account by completing the sponsorship process. if you would like to create an account without sponsoring a child, please click yes below and your cart will be deleted.');
-            if (deleteCart === true) {
-                // we shouldn't have to do this, but right now we do
-                sessionStorage.removeItem('assignedDonorID');
-                sessionStorage.removeItem('cart');
-            }
-        } else {
-            var donor = {
-                'assigned_donor_id': sessionStorage.getItem('assignedDonorID'),
-                'nombre': document.getElementById('create-account-first-name').value,
-                'apellido': document.getElementById('create-account-last-name').value,
-                'teléfono': document.getElementById('create-account-phone').value,
-                'calle': document.getElementById('create-account-address-street').value,
-                'ciudad': document.getElementById('create-account-address-city').value,
-                'país': document.getElementById('create-account-country').value,
-                'correo_electrónico': document.getElementById('create-account-email').value,
-                'password': document.getElementById('create-account-password').value
-            };
+        var donor = {
+            'nombre': document.getElementById('create-account-first-name').value,
+            'apellido': document.getElementById('create-account-last-name').value,
+            'teléfono': document.getElementById('create-account-phone').value,
+            'calle': document.getElementById('create-account-address-street').value,
+            'ciudad': document.getElementById('create-account-address-city').value,
+            'departamento': document.getElementById('departamento').value,
+            'país': document.getElementById('create-account-country').value,
+            'correo_electrónico': document.getElementById('create-account-email').value,
+            'password': document.getElementById('create-account-password').value
+        };
 
-            // POST /api/v1/donor/create
-            $.ajax({
-                url: '/api/v1/donor/create',
-                type: 'POST',
-                data: donor,
-                success: function() {
-                    $('.create-account-overlay').hide();
-                    //log user into their new account
-                    $.ajax({
-                        url: '/api/v1/donor/auth',
-                        type: 'POST',
-                        data: {
-                            'email': document.getElementById('create-account-email').value,
-                            'password': document.getElementById('create-account-password').value
-                        },
-                        success: function(res) {
-                            //put token and donor id into sessionStorage
-                            sessionStorage.setItem('token', res.token);
-                            sessionStorage.setItem('id', res.id);
-                            //change login button to account button
-                            document.getElementById('toggle-login').href = '../views/account.html';
-                            document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-                            //notify user they are now logged into their new account
-                            alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
-                        },
-                        error: function() {
-                            alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde');
-                        }
-                    });
-                },
-                statusCode: {
-                    404: function() {
-                        alert('Página no encontrada.');
+        // POST /api/v1/donor/create
+        $.ajax({
+            url: '/api/v1/donor/create',
+            type: 'POST',
+            data: donor,
+            success: function() {
+                $('.create-account-overlay').hide();
+                //log user into their new account
+                $.ajax({
+                    url: '/api/v1/donor/auth',
+                    type: 'POST',
+                    data: {
+                        'email': document.getElementById('create-account-email').value,
+                        'password': document.getElementById('create-account-password').value
                     },
-                    409: function() {
-                        alert('Ya existe un cuenta con la misma dirección de correo. Por favor ingrese.');
+                    success: function(res) {
+                        //put token and donor id into sessionStorage
+                        sessionStorage.setItem('token', res.token);
+                        sessionStorage.setItem('id', res.id);
+                        //change login button to account button
+                        document.getElementById('toggle-login').href = '../views/account.html';
+                        document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+                        //notify user they are now logged into their new account
+                        alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
                     },
-                    500: function() {
-                        alert('An error occured, please try again or contact an admin');
+                    error: function() {
+                        alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde');
                     }
+                });
+            },
+            statusCode: {
+                404: function() {
+                    alert('Página no encontrada.');
+                },
+                409: function() {
+                    alert('Ya existe un cuenta con la misma dirección de correo. Por favor ingrese.');
+                },
+                500: function() {
+                    alert('An error occured, please try again or contact an admin');
                 }
-            });
-        }
+            }
+        });
     }
 }
 $('.create-account-submit').click(createAccount);
@@ -236,19 +238,21 @@ $('.forgot-password').click(function() {
                 'correo_electrónico': $('.donor-email').val()
             },
             success: function(res) {
-                alert('Please check your email for your temporary password');
-                toggleLogin();
+                if (res.success === true) {
+                    alert('Por favor, consultar su correo electrónico para su contraseña temporal.');
+                    toggleLogin();
+                }
             },
             error: function(httpObj) {
                 if(httpObj.status === 401) {
-                    alert('correo o contraseña incorrectos.');
+                    alert('Correo o contraseña incorrectos.');
                 } else {
                     console.log(JSON.stringify(httpObj));
-                    alert('see console for error info.');
+                    alert('Error.');
                 }
             }
         });
     } else {
-        alert("Please enter your email into the email field before clicking Forgot Password");
+        alert('Por favor, introduzca su correo electrónico en el campo de correo electrónico antes de hacer clic "Olvidé mi contraseña".');
     }
 });

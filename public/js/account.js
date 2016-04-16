@@ -13,16 +13,18 @@ $(document).ready(function() {
         var firstName = $('[name=first-name]', form)[0];
         var lastName = $('[name=last-name]', form)[0];
         var phone = $('[name=phone]', form)[0];
+        var email = $('[name=email]', form)[0];
         var street = $('[name=street]', form)[0];
         var city = $('[name=city]', form)[0];
+        var departamento = $('[name=departamento]', form)[0];
         var email = $('[name=email]', form)[0];
 
         if(firstName.value == '') {
-            alert('Error: First name cannot be blank!');
+            alert('Error: El primer nombre no puede ir en blanco.');
             firstName.focus();
             return false;
         } else if(lastName.value == '') {
-            alert('Error: Last name cannot be blank!');
+            alert('Error: Apellido no puede ir en blanco.');
             lastName.focus();
             return false;
         } else if(phone.value == '') {
@@ -30,16 +32,20 @@ $(document).ready(function() {
             phone.focus();
             return false;
         } else if(email.value == '') {
-            alert('Error: Email cannot be blank!');
+            alert('Error: Correo electrónico no puede ir en blanco.');
             email.focus();
             return false;
         } else if(street.value == '') {
-            alert('Error: Street address cannot be blank!');
+            alert('Error: Calle no puede ir en blanco.');
             street.focus();
             return false;
         } else if(city.value == '') {
-            alert('Error: City cannot be blank!');
+            alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
+            return false;
+        } else if(departamento.value == '') {
+            alert('Error: Por favor seleccione una departamento.');
+            departamento.focus();
             return false;
         } else {
             //form passed all constraints
@@ -375,6 +381,17 @@ $(document).ready(function() {
                 cityGroup.appendChild(cityLabel);
                 cityGroup.appendChild(cityWrapper);
 
+                //create departamento element
+                var departamentoGroup = document.createElement('div');
+                departamentoGroup.className = 'form-group';
+                var departamentoLabel = document.createElement('label');
+                departamentoLabel.className = 'col-md-4 control-label';
+                var departamento = document.createElement('div');
+                departamento.className = 'info-form col-md-6 departamento';
+
+                departamentoGroup.appendChild(departamentoLabel);
+                departamentoGroup.appendChild(departamento);
+
                 //create old password form
                 var oldPasswordGroup = document.createElement('div');
                 oldPasswordGroup.className = 'form-group';
@@ -459,7 +476,16 @@ $(document).ready(function() {
                 userInfoContainer.appendChild(emailGroup);
                 userInfoContainer.appendChild(streetGroup);
                 userInfoContainer.appendChild(cityGroup);
+                userInfoContainer.appendChild(departamentoGroup);
                 userInfoContainer.appendChild(contraseñaContainer);
+
+                //load departemento element and set value
+                $(document).arrive('.departamento', {onceOnly: true, existing: true}, function() {
+                    $(this).load('departamento.html');
+                    $(document).arrive('#departamento', {onceOnly: true, existing: true}, function() {
+                        document.getElementById('departamento').value = res.departamento;
+                    });
+                });
 
                 //change password button
                 var changePasswordButton = document.createElement('button');
@@ -481,6 +507,7 @@ $(document).ready(function() {
                         $('#form-phone').prop('disabled', true);
                         $('#form-email').prop('disabled', true);
                         $('#form-street').prop('disabled', true);
+                        $('#departamento').prop('disabled', true);
                         $('#form-city').prop('disabled', true);
                         // $('#form-country').prop('disabled', true); need country eventually?
                         contraseñaContainer.style.display = 'block';
@@ -491,6 +518,7 @@ $(document).ready(function() {
                         $('#form-phone').prop('disabled', false);
                         $('#form-email').prop('disabled', false);
                         $('#form-street').prop('disabled', false);
+                        $('#departamento').prop('disabled', false);
                         $('#form-city').prop('disabled', false);
                         // $('#form-country').prop('disabled', false); need country eventually?
                     }
@@ -623,16 +651,11 @@ $(document).ready(function() {
                         'correo_electrónico': document.getElementById('form-email').value
                     }
                 },
-                success: function(res) {
-                    console.log(res);
-                    // TODO: need to actually confirm success from the res here
+                success: function() {
                     alert('Su información ha sido actualizada.');
+                    $('#edit-info-submit').remove();
                 },
                 error: function(res) {
-                    if (res.status === 409) {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
-                    }
-
                     //put old info back in
                     $.ajax({
                         url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
@@ -650,6 +673,17 @@ $(document).ready(function() {
                             document.getElementById('form-city').value = res.ciudad;
                         }
                     });
+                },
+                statusCode: {
+                    404: function() {
+                        alert('Página no encontrada.');
+                    },
+                    409: function() {
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                    },
+                    500: function() {
+                        alert('An error occured, please try again or contact an admin');
+                    }
                 }
             });
         }
@@ -722,6 +756,15 @@ $(document).ready(function() {
                 createButton();
             }
         };
+        $(document).arrive('#departamento', {onceOnly: true, existing: true}, function() {
+            document.getElementById('departamento').onchange = function() {
+                if (document.getElementById('edit-info-submit')) {
+                    return;
+                } else {
+                    createButton();
+                }
+            };
+        });
     }
 
     function addChildToDonorList(id) {
