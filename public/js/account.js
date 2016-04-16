@@ -800,7 +800,7 @@ $(document).ready(function() {
 
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
-                    var center = res[id].centro_de_ninos;
+                    var center = res[id].centro_de_niños;
                     var hobbies = res[id].pastiempos;
                     var picture = res[id].foto;
 
