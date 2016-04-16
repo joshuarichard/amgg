@@ -83,6 +83,7 @@ table {
 
 .child-img {
 	max-width: 15em;
+  border-radius: 10px;
 }
 
 /* TabB styles */

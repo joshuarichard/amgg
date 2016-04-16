@@ -8,9 +8,9 @@ $(document).ready(function() {
     // fill the child pool based on a given selector
     function fillChildPool(selector, callback) {
         var ors = [{
-            '$or': [{'status': 'Waiting for Sponsor - No Prior Sponsor'},
-                    {'status': 'Waiting for Sponsor - Discontinued'},
-                    {'status': 'Additional Sponsor Needed'}]
+            '$or': [{'estado': 'Waiting for Sponsor - No Prior Sponsor'},
+                    {'estado': 'Waiting for Sponsor - Discontinued'},
+                    {'estado': 'Additional Sponsor Needed'}]
         }];
 
         selector['$and'] = ors;
@@ -18,7 +18,7 @@ $(document).ready(function() {
         // get all unsponsored kids and pick one to display in the carousel
         $.getJSON('/api/v1/children/find/' + JSON.stringify(selector),
             function(res){
-                if(res.err !== undefined) {
+                if (res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
                 } else if (JSON.stringify(res) === '{}') {
@@ -42,8 +42,7 @@ $(document).ready(function() {
      * }
      */
     function getChild(childPool, callback) {
-        // get an array of child ids by mapping the keys in the child pool
-        // to an array called 'ids'
+        // get an array of child ids by mapping the keys in the child pool to an array called 'ids'
         var ids = $.map(childPool, function (value, key) {
             return key;
         });
@@ -53,37 +52,39 @@ $(document).ready(function() {
 
         // init the cart as an array from sessionStorage
         var cart = [];
-        if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+        if (inStorage('cart') === true) {
             cart = sessionStorage.getItem('cart').split(',');
         }
 
         // if the child isn't in the cart and also isn't in the slider
         if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
-
             // then add the child to the slider
             var name = childPool[id].nombre;
-            var age = childPool[id].años;
+
+            var birthday = new Date(childPool[id].cumpleaños);
+            var today = new Date();
+            var age = today.getFullYear() - birthday.getFullYear();
+            birthday.setFullYear(today.getFullYear());
+            if (today < birthday) { age--; }
+
             var gender = childPool[id].género;
             var location = childPool[id].departamento;
             var hobbies = childPool[id].pastiempos;
+            var picture = childPool[id].foto;
 
-            // get the picture and load it in
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                var child = {
-                    'id': id,
-                    'name': name,
-                    'age': age,
-                    'gender': gender,
-                    'location': location,
-                    'pastiempos': hobbies,
-                    'picture': res.data
-                };
-                childrenCurrentlyInSlider.push(id);
-                callback(child);
-            });
+            var child = {
+                'id': id,
+                'name': name,
+                'age': age,
+                'gender': gender,
+                'location': location,
+                'pastiempos': hobbies,
+                'picture': picture
+            };
+
+            callback(child);
         } else {
-             // if the child is already in the slider or cart but there
-             // are more children in the child pool
+             // if the child is already in the slider or cart but there are more children in the child pool
             if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
                 getChild(childPool, function(child) {
                     callback(child);
@@ -259,9 +260,6 @@ $(document).ready(function() {
                 selector['mes_de_nacimiento'] = monthInt;
             }
         }
-        if($('#birthdaySearch').text() !== 'día del nacimiento') {
-            selector['día_del_nacimiento'] = $('#birthdaySearch').text();
-        }
 
         return selector;
     }
@@ -305,60 +303,62 @@ $(document).ready(function() {
     /**
      * find a child panel
      */
-    $('#search-button').click(function() {
-        var selector = checkSearchPanel();
+    $(document).arrive('.child-slide', {onceOnly: true, existing: true}, function() {
+        $('#search-button').click(function() {
+            var selector = checkSearchPanel();
 
-        // empty the owl carousel (minus the last slide...)
-        while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
-            owl.data('owlCarousel').removeItem();
-        }
-        // owl doesn't delete the last slide for some reason, so do it manually
-        if (owl.data('owlCarousel').owl.owlItems.length === 1) {
-            owl.data('owlCarousel').removeItem();
-        }
-
-        // recreate pending spinner and add to page
-        spinnerDiv = document.createElement('div');
-        bounceDiv1 = document.createElement('div');
-        bounceDiv2 = document.createElement('div');
-        bounceDiv3 = document.createElement('div');
-
-        spinnerDiv.className = 'spinner';
-        bounceDiv1.className = 'bounce1';
-        bounceDiv2.className = 'bounce2';
-        bounceDiv3.className = 'bounce3';
-
-        spinnerDiv.appendChild(bounceDiv1);
-        spinnerDiv.appendChild(bounceDiv2);
-        spinnerDiv.appendChild(bounceDiv3);
-
-        var container = document.getElementById('spinner');
-        container.insertBefore(spinnerDiv, container.childNodes[0]);
-
-        // empty the array that keeps track of the children in the slider
-        childrenCurrentlyInSlider = [];
-
-        // insert a child matching the selector
-        insertChild(selector, function(res) {
-            if (res.success === true) {
-                console.log('inserted search child.');
-            } else {
-                owl.owlCarousel({
-                    navigation : false,
-                    slideSpeed : 800,
-                    paginationSpeed : 800,
-                    autoWidth: true,
-                    singleItem: true
-                });
-                insertChild({}, function(res) {
-                    if (res.success === true) {
-                        console.log('inserted child. search came up empty.');
-                    } else {
-                        console.log('general unsponsored child not inserted.');
-                    }
-                });
-                console.log('did not insert a child.');
+            // empty the owl carousel (minus the last slide...)
+            while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
+                owl.data('owlCarousel').removeItem();
             }
+            // owl doesn't delete the last slide for some reason, so do it manually
+            if (owl.data('owlCarousel').owl.owlItems.length === 1) {
+                owl.data('owlCarousel').removeItem();
+            }
+
+            // recreate pending spinner and add to page
+            spinnerDiv = document.createElement('div');
+            bounceDiv1 = document.createElement('div');
+            bounceDiv2 = document.createElement('div');
+            bounceDiv3 = document.createElement('div');
+
+            spinnerDiv.className = 'spinner';
+            bounceDiv1.className = 'bounce1';
+            bounceDiv2.className = 'bounce2';
+            bounceDiv3.className = 'bounce3';
+
+            spinnerDiv.appendChild(bounceDiv1);
+            spinnerDiv.appendChild(bounceDiv2);
+            spinnerDiv.appendChild(bounceDiv3);
+
+            var container = document.getElementById('spinner');
+            container.insertBefore(spinnerDiv, container.childNodes[0]);
+
+            // empty the array that keeps track of the children in the slider
+            childrenCurrentlyInSlider = [];
+
+            // insert a child matching the selector
+            insertChild(selector, function(res) {
+                if (res.success === true) {
+                    console.log('inserted search child.');
+                } else {
+                    owl.owlCarousel({
+                        navigation : false,
+                        slideSpeed : 800,
+                        paginationSpeed : 800,
+                        autoWidth: true,
+                        singleItem: true
+                    });
+                    insertChild({}, function(res) {
+                        if (res.success === true) {
+                            console.log('inserted child. search came up empty.');
+                        } else {
+                            console.log('general unsponsored child not inserted.');
+                        }
+                    });
+                    console.log('did not insert a child.');
+                }
+            });
         });
     });
 
@@ -635,3 +635,12 @@ $(document).ready(function() {
         }
     });
 });
+
+// helper function - check session storage element
+function inStorage(object) {
+    if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
+        return true;
+    } else {
+        return false;
+    }
+}

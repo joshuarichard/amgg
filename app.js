@@ -24,7 +24,6 @@ var cart = require('./data/cart.js');
  * GET /api/v1/children/id/:id - get a child by their id
  * GET /api/v1/children/find/:selector - get children by a selector
  * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
- * GET /api/v1/pictures/id/:id - get a child's picture by their doc _id
  *
  * donors (^ denotes required token)
  * ---------------------------------
@@ -237,31 +236,13 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     });
 });
 
-// GET /api/v1/pictures/id/:id get and child's picture with the child's id
-app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, CHILD_COLLECTION, function(data) {
-        if (data.hasOwnProperty('err')) {
-            res.status(500).send({
-                success: false,
-                message: data.err
-            });
-        } else {
-            res.status(200).send({
-                success: true,
-                id: req.params.id,
-                'data': data
-            });
-        }
-    });
-});
-
-// changeChildrenStatus function to add the 'status': 'sponsored' flag to each kid
+// changeChildrenStatus function to add the 'estado': 'sponsored' flag to each kid
 function changeChildrenStatus(array, newStatus, callback) {
     array = array.slice(0);
 
     function editChild() {
         var id = array.pop();
-        mongo.edit(id, {'status': newStatus}, CHILD_COLLECTION, function() {
+        mongo.edit(id, {'estado': newStatus}, CHILD_COLLECTION, function() {
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
