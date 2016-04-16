@@ -4,7 +4,7 @@
         "port": "27017",
         "username": "x",
         "password": "x",
-        "db": "endgame2",
+        "db": "production-beta-pretend",
         "childCollection": "children",
         "donorCollection": "donors",
         "cartCollection": "carts"
@@ -13,7 +13,7 @@
         "port": 3000
     },
     "autofill": {
-        "db": "endgame2",
+        "db": "production-beta-pretend",
         "childCollection": "children",
         "donorCollection": "donors",
         "numOfDocs": "10"
