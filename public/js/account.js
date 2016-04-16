@@ -5,6 +5,94 @@ $(document).ready(function() {
     /* get the element to put the tabs in */
     var container = document.getElementById('tab-content');
 
+    /* Check to make sure all the fields are filled in and ensure the
+     * user's password passes the constraints
+     */
+    function checkInfo(form) {
+        // get all form info
+        var firstName = $('[name=first-name]', form)[0];
+        var lastName = $('[name=last-name]', form)[0];
+        var phone = $('[name=phone]', form)[0];
+        var email = $('[name=email]', form)[0];
+        var street = $('[name=street]', form)[0];
+        var city = $('[name=city]', form)[0];
+        var departamento = $('[name=departamento]', form)[0];
+
+        if(firstName.value == '') {
+            alert('Error: El primer nombre no puede ir en blanco.');
+            firstName.focus();
+            return false;
+        } else if(lastName.value == '') {
+            alert('Error: Apellido no puede ir en blanco.');
+            lastName.focus();
+            return false;
+        } else if(phone.value == '') {
+            alert('Error: Phone number cannot be blank!');
+            phone.focus();
+            return false;
+        } else if(email.value == '') {
+            alert('Error: Correo electrónico no puede ir en blanco.');
+            email.focus();
+            return false;
+        } else if(street.value == '') {
+            alert('Error: Calle no puede ir en blanco.');
+            street.focus();
+            return false;
+        } else if(city.value == '') {
+            alert('Error: Ciudad no puede ir en blanco.');
+            city.focus();
+            return false;
+        } else if(departamento.value == '') {
+            alert('Error: Por favor seleccione una departamento.');
+            departamento.focus();
+            return false;
+        } else {
+            //form passed all constraints
+            return true;
+        }
+    }
+
+    function checkPassword (form) {
+        var oldPassword = $('[name=password-old]', form)[0];
+        var password = $('[name=password]', form)[0];
+        var confirmPassword = $('[name=password-confirm]', form)[0];
+
+        if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
+            if(password.value.length < 6) {
+                alert('Error: Password must contain at least six characters');
+                password.focus();
+                return false;
+            }
+            re = /[0-9]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one number (0-9)');
+                password.focus();
+                return false;
+            }
+            re = /[a-z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one lowercase letter (a-z)');
+                password.focus();
+                return false;
+            }
+            re = /[A-Z]/;
+            if(!re.test(password.value)) {
+                alert('Error: password must contain at least one uppercase letter (A-Z)');
+                password.focus();
+                return false;
+            }
+        } else if(oldPassword.value == '') {
+            alert('Error: Please enter your old password');
+            oldPassword.focus();
+            return false;
+        } else {
+            alert('Error: Please check that you\'ve entered and confirmed your password');
+            password.focus();
+            return false;
+        }
+        return true;
+    }
+
     /* check to see that there is a login token
      *   if not, prompt user to login
      */
@@ -315,6 +403,7 @@ $(document).ready(function() {
                 oldPassword.id = 'form-old-password';
                 oldPassword.className = 'form-control password-form';
                 oldPassword.type = 'password';
+                oldPassword.name = 'password-old';
 
                 //combine password elements into one element
                 oldPasswordWrapper.appendChild(oldPassword);
@@ -333,6 +422,7 @@ $(document).ready(function() {
                 contraseña.id = 'form-password';
                 contraseña.className = 'form-control password-form';
                 contraseña.type = 'password';
+                contraseña.name = 'password';
 
                 //combine password elements into one element
                 contraseñaWrapper.appendChild(contraseña);
@@ -351,6 +441,7 @@ $(document).ready(function() {
                 confirmarContraseña.id = 'form-confirm-password';
                 confirmarContraseña.className = 'form-control password-form';
                 confirmarContraseña.type = 'password';
+                confirmarContraseña.name = 'password-confirm';
 
                 //combine password elements into one element
                 confirmarContraseñaWrapper.appendChild(confirmarContraseña);
@@ -435,23 +526,15 @@ $(document).ready(function() {
                 // check that their old password is correct, then update donor
                 // doc with new password
                 submitPasswordChanges.onclick = function() {
-                    var oldPassword = document.getElementById('form-old-password').value;
-                    var newPassword = document.getElementById('form-password').value;
-                    var confirmNewPassword = document.getElementById('form-confirm-password').value;
-
                     //make sure their new password is not '' and make sure
                     //the two passwords match, then send new password to db
-                    if (oldPassword === '' || newPassword === '' || confirmNewPassword === '') {
-                        alert('Campos que hacen falta.');
-                    } else if (newPassword !== confirmNewPassword) {
-                        alert('Las contraseñas no coinciden.');
-                    } else {
+                    if (checkPassword(document.getElementById('user-info-container'))) {
                         $.ajax({
                             url: '/api/v1/donor/auth',
                             type: 'POST',
                             data: {
                                 'email': document.getElementById('form-email').value,
-                                'password': oldPassword
+                                'password':  document.getElementById('form-old-password').value
                             },
                             success: function(res) {
                                 //update the users token and id which will reset their session timer
@@ -479,6 +562,8 @@ $(document).ready(function() {
                                         $('#form-email').prop('disabled', false);
                                         $('#form-street').prop('disabled', false);
                                         $('#form-city').prop('disabled', false);
+                                        $('#form-street').prop('disabled', false);
+                                        $('#departamento').prop('disabled', false);
                                         //hide password forms
                                         $('.contraseña-container').hide();
                                     },
@@ -552,48 +637,59 @@ $(document).ready(function() {
     }
 
     function submitInfoChanges() {
-        $.ajax({
-            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-            type: 'PUT',
-            data: {
-                'token' : sessionStorage.getItem('token'),
-                'changes' : {
-                    'nombre': document.getElementById('form-first-name').value,
-                    'apellido': document.getElementById('form-last-name').value,
-                    'teléfono': document.getElementById('form-phone').value,
-                    'calle': document.getElementById('form-street').value,
-                    'ciudad': document.getElementById('form-city').value,
-                    'departamento': document.getElementById('departamento').value,
-                    'correo_electrónico': document.getElementById('form-email').value
-                }
-            },
-            success: function() {
-                alert('Su información ha sido actualizada.');
-                $('#edit-info-submit').remove();
-            },
-            error: function(res) {
-                //put old info back in
-                $.ajax({
-                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-                    type: 'POST',
-                    data: {
-                        'token' : sessionStorage.getItem('token'),
-                        'id' : sessionStorage.getItem('id')
-                    },
-                    success: function(res) {
-                        document.getElementById('form-first-name').value = res.nombre;
-                        document.getElementById('form-last-name').value = res.apellido;
-                        document.getElementById('form-phone').value = res.teléfono;
-                        document.getElementById('form-email').value = res.correo_electrónico;
-                        document.getElementById('form-street').value = res.calle;
-                        document.getElementById('form-city').value = res.ciudad;
+        if (checkInfo(document.getElementById('user-info-container'))) {
+            $.ajax({
+                url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                type: 'PUT',
+                data: {
+                    'token' : sessionStorage.getItem('token'),
+                    'changes' : {
+                        'nombre': document.getElementById('form-first-name').value,
+                        'apellido': document.getElementById('form-last-name').value,
+                        'teléfono': document.getElementById('form-phone').value,
+                        'calle': document.getElementById('form-street').value,
+                        'ciudad': document.getElementById('form-city').value,
+                        'departamento': document.getElementById('departamento').value,
+                        'correo_electrónico': document.getElementById('form-email').value
                     }
-                });
-                if (res.status === 409) {
-                    alert('el correo electrónico ya está asociada a una cuenta.');
+                },
+                success: function() {
+                    alert('Su información ha sido actualizada.');
+                    $('#edit-info-submit').remove();
+                },
+                error: function() {
+                    //put old info back in
+                    $.ajax({
+                        url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                        type: 'POST',
+                        data: {
+                            'token' : sessionStorage.getItem('token'),
+                            'id' : sessionStorage.getItem('id')
+                        },
+                        success: function(res) {
+                            document.getElementById('form-first-name').value = res.nombre;
+                            document.getElementById('form-last-name').value = res.apellido;
+                            document.getElementById('form-phone').value = res.teléfono;
+                            document.getElementById('form-email').value = res.correo_electrónico;
+                            document.getElementById('form-street').value = res.calle;
+                            document.getElementById('form-city').value = res.ciudad;
+                            document.getElementById('departamento').value = res.departamento;
+                        }
+                    });
+                },
+                statusCode: {
+                    404: function() {
+                        alert('Página no encontrada.');
+                    },
+                    409: function() {
+                        alert('el correo electrónico ya está asociada a una cuenta.');
+                    },
+                    500: function() {
+                        alert('An error occured, please try again or contact an admin');
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     function createButton () {
