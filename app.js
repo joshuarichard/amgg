@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var request = require('request');
 var crypto = require('crypto');
 var querystring = require('querystring');
+var argv = require('minimist')(process.argv.slice(2));
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -99,6 +100,47 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
+var algorithm = 'aes-256-ctr';
+var argvPassword = argv.password;
+
+if (typeof argvPassword === 'undefined') {
+    log.error('Add password with the --password option.');
+    process.exit();
+}
+
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
+function decrypt(text, pass) {
+    var decipher = crypto.createDecipher(algorithm, pass);
+    var decrypted = decipher.update(text, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+var decrypted = decrypt(nconf.get('keys:credomatic'), argv.password);
+decrypted = decrypted.split('|');
+var credomaticHash = crypto.createHash('md5')
+                           .update(decrypted[0] + '|' +
+                                   decrypted[1] + '|' +
+                                   decrypted[2])
+                           .digest('hex');
+
+if (credomaticHash !== decrypted[3]) {
+    log.error('Incorrect password given at startup.');
+    process.exit();
+}
+
+var BANK_PUBLIC_KEY = decrypted[0];
+var BANK_PRIVATE_KEY = decrypted[1];
+var AMGG_USERNAME = decrypted[2];
+var ADMIN_EMAIL = nconf.get('admin:email');
+var CHILD_COLLECTION = nconf.get('mongo:childCollection');
+var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
+var CART_COLLECTION = nconf.get('mongo:cartCollection');
+var CHILD_COST = nconf.get('amgg:childCost');
+var TOKEN_KEY = nconf.get('keys:token');
+var SSL_KEY_PATH = nconf.get('keys:sslKey');
+var SSL_CERT_PATH = nconf.get('keys:sslCert');
 
 // email strings
 //var emailHeaderSponsor =  'Thank you for your sponsorship';
@@ -115,18 +157,6 @@ var emailBodyLetter = ' Contents of the Letter';
 // error email strings
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
-
-var ADMIN_EMAIL = nconf.get('admin:email');
-var CHILD_COLLECTION = nconf.get('mongo:childCollection');
-var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
-var CART_COLLECTION = nconf.get('mongo:cartCollection');
-var CHILD_COST = nconf.get('amgg:childCost');
-var TOKEN_KEY = nconf.get('keys:token');
-var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
-var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
-var SSL_KEY = nconf.get('keys:sslKey');
-var SSL_CERT = nconf.get('keys:sslCert');
-var AMGG_USERNAME = nconf.get('keys:username');
 
 /*** child api routes ***/
 
@@ -894,8 +924,8 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-https.createServer({ key: fs.readFileSync(SSL_KEY),
-                     cert: fs.readFileSync(SSL_CERT)}, app)
+https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
+                     cert: fs.readFileSync(SSL_CERT_PATH)}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });
