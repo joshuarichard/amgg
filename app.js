@@ -236,13 +236,13 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     });
 });
 
-// changeChildrenStatus function to add the 'status': 'sponsored' flag to each kid
+// changeChildrenStatus function to add the 'estado': 'sponsored' flag to each kid
 function changeChildrenStatus(array, newStatus, callback) {
     array = array.slice(0);
 
     function editChild() {
         var id = array.pop();
-        mongo.edit(id, {'status': newStatus}, CHILD_COLLECTION, function() {
+        mongo.edit(id, {'estado': newStatus}, CHILD_COLLECTION, function() {
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
