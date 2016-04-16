@@ -436,9 +436,10 @@ function trim(doc) {
                 'años': doc[miniDoc].años,
                 'cumpleaños':doc[miniDoc].cumpleaños,
                 'género': doc[miniDoc].género,
-                'centro_de_ninos': doc[miniDoc].centro_de_ninos,
+                'centro_de_niños': doc[miniDoc].centro_de_niños,
                 'departamento': doc[miniDoc].departamento,
                 'pastiempos': doc[miniDoc].pastiempos,
+                'sueños': doc[miniDoc].sueños,
                 'foto': doc[miniDoc].foto
             };
         // else this is only one document
@@ -448,9 +449,10 @@ function trim(doc) {
                 'años': doc.años,
                 'cumpleaños': doc.cumpleaños,
                 'género': doc.género,
-                'centro_de_ninos': doc.centro_de_ninos,
+                'centro_de_niños': doc.centro_de_niños,
                 'departamento': doc.departamento,
                 'pastiempos': doc.pastiempos,
+                'sueños': doc.sueños,
                 'foto': doc.foto
             };
             break;

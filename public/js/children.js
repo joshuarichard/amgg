@@ -71,6 +71,8 @@ $(document).ready(function() {
             var location = childPool[id].departamento;
             var hobbies = childPool[id].pastiempos;
             var picture = childPool[id].foto;
+            var center = childPool[id].centro_de_niños;
+            var dreams = childPool[id].sueños;
 
             var child = {
                 'id': id,
@@ -78,7 +80,9 @@ $(document).ready(function() {
                 'age': age,
                 'gender': gender,
                 'location': location,
-                'pastiempos': hobbies,
+                'hobbies': hobbies,
+                'center': center,
+                'dreams': dreams,
                 'picture': picture
             };
 
@@ -116,7 +120,9 @@ $(document).ready(function() {
         var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
-        var hobbies = child.pastiempos;
+        var hobbies = child.hobbies;
+        var center = child.center;
+        var dreams = child.dreams;
 
         // create the slide
         var slide = document.createElement('div');
@@ -145,14 +151,11 @@ $(document).ready(function() {
         divDescription.className = 'child-description';
         var pData1 = document.createElement('p');
         pData1.className = 'lead';
-        pData1.innerHTML = 'I\'m a <span id=\'child-age\'>' + age + '</span>-year-old <span id=\'child-gender\'>' + gender + '</span> from <span id=\'child-location\'>' + location + '</span>, and you can change my world for good!';
+        pData1.innerHTML = 'Vivo en ' + location + ' Guatemala y asisto al colegio ' + center + ' de AMG, mis sueños son \"' + dreams + '\"';
         var pData2 = document.createElement('p');
-        pData2.innerHTML = 'Make me part of your family, and help me reach my God-given potential. $<span id=\'child-cost\'>39</span> a month can help transform my community and change my world.';
-        var pData3 = document.createElement('p');
-        pData3.innerHTML = 'My hobbies include ' + hobbies;
+        pData2.innerHTML = 'Con tu aporte mensual tu puedes ayudarme a alcanzar mis sueños.​';
         divDescription.appendChild(pData1);
         divDescription.appendChild(pData2);
-        divDescription.appendChild(pData3);
         divData.appendChild(divDescription);
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
@@ -421,7 +424,7 @@ $(document).ready(function() {
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos.');
+                        alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
                         alert('see console for error info.');

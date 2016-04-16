@@ -128,12 +128,10 @@ function generateDocument(callback) {
         'apellido': lastName,
         'género': genero[Math.floor(Math.random() * genero.length)],
         'cumpleaños': birthday,
-        'centro_de_ninos' : centro_de_ninos[Math.floor(Math.random() *
-                            centro_de_ninos.length)],
+        'centro_de_niños' : centro_de_ninos[Math.floor(Math.random() * centro_de_ninos.length)],
         'direccion_de_casa': generateAddress(),
         'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
-        'departamento': departamento[Math.floor(Math.random() *
-                               departamento.length)],
+        'departamento': departamento[Math.floor(Math.random() * departamento.length)],
         'código_postal': Math.floor((Math.random() * (99999) + 1)),
         'pastiempos': 'Reading, playing baseball, and swinging. Other stuff too.',
         'foto': picture,
