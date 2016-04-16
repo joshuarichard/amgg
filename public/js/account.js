@@ -17,7 +17,6 @@ $(document).ready(function() {
         var street = $('[name=street]', form)[0];
         var city = $('[name=city]', form)[0];
         var departamento = $('[name=departamento]', form)[0];
-        var email = $('[name=email]', form)[0];
 
         if(firstName.value == '') {
             alert('Error: El primer nombre no puede ir en blanco.');
@@ -563,6 +562,8 @@ $(document).ready(function() {
                                         $('#form-email').prop('disabled', false);
                                         $('#form-street').prop('disabled', false);
                                         $('#form-city').prop('disabled', false);
+                                        $('#form-street').prop('disabled', false);
+                                        $('#departamento').prop('disabled', false);
                                         //hide password forms
                                         $('.contraseña-container').hide();
                                     },
@@ -648,6 +649,7 @@ $(document).ready(function() {
                         'teléfono': document.getElementById('form-phone').value,
                         'calle': document.getElementById('form-street').value,
                         'ciudad': document.getElementById('form-city').value,
+                        'departamento': document.getElementById('departamento').value,
                         'correo_electrónico': document.getElementById('form-email').value
                     }
                 },
@@ -655,7 +657,7 @@ $(document).ready(function() {
                     alert('Su información ha sido actualizada.');
                     $('#edit-info-submit').remove();
                 },
-                error: function(res) {
+                error: function() {
                     //put old info back in
                     $.ajax({
                         url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
@@ -671,6 +673,7 @@ $(document).ready(function() {
                             document.getElementById('form-email').value = res.correo_electrónico;
                             document.getElementById('form-street').value = res.calle;
                             document.getElementById('form-city').value = res.ciudad;
+                            document.getElementById('departamento').value = res.departamento;
                         }
                     });
                 },
