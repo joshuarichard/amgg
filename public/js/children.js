@@ -303,60 +303,62 @@ $(document).ready(function() {
     /**
      * find a child panel
      */
-    $('#search-button').click(function() {
-        var selector = checkSearchPanel();
+    $(document).arrive('.child-slide', {onceOnly: true, existing: true}, function() {
+        $('#search-button').click(function() {
+            var selector = checkSearchPanel();
 
-        // empty the owl carousel (minus the last slide...)
-        while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
-            owl.data('owlCarousel').removeItem();
-        }
-        // owl doesn't delete the last slide for some reason, so do it manually
-        if (owl.data('owlCarousel').owl.owlItems.length === 1) {
-            owl.data('owlCarousel').removeItem();
-        }
-
-        // recreate pending spinner and add to page
-        spinnerDiv = document.createElement('div');
-        bounceDiv1 = document.createElement('div');
-        bounceDiv2 = document.createElement('div');
-        bounceDiv3 = document.createElement('div');
-
-        spinnerDiv.className = 'spinner';
-        bounceDiv1.className = 'bounce1';
-        bounceDiv2.className = 'bounce2';
-        bounceDiv3.className = 'bounce3';
-
-        spinnerDiv.appendChild(bounceDiv1);
-        spinnerDiv.appendChild(bounceDiv2);
-        spinnerDiv.appendChild(bounceDiv3);
-
-        var container = document.getElementById('spinner');
-        container.insertBefore(spinnerDiv, container.childNodes[0]);
-
-        // empty the array that keeps track of the children in the slider
-        childrenCurrentlyInSlider = [];
-
-        // insert a child matching the selector
-        insertChild(selector, function(res) {
-            if (res.success === true) {
-                console.log('inserted search child.');
-            } else {
-                owl.owlCarousel({
-                    navigation : false,
-                    slideSpeed : 800,
-                    paginationSpeed : 800,
-                    autoWidth: true,
-                    singleItem: true
-                });
-                insertChild({}, function(res) {
-                    if (res.success === true) {
-                        console.log('inserted child. search came up empty.');
-                    } else {
-                        console.log('general unsponsored child not inserted.');
-                    }
-                });
-                console.log('did not insert a child.');
+            // empty the owl carousel (minus the last slide...)
+            while (owl.data('owlCarousel').owl.owlItems.length !== 1) {
+                owl.data('owlCarousel').removeItem();
             }
+            // owl doesn't delete the last slide for some reason, so do it manually
+            if (owl.data('owlCarousel').owl.owlItems.length === 1) {
+                owl.data('owlCarousel').removeItem();
+            }
+
+            // recreate pending spinner and add to page
+            spinnerDiv = document.createElement('div');
+            bounceDiv1 = document.createElement('div');
+            bounceDiv2 = document.createElement('div');
+            bounceDiv3 = document.createElement('div');
+
+            spinnerDiv.className = 'spinner';
+            bounceDiv1.className = 'bounce1';
+            bounceDiv2.className = 'bounce2';
+            bounceDiv3.className = 'bounce3';
+
+            spinnerDiv.appendChild(bounceDiv1);
+            spinnerDiv.appendChild(bounceDiv2);
+            spinnerDiv.appendChild(bounceDiv3);
+
+            var container = document.getElementById('spinner');
+            container.insertBefore(spinnerDiv, container.childNodes[0]);
+
+            // empty the array that keeps track of the children in the slider
+            childrenCurrentlyInSlider = [];
+
+            // insert a child matching the selector
+            insertChild(selector, function(res) {
+                if (res.success === true) {
+                    console.log('inserted search child.');
+                } else {
+                    owl.owlCarousel({
+                        navigation : false,
+                        slideSpeed : 800,
+                        paginationSpeed : 800,
+                        autoWidth: true,
+                        singleItem: true
+                    });
+                    insertChild({}, function(res) {
+                        if (res.success === true) {
+                            console.log('inserted child. search came up empty.');
+                        } else {
+                            console.log('general unsponsored child not inserted.');
+                        }
+                    });
+                    console.log('did not insert a child.');
+                }
+            });
         });
     });
 
