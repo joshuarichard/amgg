@@ -131,7 +131,7 @@ $(document).ready(function() {
     total.className = 'col-md-12 checkout-total';
     var amount = document.createElement('span');
     amount.className = 'pull-right';
-    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' quetzal';
+    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q';
     total.appendChild(amount);
     container.appendChild(total);
 
@@ -145,7 +145,7 @@ $(document).ready(function() {
     };
 
     addButton.appendChild(document.createTextNode('Apadrinar a otro niño/a'));
-    addButtonContainer.appendChild(addButton)
+    addButtonContainer.appendChild(addButton);
     container.appendChild(addButtonContainer);
 
     /* if the user is already logged in, change the login button
@@ -646,7 +646,7 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' quetzal');
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
                 }
             });
         });
