@@ -131,7 +131,7 @@ $(document).ready(function() {
     total.className = 'col-md-12 checkout-total';
     var amount = document.createElement('span');
     amount.className = 'pull-right';
-    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').length/24) * 200) + ' quetzal';
+    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' quetzal';
     total.appendChild(amount);
     container.appendChild(total);
 
@@ -646,6 +646,7 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' quetzal');
                 }
             });
         });
