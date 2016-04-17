@@ -116,11 +116,8 @@ $(document).ready(function() {
         // assign all of the data gathered from the api to variables
         var id = child.id;
         var name = child.name;
-        var age = child.age;
-        var gender = child.gender;
         var location = child.location;
         var picture = child.picture;
-        var hobbies = child.hobbies;
         var center = child.center;
         var dreams = child.dreams;
 
