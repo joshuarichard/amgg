@@ -126,11 +126,13 @@ $(document).ready(function() {
         });
     }
 
-    //append total cost after the last child
+    // append total cost after the last child all
+    // children should be in session stoarge at this point
     var total = document.createElement('div');
     total.className = 'col-md-12 checkout-total';
     var amount = document.createElement('span');
-    amount.className = 'pull-right';
+    amount.className = 'pull-right total';
+    amount.id = 'cart-total';
     amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q';
     total.appendChild(amount);
     container.appendChild(total);
@@ -373,6 +375,9 @@ $(document).ready(function() {
             // set on click button function
             button.onclick = function() {
                 removeChildFromCart(button.parentNode.parentNode.id);
+                // re-calculate checkout total after removing a child
+                $('#cart-total').text('Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
+                $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
             };
 
             // add button to table entry and add table entry to row
