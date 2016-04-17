@@ -141,7 +141,7 @@ $(document).ready(function() {
         // create the description element
         var divData = document.createElement('div');
         divData.className = 'col-xs-6';
-        var hData = document.createElement('h1');
+        var hData = document.createElement('h2');
         hData.innerHTML = 'Hola, me llamo <span id =\'child-name\'>' + name + '</span>!';
         divData.appendChild(hData);
         var divDescription = document.createElement('div');
