@@ -209,7 +209,7 @@ $(document).ready(function() {
                 },
                 complete: function() {
                     if (worked === true) {
-                        window.location = 'account.html';
+                        location.reload();
                     }
                 }
             });

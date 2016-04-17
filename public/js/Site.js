@@ -69,7 +69,7 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
             },
             complete: function() {
                 if (worked === true) {
-                    window.location = '../views/account.html';
+                    location.reload();
                 }
             }
         });
