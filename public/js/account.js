@@ -838,7 +838,7 @@ $(document).ready(function() {
                     ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
-                    departamentoDiv.innerHTML = '<b> departamento: </b>' + departamento;
+                    departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
                     hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
