@@ -632,6 +632,14 @@ $(document).ready(function() {
                                     });
                                 }
                             });
+                        },
+                        statusCode: {
+                            409: function() {
+                                alert('Correo electrónico ya está asociada a otra cuenta.')
+                            },
+                            500: function() {
+                                alert('Error interno del servidor, por favor intente de nuevo más tarde.')
+                            }
                         }
                     });
                 }
