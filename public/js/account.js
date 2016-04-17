@@ -210,40 +210,16 @@ $(document).ready(function() {
                 } else {
                     $('.spinner').remove();
                 }
-
-            },
-            error: function() {
-                alert('La sesión ha expirado, por favor ingrese de nuevo');
-                // if getting in here that means that the id and token has
-                // been set but it's since expired. nuke everything and
-                // make them login again.
-                if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-                    sessionStorage.removeItem('token');
-                }
-                if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
-                    sessionStorage.removeItem('cart');
-                }
-                if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
-                    sessionStorage.removeItem('id');
-                }
-                // this shouldn't be set but check anyway
-                if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
-                    sessionStorage.removeItem('assignedDonorID');
-                }
-                window.location = 'children.html';
-            }
-        });
-
-        /* Create content for tabB */
-        $.ajax({
-            url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-            type: 'POST',
-            data: {
-                'token' : sessionStorage.getItem('token'),
-                'id' : sessionStorage.getItem('id')
-            },
-            success: function(res) {
+                /*
+                donorInfo['nombre'] = res.nombre;
+                donorInfo['apellido'] = res.apellido;
+                donorInfo['teléfono'] = res.teléfono;
+                donorInfo['correo_electrónico'] = res.correo_electrónico;
+                donorInfo['calle'] = res.calle;
+                donorInfo['ciudad'] = res.ciudad;
+                donorInfo['departamento'] = res.departamento; */
                 /* create content for tabB */
+
                 var infoWrapper = document.createElement('div');
                 infoWrapper.id = 'tabB-content';
                 infoWrapper.className = 'content-wrapper row row-centered';
@@ -584,8 +560,41 @@ $(document).ready(function() {
                 tabB.appendChild(infoWrapper);
 
                 infoChange();
+            },
+            error: function() {
+                alert('La sesión ha expirado, por favor ingrese de nuevo');
+                // if getting in here that means that the id and token has
+                // been set but it's since expired. nuke everything and
+                // make them login again.
+                if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+                    sessionStorage.removeItem('token');
+                }
+                if (sessionStorage.getItem('cart') != null && sessionStorage.getItem('cart') != '') {
+                    sessionStorage.removeItem('cart');
+                }
+                if (sessionStorage.getItem('id') != null && sessionStorage.getItem('id') != '') {
+                    sessionStorage.removeItem('id');
+                }
+                // this shouldn't be set but check anyway
+                if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
+                    sessionStorage.removeItem('assignedDonorID');
+                }
+                window.location = 'children.html';
             }
         });
+
+        /* Create content for tabB */
+        //$.ajax({
+        //    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+        //    type: 'POST',
+        //    data: {
+        //        'token' : sessionStorage.getItem('token'),
+        //        'id' : sessionStorage.getItem('id')
+        //    },
+        //    success: function(res) {
+// HERE
+        //    }
+        //});
 
         var deleteAccountText = document.createElement('div');
         deleteAccountText.className = 'delete-account-text';
