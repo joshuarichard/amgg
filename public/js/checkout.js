@@ -92,6 +92,26 @@ $(document).ready(function() {
         $('.spinner').remove();
     }
 
+    // create total cost element and append it to the page
+    // calculate the cost based off children in session storage
+    // if there are more kids in the DB cart, the amount will be
+    // updated below
+    var total = document.createElement('div');
+    total.className = 'col-md-12 checkout-total';
+    var amount = document.createElement('span');
+    amount.className = 'pull-right total';
+    amount.id = 'cart-total';
+    amount.innerHTML = 'Total: 0 Q/mes';
+    if (sessionStorage.getItem('cart') == "") {
+       amount.innerHTML = 'Total: 0 Q/mes';
+        $('#donor-total').text('0 Q/mes');
+    } else {
+        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');    
+    }
+    total.appendChild(amount);
+    container.appendChild(total);
+
     // lastly, check to see if the donor has a cart and if they do then
     // add any kids in that cart
     if (inStorage('id') === true) {
@@ -113,6 +133,7 @@ $(document).ready(function() {
                             }
                             sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                         }
+                        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
                     } else {
                         for (key in res) {
                             kidsInCartInDB = res[key]['kids_in_cart'];
@@ -121,23 +142,12 @@ $(document).ready(function() {
                             }
                             sessionStorage.setItem('cart', kidsInCartInDB.toString());
                         }
+                        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
                     }
-
                 }
             }
         });
     }
-
-    // append total cost after the last child all
-    // children should be in session stoarge at this point
-    var total = document.createElement('div');
-    total.className = 'col-md-12 checkout-total';
-    var amount = document.createElement('span');
-    amount.className = 'pull-right total';
-    amount.id = 'cart-total';
-    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q';
-    total.appendChild(amount);
-    container.appendChild(total);
 
     // after all that append the 'add a child' button
     var addButtonContainer = document.createElement('div');
@@ -374,8 +384,14 @@ $(document).ready(function() {
             button.onclick = function() {
                 removeChildFromCart(button.parentNode.parentNode.id);
                 // re-calculate checkout total after removing a child
-                $('#cart-total').text('Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
-                $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
+                if (sessionStorage.getItem('cart') == "") {
+                    $('#cart-total').text('Total: 0 Q/mes');
+                    $('#donor-total').text('0 Q/mes');
+                } else {
+                    $('#cart-total').text('Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');    
+                }
+                
             };
 
             // add button to table entry and add table entry to row
@@ -659,7 +675,7 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q');
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
                 }
             });
         });
