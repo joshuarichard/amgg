@@ -126,6 +126,10 @@
      background: transparent;
 }
 
+.navbar-padding {
+     padding-top: 30px;
+}
+
 .dropdown-toggle {
     color: white;
 }
