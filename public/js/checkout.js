@@ -751,10 +751,14 @@ $(document).ready(function() {
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
         if ($('.login').css('display') == 'none') {
-            $('.login').show();
+            $('.login').slideDown(function() {
+                $(this).show();
+            });
         }
         else {
-            $('.login').hide();
+            $('.login').slideUp(function() {
+                $(this).hide();
+            });
         }
     }
 
