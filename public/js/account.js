@@ -631,9 +631,10 @@ $(document).ready(function() {
         container.appendChild(tabC);
         container.appendChild(tabD);
     } else {
-        console.log('No login information found, please login');
+        console.log('No login information found, please login.');
         document.getElementById('myTab').remove();
-        alert('entra en la cuenta para acceder a esta página.');
+        alert('Entra en la cuenta para acceder a esta página.');
+        window.location = 'children.html';
     }
 
     function submitInfoChanges() {
