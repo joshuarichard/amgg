@@ -5,8 +5,6 @@ $(document).ready(function() {
     /* get the element to put the tabs in */
     var container = document.getElementById('tab-content');
 
-    var donorInfo = {};
-
     /* Check to make sure all the fields are filled in and ensure the
      * user's password passes the constraints
      */
