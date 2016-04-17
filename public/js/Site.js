@@ -20,10 +20,14 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
         if ($('.login').css('display') == 'none') {
-            $('.login').show();
+            $('.login').slideDown(function() {
+                $(this).show();
+            });
         }
         else {
-            $('.login').hide();
+            $('.login').slideUp(function() {
+                $(this).hide();
+            });
         }
     }
     /* When login link is clicked, call toggleLogin */
