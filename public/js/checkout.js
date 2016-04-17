@@ -102,12 +102,12 @@ $(document).ready(function() {
     amount.className = 'pull-right total';
     amount.id = 'cart-total';
     amount.innerHTML = 'Total: 0 Q/mes';
-    if (sessionStorage.getItem('cart') == "") {
-       amount.innerHTML = 'Total: 0 Q/mes';
+    if (sessionStorage.getItem('cart') == '' || sessionStorage.getItem('cart') == null) {
+        amount.innerHTML = 'Total: 0 Q/mes';
         $('#donor-total').text('0 Q/mes');
     } else {
         amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
-        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');    
+        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
     }
     total.appendChild(amount);
     container.appendChild(total);
@@ -384,14 +384,13 @@ $(document).ready(function() {
             button.onclick = function() {
                 removeChildFromCart(button.parentNode.parentNode.id);
                 // re-calculate checkout total after removing a child
-                if (sessionStorage.getItem('cart') == "") {
-                    $('#cart-total').text('Total: 0 Q/mes');
+                if (sessionStorage.getItem('cart') == '' || sessionStorage.getItem('cart') == null) {
+                    amount.innerHTML = 'Total: 0 Q/mes';
                     $('#donor-total').text('0 Q/mes');
                 } else {
-                    $('#cart-total').text('Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');    
+                    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
                 }
-                
             };
 
             // add button to table entry and add table entry to row
