@@ -589,14 +589,14 @@ $(document).ready(function() {
 
         var deleteAccountText = document.createElement('div');
         deleteAccountText.className = 'delete-account-text';
-        deleteAccountText.innerHTML = 'Clicking the delete button below will send a request to delete your account to the an admin at AMG Guatemala.  Your request should be processed within a week.  AMG Guatemala will not store any of your information after your account has been deleted and all of your sponsorships will be cancelled.';
+        deleteAccountText.innerHTML = '​Al hacer c click en el botón de borrar usted​ estará enviando una solicitud de borrar su cuenta al administrador de AMG Guatemala. Su solicitud será procesada en una semana. AMG Guatemala no almacenará su información después de que su cuenta ha sido borrada y todos sus apadrinamientos serán cancelados.';
 
         // delete account button
         var deleteAccountButtonContainer = document.createElement('div');
         deleteAccountButtonContainer.className = 'delete-account-button-container';
         var deleteAccountButton = document.createElement('button');
         deleteAccountButton.className = 'btn btn-danger btn-lg';
-        deleteAccountButton.appendChild(document.createTextNode('Delete Account'));
+        deleteAccountButton.appendChild(document.createTextNode('Eliminar la Cuenta'));
         deleteAccountButtonContainer.appendChild(deleteAccountButton);
 
         // set on click button function
@@ -800,7 +800,7 @@ $(document).ready(function() {
 
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
-                    var center = res[id].centro_de_ninos;
+                    var center = res[id].centro_de_niños;
                     var hobbies = res[id].pastiempos;
                     var picture = res[id].foto;
 
@@ -838,7 +838,7 @@ $(document).ready(function() {
                     ageDiv.innerHTML = '<b> Años:  </b>' + age;
                     birthdayDiv.innerHTML = '<b> Cumpleaños:  </b>' + birthday;
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
-                    departamentoDiv.innerHTML = '<b> departamento: </b>' + departamento;
+                    departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
                     hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
 
