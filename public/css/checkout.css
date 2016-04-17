@@ -6,11 +6,11 @@ height: 100%;
 }
 
 .content-container {
-min-height: 100%;
-margin: 0 auto -4em;
+  min-height: 100%;
+  margin: 0 auto -4em;
 }
 .footer, .push {
-height: 4em;
+  height: 4em;
 }
 
 /*Element Styles*/
@@ -23,10 +23,10 @@ hr {
 	border-color: #15274D;
 }
 
-input {
+/*input {
 	margin-top: .1em;
 	margin-bottom: .1em;
-}
+}*/
 
 table {
 	display: table;
@@ -120,11 +120,21 @@ table {
   margin-bottom: 1.5em;
 }
 
-/*ID Styles*/
 .checkout-nav {
-	margin-top: 1em;
-	margin-bottom: 1em;
-	margin-right: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-right: 1em;
+}
+
+.checkout-input {
+  margin-top: .1em;
+  margin-bottom: .1em;
+}
+
+/*ID Styles*/
+#create-account-country {
+  margin-bottom: 0.05em;
+  margin-top: .15em;
 }
 
 #form-password {

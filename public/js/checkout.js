@@ -28,6 +28,8 @@ $(document).ready(function() {
                 $('#form-address-street').prop('disabled', true);
                 $('#form-address-city').val(res.ciudad);
                 $('#form-address-city').prop('disabled', true);
+                $('#departamento-checkout').val(res.departamento);
+                $('#departamento-checkout').prop('disabled', true);
                 $('#form-email').val(res.correo_electrónico);
                 $('#form-email').prop('disabled', true);
                 $('#form-country').prop('disabled', true);
@@ -273,24 +275,6 @@ $(document).ready(function() {
         // create child's table row
         var tr = document.createElement('tr');
 
-        function pic(callback) {
-            var picTD = document.createElement('td');
-            var picIMG = document.createElement('img');
-            picIMG.className = 'child-img';
-
-            $.getJSON('/api/v1/pictures/id/' + id, function(res) {
-                if (res.data.hasOwnProperty('err')){
-                    console.log(res.data.err);
-                    callback(false);
-                } else if (res.data !== undefined) {
-                    picIMG.src = 'data:image/image;base64,' + res.data;
-                    picTD.appendChild(picIMG);
-                    tr.appendChild(picTD);
-                    callback(true);
-                }
-            });
-        }
-
         function data(callback) {
             // get child data using api
             $.getJSON('/api/v1/children/id/' + id, function(res) {
@@ -309,11 +293,25 @@ $(document).ready(function() {
                     var date = new Date(res[id].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[id].nombre;
-                    var age = res[id].años;
+
+                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var today = new Date();
+                    var age = today.getFullYear() - birthdayISO.getFullYear();
+                    birthdayISO.setFullYear(today.getFullYear());
+                    if (today < birthdayISO) { age--; }
+
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_ninos;
                     var hobbies = res[id].pastiempos;
+                    var picture = res[id].foto;
+
+                    var picTD = document.createElement('td');
+                    var picIMG = document.createElement('img');
+                    picIMG.className = 'child-img';
+                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picTD.appendChild(picIMG);
+                    tr.appendChild(picTD);
 
                     // create elements for each piece of info
                     var dataDiv = document.createElement('td');
@@ -387,20 +385,14 @@ $(document).ready(function() {
             callback(true);
         }
 
-        // first insert pic
-        pic(function(success) {
+        data(function(success)  {
             if(success === true) {
-                // then append data
-                data(function(success)  {
-                    if(success === true) {
-                        // then append delete button
-                        deleteButton(function() {
-                            // append the row to the tbody, and
-                            // add the tbody to the table
-                            tbody.appendChild(tr);
-                            table.appendChild(tbody);
-                        });
-                    }
+                // then append delete button
+                deleteButton(function() {
+                    // append the row to the tbody, and
+                    // add the tbody to the table
+                    tbody.appendChild(tr);
+                    table.appendChild(tbody);
                 });
             }
         });
@@ -428,6 +420,7 @@ $(document).ready(function() {
         $('#form-phone').prop('disabled', false);
         $('#form-address-street').prop('disabled', false);
         $('#form-address-city').prop('disabled', false);
+        $('#departamento-checkout').prop('disabled', false);
         $('#form-country').prop('disabled', false);
 
         editInfoClicked = true;
@@ -452,6 +445,7 @@ $(document).ready(function() {
             $('#form-phone').prop('disabled', true);
             $('#form-address-street').prop('disabled', true);
             $('#form-address-city').prop('disabled', true);
+            $('#departamento-checkout').prop('disabled', true);
             $('#form-email').prop('disabled', true);
             $('#form-country').prop('disabled', true);
         }
@@ -484,6 +478,7 @@ $(document).ready(function() {
                                             'teléfono': document.getElementById('form-phone').value,
                                             'calle': document.getElementById('form-address-street').value,
                                             'ciudad': document.getElementById('form-address-city').value,
+                                            'departamento': document.getElementById('departamento-checkout').value,
                                             'país': document.getElementById('form-country').value
                                         }
                                     },
@@ -502,6 +497,9 @@ $(document).ready(function() {
                                             } else {
                                                 // if there aren't any children that are locked then send the cart
                                                 sendCart(false, function() {
+                                                    //clear password form
+                                                    document.getElementById('form-password').value = '';
+                                                    document.getElementById('form-password-confirm').value = '';
                                                     // hide elements from step one and show step two
                                                     // hide change info button
                                                     $('#donor-info-form').hide();
@@ -532,6 +530,9 @@ $(document).ready(function() {
                                     } else {
                                         // if there aren't any children that are locked then send the cart
                                         sendCart(false, function() {
+                                            //clear password form
+                                            document.getElementById('form-password').value = '';
+                                            document.getElementById('form-password-confirm').value = '';
                                             // hide elements from step one and show step two
                                             // hide change info button
                                             $('#donor-info-form').hide();
@@ -547,6 +548,11 @@ $(document).ready(function() {
                                     }
                                 });
                             }
+                        },
+                        statusCode: {
+                            401: function() {
+                                alert('La contraseña introducida es incorrecta, por favor, introduzca la contraseña correcta.');
+                            }
                         }
                     });
                 } else {
@@ -556,6 +562,7 @@ $(document).ready(function() {
                         'teléfono': document.getElementById('form-phone').value,
                         'calle': document.getElementById('form-address-street').value,
                         'ciudad': document.getElementById('form-address-city').value,
+                        'departamento': document.getElementById('departamento-checkout').value,
                         'país': document.getElementById('form-country').value,
                         'correo_electrónico': document.getElementById('form-email').value,
                         'password': document.getElementById('form-password').value
@@ -644,9 +651,10 @@ $(document).ready(function() {
                     'token': sessionStorage.getItem('token')
                 },
                 success: function(res) {
-                    $('#donor-name').text(res.nombre);
+                    $('#donor-name').text(res.nombre + ' ' + res.apellido);
                     $('#donor-phone').text(res.teléfono);
-                    $('#donor-address').text(res.calle + ' ' + res.ciudad + ', ' + res.país);
+                    $('#donor-address').text(res.calle + ' ' + res.ciudad);
+                    $('#donor-address-2').text(res.departamento + ', ' + res.país);
                     $('#donor-email').text(res.correo_electrónico);
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
@@ -754,6 +762,7 @@ $(document).ready(function() {
                 'teléfono': document.getElementById('create-account-phone').value,
                 'calle': document.getElementById('create-account-address-street').value,
                 'ciudad': document.getElementById('create-account-address-city').value,
+                'departamento': document.getElementById('departamento').value,
                 'país': document.getElementById('create-account-country').value,
                 'correo_electrónico': document.getElementById('create-account-email').value,
                 'password': document.getElementById('create-account-password').value
@@ -814,6 +823,8 @@ $(document).ready(function() {
         var phone = $('[name=phone]', form)[0];
         var street = $('[name=address]', form)[0];
         var city = $('[name=address-city]', form)[0];
+        var departamento = $('[name=departamento]', form)[0];
+        var country = $('[name=country]', form)[0];
         var email = $('[name=email]', form)[0];
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
@@ -837,6 +848,14 @@ $(document).ready(function() {
         } else if(city.value == '') {
             alert('Error: Ciudad no puede ir en blanco.');
             city.focus();
+            return false;
+        } else if(departamento.value == '') {
+            alert('Error: Por favor seleccione una departamento.');
+            departamento.focus();
+            return false;
+        } else if(country.value == '') {
+            alert('Error: Por favor seleccione un país.');
+            country.focus();
             return false;
         } else if(email.value == '') {
             alert('Error: Correo electrónico no puede ir en blanco.');
@@ -907,22 +926,22 @@ $(document).ready(function() {
                     'correo_electrónico': $('.donor-email').val()
                 },
                 success: function(res) {
-                    if (res.status === 200) {
-                        alert('Please check your email for your temporary password');
+                    if (res.success === true) {
+                        alert('Por favor, consultar su correo electrónico para su contraseña temporal.');
                         toggleLogin();
                     }
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos.');
+                        alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
-                        alert('see console for error info.');
+                        alert('Error.');
                     }
                 }
             });
         } else {
-            alert('Please enter your email into the email field before clicking Forgot Password');
+            alert('Por favor, introduzca su correo electrónico en el campo de correo electrónico antes de hacer clic "Olvidé mi contraseña".');
         }
     });
 });

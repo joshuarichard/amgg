@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var request = require('request');
 var crypto = require('crypto');
 var querystring = require('querystring');
+var argv = require('minimist')(process.argv.slice(2));
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -24,7 +25,6 @@ var cart = require('./data/cart.js');
  * GET /api/v1/children/id/:id - get a child by their id
  * GET /api/v1/children/find/:selector - get children by a selector
  * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
- * GET /api/v1/pictures/id/:id - get a child's picture by their doc _id
  *
  * donors (^ denotes required token)
  * ---------------------------------
@@ -100,6 +100,47 @@ app.get('/', function(req, res) {
     res.redirect('index.html');
 });
 
+var algorithm = 'aes-256-ctr';
+var argvPassword = argv.password;
+
+if (typeof argvPassword === 'undefined') {
+    log.error('Add password with the --password option.');
+    process.exit();
+}
+
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
+function decrypt(text, pass) {
+    var decipher = crypto.createDecipher(algorithm, pass);
+    var decrypted = decipher.update(text, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+var decrypted = decrypt(nconf.get('keys:credomatic'), argv.password);
+decrypted = decrypted.split('|');
+var credomaticHash = crypto.createHash('md5')
+                           .update(decrypted[0] + '|' +
+                                   decrypted[1] + '|' +
+                                   decrypted[2])
+                           .digest('hex');
+
+if (credomaticHash !== decrypted[3]) {
+    log.error('Incorrect password given at startup.');
+    process.exit();
+}
+
+var BANK_PUBLIC_KEY = decrypted[0];
+var BANK_PRIVATE_KEY = decrypted[1];
+var AMGG_USERNAME = decrypted[2];
+var ADMIN_EMAIL = nconf.get('admin:email');
+var CHILD_COLLECTION = nconf.get('mongo:childCollection');
+var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
+var CART_COLLECTION = nconf.get('mongo:cartCollection');
+var CHILD_COST = nconf.get('amgg:childCost');
+var TOKEN_KEY = nconf.get('keys:token');
+var SSL_KEY_PATH = nconf.get('keys:sslKey');
+var SSL_CERT_PATH = nconf.get('keys:sslCert');
 
 // email strings
 //var emailHeaderSponsor =  'Thank you for your sponsorship';
@@ -116,18 +157,6 @@ var emailBodyLetter = ' Contents of the Letter';
 // error email strings
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
-
-var ADMIN_EMAIL = nconf.get('admin:email');
-var CHILD_COLLECTION = nconf.get('mongo:childCollection');
-var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
-var CART_COLLECTION = nconf.get('mongo:cartCollection');
-var CHILD_COST = nconf.get('amgg:childCost');
-var TOKEN_KEY = nconf.get('keys:token');
-var BANK_PUBLIC_KEY = nconf.get('keys:bankPublic');
-var BANK_PRIVATE_KEY = nconf.get('keys:bankPrivate');
-var SSL_KEY = nconf.get('keys:sslKey');
-var SSL_CERT = nconf.get('keys:sslCert');
-var AMGG_USERNAME = nconf.get('keys:username');
 
 /*** child api routes ***/
 
@@ -237,31 +266,13 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     });
 });
 
-// GET /api/v1/pictures/id/:id get and child's picture with the child's id
-app.get('/api/v1/pictures/id/:id', function(req, res) {
-    mongo.getPic(req.params.id, CHILD_COLLECTION, function(data) {
-        if (data.hasOwnProperty('err')) {
-            res.status(500).send({
-                success: false,
-                message: data.err
-            });
-        } else {
-            res.status(200).send({
-                success: true,
-                id: req.params.id,
-                'data': data
-            });
-        }
-    });
-});
-
-// changeChildrenStatus function to add the 'status': 'sponsored' flag to each kid
+// changeChildrenStatus function to add the 'estado': 'sponsored' flag to each kid
 function changeChildrenStatus(array, newStatus, callback) {
     array = array.slice(0);
 
     function editChild() {
         var id = array.pop();
-        mongo.edit(id, {'status': newStatus}, CHILD_COLLECTION, function() {
+        mongo.edit(id, {'estado': newStatus}, CHILD_COLLECTION, function() {
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
@@ -514,92 +525,100 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     };
 
                     request.post({ url: url, form: bankData }, function(error, response) {
-                        var location = response.headers.location;
-                        var start = location.indexOf('?') + 1;
-                        var qs = location.substr(start);
+                        if (typeof response !== 'undefined') {
+                            var location = response.headers.location;
+                            var start = location.indexOf('?') + 1;
+                            var qs = location.substr(start);
 
-                        var bankResult = querystring.parse(qs);
+                            var bankResult = querystring.parse(qs);
 
-                        var responseHash = bankResult.hash;
-                        var responseCode = bankResult.response;
-                        var transactionid = bankResult.transactionid;
-                        var avsresponse = bankResult.avsresponse;
-                        var cvvresponse = bankResult.cvvresponse;
-                        var time = bankResult.time;
-                        var computedResponseHash = crypto.createHash('md5')
-                                                         .update(orderid + '|' +
-                                                                 amount + '|' +
-                                                                 responseCode + '|' +
-                                                                 transactionid + '|' +
-                                                                 avsresponse + '|' +
-                                                                 cvvresponse + '|' +
-                                                                 time + '|' +
-                                                                 BANK_PRIVATE_KEY)
-                                                         .digest('hex');
+                            var responseHash = bankResult.hash;
+                            var responseCode = bankResult.response;
+                            var transactionid = bankResult.transactionid;
+                            var avsresponse = bankResult.avsresponse;
+                            var cvvresponse = bankResult.cvvresponse;
+                            var time = bankResult.time;
+                            var computedResponseHash = crypto.createHash('md5')
+                                                             .update(orderid + '|' +
+                                                                     amount + '|' +
+                                                                     responseCode + '|' +
+                                                                     transactionid + '|' +
+                                                                     avsresponse + '|' +
+                                                                     cvvresponse + '|' +
+                                                                     time + '|' +
+                                                                     BANK_PRIVATE_KEY)
+                                                             .digest('hex');
 
-                        if (responseHash === computedResponseHash) {
-                            if (responseCode === '2') {
-                                // find the donor's cart in the cart collection
-                                // and get the children to sponsor
-                                cart.find(donor_id, function(cartdoc) {
-                                    for (var key in cartdoc) {
-                                        var cartKids = cartdoc[key].kids_in_cart;
-                                        var orderIDarray = orderid.split('-');
+                            if (responseHash === computedResponseHash) {
+                                if (responseCode === '2') {
+                                    // find the donor's cart in the cart collection
+                                    // and get the children to sponsor
+                                    cart.find(donor_id, function(cartdoc) {
+                                        for (var key in cartdoc) {
+                                            var cartKids = cartdoc[key].kids_in_cart;
+                                            var orderIDarray = orderid.split('-');
 
-                                        var orderKids = [];
-                                        for (var e = 1; e < orderIDarray.length; e++) {
-                                            orderKids.push(orderIDarray[e]);
-                                        }
-
-                                        if ((equalArrays(cartKids, orderKids) === true) && (cartdoc[key].request_to_pay === 'true')) {
-                                            // ... and store it in the donor doc
-                                            var donorPayments = [];
-                                            if (donordoc.hasOwnProperty('transacciones')) {
-                                                donorPayments = donordoc.transacciones;
-                                            }
-                                            bankResult['time'] = new Date(parseInt(bankResult.time * 1000));
-                                            donorPayments.push(bankResult);
-
-                                            var donorKids = [];
-                                            if (donordoc.hasOwnProperty('niños_patrocinadoras')) {
-                                                donorKids = donordoc.niños_patrocinadoras;
+                                            var orderKids = [];
+                                            for (var e = 1; e < orderIDarray.length; e++) {
+                                                orderKids.push(orderIDarray[e]);
                                             }
 
-                                            for (var kid = 0; kid < cartKids.length; kid++) {
-                                                donorKids.push(cartKids[kid]);
-                                            }
-                                            mongo.edit(donor_id, {'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
-                                                if (result.hasOwnProperty('err')) {
-                                                    // log lack of editing and response appropriately...
-                                                    eventlog.error('Error editing database. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + JSON.stringify({'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}));
+                                            if ((equalArrays(cartKids, orderKids) === true) && (cartdoc[key].request_to_pay === 'true')) {
+                                                // ... and store it in the donor doc
+                                                var donorPayments = [];
+                                                if (donordoc.hasOwnProperty('transacciones')) {
+                                                    donorPayments = donordoc.transacciones;
                                                 }
-                                                // then delete the cart doc
-                                                cart.delete(donor_id, function() {
-                                                    // recursive function to manage asynch for each id (change status to sponsored)
-                                                    changeChildrenStatus(cartKids, 'Sponsored', function() {
-                                                        // and we're done.
-                                                        res.status(200).send({
-                                                            success: true,
-                                                            message: 'Child Sponsored.'
+                                                bankResult['time'] = new Date(parseInt(bankResult.time * 1000));
+                                                donorPayments.push(bankResult);
+
+                                                var donorKids = [];
+                                                if (donordoc.hasOwnProperty('niños_patrocinadoras')) {
+                                                    donorKids = donordoc.niños_patrocinadoras;
+                                                }
+
+                                                for (var kid = 0; kid < cartKids.length; kid++) {
+                                                    donorKids.push(cartKids[kid]);
+                                                }
+                                                mongo.edit(donor_id, {'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
+                                                    if (result.hasOwnProperty('err')) {
+                                                        // log lack of editing and response appropriately...
+                                                        eventlog.error('Error editing database. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + JSON.stringify({'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}));
+                                                    }
+                                                    // then delete the cart doc
+                                                    cart.delete(donor_id, function() {
+                                                        // recursive function to manage asynch for each id (change status to sponsored)
+                                                        changeChildrenStatus(cartKids, 'Sponsored', function() {
+                                                            // and we're done.
+                                                            res.status(200).send({
+                                                                success: true,
+                                                                message: 'Child Sponsored.'
+                                                            });
                                                         });
                                                     });
                                                 });
-                                            });
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                } else {
+                                    res.status(500).send({
+                                        success: false,
+                                        message: 'Unsuccessful sponsorship. Card not charged. (responseCode != 1)'
+                                    });
+                                }
                             } else {
                                 res.status(500).send({
                                     success: false,
-                                    message: 'Unsuccessful sponsorship. Card not charged.'
+                                    message: 'Unsuccessful sponsorship. Card not charged. (Hashes not equivalent)'
                                 });
                             }
                         } else {
                             res.status(500).send({
                                 success: false,
-                                message: 'Unsuccessful sponsorship. Card not charged.'
+                                message: 'Unsuccessful sponsorship. Card not charged. (No response from bank)'
                             });
                         }
+
                     });
                 });
             } else {
@@ -905,8 +924,8 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-https.createServer({ key: fs.readFileSync(SSL_KEY),
-                     cert: fs.readFileSync(SSL_CERT)}, app)
+https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
+                     cert: fs.readFileSync(SSL_CERT_PATH)}, app)
       .listen(port, function () {
           log.info('express port listening at localhost:' + port);
       });
