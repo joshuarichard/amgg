@@ -187,6 +187,12 @@ function createAccount() {
             type: 'POST',
             data: donor,
             success: function() {
+                // clear create account form after the account is
+                // successfully created
+                $(':input', '#create-account-form').each(function() {
+                    $(this).val('');
+                });
+                
                 $('.create-account-overlay').hide();
                 //log user into their new account
                 $.ajax({
