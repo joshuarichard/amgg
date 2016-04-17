@@ -761,7 +761,7 @@ $(document).ready(function() {
                     $(':input', '#create-account-form').each(function() {
                         $(this).val('');
                     });
-                    
+
                     $('.create-account-overlay').hide();
                     //log user into their new account
                     $.ajax({

@@ -571,7 +571,7 @@ $(document).ready(function() {
                     });
 
                     $('.create-account-overlay').hide();
-                    log user into their new account
+                    //log user into their new account
                     $.ajax({
                         url: '/api/v1/donor/auth',
                         type: 'POST',
