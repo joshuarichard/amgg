@@ -24,6 +24,14 @@ html, body {
   font-size: 13px;
 }
 
+.navbar-default {
+  background: white;
+}
+
+.navbar-padding {
+     padding-top: 80px;
+}
+
 .owl-carousel{
   display: inline-block;
   width: 100%;

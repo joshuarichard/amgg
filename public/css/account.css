@@ -1,19 +1,19 @@
 * {
- margin: 0;
- }
+  margin: 0;
+}
 
- html, body {
- height: 100%;
- }
+html, body {
+  height: 100%;
+}
 
- .content-container {
- min-height: 100%;
- margin: 0 auto -4em;
- }
+.content-container {
+  min-height: 100%;
+  margin: 0 auto -4em;
+}
 
- .footer, .push {
- height: 4em;
-  }
+.footer, .push {
+  height: 4em;
+}
 
 .header {
   text-align: left;
@@ -24,7 +24,11 @@
   margin-bottom: 0;
 }
 
-.nav {
+.navbar-default {
+  background: white;
+}
+
+.tabs {
 	margin-top: 5em;
 	margin-left: 10%;
 	margin-right: 10%;
