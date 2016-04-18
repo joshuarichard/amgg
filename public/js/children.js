@@ -86,9 +86,11 @@ $(document).ready(function() {
                 'picture': picture
             };
 
+            childrenCurrentlyInSlider.push(id);
+
             callback(child);
         } else {
-             // if the child is already in the slider or cart but there are more children in the child pool
+            // if the child is already in the slider or cart but there are more children in the child pool
             if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
                 getChild(childPool, function(child) {
                     callback(child);
