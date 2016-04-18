@@ -273,7 +273,9 @@ $(document).ready(function() {
         slideSpeed : 800,
         paginationSpeed : 800,
         autoWidth: true,
-        singleItem: true
+        singleItem: true,
+        pagination: false,
+        dots: false
     });
 
     // custom previous and next buttons
@@ -296,6 +298,8 @@ $(document).ready(function() {
         insertChild(selector, function(res) {
             if (res.success === true) {
                 console.log('inserted child.');
+                var slide = owl.data('owlCarousel').owl.owlItems.length;
+                owl.data('owlCarousel').jumpTo(slide);
             } else {
                 console.log('did not insert a child.');
             }
@@ -349,7 +353,9 @@ $(document).ready(function() {
                         slideSpeed : 800,
                         paginationSpeed : 800,
                         autoWidth: true,
-                        singleItem: true
+                        singleItem: true,
+                        pagination: false,
+                        dots: false
                     });
                     insertChild({}, function(res) {
                         if (res.success === true) {
