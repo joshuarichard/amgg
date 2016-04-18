@@ -179,7 +179,7 @@ app.get('/api/v1/children/find/:selector', function(req, res) {
     var selector = query.format(JSON.parse(req.params.selector));
 
     // get a child pool
-    mongo.find(selector, CHILD_COLLECTION, 100, true, function(children) {
+    mongo.find(selector, CHILD_COLLECTION, 20, true, function(children) {
         var unsponsoredChildrenIds = [];
         for (var key in children) {
             unsponsoredChildrenIds.push(key);
