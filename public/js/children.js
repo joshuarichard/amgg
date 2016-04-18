@@ -142,7 +142,7 @@ $(document).ready(function() {
         var divData = document.createElement('div');
         divData.className = 'col-xs-6';
         var hData = document.createElement('h2');
-        hData.innerHTML = 'Hola, me llamo <span id =\'child-name\'>' + name + '</span>!';
+        hData.innerHTML = '<b>Hola, me llamo ' + name + '!</b>';
         divData.appendChild(hData);
         var divDescription = document.createElement('div');
         divDescription.className = 'child-description';
