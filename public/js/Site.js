@@ -191,12 +191,6 @@ function createAccount() {
             type: 'POST',
             data: donor,
             success: function() {
-                // clear create account form after the account is
-                // successfully created
-                $(':input', '#create-account-form').each(function() {
-                    $(this).val('');
-                });
-                
                 $('.create-account-overlay').hide();
                 //log user into their new account
                 $.ajax({
@@ -214,10 +208,16 @@ function createAccount() {
                         document.getElementById('toggle-login').href = '../views/account.html';
                         document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                         //notify user they are now logged into their new account
-                        alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
+                        alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado.');
+
+                        // clear create account form after the account is
+                        // successfully created
+                        $(':input', '#create-account-form').each(function() {
+                            $(this).val('');
+                        });
                     },
                     error: function() {
-                        alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde');
+                        alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde.');
                     }
                 });
             },

@@ -568,12 +568,6 @@ $(document).ready(function() {
                 type: 'POST',
                 data: donor,
                 success: function() {
-                    // clear create account form after the account is
-                    // successfully created
-                    $(':input', '#create-account-form').each(function() {
-                        $(this).val('');
-                    });
-
                     $('.create-account-overlay').hide();
                     //log user into their new account
                     $.ajax({
@@ -591,11 +585,17 @@ $(document).ready(function() {
                             document.getElementById('toggle-login').href = 'account.html';
                             document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
                             //notify user they are now logged into their new account
-                            alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado');
+                            alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado.');
+
+                            // clear create account form after the account is
+                            // successfully created
+                            $(':input', '#create-account-form').each(function() {
+                                $(this).val('');
+                            });
                         },
                         error: function(res) {
                             console.log(res);
-                            alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente acceder');
+                            alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente acceder.');
                         }
                     });
                 },
