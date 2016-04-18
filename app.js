@@ -18,37 +18,6 @@ var query = require('./data/query.js');
 var emailModule = require('./data/email.js');
 var cart = require('./data/cart.js');
 
-/** api routes:
- *
- * children
- * --------
- * GET /api/v1/children/id/:id - get a child by their id
- * GET /api/v1/children/find/:selector - get children by a selector
- * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
- *
- * donors (^ denotes required token)
- * ---------------------------------
- * GET /api/v1/donor/auth - get a token with email + password
- * ^POST /api/v1/donor/id/:id - get a donor by their id
- * ^PUT /api/v1/donor/id/:id - edit a donor
- * ^POST /api/v1/donor/sponsor - sponsors kids
- * POST /api/v1/donor/create - create a new donor account
- * POST /api/v1/donor/cart - updates donor cart
- * GET /api/v1/donor/cart/id/:id - gets donor cart from donor id
- * ^POST /api/v1/donor/unsponsor - sends email to admin notifying unsponsorship
- * ^POST /api/v1/donor/delete - sends email to admin notifying account deletion
- * ^POST /api/v1/donor/letter - sends letter to admin from donor to kid
- * POST /api/v1/donor/reset - resets donor password and sends them an email with it
- */
-
-var app = express();
-
-nconf.file({
-    file: './config.json'
-});
-
-var port = nconf.get('app:port');
-
 // bunyan options for server logs
 var log = bunyan.createLogger({
     name: 'app',
@@ -62,7 +31,7 @@ var log = bunyan.createLogger({
         },
         {
             level: 'trace',
-            path: './log/app_access.log',
+            path: './log/app.log',
             period: '1d',    // daily rotation
             count: 3
         },
@@ -70,7 +39,7 @@ var log = bunyan.createLogger({
             level: 'error',
             path: './log/app_error.log',
             period: '1d',   // daily rotation
-            count: 10
+            count: 7
         }
     ]
 });
@@ -91,7 +60,11 @@ var eventlog = bunyan.createLogger({
     ]
 });
 
-app.use(bodyParser.urlencoded({ extended: true }));
+log.info('Setting up app...');
+
+var app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -99,6 +72,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res) {
     res.redirect('index.html');
 });
+
+log.info('Accessing config file (./config.json)...');
+
+nconf.file({
+    file: './config.json'
+});
+
+log.info('Using password to decrypt bank credentials...');
 
 var algorithm = 'aes-256-ctr';
 var argvPassword = argv.password;
@@ -130,6 +111,9 @@ if (credomaticHash !== decrypted[3]) {
     process.exit();
 }
 
+log.info('Setting contstants...');
+
+var APP_PORT = nconf.get('app:port');
 var BANK_PUBLIC_KEY = decrypted[0];
 var BANK_PRIVATE_KEY = decrypted[1];
 var AMGG_USERNAME = decrypted[2];
@@ -158,17 +142,43 @@ var emailBodyLetter = ' Contents of the Letter';
 //var emailErrorHeader = 'Error adding sponsor for donor.';
 //var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
+/** api routes:
+ *
+ * children
+ * --------
+ * GET /api/v1/children/id/:id - get a child by their id
+ * GET /api/v1/children/find/:selector - get children by a selector
+ * POST /api/v1/children/islocked/id/:id - check to see if a child is in a cart
+ *
+ * donors (^ denotes required token)
+ * ---------------------------------
+ * GET /api/v1/donor/auth - get a token with email + password
+ * ^POST /api/v1/donor/id/:id - get a donor by their id
+ * ^PUT /api/v1/donor/id/:id - edit a donor
+ * ^POST /api/v1/donor/sponsor - sponsors kids
+ * POST /api/v1/donor/create - create a new donor account
+ * POST /api/v1/donor/cart - updates donor cart
+ * GET /api/v1/donor/cart/id/:id - gets donor cart from donor id
+ * ^POST /api/v1/donor/unsponsor - sends email to admin notifying unsponsorship
+ * ^POST /api/v1/donor/delete - sends email to admin notifying account deletion
+ * ^POST /api/v1/donor/letter - sends letter to admin from donor to kid
+ * POST /api/v1/donor/reset - resets donor password and sends them an email with it
+ */
+
 /*** child api routes ***/
 
 // GET /api/v1/children/id/:id get a child with their id
 app.get('/api/v1/children/id/:id', function(req, res) {
+    // log.info('Incoming - GET /api/v1/children/id/' + req.params.id);
     mongo.get(req.params.id, CHILD_COLLECTION, true, function(doc) {
         if (doc.hasOwnProperty('err')) {
+            log.error({res: {'status': 500, success: false, message: doc.err}}, 'Outgoing - GET /api/v1/children/id/' + req.params.id);
             res.status(500).send({
                 success: false,
                 message: doc.err
             });
         } else {
+            // log.info('Outgoing - GET /api/v1/children/id/' + req.params.id + ' ' + JSON.stringify({'status': 200}));
             res.status(200).send(doc);
         }
     });
@@ -273,6 +283,8 @@ function changeChildrenStatus(array, newStatus, callback) {
     function editChild() {
         var id = array.pop();
         mongo.edit(id, {'estado': newStatus}, CHILD_COLLECTION, function() {
+            eventlog.info('Child ' + id + ' status set to ' + newStatus + '.');
+            // eventlog.error('Child ' + id + ' status not set to ' + newStatus + '.');
             // TODO: handle errors in editing children appropriately with error
             // callbacks which then send the appropriate error res
             if(array.length > 0) {
@@ -316,7 +328,7 @@ app.post('/api/v1/donor/auth', function(req, res) {
                             message: 'Incorrect password.'
                         });
                     } else {
-                        jwt.sign(data, TOKEN_KEY, {expiresIn: '5h'}, function(token) {
+                        jwt.sign(data, TOKEN_KEY, {expiresIn: '1h'}, function(token) {
                             res.status(200).send({
                                 success: true,
                                 message: 'Authenticated.',
@@ -414,18 +426,13 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                     // if it is valid then perform the donor edit
                     mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
-                            if (result.code === 11000) {
-                                res.status(409).send({
-                                    success: false,
-                                    message: 'Email already exists.'
-                                });
-                            } else {
-                                res.status(500).send({
-                                    success: false,
-                                    message: result.err
-                                });
-                            }
+                            eventlog.error('Donor ' + id + ' not edited with changes ' + changes);
+                            res.status(500).send({
+                                success: false,
+                                message: result.err
+                            });
                         } else {
+                            eventlog.info('Donor ' + id + ' edited with changes ' + changes);
                             res.status(200).send({
                                 success: true,
                                 message: 'Donor edited.'
@@ -569,6 +576,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 if (donordoc.hasOwnProperty('transacciones')) {
                                                     donorPayments = donordoc.transacciones;
                                                 }
+                                                // convert the time to ISO from seconds
                                                 bankResult['time'] = new Date(parseInt(bankResult.time * 1000));
                                                 donorPayments.push(bankResult);
 
@@ -583,13 +591,14 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 mongo.edit(donor_id, {'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
                                                     if (result.hasOwnProperty('err')) {
                                                         // log lack of editing and response appropriately...
-                                                        eventlog.error('Error editing database. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + JSON.stringify({'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}));
+                                                        eventlog.error('Error editing database when sponsoring children. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + JSON.stringify({'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}));
                                                     }
                                                     // then delete the cart doc
                                                     cart.delete(donor_id, function() {
                                                         // recursive function to manage asynch for each id (change status to sponsored)
                                                         changeChildrenStatus(cartKids, 'Sponsored', function() {
                                                             // and we're done.
+                                                            eventlog.info('Donor ' + donor_id + ' successfully sponsored children. New children: ' + cartKids);
                                                             res.status(200).send({
                                                                 success: true,
                                                                 message: 'Child Sponsored.'
@@ -651,14 +660,15 @@ app.post('/api/v1/donor/create', function(req, res) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
+                    eventlog.info('Donor inserted.' + JSON.stringify(donor));
                     res.status(200).send({
                         success: true,
-                        message: 'Child sponsored.'
+                        message: 'Donor account created.'
                     });
                 } else {
                     res.status(500).send({
                         success: false,
-                        message: 'Donor could not be inserted.'
+                        message: 'Donor could not be created.'
                     });
                 }
             } else if (result.code === 11000) {
@@ -744,7 +754,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
                             // and we're done.
                             res.status(200).send({
                                 success: true,
-                                message: 'Email send. Child removal is processing.'
+                                message: 'Email sent.'
                             });
                         } else {
                             res.status(500).send({
@@ -797,7 +807,7 @@ app.post('/api/v1/donor/delete', function(req, res) {
                             // and we're done.
                             res.status(200).send({
                                 success: true,
-                                message: 'Email send. Child removal is processing.'
+                                message: 'Email sent.'
                             });
                         } else {
                             res.status(500).send({
@@ -920,12 +930,11 @@ app.post('/api/v1/donor/reset', function(req, res) {
                 });
             });
         }
-
     });
 });
 
 https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
                      cert: fs.readFileSync(SSL_CERT_PATH)}, app)
-      .listen(port, function () {
-          log.info('express port listening at localhost:' + port);
-      });
+     .listen(APP_PORT, function () {
+         log.info('Server up and listening at https://0.0.0.0:' + APP_PORT);
+     });

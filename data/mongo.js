@@ -88,8 +88,7 @@ var exports = module.exports = {};
  * callback     (func) - callback function to execute after completion
  */
 exports.find = function(selector, collection, limit, isTrim, callback) {
-    log.trace('getting document(s) with selector ' + JSON.stringify(selector) +
-              ' in collection \'' + collection + '\' with limit ' + limit);
+    log.trace('getting document(s) with selector ' + JSON.stringify(selector) + ' in collection \'' + collection + '\' with limit ' + limit);
     var documents = {}, i = 0;
 
     var findDocs = function(db, collection, selector, callback) {
@@ -122,17 +121,10 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
                     if(isTrim) {
                         documents = trim(documents);
                     }
-                    log.trace('successfully found document(s) with selector ' +
-                              JSON.stringify(selector) + ' in collection \'' +
-                              collection + '\'' + ' with limit ' + limit +
-                              '. document: ' + JSON.stringify(documents));
+                    log.trace('successfully found document(s) with selector ' + JSON.stringify(selector) + ' in collection \'' + collection + '\'' + ' with limit ' + limit + '. document: ' + JSON.stringify(documents));
                 } else {
-                    log.trace('document not found with selector ' +
-                              JSON.stringify(selector) + ' in collection \'' +
-                              collection + '\'' + ' with limit ' + limit +
-                              '. document: ' + JSON.stringify(documents));
+                    log.trace('document not found with selector ' + JSON.stringify(selector) + ' in collection \'' + collection + '\'' + ' with limit ' + limit + '. document: ' + JSON.stringify(documents));
                 }
-
                 callback(documents);
             });
         }
@@ -149,8 +141,7 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.insert = function(docs, collection, callback) {
-    log.trace('inserting document(s) ' + JSON.stringify(docs) +
-              ' in collection \'' + collection + '\'');
+    log.trace('inserting document(s) ' + JSON.stringify(docs) + ' in collection \'' + collection + '\'');
     var insertDoc = function(db, collection, doc, callback) {
         db.collection(collection).insertOne(doc, function(err, result) {
             if (err) {
@@ -172,9 +163,7 @@ exports.insert = function(docs, collection, callback) {
         } else {
             insertDoc(db, collection, docs, function(result) {
                 db.close();
-                log.trace('successfully inserted one document ' +
-                          JSON.stringify(docs) + ' into collection \'' +
-                          collection + '\'');
+                log.trace('successfully inserted one document ' + JSON.stringify(docs) + ' into collection \'' + collection + '\'');
                 callback(result);
             });
         }
@@ -191,8 +180,7 @@ exports.insert = function(docs, collection, callback) {
  * callback       (func) - callback function to execute after completion
  */
 exports.edit = function(id, changes, collection, callback) {
-    log.trace('editing document(s) with id ' + id + ' in collection \'' +
-              collection + '\' with changes ' + changes);
+    log.trace('editing document(s) with id ' + id + ' in collection \'' + collection + '\' with changes ' + changes);
     var changesMod = {};
     changesMod['$set'] = changes;
 
@@ -227,9 +215,7 @@ exports.edit = function(id, changes, collection, callback) {
         } else {
             editDoc(id, db, collection, changesMod, function(res) {
                 db.close();
-                log.trace('successfully edited one document with id ' +
-                          id + ' from collection ' + collection +
-                          ' with changes' + changes);
+                log.trace('successfully edited one document with id ' + id + ' from collection ' + collection + ' with changes' + changes);
                 callback(res);
             });
         }
@@ -246,8 +232,7 @@ exports.edit = function(id, changes, collection, callback) {
  *
  */
 exports.delete = function(id, collection, callback) {
-    log.trace('deleting document(s) with id ' + id + ' in collection \'' +
-              collection + '\'');
+    log.trace('deleting document(s) with id ' + id + ' in collection \'' + collection + '\'');
 
     var deleteDoc = function(db, collection, id, callback) {
         if (id.length === 24) {
@@ -280,8 +265,7 @@ exports.delete = function(id, collection, callback) {
         } else {
             deleteDoc(db, collection, id, function(res) {
                 db.close();
-                log.trace('successfully deleted one document with selector '
-                          + id + ' from collection \'' + collection + '\'');
+                log.trace('successfully deleted one document with selector ' + id + ' from collection \'' + collection + '\'');
                 callback(res);
             });
         }
@@ -301,8 +285,7 @@ exports.delete = function(id, collection, callback) {
  * callback     (func) - callback function to execute after completion
  */
 exports.get = function(id, collection, isTrim, callback) {
-    log.trace('getting document with id ' + id + ' from collection ' +
-              collection);
+    log.trace('getting document with id ' + id + ' from collection ' + collection);
 
     var getDoc = function(db, id, collection, callback) {
         try {
@@ -350,9 +333,7 @@ exports.get = function(id, collection, isTrim, callback) {
                     if(isTrim) {
                         doc = trim(doc);
                     }
-                    log.trace('successfully got document with id ' + id +
-                              ' from collection \'' + collection + '\'. document: '
-                              + JSON.stringify(doc));
+                    log.trace('successfully got document with id ' + id + ' from collection \'' + collection + '\'. document: ' + JSON.stringify(doc));
                     callback(doc);
                 }
             });
