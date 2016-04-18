@@ -161,18 +161,52 @@ $(document).ready(function() {
         sponsorButton.className = 'btn btn-primary btn-lg';
         sponsorButton.href = 'checkout.html';
         sponsorButton.innerHTML = 'Conviértase Mi Padrino';
+        //initialize the child counter for the cart
+        $(function() {
+            var counter = 0;
+            var init = 'carte' + '(' + counter + ')';
+            var carte = sessionStorage.getItem('cart');
+            for(var i = 0; i < carte.length; ++i){
+                //count how many commas in the cart
+                if(carte[i] == ','){
+                    counter++;
+                }
+            }
+                //adds one if there is a child added
+            if(carte.length > 1){
+                counter++;
+            }
+            init = '   ' + '(' + counter + ')';
+
+        // Initial Cart in html
+            $('.counter').html(init);
+
+        //Function that adds numbers to cart with a little effect thrown in
+            function addToBasket() {
+                counter++;
+                $('.counter').html('   (' + counter + ')').animate({
+                    'opacity' : '0'
+                },300, function() {
+                    $('.counter').delay(300).animate({
+                        'opacity' : '1'
+                    });
+                });
+            }
 
         // add the function for the sponsor button. clicking this should add
         // the child's id from the parent-most div into sessionStorage
-        sponsorButton.onclick = function() {
-            if(sessionStorage.getItem('cart') === null ||
-               sessionStorage.getItem('cart') === '') {
-                sessionStorage.setItem('cart', this.parentNode.parentNode.id);
-            } else {
-                var existingStorage = sessionStorage.getItem('cart');
-                sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
-            }
-        };
+            sponsorButton.onclick = function() {
+                if(sessionStorage.getItem('cart') === null ||
+                    sessionStorage.getItem('cart') === '') {
+                    sessionStorage.setItem('cart', this.parentNode.parentNode.id);
+                    addToBasket();
+                } else {
+                    var existingStorage = sessionStorage.getItem('cart');
+                    sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
+                    addToBasket();
+                }
+            };
+        });
         divData.appendChild(sponsorButton);
         slide.appendChild(divData);
 
