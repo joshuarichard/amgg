@@ -512,9 +512,6 @@ $(document).ready(function() {
                                             } else {
                                                 // if there aren't any children that are locked then send the cart
                                                 sendCart(false, function() {
-                                                    //clear password form
-                                                    document.getElementById('form-password').value = '';
-                                                    document.getElementById('form-password-confirm').value = '';
                                                     // hide elements from step one and show step two
                                                     // hide change info button
                                                     $('#donor-info-form').hide();
@@ -545,9 +542,6 @@ $(document).ready(function() {
                                     } else {
                                         // if there aren't any children that are locked then send the cart
                                         sendCart(false, function() {
-                                            //clear password form
-                                            document.getElementById('form-password').value = '';
-                                            document.getElementById('form-password-confirm').value = '';
                                             // hide elements from step one and show step two
                                             // hide change info button
                                             $('#donor-info-form').hide();
@@ -820,8 +814,7 @@ $(document).ready(function() {
                             //notify user they are now logged into their new account
                             alert('Su cuenta ha sido creada exitosamente, su sesión ha iniciado.');
 
-                            // clear create account form after the account is
-                            // successfully created
+                            // clear create account form after the account is successfully created
                             $(':input', '#create-account-form').each(function() {
                                 $(this).val('');
                             });
@@ -924,9 +917,9 @@ $(document).ready(function() {
                 return false;
             }
         } else {
-            /* eslint-disable */
-            alert("Error: Por favor revise que usted haya ingresado y confirme su contraseña.");
-            /*eslint-enable */
+            console.log(password.value);
+            console.log(confirmPassword.value);
+            alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
         }

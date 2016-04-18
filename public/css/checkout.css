@@ -80,16 +80,16 @@ table {
 	display: inline-block;
 }
 
-.dropdown-toggle {
-	color: black;
+.dropdown-expiration > .dropdown-toggle {
+    color: black;
 }
 
-.dropdown-menu {
-	background-color: white !important;
+.dropdown-expiration > .dropdown-menu {
+    background-color: white !important;
 }
 
-.dropdown-menu > li > a {
-	color: black;
+.dropdown-expiration > .dropdown-menu > li > a {
+    color: black;
 }
 
 .scrollable-menu {
