@@ -1073,4 +1073,13 @@ $(document).ready(function() {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('id');
     }
+
+    // helper function - check session storage element
+    function inStorage(object) {
+        if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 });

@@ -938,5 +938,5 @@ app.post('/api/v1/donor/reset', function(req, res) {
 https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
                      cert: fs.readFileSync(SSL_CERT_PATH)}, app)
      .listen(APP_PORT, function () {
-         log.info('Server up and listening at https://0.0.0.0:' + APP_PORT);
+         log.info('Server up and listening at https://0.0.0.0:' + APP_PORT + '...');
      });

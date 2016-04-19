@@ -49,8 +49,8 @@
                 }
             });
         } else if (inStorage('cart')) {
-            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')'); 
-        } 
+            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+        }
     }
     updateCart();
 

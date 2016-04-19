@@ -67,9 +67,9 @@ var url = 'mongodb://' + host + ':' + port + '/' + dbName;
 // connect() timeout option to shorten the timeout if possible
 MongoClient.connect(url, function(err, db) {
     if (err) {
-        log.error('test connection to Mongo unsuccessful.');
+        log.error('Test connection to Mongo unsuccessful.');
     } else {
-        log.info('test connection to Mongo successful.');
+        log.info('Test connection to Mongo successful.');
         db.close();
     }
 });
