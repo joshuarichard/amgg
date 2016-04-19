@@ -30,16 +30,16 @@ var log = bunyan.createLogger({
             // count: 3
         },
         {
-            level: 'trace',
+            level: 'debug',
             path: './log/app.log',
-            period: '1d',    // daily rotation
+            period: '1d',
             count: 3
         },
         {
-            level: 'error',
-            path: './log/app_error.log',
-            period: '1d',   // daily rotation
-            count: 7
+            level: 'trace',
+            path: './log/app.trace.log',
+            period: '1d',
+            count: 3
         }
     ]
 });
@@ -49,11 +49,13 @@ var eventlog = bunyan.createLogger({
     streams: [
         {
             level: 'info',
-            path: './log/event_info.log'
+            path: './log/event.info.log',
+            period: '1d',
+            count: 3
         },
         {
             level: 'error',
-            path: './log/event_error.log',
+            path: './log/event.error.log',
             period: '1d',   // daily rotation
             count: 10
         }
@@ -111,7 +113,7 @@ if (credomaticHash !== decrypted[3]) {
     process.exit();
 }
 
-log.info('Setting contstants...');
+log.info('Setting constants...');
 
 var APP_PORT = nconf.get('app:port');
 var BANK_PUBLIC_KEY = decrypted[0];
@@ -169,16 +171,15 @@ var emailBodyLetter = ' Contents of the Letter';
 
 // GET /api/v1/children/id/:id get a child with their id
 app.get('/api/v1/children/id/:id', function(req, res) {
-    // log.info('Incoming - GET /api/v1/children/id/' + req.params.id);
+    log.info('GET /api/v1/children/id/' + req.params.id);
     mongo.get(req.params.id, CHILD_COLLECTION, true, function(doc) {
         if (doc.hasOwnProperty('err')) {
-            log.error({res: {'status': 500, success: false, message: doc.err}}, 'Outgoing - GET /api/v1/children/id/' + req.params.id);
+            log.error({res: {'status': 500, success: false, message: doc.err}}, 'GET /api/v1/children/id/' + req.params.id);
             res.status(500).send({
                 success: false,
                 message: doc.err
             });
         } else {
-            // log.info('Outgoing - GET /api/v1/children/id/' + req.params.id + ' ' + JSON.stringify({'status': 200}));
             res.status(200).send(doc);
         }
     });
@@ -186,6 +187,7 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 
 // GET /api/v1/children/find/:selector find a child's document without an id
 app.get('/api/v1/children/find/:selector', function(req, res) {
+    log.info('GET /api/v1/children/find/' + req.params.selector);
     var selector = query.format(JSON.parse(req.params.selector));
 
     // get a child pool

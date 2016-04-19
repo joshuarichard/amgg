@@ -22,13 +22,13 @@ var log = bunyan.createLogger({
         },
         {
             level: 'trace',
-            path: './log/mongo_access.log',
-            period: '1d',    // daily rotation
+            path: './log/mongo.trace.log',
+            period: '1d',
             count: 3
         },
         {
-            level: 'error',
-            path: './log/mongo_error.log',
+            level: 'debug',
+            path: './log/app.log',
             period: '1d',   // daily rotation
             count: 3
         }
