@@ -459,16 +459,7 @@ $(document).ready(function() {
         }
     }
 
-    function toggleCreateAccount() {
-        if ($('.create-account-overlay').css('display') == 'none') {
-            $('.create-account-overlay').show();
-            $('.login').hide();
-        }
-        else {
-            $('.create-account-overlay').hide();
-        }
-    }
-    $('.create-account').click(toggleCreateAccount);
+    $('.create-account').click(toggleLogin);
 
     /* Check to make sure all the fields are filled in and ensure the
      * user's password passes the constraints
@@ -576,7 +567,7 @@ $(document).ready(function() {
                 type: 'POST',
                 data: donor,
                 success: function() {
-                    $('.create-account-overlay').hide();
+                    $('.modal').modal('hide');
                     //log user into their new account
                     $.ajax({
                         url: '/api/v1/donor/auth',
@@ -607,6 +598,9 @@ $(document).ready(function() {
                         }
                     });
                 },
+                error: function() {
+                    $('.modal').modal('hide');
+                },
                 statusCode: {
                     404: function() {
                         alert('Página no encontrada.');
@@ -622,7 +616,6 @@ $(document).ready(function() {
         }
     }
     $('.create-account-submit').click(createAccount);
-    $('.close-create-account-overlay').click(toggleCreateAccount);
 
     $('.forgot-password').click(function() {
         if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {

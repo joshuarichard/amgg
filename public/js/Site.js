@@ -76,17 +76,7 @@ if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') !
     });
 }
 
-function toggleCreateAccount () {
-    if ($('.create-account-overlay').css('display') == 'none') {
-        $('.create-account-overlay').show();
-        $('.departamento').load('./views/departamento.html');
-        $('.login').hide();
-    }
-    else {
-        $('.create-account-overlay').hide();
-    }
-}
-$('.create-account').click(toggleCreateAccount);
+$('.create-account').click(toggleLogin);
 
     function checkForm(form) {
         // get all form info
@@ -191,7 +181,7 @@ function createAccount() {
             type: 'POST',
             data: donor,
             success: function() {
-                $('.create-account-overlay').hide();
+                $('.modal').modal('hide');
                 //log user into their new account
                 $.ajax({
                     url: '/api/v1/donor/auth',
@@ -221,6 +211,9 @@ function createAccount() {
                     }
                 });
             },
+            error: function() {
+                $('.modal').modal('hide');
+            },
             statusCode: {
                 404: function() {
                     alert('Página no encontrada.');
@@ -236,7 +229,6 @@ function createAccount() {
     }
 }
 $('.create-account-submit').click(createAccount);
-$('.close-create-account-overlay').click(toggleCreateAccount);
 
 $('.forgot-password').click(function() {
     if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {
