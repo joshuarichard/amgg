@@ -101,6 +101,50 @@ $(document).ready(function() {
         }
     }
 
+    /* Initialize updateCart and then call it
+     * 1. If there is an id in sessionStorage then the user is logged in and
+     *    we need to check the DB for a cart
+     * 2. If not, check sessionStorage for a cart
+     * 3. Otherwise leave the cart at its initialized 0 state
+     */
+    function updateCart() {
+        if (inStorage('id')) {
+            $.ajax({
+                url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+                type: 'GET',
+                success: function(res) {
+                    if (JSON.stringify(res) !== '{}') {
+                        var kidsInCartInDB = [];
+                        if (inStorage('cart')) {
+                            var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                            for (var key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                    if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                        kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    }
+                                }
+                                sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        } else {
+                            for (key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                sessionStorage.setItem('cart', kidsInCartInDB.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        }
+                    } else if (inStorage('cart')) {
+                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                    }
+                }
+            });
+        } else if (inStorage('cart')) {
+            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+        }
+    }
+    updateCart();
+
     /* build the html for a slide to insert into the carousel. takes one child
      * object in the form:
      *
@@ -166,11 +210,13 @@ $(document).ready(function() {
         // the child's id from the parent-most div into sessionStorage
         sponsorButton.onclick = function() {
             if(sessionStorage.getItem('cart') === null ||
-               sessionStorage.getItem('cart') === '') {
+                sessionStorage.getItem('cart') === '') {
                 sessionStorage.setItem('cart', this.parentNode.parentNode.id);
+                updateCart();
             } else {
                 var existingStorage = sessionStorage.getItem('cart');
                 sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
+                updateCart();
             }
         };
         divData.appendChild(sponsorButton);

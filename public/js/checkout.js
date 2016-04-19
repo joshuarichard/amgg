@@ -149,6 +149,44 @@ $(document).ready(function() {
         });
     }
 
+    function updateCart() {
+        if (inStorage('id')) {
+            $.ajax({
+                url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+                type: 'GET',
+                success: function(res) {
+                    if (JSON.stringify(res) !== '{}') {
+                        var kidsInCartInDB = [];
+                        if (inStorage('cart')) {
+                            var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                            for (var key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                    if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                        kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    }
+                                }
+                                sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        } else {
+                            for (key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                sessionStorage.setItem('cart', kidsInCartInDB.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        }
+                    } else if (inStorage('cart')) {
+                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                    }
+                }
+            });
+        } else if (inStorage('cart')) {
+            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+        }
+    }
+    updateCart();
+
     // after all that append the 'add a child' button
     var addButtonContainer = document.createElement('div');
     addButtonContainer.className = 'col-md-12';

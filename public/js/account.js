@@ -93,6 +93,43 @@ $(document).ready(function() {
         return true;
     }
 
+    function updateCart() {
+        if (inStorage('id')) {
+            $.ajax({
+                url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+                type: 'GET',
+                success: function(res) {
+                    if (JSON.stringify(res) !== '{}') {
+                        var kidsInCartInDB = [];
+                        if (inStorage('cart')) {
+                            var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                            for (var key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                    if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                        kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    }
+                                }
+                                sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        } else {
+                            for (key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                sessionStorage.setItem('cart', kidsInCartInDB.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        }
+                    } else if (inStorage('cart')) {
+                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                    }
+                }
+            });
+        } else if (inStorage('cart')) {
+            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+        }
+    }
+
     /* check to see that there is a login token
      *   if not, prompt user to login
      */
@@ -187,6 +224,9 @@ $(document).ready(function() {
         tabCInfoWrapper.appendChild(letterForm);
         tabCInfoWrapper.appendChild(childrenSelectContainer);
         tabC.appendChild(tabCInfoWrapper);
+
+        //Update cart info after creating the tabs and main html elements for the page
+        updateCart();
 
         /* get children using donor id */
         $.ajax({

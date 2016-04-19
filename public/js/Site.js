@@ -10,6 +10,50 @@
 */
 ;(function(a){a.fn.rwdImageMaps=function(){var c=this;var b=function(){c.each(function(){if(typeof(a(this).attr("usemap"))=="undefined"){return}var e=this,d=a(e);a("<img />").load(function(){var g="width",m="height",n=d.attr(g),j=d.attr(m);if(!n||!j){var o=new Image();o.src=d.attr("src");if(!n){n=o.width}if(!j){j=o.height}}var f=d.width()/100,k=d.height()/100,i=d.attr("usemap").replace("#",""),l="coords";a('map[name="'+i+'"]').find("area").each(function(){var r=a(this);if(!r.data(l)){r.data(l,r.attr(l))}var q=r.data(l).split(","),p=new Array(q.length);for(var h=0;h<p.length;++h){if(h%2===0){p[h]=parseInt(((q[h]/n)*100)*f)}else{p[h]=parseInt(((q[h]/j)*100)*k)}}r.attr(l,p.toString())})}).attr("src",d.attr("src"))})};a(window).resize(b).trigger("resize");return this}})(jQuery);
 
+    /* Initialize updateCart and then call it
+     * 1. If there is an id in sessionStorage then the user is logged in and
+     *    we need to check the DB for a cart
+     * 2. If not, check sessionStorage for a cart
+     * 3. Otherwise leave the cart at its initialized 0 state
+     */
+    function updateCart() {
+        if (inStorage('id')) {
+            $.ajax({
+                url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
+                type: 'GET',
+                success: function(res) {
+                    if (JSON.stringify(res) !== '{}') {
+                        var kidsInCartInDB = [];
+                        if (inStorage('cart')) {
+                            var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
+                            for (var key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                for (var c = 0; c < kidsInCartInDB.length; c++) {
+                                    if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
+                                        kidsInCartOnPage.push(kidsInCartInDB[c]);
+                                    }
+                                }
+                                sessionStorage.setItem('cart', kidsInCartOnPage.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        } else {
+                            for (key in res) {
+                                kidsInCartInDB = res[key]['kids_in_cart'];
+                                sessionStorage.setItem('cart', kidsInCartInDB.toString());
+                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                            }
+                        }
+                    } else if (inStorage('cart')) {
+                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                    }
+                }
+            });
+        } else if (inStorage('cart')) {
+            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')'); 
+        } 
+    }
+    updateCart();
+
 /* if the user is already logged in, change the login button
  * to a go to account page link, else create login overlay
  */
@@ -266,3 +310,12 @@ $('.forgot-password').click(function() {
         alert('Por favor, introduzca su correo electrónico en el campo de correo electrónico antes de hacer clic "Olvidé mi contraseña".');
     }
 });
+
+// helper function - check session storage element
+function inStorage(object) {
+    if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
+        return true;
+    } else {
+        return false;
+    }
+}
