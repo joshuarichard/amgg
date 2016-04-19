@@ -955,17 +955,15 @@ input[type="email"],input[type="password"] {
 
 /* Create account overlay */
 .create-account-overlay {
-  display: none;
-  z-index: 12;
-  position: fixed;
-  width: 70%;
-  margin-left: 15%;
-  margin-right: 15%;
-  margin-top: 5%;
-  padding-top: 0.55em;
-  border-radius: 25px;
-  box-shadow: 3px 3px 5px #888888;
-  background-color: #EF801F;
+    padding: 2em;
+}
+
+.control-label {
+  margin-top: 0.5em;
+  color: #252964;
+  font-family: 'Gotham';
+  font-size: 10pt;
+  color: #252964;
 }
 
 #create-account-password {
@@ -988,13 +986,7 @@ input[type="email"],input[type="password"] {
   margin-top: 1em;
   margin-bottom: 1em;
   margin-right: 2em;
-}
-
-.control-label {
-  margin-top: 0.5em;
-  color: #252964;
-  font-family: damion;
-  font-size: 10pt;
+  margin-left: 87%;
 }
 
 .create-account-input {
@@ -1002,15 +994,9 @@ input[type="email"],input[type="password"] {
   margin-bottom: .1em;
 }
 
-.close-create-account-overlay {
-  margin-top: 0;
-  margin-bottom: 1em;
-  margin-right: 0;
-  margin-left: 0;
-  cursor: pointer;
-}
-
-.close-create-account-overlay-container {
-  margin-left: 100%;
+.form-group {
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 0;
 }
 /* ^Create account overlay^ */
