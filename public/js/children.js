@@ -505,7 +505,17 @@ $(document).ready(function() {
         }
     }
 
-    $('.create-account').click(toggleLogin);
+    /* When the user clicks the create account link load the create
+     * account overlay onto the DOM, hide the login overlay, and open
+     * the create account overlay
+     */
+    $('.create-account').click(function() {
+        $('#create-account-overlay').load('../views/createAccount.html', '', function() {
+            $('.modal').modal('show');
+            toggleLogin();
+            $('.create-account-submit').click(createAccount);
+        });
+    });
 
     /* Check to make sure all the fields are filled in and ensure the
      * user's password passes the constraints
@@ -661,7 +671,6 @@ $(document).ready(function() {
             });
         }
     }
-    $('.create-account-submit').click(createAccount);
 
     $('.forgot-password').click(function() {
         if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {

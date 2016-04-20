@@ -54,73 +54,83 @@
     }
     updateCart();
 
-/* if the user is already logged in, change the login button
- * to a go to account page link, else create login overlay
- */
-if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-    document.getElementById('toggle-login').href = '../views/account.html';
-    document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
-} else {
-    /* Toggle the login box when login link is clicked */
-    function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').slideDown(function() {
-                $(this).show();
-            });
-        }
-        else {
-            $('.login').slideUp(function() {
-                $(this).hide();
-            });
-        }
-    }
-    /* When login link is clicked, call toggleLogin */
-    $('#toggle-login').click(toggleLogin);
-
-    /* When the log in button is clicked, validate credentials
-       and if valid send the user to account.html and but the
-       token returned by server into session storage */
-    $('.login-submit').click(function(event) {
-        event.preventDefault();
-        var worked = false;
-        var email = $('.donor-email').val();
-        var password = $('.donor-password').val();
-
-        // define the request
-        $.ajax({
-            url: '/api/v1/donor/auth',
-            type: 'POST',
-            data: {
-                'email': email,
-                'password': password
-            },
-            // on successful login, save token and donor id
-            // in session storage and go to the donor portal
-            success: function(res) {
-                //save login token to session storage
-                sessionStorage.setItem('token', res.token);
-                sessionStorage.setItem('id', res.id);
-                worked = true;
-            },
-            error: function(httpObj) {
-                if(httpObj.status === 401) {
-                    alert('correo o contraseña incorrectos.');
-                } else {
-                    console.log(JSON.stringify(httpObj));
-                    alert('see console for error info.');
-                }
-                worked = false;
-            },
-            complete: function() {
-                if (worked === true) {
-                    location.reload();
-                }
+    /* if the user is already logged in, change the login button
+     * to a go to account page link, else create login overlay
+     */
+    if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
+        document.getElementById('toggle-login').href = '../views/account.html';
+        document.getElementById('toggle-login').innerHTML = 'Mi Cuenta';
+    } else {
+        /* Toggle the login box when login link is clicked */
+        function toggleLogin () {
+            if ($('.login').css('display') == 'none') {
+                $('.login').slideDown(function() {
+                    $(this).show();
+                });
             }
+            else {
+                $('.login').slideUp(function() {
+                    $(this).hide();
+                });
+            }
+        }
+        /* When login link is clicked, call toggleLogin */
+        $('#toggle-login').click(toggleLogin);
+
+        /* When the log in button is clicked, validate credentials
+           and if valid send the user to account.html and but the
+           token returned by server into session storage */
+        $('.login-submit').click(function(event) {
+            event.preventDefault();
+            var worked = false;
+            var email = $('.donor-email').val();
+            var password = $('.donor-password').val();
+
+            // define the request
+            $.ajax({
+                url: '/api/v1/donor/auth',
+                type: 'POST',
+                data: {
+                    'email': email,
+                    'password': password
+                },
+                // on successful login, save token and donor id
+                // in session storage and go to the donor portal
+                success: function(res) {
+                    //save login token to session storage
+                    sessionStorage.setItem('token', res.token);
+                    sessionStorage.setItem('id', res.id);
+                    worked = true;
+                },
+                error: function(httpObj) {
+                    if(httpObj.status === 401) {
+                        alert('correo o contraseña incorrectos.');
+                    } else {
+                        console.log(JSON.stringify(httpObj));
+                        alert('see console for error info.');
+                    }
+                    worked = false;
+                },
+                complete: function() {
+                    if (worked === true) {
+                        location.reload();
+                    }
+                }
+            });
+        });
+    }
+
+    /* When the user clicks the create account link load the create
+     * account overlay onto the DOM, hide the login overlay, and open
+     * the create account overlay
+     */
+    $('.create-account').click(function() {
+        $('#create-account-overlay').load('../views/createAccount.html', '', function() {
+            $('.modal').modal('show');
+            toggleLogin();
+            $('.create-account-submit').click(createAccount);
         });
     });
-}
-
-$('.create-account').click(toggleLogin);
 
     function checkForm(form) {
         // get all form info
@@ -272,7 +282,6 @@ function createAccount() {
         });
     }
 }
-$('.create-account-submit').click(createAccount);
 
 $('.forgot-password').click(function() {
     if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {
