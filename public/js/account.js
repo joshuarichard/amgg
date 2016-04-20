@@ -918,7 +918,7 @@ $(document).ready(function() {
                         tabCHeader.innerHTML = 'Carta a ' + name ;
                         //Submits a letter to admin complete with donor_id, child_id, and plaintext letter.
                         submitLetter.onclick = function() {
-                            if (tabCHeader.innerHTML == 'Carta a un niño.' || letterbox.value == ('') || tabCHeader.innerHTML != 'Carta a' + name ) {
+                            if (tabCHeader.innerHTML == 'Carta a un niño.' || letterbox.value == ('') || tabCHeader.innerHTML != 'Carta a ' + name ) {
                                 alert('Asegúrese de elegir un niño y rellene la carta.');
                             } else {
                                 var makeSure = confirm('¿Está seguro de que desea enviar la carta?');
