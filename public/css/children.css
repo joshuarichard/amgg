@@ -84,6 +84,7 @@ html, body {
   margin-top:  2em;
   display: block/none;
   border-radius: 10px;
+  height: 300px;
 }
 
 /* override bootstrap panel color */
