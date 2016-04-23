@@ -2,17 +2,9 @@
   +margin: 0;
 }*/
 
-html, body {
-  height: 100%;
-}
-
-.content-container {
-  min-height: 100%;
-  margin: 0 auto -4em;
-}
-
-.footer, .push {
-  height: 4em;
+.footer{
+  position: absolute;
+  bottom: 0;
 }
 
 #child-img {
@@ -30,6 +22,7 @@ html, body {
 
 .navbar-padding {
      padding-top: 80px;
+     padding-bottom: 10em;
 }
 
 .owl-carousel{
