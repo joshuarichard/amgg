@@ -49,6 +49,10 @@ html, body {
   margin-bottom: -124px;
 }
 
+.content-wrapper{
+  margin-bottom: 10em;
+}
+
 .content-container:after {
   content: "";
   display: block;
@@ -133,7 +137,7 @@ table {
 
 /* TabC styles */
 #sectionC {
-  padding-bottom: 5em;
+  padding-bottom: 1em;
 }
 
 .letter {
