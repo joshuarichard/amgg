@@ -830,10 +830,10 @@ $(document).ready(function() {
                         url: '/api/v1/donor/auth',
                         type: 'POST',
                         data: {
-                            'correo_electrónico': document.getElementById('create-account-email').value,
+                            'email': document.getElementById('create-account-email').value,
                             'password': document.getElementById('create-account-password').value
                         },
-                        success: function() {
+                        success: function(res) {
                             //put token and donor id into sessionStorage
                             sessionStorage.setItem('token', res.token);
                             sessionStorage.setItem('id', res.id);
