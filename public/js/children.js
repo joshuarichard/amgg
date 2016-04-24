@@ -69,7 +69,7 @@ $(document).ready(function() {
 
             var gender = childPool[id].género;
             var location = childPool[id].departamento;
-            var hobbies = childPool[id].pastiempos;
+            var hobbies = childPool[id].pasatiempos;
             var picture = childPool[id].foto;
             var center = childPool[id].centro_de_niños;
             var dreams = childPool[id].sueños;
@@ -85,6 +85,8 @@ $(document).ready(function() {
                 'dreams': dreams,
                 'picture': picture
             };
+
+            console.log(child);
 
             childrenCurrentlyInSlider.push(id);
 
@@ -154,7 +156,7 @@ $(document).ready(function() {
      *    age: int,
      *    gender: string,
      *    location: string,
-     *    pastiempos: string,
+     *    pasatiempos: string,
      *    picture: base64 string
      * }
      */
@@ -178,7 +180,7 @@ $(document).ready(function() {
         var img = document.createElement('img');
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
-        img.src = 'data:image/image;base64,' + picture;
+        img.src = picture;
         img.alt = 'foto de niño';
         img.title = 'foto de niño';
         divImg.appendChild(img);

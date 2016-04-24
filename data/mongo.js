@@ -419,7 +419,7 @@ function trim(doc) {
                 'género': doc[miniDoc].género,
                 'centro_de_niños': doc[miniDoc].centro_de_niños,
                 'departamento': doc[miniDoc].departamento,
-                'pastiempos': doc[miniDoc].pastiempos,
+                'pasatiempos': doc[miniDoc].pasatiempos,
                 'sueños': doc[miniDoc].sueños,
                 'foto': doc[miniDoc].foto
             };
@@ -432,7 +432,7 @@ function trim(doc) {
                 'género': doc.género,
                 'centro_de_niños': doc.centro_de_niños,
                 'departamento': doc.departamento,
-                'pastiempos': doc.pastiempos,
+                'pasatiempos': doc.pasatiempos,
                 'sueños': doc.sueños,
                 'foto': doc.foto
             };
