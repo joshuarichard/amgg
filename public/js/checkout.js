@@ -833,7 +833,7 @@ $(document).ready(function() {
                             'email': document.getElementById('create-account-email').value,
                             'password': document.getElementById('create-account-password').value
                         },
-                        success: function() {
+                        success: function(res) {
                             //put token and donor id into sessionStorage
                             sessionStorage.setItem('token', res.token);
                             sessionStorage.setItem('id', res.id);
