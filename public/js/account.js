@@ -851,7 +851,7 @@ $(document).ready(function() {
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_niños;
-                    var hobbies = res[id].pastiempos;
+                    var hobbies = res[id].pasatiempos;
                     var picture = res[id].foto;
 
                     //create elements for child picture
@@ -890,7 +890,7 @@ $(document).ready(function() {
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
-                    hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
+                    hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);

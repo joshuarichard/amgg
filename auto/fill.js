@@ -117,7 +117,7 @@ function generateDocument(callback) {
     var lastName = apellido[Math.floor(Math.random() * apellido.length)];
 
     var filePath = './auto/pics/kids/kid_' + randomNumber(5, 20) + '.jpg';
-    var picture = Buffer(fs.readFileSync(filePath)).toString('base64');
+    var picture = 'data:image/image;base64,' + Buffer(fs.readFileSync(filePath)).toString('base64');
 
     console.log('INFO: inserting ' + name + ' ' + lastName + ' with amg_id ' + amgId);
 
