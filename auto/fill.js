@@ -133,7 +133,7 @@ function generateDocument(callback) {
         'ciudad': ciudad[Math.floor(Math.random() * ciudad.length)],
         'departamento': departamento[Math.floor(Math.random() * departamento.length)],
         'código_postal': Math.floor((Math.random() * (99999) + 1)),
-        'pastiempos': 'Reading, playing baseball, and swinging. Other stuff too.',
+        'pasatiempos': 'Reading, playing baseball, and swinging. Other stuff too.',
         'foto': picture,
         'sueños': 'I just want to be a real boy.',
         'biodata': 'Child biodata goes here. This is where a lot of the child\'s other information will go.'
