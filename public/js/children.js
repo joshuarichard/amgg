@@ -178,7 +178,7 @@ $(document).ready(function() {
         var img = document.createElement('img');
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
-        img.src = 'data:image/image;base64,' + picture;
+        img.src = picture;
         img.alt = 'foto de niño';
         img.title = 'foto de niño';
         divImg.appendChild(img);

@@ -858,7 +858,7 @@ $(document).ready(function() {
                     var picTD = document.createElement('td');
                     var picIMG = document.createElement('img');
                     picIMG.className = 'child-img';
-                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picIMG.src = picture;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
 

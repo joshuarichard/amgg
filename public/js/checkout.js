@@ -351,13 +351,13 @@ $(document).ready(function() {
                     var gender = res[id].género;
                     var departamento = res[id].departamento;
                     var center = res[id].centro_de_niños;
-                    var hobbies = res[id].pastiempos;
+                    var hobbies = res[id].pasatiempos;
                     var picture = res[id].foto;
 
                     var picTD = document.createElement('td');
                     var picIMG = document.createElement('img');
                     picIMG.className = 'child-img';
-                    picIMG.src = 'data:image/image;base64,' + picture;
+                    picIMG.src = picture;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
 
@@ -389,7 +389,7 @@ $(document).ready(function() {
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro/Colegio:  </b>' + center;
-                    hobbiesDiv.innerHTML = '<b> Pastiempos: </b>' + hobbies;
+                    hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
@@ -848,12 +848,14 @@ $(document).ready(function() {
                                 $(this).val('');
                             });
                         },
-                        error: function() {
+                        error: function(res) {
+                            console.log(res);
                             alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde.');
                         }
                     });
                 },
-                error: function() {
+                error: function(res) {
+                    console.log(res);
                     $('.modal').modal('hide');
                 },
                 statusCode: {
