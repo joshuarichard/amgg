@@ -4,7 +4,7 @@
         "port": "27017",
         "username": "x",
         "password": "x",
-        "db": "production-beta-pretend",
+        "db": "prod-v2",
         "childCollection": "children",
         "donorCollection": "donors",
         "cartCollection": "carts"
@@ -13,7 +13,7 @@
         "port": 3000
     },
     "autofill": {
-        "db": "production-beta-pretend",
+        "db": "prod-v2",
         "childCollection": "children",
         "donorCollection": "donors",
         "numOfDocs": "10"
