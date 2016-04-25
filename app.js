@@ -299,7 +299,7 @@ function changeChildrenStatus(array, newStatus, callback) {
         var id = array.pop();
         mongo.edit(id, {'estado': newStatus}, CHILD_COLLECTION, function(result) {
             if (result.hasOwnProperty('err')) {
-                eventlog.error('Child ' + id + ' status not set to ' + newStatus + '. Error: ' + err);
+                eventlog.error('Child ' + id + ' status not set to ' + newStatus + '. Error: ' + result);
             } else {
                 eventlog.info('Child ' + id + ' status set to ' + newStatus + '.');
             }
@@ -662,7 +662,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
             }
         });
     } else {
-        eventlog.error('No token provided during sponsorship process. Transactin: ' + {'orderid': orderid, 'time': timeNow});
+        eventlog.error('No token provided during sponsorship process. Transaction: ' + {'donor': donor, 'token': donor.token});
         res.status(403).send({
             success: false,
             message: 'No token provided.'
@@ -949,7 +949,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                 // ... then store it in their donor doc
                 mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                     if (result.hasOwnProperty('err')) {
-                        eventlog.error('Error resetting donor password. Donor:' + id)
+                        eventlog.error('Error resetting donor password. Donor:' + id);
                         res.status(500).send({
                             success: false,
                             message: result.err
