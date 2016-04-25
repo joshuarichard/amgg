@@ -25,16 +25,14 @@ exports.update = function(donorID, childIDs, requestToPay, callback) {
     };
 
     mongo.find({'donor_id': donorID}, cartCollection, 1, false, function(doc) {
-        if(JSON.stringify(doc) === '{}') {
+        if(JSON.stringify(doc) === '[]') {
             mongo.insert(cart, cartCollection, function(result) {
                 callback(result);
             });
         } else {
-            for (var key in doc) {
-                mongo.edit(key, cart, cartCollection, function(result) {
-                    callback(result);
-                });
-            }
+            mongo.edit(doc[0]._id, cart, cartCollection, function(result) {
+                callback(result);
+            });
         }
     });
 };
@@ -47,15 +45,13 @@ exports.find = function(donorID, callback) {
 
 exports.delete = function(donorID, callback) {
     exports.find(donorID, function(doc) {
-        for (var key in doc) {
-            var cartID = key;
-            mongo.delete(cartID, cartCollection, function(res) {
-                if (res.hasOwnProperty('err')) {
-                    callback(false);
-                } else {
-                    callback(true);
-                }
-            });
-        }
+        console.log(doc[0]._id);
+        mongo.delete(doc[0]._id, cartCollection, function(res) {
+            if (res.hasOwnProperty('err')) {
+                callback(false);
+            } else {
+                callback(true);
+            }
+        });
     });
 };

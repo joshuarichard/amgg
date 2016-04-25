@@ -21,7 +21,7 @@ $(document).ready(function() {
                 if (res.err !== undefined) {
                     // TODO: fix error on connection
                     callback();
-                } else if (JSON.stringify(res) === '{}') {
+                } else if (JSON.stringify(res) === '[]') {
                     callback({'err': 'no children match that selector'});
                 } else {
                     childPool = res;
@@ -43,9 +43,10 @@ $(document).ready(function() {
      */
     function getChild(childPool, callback) {
         // get an array of child ids by mapping the keys in the child pool to an array called 'ids'
-        var ids = $.map(childPool, function (value, key) {
-            return key;
-        });
+        var ids = [];
+        for (var v = 0; v < childPool.length; v++) {
+            ids.push(childPool[v]._id);
+        }
 
         // randomly pick one of those ids
         var id = ids[Math.floor(Math.random() * ids.length)];
@@ -58,39 +59,41 @@ $(document).ready(function() {
 
         // if the child isn't in the cart and also isn't in the slider
         if (cart.indexOf(id) === -1 && childrenCurrentlyInSlider.indexOf(id) === -1) {
-            // then add the child to the slider
-            var name = childPool[id].nombre;
+            for (var a = 0; a < childPool.length; a++) {
+                if (id === childPool[a]._id) {
+                    // then add the child to the slider
+                    var name = childPool[a].nombre;
 
-            var birthday = new Date(childPool[id].cumpleaños);
-            var today = new Date();
-            var age = today.getFullYear() - birthday.getFullYear();
-            birthday.setFullYear(today.getFullYear());
-            if (today < birthday) { age--; }
+                    var birthday = new Date(childPool[a].cumpleaños);
+                    var today = new Date();
+                    var age = today.getFullYear() - birthday.getFullYear();
+                    birthday.setFullYear(today.getFullYear());
+                    if (today < birthday) { age--; }
 
-            var gender = childPool[id].género;
-            var location = childPool[id].departamento;
-            var hobbies = childPool[id].pasatiempos;
-            var picture = childPool[id].foto;
-            var center = childPool[id].centro_de_niños;
-            var dreams = childPool[id].sueños;
+                    var gender = childPool[a].género;
+                    var location = childPool[a].departamento;
+                    var hobbies = childPool[a].pasatiempos;
+                    var picture = childPool[a].foto;
+                    var center = childPool[a].centro_de_niños;
+                    var dreams = childPool[a].sueños;
 
-            var child = {
-                'id': id,
-                'name': name,
-                'age': age,
-                'gender': gender,
-                'location': location,
-                'hobbies': hobbies,
-                'center': center,
-                'dreams': dreams,
-                'picture': picture
-            };
+                    var child = {
+                        'id': id,
+                        'name': name,
+                        'age': age,
+                        'gender': gender,
+                        'location': location,
+                        'hobbies': hobbies,
+                        'center': center,
+                        'dreams': dreams,
+                        'picture': picture
+                    };
 
-            console.log(child);
+                    childrenCurrentlyInSlider.push(id);
 
-            childrenCurrentlyInSlider.push(id);
-
-            callback(child);
+                    callback(child);
+                }
+            }
         } else {
             // if the child is already in the slider or cart but there are more children in the child pool
             if (childrenCurrentlyInSlider.length !== ids.length && childrenCurrentlyInSlider.length < ids.length && cart.indexOf(id) === -1) {
@@ -115,7 +118,7 @@ $(document).ready(function() {
                 url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
                 type: 'GET',
                 success: function(res) {
-                    if (JSON.stringify(res) !== '{}') {
+                    if (JSON.stringify(res) !== '[]') {
                         var kidsInCartInDB = [];
                         if (inStorage('cart')) {
                             var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
@@ -269,6 +272,7 @@ $(document).ready(function() {
                     } else {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
+                            $('.nav-buttons').show();
                             callback({success: true});
                         });
                     }
@@ -359,6 +363,7 @@ $(document).ready(function() {
      */
     $(document).arrive('.child-slide', {onceOnly: true, existing: true}, function() {
         $('#search-button').click(function() {
+            $('.nav-buttons').hide();
             var selector = checkSearchPanel();
 
             // empty the owl carousel (minus the last slide...)

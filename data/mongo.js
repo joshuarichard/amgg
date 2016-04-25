@@ -89,7 +89,7 @@ var exports = module.exports = {};
  */
 exports.find = function(selector, collection, limit, isTrim, callback) {
     log.trace('getting document(s) with selector ' + JSON.stringify(selector) + ' in collection \'' + collection + '\' with limit ' + limit);
-    var documents = {}, i = 0;
+    var documents = [], i = 0;
 
     var findDocs = function(db, collection, selector, callback) {
         var cursor = db.collection(collection).find(selector).limit(limit);
@@ -102,7 +102,7 @@ exports.find = function(selector, collection, limit, isTrim, callback) {
                 });
             }
             if (doc != null) {
-                documents[doc._id] = doc;
+                documents.push(doc);
                 i++;
             } else {
                 callback();
@@ -235,7 +235,7 @@ exports.delete = function(id, collection, callback) {
     log.trace('deleting document(s) with id ' + id + ' in collection \'' + collection + '\'');
 
     var deleteDoc = function(db, collection, id, callback) {
-        if (id.length === 24) {
+        try {
             var o_id = new mongo.ObjectID(id);
             var selector = {'_id': o_id};
 
@@ -250,8 +250,8 @@ exports.delete = function(id, collection, callback) {
                     callback(res);
                 }
             });
-        } else {
-            log.error('Invalid _id when deleting document');
+        } catch(err) {
+            log.error('Invalid _id when deleting document. id: ' + id);
             callback({
                 'err': 'invalid _id.'
             });
@@ -304,7 +304,7 @@ exports.get = function(id, collection, isTrim, callback) {
                 }
                 if (doc != null) {
                     foundOne = true;
-                    callback(doc);
+                    callback([doc]);
                 }
                 // cursor.each() is always going to hit a null value so keep track
                 // of whether or not we've found one. callback error on lookup fail
@@ -404,40 +404,23 @@ exports.getPic = function(id, collection, callback) {
  * trims a document down from a full document to a public, api-ready document.
  * returns a json doc.
  *
- * doc  (JSON) - document to be trimmed
+ * doc  (JSON) - array of documents to be trimmed
  */
 function trim(doc) {
-    var trimmedDoc = {};
+    var trimmedDoc = [];
 
-    for (var miniDoc in doc) {
-        // if this is multiple documents
-        if (miniDoc != '_id') {
-            trimmedDoc[doc[miniDoc]._id] = {
-                'nombre': doc[miniDoc].nombre,
-                'años': doc[miniDoc].años,
-                'cumpleaños':doc[miniDoc].cumpleaños,
-                'género': doc[miniDoc].género,
-                'centro_de_niños': doc[miniDoc].centro_de_niños,
-                'departamento': doc[miniDoc].departamento,
-                'pasatiempos': doc[miniDoc].pasatiempos,
-                'sueños': doc[miniDoc].sueños,
-                'foto': doc[miniDoc].foto
-            };
-        // else this is only one document
-        } else {
-            trimmedDoc[doc._id] = {
-                'nombre': doc.nombre,
-                'años': doc.años,
-                'cumpleaños': doc.cumpleaños,
-                'género': doc.género,
-                'centro_de_niños': doc.centro_de_niños,
-                'departamento': doc.departamento,
-                'pasatiempos': doc.pasatiempos,
-                'sueños': doc.sueños,
-                'foto': doc.foto
-            };
-            break;
-        }
+    for (var j = 0; j < doc.length; j++) {
+        trimmedDoc.push({
+            '_id': doc[j]._id,
+            'nombre': doc[j].nombre,
+            'cumpleaños':doc[j].cumpleaños,
+            'género': doc[j].género,
+            'centro_de_niños': doc[j].centro_de_niños,
+            'departamento': doc[j].departamento,
+            'pasatiempos': doc[j].pasatiempos,
+            'sueños': doc[j].sueños,
+            'foto': doc[j].foto
+        });
     }
     return(trimmedDoc);
 }

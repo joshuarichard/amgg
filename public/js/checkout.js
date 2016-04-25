@@ -18,19 +18,19 @@ $(document).ready(function() {
                 'token' : sessionStorage.getItem('token')
             },
             success: function(res) {
-                $('#form-first-name').val(res.nombre);
+                $('#form-first-name').val(res[0].nombre);
                 $('#form-first-name').prop('disabled', true);
-                $('#form-last-name').val(res.apellido);
+                $('#form-last-name').val(res[0].apellido);
                 $('#form-last-name').prop('disabled', true);
-                $('#form-phone').val(res.teléfono);
+                $('#form-phone').val(res[0].teléfono);
                 $('#form-phone').prop('disabled', true);
-                $('#form-address-street').val(res.calle);
+                $('#form-address-street').val(res[0].calle);
                 $('#form-address-street').prop('disabled', true);
-                $('#form-address-city').val(res.ciudad);
+                $('#form-address-city').val(res[0].ciudad);
                 $('#form-address-city').prop('disabled', true);
-                $('#departamento-checkout').val(res.departamento);
+                $('#departamento-checkout').val(res[0].departamento);
                 $('#departamento-checkout').prop('disabled', true);
-                $('#form-email').val(res.correo_electrónico);
+                $('#form-email').val(res[0].correo_electrónico);
                 $('#form-email').prop('disabled', true);
                 $('#form-country').prop('disabled', true);
             },
@@ -112,8 +112,7 @@ $(document).ready(function() {
     total.appendChild(amount);
     container.appendChild(total);
 
-    // lastly, check to see if the donor has a cart and if they do then
-    // add any kids in that cart
+    // lastly, check to see if the donor has a cart and if they do then add any kids in that cart
     if (inStorage('id') === true) {
         $.ajax({
             url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
@@ -133,7 +132,9 @@ $(document).ready(function() {
                             }
                             sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                         }
-                        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                        if (inStorage('cart')) {
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                        }
                     } else {
                         for (key in res) {
                             kidsInCartInDB = res[key]['kids_in_cart'];
@@ -142,7 +143,9 @@ $(document).ready(function() {
                             }
                             sessionStorage.setItem('cart', kidsInCartInDB.toString());
                         }
-                        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                        if (inStorage('cart')) {
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                        }
                     }
                 }
             }
@@ -155,7 +158,7 @@ $(document).ready(function() {
                 url: '/api/v1/donor/cart/id/' + sessionStorage.getItem('id'),
                 type: 'GET',
                 success: function(res) {
-                    if (JSON.stringify(res) !== '{}') {
+                    if (JSON.stringify(res) !== '[]') {
                         var kidsInCartInDB = [];
                         if (inStorage('cart')) {
                             var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
@@ -338,21 +341,21 @@ $(document).ready(function() {
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
-                    var date = new Date(res[id].cumpleaños);
+                    var date = new Date(res[0].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-                    var name = res[id].nombre;
+                    var name = res[0].nombre;
 
-                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var birthdayISO = new Date(res[0].cumpleaños);
                     var today = new Date();
                     var age = today.getFullYear() - birthdayISO.getFullYear();
                     birthdayISO.setFullYear(today.getFullYear());
                     if (today < birthdayISO) { age--; }
 
-                    var gender = res[id].género;
-                    var departamento = res[id].departamento;
-                    var center = res[id].centro_de_niños;
-                    var hobbies = res[id].pasatiempos;
-                    var picture = res[id].foto;
+                    var gender = res[0].género;
+                    var departamento = res[0].departamento;
+                    var center = res[0].centro_de_niños;
+                    var hobbies = res[0].pasatiempos;
+                    var picture = res[0].foto;
 
                     var picTD = document.createElement('td');
                     var picIMG = document.createElement('img');
@@ -706,11 +709,11 @@ $(document).ready(function() {
                     'token': sessionStorage.getItem('token')
                 },
                 success: function(res) {
-                    $('#donor-name').text(res.nombre + ' ' + res.apellido);
-                    $('#donor-phone').text(res.teléfono);
-                    $('#donor-address').text(res.calle + ' ' + res.ciudad);
-                    $('#donor-address-2').text(res.departamento + ', ' + res.país);
-                    $('#donor-email').text(res.correo_electrónico);
+                    $('#donor-name').text(res[0].nombre + ' ' + res[0].apellido);
+                    $('#donor-phone').text(res[0].teléfono);
+                    $('#donor-address').text(res[0].calle + ' ' + res[0].ciudad);
+                    $('#donor-address-2').text(res[0].departamento + ', ' + res[0].país);
+                    $('#donor-email').text(res[0].correo_electrónico);
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));

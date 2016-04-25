@@ -246,29 +246,34 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     mongo.find(selector, CART_COLLECTION, 10000, false, function(cartdocs) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
-        for (var key in cartdocs) {
-            if (cartdocs[key].hasOwnProperty('kids_in_cart')) {
-                var kidsInThisCart = cartdocs[key].kids_in_cart;
+        if (JSON.stringify(cartdocs) !== '[]') {
+            if (cartdocs[0].hasOwnProperty('kids_in_cart')) {
+                var kidsInThisCart = cartdocs[0].kids_in_cart;
                 for (var e = 0; e < kidsInThisCart.length; e++) {
                     idsOfKidsInCarts.push(kidsInThisCart[e]);
                 }
             }
-        }
 
-        var isLocked = false;
-        // then compare that to the list of ids in the child pool...
-        for (var c = 0; c < idsOfKidsInCarts.length; c++) {
-            if (child === idsOfKidsInCarts[c]) {
-                isLocked = true;
-                break;
+            var isLocked = false;
+            // then compare that to the list of ids in the child pool...
+            for (var c = 0; c < idsOfKidsInCarts.length; c++) {
+                if (child === idsOfKidsInCarts[c]) {
+                    isLocked = true;
+                    break;
+                }
             }
-        }
 
-        if (isLocked === true) {
-            res.status(200).send({
-                success: true,
-                islocked: true
-            });
+            if (isLocked === true) {
+                res.status(200).send({
+                    success: true,
+                    islocked: true
+                });
+            } else {
+                res.status(200).send({
+                    success: true,
+                    islocked: false
+                });
+            }
         } else {
             res.status(200).send({
                 success: true,
@@ -317,30 +322,28 @@ app.post('/api/v1/donor/auth', function(req, res) {
     // find the donor's email
     // if email === null, send res no email
     mongo.find(email, DONOR_COLLECTION, 1, false, function(data) {
-        if (JSON.stringify(data) !== '{}') {
-            for (var key in data) {
-                var saltDB = data[key].salt;
-                var passwordDB = data[key].password;
+        if (JSON.stringify(data) !== '[]') {
+            var saltDB = data[0].salt;
+            var passwordDB = data[0].password;
 
-                // encrypt the password with the salt have stored
-                password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
-                    if(passwordGiven !== passwordDB) {
-                        res.status(401).send({
-                            success: false,
-                            message: 'Incorrect password.'
+            // encrypt the password with the salt have stored
+            password.encryptWithSalt(req.body.password, saltDB, function(passwordGiven) {
+                if(passwordGiven !== passwordDB) {
+                    res.status(401).send({
+                        success: false,
+                        message: 'Incorrect password.'
+                    });
+                } else {
+                    jwt.sign(data, TOKEN_KEY, {expiresIn: '1h'}, function(token) {
+                        res.status(200).send({
+                            success: true,
+                            message: 'Authenticated.',
+                            'id': data[0]._id,
+                            'token': token
                         });
-                    } else {
-                        jwt.sign(data, TOKEN_KEY, {expiresIn: '1h'}, function(token) {
-                            res.status(200).send({
-                                success: true,
-                                message: 'Authenticated.',
-                                'id': key,
-                                'token': token
-                            });
-                        });
-                    }
-                });
-            }
+                    });
+                }
+            });
         } else {
             res.status(401).send({
                 success: false,
@@ -502,13 +505,13 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                  .digest('hex');
 
                 mongo.get(donor_id, DONOR_COLLECTION, false, function(donordoc) {
-                    var firstname = donordoc.nombre;
-                    var lastname = donordoc.apellido;
-                    var address1 = donordoc.calle;
-                    var city = donordoc.ciudad;
-                    var country = donordoc.país;
-                    var phone = donordoc.teléfono;
-                    var email = donordoc.correo_electrónico;
+                    var firstname = donordoc[0].nombre;
+                    var lastname = donordoc[0].apellido;
+                    var address1 = donordoc[0].calle;
+                    var city = donordoc[0].ciudad;
+                    var country = donordoc[0].país;
+                    var phone = donordoc[0].teléfono;
+                    var email = donordoc[0].correo_electrónico;
                     // var zip = donordoc.zip?;
 
                     var bankData = {
@@ -575,16 +578,16 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                             if ((equalArrays(cartKids, orderKids) === true) && (cartdoc[key].request_to_pay === 'true')) {
                                                 // ... and store it in the donor doc
                                                 var donorPayments = [];
-                                                if (donordoc.hasOwnProperty('transacciones')) {
-                                                    donorPayments = donordoc.transacciones;
+                                                if (donordoc[0].hasOwnProperty('transacciones')) {
+                                                    donorPayments = donordoc[0].transacciones;
                                                 }
                                                 // convert the time to ISO from seconds
                                                 bankResult['time'] = new Date(parseInt(bankResult.time * 1000));
                                                 donorPayments.push(bankResult);
 
                                                 var donorKids = [];
-                                                if (donordoc.hasOwnProperty('niños_patrocinadoras')) {
-                                                    donorKids = donordoc.niños_patrocinadoras;
+                                                if (donordoc[0].hasOwnProperty('niños_patrocinadoras')) {
+                                                    donorKids = donordoc[0].niños_patrocinadoras;
                                                 }
 
                                                 for (var kid = 0; kid < cartKids.length; kid++) {
