@@ -641,7 +641,7 @@ $(document).ready(function() {
             if (yesUnsponsor == true) {
                 $.ajax({
                     url: '/api/v1/donor/delete',
-                    type: 'POST',
+                    type: 'DELETE',
                     data: {
                         'token' : sessionStorage.getItem('token'),
                         'donor_id' : sessionStorage.getItem('id')
@@ -960,7 +960,7 @@ $(document).ready(function() {
                     if (yesUnsponsor == true) {
                         $.ajax({
                             url: '/api/v1/donor/unsponsor',
-                            type: 'POST',
+                            type: 'DELETE',
                             data: {
                                 'token' : sessionStorage.getItem('token'),
                                 'donor_id' : sessionStorage.getItem('id'),

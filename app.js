@@ -161,8 +161,8 @@ var emailBodyLetter = ' Contents of the Letter';
  * POST /api/v1/donor/create - create a new donor account
  * POST /api/v1/donor/cart - updates donor cart
  * GET /api/v1/donor/cart/id/:id - gets donor cart from donor id
- * ^POST /api/v1/donor/unsponsor - sends email to admin notifying unsponsorship
- * ^POST /api/v1/donor/delete - sends email to admin notifying account deletion
+ * ^DELETE /api/v1/donor/unsponsor - sends email to admin notifying unsponsorship
+ * ^DELETE /api/v1/donor/delete - sends email to admin notifying account deletion
  * ^POST /api/v1/donor/letter - sends letter to admin from donor to kid
  * POST /api/v1/donor/reset - resets donor password and sends them an email with it
  */
@@ -749,7 +749,7 @@ app.get('/api/v1/donor/cart/id/:id', function(req, res) {
     });
 });
 
-/* POST /api/v1/donor/unsponsor
+/* DELETE /api/v1/donor/unsponsor
  *
  * emails the admin saying a donor wants to unsponsor a child
  * {
@@ -758,8 +758,8 @@ app.get('/api/v1/donor/cart/id/:id', function(req, res) {
  *   'child_id': child_id
  * }
  */
-app.post('/api/v1/donor/unsponsor', function(req, res) {
-    log.info('POST /api/v1/donor/unsponsor');
+app.delete('/api/v1/donor/unsponsor', function(req, res) {
+    log.info('DELETE /api/v1/donor/unsponsor');
     eventlog.info('Donor requesting their sponsorship be deleted. Donor: ' + req.body.donor_id + ', Child: ' + req.body.child_id);
     var donorID = req.body.donor_id;
     var token = req.body.token;
@@ -806,7 +806,7 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
     }
 });
 
-/* POST /api/v1/donor/delete
+/* DELETE /api/v1/donor/delete
  *
  * emails the admin saying a donor wants to delete their account
  * {
@@ -814,8 +814,8 @@ app.post('/api/v1/donor/unsponsor', function(req, res) {
  *   'donor_id': donor_id
  * }
  */
-app.post('/api/v1/donor/delete', function(req, res) {
-    log.info('POST /api/v1/donor/delete');
+app.delete('/api/v1/donor/delete', function(req, res) {
+    log.info('DELETE /api/v1/donor/delete');
     var donorID = req.body.donor_id;
     var token = req.body.token;
 
