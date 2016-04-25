@@ -686,7 +686,7 @@ app.post('/api/v1/donor/create', function(req, res) {
             // if mongo confirms success and n = 1 where n is inserted docs
             if (result.hasOwnProperty('insertedCount')) {
                 if (result.insertedCount === 1) {
-                    eventlog.info('Donor created. ' + donor);
+                    eventlog.info('Donor created. ' + JSON.stringify(donor));
                     res.status(200).send({
                         success: true,
                         message: 'Donor account created.'
