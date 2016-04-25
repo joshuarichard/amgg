@@ -233,8 +233,7 @@ $(document).ready(function() {
             url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
             type: 'POST',
             data: {
-                'token' : sessionStorage.getItem('token'),
-                'id' : sessionStorage.getItem('id')
+                'token' : sessionStorage.getItem('token')
             },
             success: function(res) {
                 if (res.hasOwnProperty('niños_patrocinadoras')) {
@@ -624,18 +623,6 @@ $(document).ready(function() {
         });
 
         /* Create content for tabB */
-        //$.ajax({
-        //    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
-        //    type: 'POST',
-        //    data: {
-        //        'token' : sessionStorage.getItem('token'),
-        //        'id' : sessionStorage.getItem('id')
-        //    },
-        //    success: function(res) {
-// HERE
-        //    }
-        //});
-
         var deleteAccountText = document.createElement('div');
         deleteAccountText.className = 'delete-account-text';
         deleteAccountText.innerHTML = '​Al hacer c click en el botón de borrar usted​ estará enviando una solicitud de borrar su cuenta al administrador de AMG Guatemala. Su solicitud será procesada en una semana. AMG Guatemala no almacenará su información después de que su cuenta ha sido borrada y todos sus apadrinamientos serán cancelados.';
@@ -713,8 +700,7 @@ $(document).ready(function() {
                         url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
                         type: 'POST',
                         data: {
-                            'token' : sessionStorage.getItem('token'),
-                            'id' : sessionStorage.getItem('id')
+                            'token' : sessionStorage.getItem('token')
                         },
                         success: function(res) {
                             document.getElementById('form-first-name').value = res.nombre;
