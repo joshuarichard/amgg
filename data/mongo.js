@@ -341,64 +341,6 @@ exports.get = function(id, collection, isTrim, callback) {
     });
 };
 
-/** getPic(id, collection, callback)
- *
- * fetches a buffer for child pictures based on the child's document _id
- *
- * returns a document with content {'err' : 'not found'} if the id cannot be
- * matched.
- *
- * id         (string) - _id of the child whose picture buffer to return
- * collection (string) - the collection to search for documents
- * callback     (func) - callback function to execute after completion
- */
-exports.getPic = function(id, collection, callback) {
-    log.trace('getting picture for child with id ' + id);
-
-    exports.get(id, collection, false, function(doc) {
-        var db = new mongo.Db(nconf.get('mongo:db'),
-                 new mongo.Server(host,
-                 nconf.get('mongo:port')));
-
-        if (doc.hasOwnProperty('err')) {
-            log.error('DB error in getting picture. Child possibly nonexistant '
-                      + doc['err']);
-            callback({'err': 'Error with db. It\'s probable the child doesn\'t exist.'});
-        } else {
-            db.open(function(err, db) {
-                if (err) {
-                    log.error('Mongo connection error in getPic() ' + err);
-                    callback({
-                        'err': 'cannot establish a connection.'
-                    });
-                } else {
-                    try {
-                        var imageId = new mongo.ObjectID(doc.image_id);
-                        var gridStore = new mongo.GridStore(db, imageId, 'r');
-                        gridStore.open(function(err, gridStore) {
-                            if (typeof gridStore !== 'undefined') {
-                                gridStore.seek(0, function() {
-                                    gridStore.read(function(err, data) {
-                                        db.close();
-                                        log.trace('got picture for child with id '+ id);
-                                        callback(data.toString('base64'));
-                                    });
-                                });
-                            } else {
-                                callback({'err': 'picture not found.'});
-                            }
-                        });
-                    } catch (err) {
-                        log.error('Bad child ID when getting picture.');
-                        callback({'err': 'Bad child ID.'});
-                    }
-
-                }
-            });
-        }
-    });
-};
-
 /** trim(doc)
  *
  * trims a document down from a full document to a public, api-ready document.
