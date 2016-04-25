@@ -236,10 +236,10 @@ $(document).ready(function() {
                 'token' : sessionStorage.getItem('token')
             },
             success: function(res) {
-                if (res.hasOwnProperty('niños_patrocinadoras')) {
-                    if (res.niños_patrocinadoras.length > 0) {
-                        for (var i = 0; i < res.niños_patrocinadoras.length; i++) {
-                            var id = res.niños_patrocinadoras[i];
+                if (res[0].hasOwnProperty('niños_patrocinadoras')) {
+                    if (res[0].niños_patrocinadoras.length > 0) {
+                        for (var i = 0; i < res[0].niños_patrocinadoras.length; i++) {
+                            var id = res[0].niños_patrocinadoras[i];
                             addChildToDonorList(id);
                             tabA.appendChild(table);
                         }
@@ -289,7 +289,7 @@ $(document).ready(function() {
                 firstName.className = 'form-control';
                 firstName.type = 'text';
                 firstName.name = 'first-name';
-                firstName.value = res.nombre;
+                firstName.value = res[0].nombre;
 
                 //combine everything into one element
                 firstNameWrapper.appendChild(firstName);
@@ -309,7 +309,7 @@ $(document).ready(function() {
                 lastName.className = 'form-control';
                 lastName.type = 'text';
                 lastName.name = 'last-name';
-                lastName.value = res.apellido;
+                lastName.value = res[0].apellido;
 
                 //combine everything into one element
                 lastNameWrapper.appendChild(lastName);
@@ -329,7 +329,7 @@ $(document).ready(function() {
                 phone.className = 'form-control';
                 phone.type = 'text';
                 phone.name = 'phone';
-                phone.value = res.teléfono;
+                phone.value = res[0].teléfono;
 
                 //combine everything into one element
                 phoneWrapper.appendChild(phone);
@@ -349,7 +349,7 @@ $(document).ready(function() {
                 email.className = 'form-control';
                 email.type = 'text';
                 email.name = 'email';
-                email.value = res.correo_electrónico;
+                email.value = res[0].correo_electrónico;
 
                 //combine everything into one element
                 emailWrapper.appendChild(email);
@@ -369,7 +369,7 @@ $(document).ready(function() {
                 street.className = 'form-control';
                 street.type = 'text';
                 street.name = 'street';
-                street.value = res.calle;
+                street.value = res[0].calle;
 
                 //combine everything into one element
                 streetWrapper.appendChild(street);
@@ -388,7 +388,7 @@ $(document).ready(function() {
                 city.className = 'form-control';
                 city.type = 'text';
                 city.name = 'city';
-                city.value = res.ciudad;
+                city.value = res[0].ciudad;
 
                 //combine everything into one element
                 cityWrapper.appendChild(city);
@@ -469,7 +469,7 @@ $(document).ready(function() {
                 var submitPasswordChanges = document.createElement('button');
                 submitPasswordChanges.id = 'submit-new-password';
                 submitPasswordChanges.className = 'btn btn-primary btn-sm pull-right';
-                submitPasswordChanges.innerHTML = 'Submit Password';
+                submitPasswordChanges.innerHTML = 'Enviar Contraseña';
                 submitContainer.appendChild(submitPasswordChanges);
 
                 //combine the password elements into one block so we can target them together with css
@@ -497,7 +497,7 @@ $(document).ready(function() {
                 $(document).arrive('.departamento', {onceOnly: true, existing: true}, function() {
                     $(this).load('departamento.html');
                     $(document).arrive('#departamento', {onceOnly: true, existing: true}, function() {
-                        document.getElementById('departamento').value = res.departamento;
+                        document.getElementById('departamento').value = res[0].departamento;
                     });
                 });
 
@@ -601,7 +601,7 @@ $(document).ready(function() {
                 infoChange();
             },
             error: function() {
-                alert('La sesión ha expirado, por favor ingrese de nuevo');
+                alert('La sesión ha expirado, por favor ingrese de nuevo.');
                 // if getting in here that means that the id and token has
                 // been set but it's since expired. nuke everything and
                 // make them login again.
@@ -641,7 +641,7 @@ $(document).ready(function() {
             if (yesUnsponsor == true) {
                 $.ajax({
                     url: '/api/v1/donor/delete',
-                    type: 'POST',
+                    type: 'DELETE',
                     data: {
                         'token' : sessionStorage.getItem('token'),
                         'donor_id' : sessionStorage.getItem('id')
@@ -667,7 +667,7 @@ $(document).ready(function() {
         container.appendChild(tabC);
         container.appendChild(tabD);
     } else {
-        console.log('No login information found, please login.');
+        console.log('No se encontró información de acceso, introduzca su login.');
         document.getElementById('myTab').remove();
         alert('Entra en la cuenta para acceder a esta página.');
         window.location = 'children.html';
@@ -813,7 +813,7 @@ $(document).ready(function() {
         function data(id, callback) {
             // get child data using api
             $.getJSON('/api/v1/children/id/' + id, function(res) {
-                if(res.hasOwnProperty('err')) {
+                if(res[0].hasOwnProperty('err')) {
                     callback(false);
                 } else {
                     var dataTD = document.createElement('td');
@@ -824,21 +824,21 @@ $(document).ready(function() {
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
-                    var date = new Date(res[id].cumpleaños);
+                    var date = new Date(res[0].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
-                    var name = res[id].nombre;
+                    var name = res[0].nombre;
 
-                    var birthdayISO = new Date(res[id].cumpleaños);
+                    var birthdayISO = new Date(res[0].cumpleaños);
                     var today = new Date();
                     var age = today.getFullYear() - birthdayISO.getFullYear();
                     birthdayISO.setFullYear(today.getFullYear());
                     if (today < birthdayISO) { age--; }
 
-                    var gender = res[id].género;
-                    var departamento = res[id].departamento;
-                    var center = res[id].centro_de_niños;
-                    var hobbies = res[id].pasatiempos;
-                    var picture = res[id].foto;
+                    var gender = res[0].género;
+                    var departamento = res[0].departamento;
+                    var center = res[0].centro_de_niños;
+                    var hobbies = res[0].pasatiempos;
+                    var picture = res[0].foto;
 
                     //create elements for child picture
                     var picTD = document.createElement('td');
@@ -960,7 +960,7 @@ $(document).ready(function() {
                     if (yesUnsponsor == true) {
                         $.ajax({
                             url: '/api/v1/donor/unsponsor',
-                            type: 'POST',
+                            type: 'DELETE',
                             data: {
                                 'token' : sessionStorage.getItem('token'),
                                 'donor_id' : sessionStorage.getItem('id'),
@@ -991,7 +991,7 @@ $(document).ready(function() {
 
     if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
         document.getElementById('toggle-login').href = 'children.html';
-        document.getElementById('toggle-login').innerHTML = 'Logout';
+        document.getElementById('toggle-login').innerHTML = 'Cerrar Sesión';
         $('#toggle-login').click(logout);
     } else {
         /* When login link is clicked, call toggleLogin */
