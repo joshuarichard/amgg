@@ -290,7 +290,7 @@ $('.forgot-password').click(function() {
             url: '/api/v1/donor/reset',
             type: 'POST',
             data: {
-                'correo_electrónico': $('.donor-email').val()
+                'email': $('.donor-email').val()
             },
             success: function(res) {
                 if (res.success === true) {

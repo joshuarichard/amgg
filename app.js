@@ -867,7 +867,7 @@ app.delete('/api/v1/donor/delete', function(req, res) {
  *   'token': 'token_goes_here',
  *   'donor_id': donor_id,
  *   'child_id': child_id,
- *   'letterText': letter_text
+ *   'letter_text': letter_text
  * }
  */
 app.post('/api/v1/donor/letter', function(req, res) {
@@ -897,7 +897,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
                         if(didEmail === true) {
                             res.status(200).send({
                                 success: true,
-                                message: 'Letter Sent!'
+                                message: 'Letter Sent.'
                             });
                         } else {
                             eventlog.error('Error emailing admin a donor letter. Letter:' + {'donor': donorID, 'child': childID, 'body': letterText});
@@ -922,7 +922,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
  *
  * emails the user with a temp password they can use to login with
  * {
- *   'correo_electrónico': 'donor_email'
+ *   'email': 'donor_email'
  * }
  */
 app.post('/api/v1/donor/reset', function(req, res) {
@@ -930,7 +930,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
 
     // firstly create a selector based on the email to get the donor's doc
     var selector = {
-        'correo_electrónico': req.body.correo_electrónico
+        'correo_electrónico': req.body.email
     };
 
     // find the doc
