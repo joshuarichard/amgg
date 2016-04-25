@@ -262,6 +262,8 @@ $(document).ready(function() {
             if (childPool.hasOwnProperty('err')) {
                 alert('no hay niños de la búsqueda');
                 callback({success: false});
+                //no children found, remove loading spinner
+                $('.spinner').remove();
             } else {
                 getChild(childPool, function(child) {
                     // if there's an err in the response that means the child is
