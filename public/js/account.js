@@ -111,22 +111,22 @@ $(document).ready(function() {
                                     }
                                 }
                                 sessionStorage.setItem('cart', kidsInCartOnPage.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html('Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         } else {
                             for (key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 sessionStorage.setItem('cart', kidsInCartInDB.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html('Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         }
                     } else if (inStorage('cart')) {
-                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                        $('.counter').html('Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                     }
                 }
             });
         } else if (inStorage('cart')) {
-            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+            $('.counter').html('Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
         }
     }
 
