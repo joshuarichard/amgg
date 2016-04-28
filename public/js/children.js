@@ -191,9 +191,13 @@ $(document).ready(function() {
 
         // create the description element
         var divData = document.createElement('div');
+        divData.id = 'child-name';
         divData.className = 'col-xs-6';
-        var hData = document.createElement('h2');
-        hData.innerHTML = '<b>Hola, me llamo ' + name + '!</b>';
+        var divDataWidth = $('#child-name').width()
+        divData.style = 'width: 475; height:75px;';
+        var hData = document.createElement('span');
+        hData.id = 'child-name-text';
+        hData.innerHTML = 'Hola, me llamo ' + name + '!';
         divData.appendChild(hData);
         var divDescription = document.createElement('div');
         divDescription.className = 'child-description';
@@ -232,6 +236,13 @@ $(document).ready(function() {
     }
 
     $('.nav-buttons').hide();
+
+    $(document).arrive('#child-name-text', {onceOnly: true, existing: true}, function() {
+        $('#child-name').textfill({
+            minFontPixels: 25
+        });
+        console.log("resizing text");
+    });
 
     // add a slide to the carousel given slide html
     function addSlide(slide) {
