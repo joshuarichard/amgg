@@ -194,7 +194,7 @@ $(document).ready(function() {
         divData.id = 'child-name';
         divData.className = 'col-xs-6';
         var divDataWidth = $('#child-name').width();
-        divData.style = 'width:' + divDataWidth + '; height:75px; color:#F5842A';
+        divData.style = 'height:75px; color:#F5842A';
         var hData = document.createElement('span');
         hData.id = 'child-name-text';
         hData.innerHTML = 'Hola, me llamo ' + name + '!';
@@ -237,6 +237,7 @@ $(document).ready(function() {
 
     $('.nav-buttons').hide();
 
+    //resize the child name header if their name is really long
     $(document).arrive('#child-name-text', {onceOnly: true, existing: true}, function() {
         $('#child-name').textfill({
             minFontPixels: 25
