@@ -193,7 +193,6 @@ $(document).ready(function() {
         var divData = document.createElement('div');
         divData.id = 'child-name';
         divData.className = 'col-xs-6';
-        var divDataWidth = $('#child-name').width();
         divData.style = 'height:75px; color:#F5842A';
         var hData = document.createElement('span');
         hData.id = 'child-name-text';
