@@ -23,6 +23,10 @@ footer, .content-container:after {
   margin-bottom: 5%;
 }
 
+#child-name-text {
+  font-weight: bold;
+}
+
 .search-info {
   font-size: 13px;
 }
