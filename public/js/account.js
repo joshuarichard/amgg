@@ -100,43 +100,35 @@ $(document).ready(function() {
                 type: 'GET',
                 success: function(res) {
                     if (JSON.stringify(res) !== '{}') {
-                      console.log("success1");
                         var kidsInCartInDB = [];
                         if (inStorage('cart')) {
-                          console.log("success2");
                             var kidsInCartOnPage = sessionStorage.getItem('cart').split(',');
                             for (var key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 for (var c = 0; c < kidsInCartInDB.length; c++) {
                                     if (kidsInCartOnPage.indexOf(kidsInCartInDB[c]) === -1) {
                                         kidsInCartOnPage.push(kidsInCartInDB[c]);
-                                        console.log("success3");
                                     }
                                 }
                                 sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                                 $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
-                                console.log(sessionStorage.getItem('cart') + "1");
                             }
                         } else {
                             for (key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 sessionStorage.setItem('cart', kidsInCartInDB.toString());
                                 $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
-                                console.log(sessionStorage.getItem('cart') + "2");
                             }
                         }
                     } else if (inStorage('cart')) {
                         $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
-                        console.log(sessionStorage.getItem('cart') + "3");
                     }
                 }
             });
         } else if (inStorage('cart')) {
             $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
-            console.log(sessionStorage.getItem('cart') + "4");
         }
     }
-    console.log(sessionStorage.getItem('cart') + "5");
 
     /* check to see that there is a login token
      *   if not, prompt user to login
@@ -1071,10 +1063,8 @@ $(document).ready(function() {
     // helper function - check session storage element
     function inStorage(object) {
         if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
-          console.log('yup');
             return true;
         } else {
-          console.log('no')
             return false;
         }
     }
