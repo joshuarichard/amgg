@@ -793,15 +793,13 @@ $(document).ready(function() {
 
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').slideDown(function() {
-                $(this).show();
-            });
-        }
-        else {
-            $('.login').slideUp(function() {
-                $(this).hide();
-            });
+        if ($('.login').hasClass('fadeOutUp')) {
+            $('.login').removeClass('fadeOutUp');
+            $('.login').addClass('fadeInDown');
+            $('.login').show();
+        } else {
+            $('.login').removeClass('fadeInDown');
+            $('.login').addClass('fadeOutUp');
         }
     }
 
