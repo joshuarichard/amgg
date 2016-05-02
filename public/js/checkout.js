@@ -857,6 +857,7 @@ $(document).ready(function() {
                             // clear create account form after the account is successfully created
                             $(':input', '#create-account-form').each(function() {
                                 $(this).val('');
+                                location.reload();
                             });
                         },
                         error: function(res) {
