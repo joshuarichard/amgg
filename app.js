@@ -854,7 +854,7 @@ app.delete('/api/v1/donor/delete', function(req, res) {
                                 message: 'Email sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin. Donor requesting their account be deleted. Donor: ' + req.body.donor_id);
+                            eventlog.error('Error emailing admin. Donor requesting their account be deleted. Donor: ' + req.body.donor_id + '. ' + didEmail);
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
@@ -912,7 +912,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
                                 message: 'Letter Sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin a donor letter. Letter:' + {'donor': donorID, 'child': childID, 'body': letterText});
+                            eventlog.error('Error emailing admin a donor letter. Letter:' + {'donor': donorID, 'child': childID, 'body': letterText} + '. ' + didEmail);
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
