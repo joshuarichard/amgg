@@ -224,7 +224,7 @@ $(document).ready(function() {
                     var existingStorage = sessionStorage.getItem('cart');
                     sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
                     //update checkout cart count
-                    updateCart(); 
+                    updateCart();
                 }
             }
         };
