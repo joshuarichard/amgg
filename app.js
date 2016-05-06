@@ -100,26 +100,38 @@ function decrypt(text, pass) {
     return decrypted;
 }
 
-var decrypted = decrypt(nconf.get('keys:credomatic'), argv.password);
-decrypted = decrypted.split('|');
+var decryptedBank = decrypt(nconf.get('keys:credomatic'), argv.password);
+decryptedBank = decryptedBank.split('|');
 var credomaticHash = crypto.createHash('md5')
-                           .update(decrypted[0] + '|' +
-                                   decrypted[1] + '|' +
-                                   decrypted[2])
+                           .update(decryptedBank[0] + '|' +
+                                   decryptedBank[1] + '|' +
+                                   decryptedBank[2])
                            .digest('hex');
 
-if (credomaticHash !== decrypted[3]) {
+if (credomaticHash !== decryptedBank[3]) {
     log.error('Incorrect password given at startup.');
+    process.exit();
+}
+
+var decryptedEmail = decrypt(nconf.get('admin:email'), argv.password);
+decryptedEmail = decryptedEmail.split('|');
+var emailHash = crypto.createHash('md5')
+                      .update(decryptedEmail[0] + '|' +
+                              decryptedEmail[1])
+                      .digest('hex');
+
+if (emailHash !== decryptedEmail[2]) {
+    log.error('Incorrect password given at startup. Bank worked but email didn\'t.');
     process.exit();
 }
 
 log.info('Setting constants...');
 
 var APP_PORT = nconf.get('app:port');
-var BANK_PUBLIC_KEY = decrypted[0];
-var BANK_PRIVATE_KEY = decrypted[1];
-var AMGG_USERNAME = decrypted[2];
-var ADMIN_EMAIL = nconf.get('admin:email');
+var BANK_PUBLIC_KEY = decryptedBank[0];
+var BANK_PRIVATE_KEY = decryptedBank[1];
+var AMGG_USERNAME = decryptedBank[2];
+var ADMIN_EMAIL = decryptedEmail[0];
 var CHILD_COLLECTION = nconf.get('mongo:childCollection');
 var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
@@ -788,7 +800,7 @@ app.delete('/api/v1/donor/unsponsor', function(req, res) {
                                 message: 'Email sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin. Donor requesting their sponsorship be deleted. Donor: ' + req.body.donor_id + ', Child: ' + req.body.child_id);
+                            eventlog.error('Error emailing admin. Donor requesting their sponsorship be deleted. Donor: ' + req.body.donor_id + ', Child: ' + req.body.child_id + '.' + didEmail);
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
@@ -842,7 +854,7 @@ app.delete('/api/v1/donor/delete', function(req, res) {
                                 message: 'Email sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin. Donor requesting their account be deleted. Donor: ' + req.body.donor_id);
+                            eventlog.error('Error emailing admin. Donor requesting their account be deleted. Donor: ' + req.body.donor_id + '. ' + didEmail);
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
@@ -900,7 +912,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
                                 message: 'Letter Sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin a donor letter. Letter:' + {'donor': donorID, 'child': childID, 'body': letterText});
+                            eventlog.error('Error emailing admin a donor letter. Letter:' + {'donor': donorID, 'child': childID, 'body': letterText} + '. ' + didEmail);
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
