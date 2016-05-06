@@ -768,7 +768,6 @@ $(document).ready(function() {
     function displaySuccess() {
         // empty child _id's from session storage cart
         sessionStorage.removeItem('cart');
-        console.log("Updating cart");
         //set cart to 0 after all children are successfully sponsored
         $('.counter').html(' Cesta (0)');
 
