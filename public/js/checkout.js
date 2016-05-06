@@ -768,6 +768,9 @@ $(document).ready(function() {
     function displaySuccess() {
         // empty child _id's from session storage cart
         sessionStorage.removeItem('cart');
+        console.log("Updating cart");
+        //set cart to 0 after all children are successfully sponsored
+        $('.counter').html(' Cesta (0)');
 
         $('#children-to-sponsor').remove();
         $('#donor-info').remove();
@@ -784,12 +787,6 @@ $(document).ready(function() {
 
         $('.content').append(centerDiv);
     }
-
-    // =========================================================================
-    // =========================================================================
-    // ==================== Deleting the below soon ============================
-    // =========================================================================
-    // =========================================================================
 
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
@@ -861,13 +858,11 @@ $(document).ready(function() {
                             });
                         },
                         error: function(res) {
-                            console.log(res);
                             alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde.');
                         }
                     });
                 },
                 error: function(res) {
-                    console.log(res);
                     $('.modal').modal('hide');
                 },
                 statusCode: {
@@ -963,8 +958,6 @@ $(document).ready(function() {
                 return false;
             }
         } else {
-            console.log(password.value);
-            console.log(confirmPassword.value);
             alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
@@ -981,9 +974,6 @@ $(document).ready(function() {
             return false;
         }
     }
-
-    // =========================================================================
-    // =========================================================================
 
     $('.forgot-password').click(function() {
         if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {
