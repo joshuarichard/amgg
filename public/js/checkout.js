@@ -856,12 +856,12 @@ $(document).ready(function() {
                                 location.reload();
                             });
                         },
-                        error: function(res) {
+                        error: function() {
                             alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde.');
                         }
                     });
                 },
-                error: function(res) {
+                error: function() {
                     $('.modal').modal('hide');
                 },
                 statusCode: {
