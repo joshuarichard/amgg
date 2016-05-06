@@ -26,7 +26,6 @@ var emailHash = crypto.createHash('md5')
                       .digest('hex');
 
 if (emailHash !== decryptedEmail[2]) {
-    log.error('Incorrect password given at startup. Bank worked but email didn\'t.');
     process.exit();
 }
 
