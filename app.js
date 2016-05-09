@@ -266,39 +266,46 @@ app.post('/api/v1/children/islocked/id/:id', function(req, res) {
     mongo.find(selector, CART_COLLECTION, 10000, false, function(cartdocs) {
         // ...and make an array of all child ids currently in carts
         var idsOfKidsInCarts = [];
-        if (JSON.stringify(cartdocs) !== '[]') {
-            if (cartdocs[0].hasOwnProperty('kids_in_cart')) {
-                var kidsInThisCart = cartdocs[0].kids_in_cart;
-                for (var e = 0; e < kidsInThisCart.length; e++) {
-                    idsOfKidsInCarts.push(kidsInThisCart[e]);
+        if (cartdocs.hasOwnProperty('err')) {
+            res.status(500).send({
+                success: false,
+                islocked: true
+            });
+        } else {
+            if (JSON.stringify(cartdocs) !== '[]') {
+                if (cartdocs[0].hasOwnProperty('kids_in_cart')) {
+                    var kidsInThisCart = cartdocs[0].kids_in_cart;
+                    for (var e = 0; e < kidsInThisCart.length; e++) {
+                        idsOfKidsInCarts.push(kidsInThisCart[e]);
+                    }
                 }
-            }
 
-            var isLocked = false;
-            // then compare that to the list of ids in the child pool...
-            for (var c = 0; c < idsOfKidsInCarts.length; c++) {
-                if (child === idsOfKidsInCarts[c]) {
-                    isLocked = true;
-                    break;
+                var isLocked = false;
+                // then compare that to the list of ids in the child pool...
+                for (var c = 0; c < idsOfKidsInCarts.length; c++) {
+                    if (child === idsOfKidsInCarts[c]) {
+                        isLocked = true;
+                        break;
+                    }
                 }
-            }
 
-            if (isLocked === true) {
-                res.status(200).send({
-                    success: true,
-                    islocked: true
-                });
+                if (isLocked === true) {
+                    res.status(200).send({
+                        success: true,
+                        islocked: true
+                    });
+                } else {
+                    res.status(200).send({
+                        success: true,
+                        islocked: false
+                    });
+                }
             } else {
                 res.status(200).send({
                     success: true,
                     islocked: false
                 });
             }
-        } else {
-            res.status(200).send({
-                success: true,
-                islocked: false
-            });
         }
     });
 });
