@@ -963,8 +963,6 @@ $(document).ready(function() {
                 return false;
             }
         } else {
-            console.log(password.value);
-            console.log(confirmPassword.value);
             alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
