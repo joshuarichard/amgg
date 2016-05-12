@@ -650,21 +650,21 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         }
                                     });
                                 } else {
-                                    eventlog.error('Error sponsoring children. ResponseCode != 1. Transaction: ' + {'orderid': orderid, 'time': timeNow});
+                                    eventlog.error('Error sponsoring children. ResponseCode != 1. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
                                     res.status(500).send({
                                         success: false,
                                         message: 'Unsuccessful sponsorship. Card not charged. (responseCode != 1)'
                                     });
                                 }
                             } else {
-                                eventlog.error('Error sponsoring children. Hashes not equal. Transaction: ' + {'orderid': orderid, 'time': timeNow});
+                                eventlog.error('Error sponsoring children. Hashes not equal. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
                                 res.status(500).send({
                                     success: false,
                                     message: 'Unsuccessful sponsorship. Card not charged. (Hashes not equal)'
                                 });
                             }
                         } else {
-                            eventlog.error('Error sponsoring children. No response from bank. Transaction: ' + {'orderid': orderid, 'time': timeNow});
+                            eventlog.error('Error sponsoring children. No response from bank. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
                             res.status(500).send({
                                 success: false,
                                 message: 'Unsuccessful sponsorship. Card not charged. (No response from bank)'
@@ -674,7 +674,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     });
                 });
             } else {
-                eventlog.error('Error authenticating token during sponsorship process. Transactin: ' + {'orderid': orderid, 'time': timeNow});
+                eventlog.error('Error authenticating token during sponsorship process. Transactin: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
                 res.status(401).send({
                     success: false,
                     message: 'Failed to authenticate token.'
@@ -808,7 +808,7 @@ app.delete('/api/v1/donor/unsponsor', function(req, res) {
                                 message: 'Email sent.'
                             });
                         } else {
-                            eventlog.error('Error emailing admin. Donor requesting their sponsorship be deleted. Donor: ' + req.body.donor_id + ', Child: ' + req.body.child_id + '.' + didEmail);
+                            eventlog.error('Error emailing admin. Donor requesting their sponsorship be deleted. Donor: ' + req.body.donor_id + ', Child: ' + req.body.child_id + '.' + JSON.stringify(didEmail));
                             res.status(500).send({
                                 success: false,
                                 message: 'An error occured on email.'
