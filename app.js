@@ -110,6 +110,7 @@ var credomaticHash = crypto.createHash('md5')
 
 if (credomaticHash !== decryptedBank[3]) {
     log.error('Incorrect password given at startup.');
+    console.log('shit');
     process.exit();
 }
 
@@ -589,7 +590,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                              .digest('hex');
 
                             if (responseHash === computedResponseHash) {
-                                if (responseCode === '2') {
+                                if (responseCode === '1') {
                                     // find the donor's cart in the cart collection
                                     // and get the children to sponsor
                                     cart.find(donor_id, function(cartdoc) {

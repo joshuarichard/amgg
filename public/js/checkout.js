@@ -106,8 +106,8 @@ $(document).ready(function() {
         amount.innerHTML = 'Total: 0 Q/mes';
         $('#donor-total').text('0 Q/mes');
     } else {
-        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
-        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
+        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
     }
     total.appendChild(amount);
     container.appendChild(total);
@@ -133,7 +133,7 @@ $(document).ready(function() {
                             sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                         }
                         if (inStorage('cart')) {
-                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
                         }
                     } else {
                         for (key in res) {
@@ -144,7 +144,7 @@ $(document).ready(function() {
                             sessionStorage.setItem('cart', kidsInCartInDB.toString());
                         }
                         if (inStorage('cart')) {
-                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
                         }
                     }
                 }
@@ -429,8 +429,8 @@ $(document).ready(function() {
                     amount.innerHTML = 'Total: 0 Q/mes';
                     $('#donor-total').text('0 Q/mes');
                 } else {
-                    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
                 }
             };
 
@@ -717,7 +717,7 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
                 }
             });
         });
