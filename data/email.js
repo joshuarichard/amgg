@@ -25,10 +25,6 @@ var emailHash = crypto.createHash('md5')
                               decryptedEmail[1])
                       .digest('hex');
 
-if (emailHash !== decryptedEmail[2]) {
-    process.exit();
-}
-
 var ADMIN_EMAIL = decryptedEmail[0];
 var ADMIN_PASSWORD = decryptedEmail[1];
 
