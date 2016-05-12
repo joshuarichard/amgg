@@ -32,7 +32,22 @@ var exports = module.exports = {};
 
 exports.email = function(toAddress, header, body, callback) {
     // create reusable transporter object using the default SMTP transport
-    var transporter = nodemailer.createTransport('smtps://' + ADMIN_EMAIL + ':' + ADMIN_PASSWORD + '@smtpout.secureserver.net');
+
+    var smtpsConfig = {
+        host: 'smtpout.secureserver.net',
+        port: 465,
+        secure: true, // use SSL
+        tls: {
+            rejectUnauthorized: false
+        },
+        auth: {
+            user: ADMIN_EMAIL,
+            pass: ADMIN_PASSWORD
+        }
+    };
+
+    var transporter = nodemailer.createTransport(smtpsConfig);
+    //var transporter = nodemailer.createTransport('smtps://' + ADMIN_EMAIL + ':' + ADMIN_PASSWORD + '@smtpout.secureserver.net');
 
     // setup e-mail data with unicode symbols
     var mailOptions = {
