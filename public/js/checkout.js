@@ -1006,14 +1006,12 @@ $(document).ready(function() {
     $('#expiration-1 li > a').click(function() {
         $('#form-expiration-1').html(this.innerHTML + '<span class="caret"></span>');
         $('#form-expiration-1').val(this.innerHTML);
-        alert($('#form-expiration-1').val());
     });
 
     $('#expiration-2 li > a').click(function() {
         //$('#form-expiration-2').text(this.innerHTML);
         $('#form-expiration-2').val(this.innerHTML);
         $('#form-expiration-2').html(this.innerHTML + '<span class="caret"></span>');
-        alert($('#form-expiration-2').val());
     });
 
 });
