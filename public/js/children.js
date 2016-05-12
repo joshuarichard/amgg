@@ -216,23 +216,28 @@ $(document).ready(function() {
         // add the function for the sponsor button. clicking this should add
         // the child's id from the parent-most div into sessionStorage
         sponsorButton.onclick = function() {
-            if(sessionStorage.getItem('cart') === null ||
-                sessionStorage.getItem('cart') === '') {
+            if(!inStorage('cart')) {
                 sessionStorage.setItem('cart', this.parentNode.parentNode.id);
+                //update checkout cart count
                 updateCart();
             } else {
-                var existingStorage = sessionStorage.getItem('cart');
-                sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
-                updateCart();
+                //if the id is not in sessionStorage, add the id to the cart
+                if (!inCart(this.parentNode.parentNode.id)) {
+                    var existingStorage = sessionStorage.getItem('cart');
+                    sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
+                    //update checkout cart count
+                    updateCart();
+                }
             }
         };
+        //add the sponsor button the the DOM
         divData.appendChild(sponsorButton);
         slide.appendChild(divData);
 
         $('#slides').append(slide);
         callback(slide);
     }
-
+    //hide slider nav buttons until the slide appears on the DOM
     $('.nav-buttons').hide();
 
     //resize the child name header if their name is really long
@@ -723,6 +728,19 @@ $(document).ready(function() {
 function inStorage(object) {
     if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
         return true;
+    } else {
+        return false;
+    }
+}
+
+function inCart(id) {
+    var cart = sessionStorage.getItem('cart').split(',');
+    if (cart.length > 0) {
+        for (var i = 0; i <= cart.length; i++) {
+            if (cart[i] === id) {
+                return true;
+            }
+        }
     } else {
         return false;
     }
