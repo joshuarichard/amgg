@@ -110,7 +110,6 @@ var credomaticHash = crypto.createHash('md5')
 
 if (credomaticHash !== decryptedBank[3]) {
     log.error('Incorrect password given at startup.');
-    console.log('shit');
     process.exit();
 }
 
@@ -520,9 +519,15 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 // bank parameters from the client
                 var donor_id = donor.donor_id;
                 var children = donor.child_id;
-                var ccnumber = donor.ccnumber;
-                var cvv = donor.cvv;
-                var expiration = donor.expiration.replace('/', '');
+                if (argv.dev === false) {
+                    var ccnumber = donor.ccnumber;
+                    var cvv = donor.cvv;
+                    var expiration = donor.expiration.replace('/', '');
+                } else {
+                    var ccnumber = '4111111111111111';
+                    var cvv = '111'
+                    var expiration = '1120';
+                }
 
                 // other bank parameters
                 var amount = children.length * CHILD_COST;
@@ -597,6 +602,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                              .digest('hex');
 
                             if (responseHash === computedResponseHash) {
+                                if (argv.dev === true) { responseCode = '1' };
                                 if (responseCode === '1') {
                                     // find the donor's cart in the cart collection
                                     // and get the children to sponsor
@@ -650,21 +656,21 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                         }
                                     });
                                 } else {
-                                    eventlog.error('Error sponsoring children. ResponseCode != 1. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
+                                    eventlog.error('Error sponsoring children. ResponseCode != 1. Transaction: ' + JSON.stringify({'orderid': orderid}));
                                     res.status(500).send({
                                         success: false,
                                         message: 'Unsuccessful sponsorship. Card not charged. (responseCode != 1)'
                                     });
                                 }
                             } else {
-                                eventlog.error('Error sponsoring children. Hashes not equal. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
+                                eventlog.error('Error sponsoring children. Hashes not equal. Transaction: ' + JSON.stringify({'orderid': orderid}));
                                 res.status(500).send({
                                     success: false,
                                     message: 'Unsuccessful sponsorship. Card not charged. (Hashes not equal)'
                                 });
                             }
                         } else {
-                            eventlog.error('Error sponsoring children. No response from bank. Transaction: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
+                            eventlog.error('Error sponsoring children. No response from bank. Transaction: ' + JSON.stringify({'orderid': orderid}));
                             res.status(500).send({
                                 success: false,
                                 message: 'Unsuccessful sponsorship. Card not charged. (No response from bank)'
@@ -674,7 +680,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                     });
                 });
             } else {
-                eventlog.error('Error authenticating token during sponsorship process. Transactin: ' + JSON.stringify({'orderid': orderid, 'time': timeNow}));
+                eventlog.error('Error authenticating token during sponsorship process. Transactin: ' + JSON.stringify({'orderid': orderid}));
                 res.status(401).send({
                     success: false,
                     message: 'Failed to authenticate token.'

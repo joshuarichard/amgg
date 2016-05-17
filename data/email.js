@@ -18,6 +18,10 @@ function decrypt(text, pass) {
     return decrypted;
 }
 
+if (typeof argv.password === 'undefined') {
+    process.exit();
+}
+
 var decryptedEmail = decrypt(nconf.get('admin:email'), argv.password);
 decryptedEmail = decryptedEmail.split('|');
 var emailHash = crypto.createHash('md5')
