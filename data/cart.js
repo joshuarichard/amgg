@@ -45,7 +45,6 @@ exports.find = function(donorID, callback) {
 
 exports.delete = function(donorID, callback) {
     exports.find(donorID, function(doc) {
-        console.log(doc[0]._id);
         mongo.delete(doc[0]._id, cartCollection, function(res) {
             if (res.hasOwnProperty('err')) {
                 callback(false);

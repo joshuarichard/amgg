@@ -14,8 +14,9 @@
         <script type="text/javascript" charset="utf-8" src="./../js/checkout.js"></script>
         <script type="text/javascript" charset="utf-8" src="./../js/arrive.min.js"></script>
 
-        <link href="../css/Site.css" rel="stylesheet" />
-        <link href="../css/checkout.css" rel="stylesheet" />
+        <link href="../css/Site.css" rel="stylesheet"/>
+        <link href="../css/checkout.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="../css/animate.css">
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     </head>
@@ -39,8 +40,8 @@
                     <div class="col-sm-2 pre-active" style="text-align: center" >
                         <a style="text-align: center"  href="/views/children.html">Apadrina</a>
                     </div>
-                    <div class="col-sm-2 pre-active" style="text-align: center" >
-                        <a class="counter glyphicon glyphicon-shopping-cart" href="../views/checkout.html"> (0)</a>
+                    <div class="col-sm-2 pre-active" style="text-align: center"  ><i class="glyphicon glyphicon-shopping-cart"></i>
+                        <a href="../views/checkout.html" class = "counter"> Cesta (0)</a>
                     </div>
                     <div class="col-sm-2 pre-active">
                         <a href="#" class="vcenter" id="toggle-login">Iniciar Sesión</a>
@@ -100,7 +101,7 @@
             </div><!-- /.container-fluid -->
         </header>
 
-        <div class="login" algin="right">
+        <div class="login animated fadeOutUp" algin="right">
             <div class="login-triangle"></div>
             <h1>Iniciar Sesión</h1>
             <form>
@@ -469,13 +470,13 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">Número de Tarjeta</label>
                             <div class="col-md-8 checkout-input">
-                                <input id="form-credit" class="form-control" type="text" name="credit" placeholder="xxxx xxxx xxxx xxxx" disabled="true" value="4111111111111111">
+                                <input id="form-credit" class="form-control" type="text" name="credit" placeholder="xxxx xxxx xxxx xxxx" value="">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-4 control-label">CVV</label>
                             <div class="col-md-8 checkout-input">
-                                <input id="form-cvv" class="form-control" type="text" name="cvv" placeholder="123" disabled="true" value="111">
+                                <input id="form-cvv" class="form-control" type="text" name="cvv" placeholder="123" value="">
                             </div>
                         </div>
                         <div class="form-group">
@@ -483,45 +484,47 @@
                             <div class="expiration-date">
                                 <div class="col-md-8 checkout-input">
                                     <div class="dropdown dropdown-expiration">
-                                        <button id="form-expiration-1" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled="true" value="10">
+                                        <button id="form-expiration-1" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" value="01">
                                         01
                                         <span class="caret"></span>
                                         </button>
-                                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#">02</a></li>
-                                        <li><a href="#">03</a></li>
-                                        <li><a href="#">04</a></li>
-                                        <li><a href="#">05</a></li>
-                                        <li><a href="#">06</a></li>
-                                        <li><a href="#">07</a></li>
-                                        <li><a href="#">08</a></li>
-                                        <li><a href="#">09</a></li>
-                                        <li><a href="#">10</a></li>
-                                        <li><a href="#">11</a></li>
-                                        <li><a href="#">12</a></li>
+                                    <ul id="expiration-1" class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#" value="01">01</a></li>
+                                        <li><a href="#" value="02">02</a></li>
+                                        <li><a href="#" value="03">03</a></li>
+                                        <li><a href="#" value="04">04</a></li>
+                                        <li><a href="#" value="05">05</a></li>
+                                        <li><a href="#" value="06">06</a></li>
+                                        <li><a href="#" value="07">07</a></li>
+                                        <li><a href="#" value="08">08</a></li>
+                                        <li><a href="#" value="09">09</a></li>
+                                        <li><a href="#" value="10">10</a></li>
+                                        <li><a href="#" value="11">11</a></li>
+                                        <li><a href="#" value="12">12</a></li>
                                       </ul>
                                     </div>
                                     /
                                     <div class="dropdown dropdown-expiration">
-                                        <button id="form-expiration-2" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" disabled="true"disabled="true" value="25">
+                                        <button id="form-expiration-2" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" value="16">
                                         16
                                         <span class="caret"></span>
                                         </button>
-                                    <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
-                                        <li><a href="#">17</a></li>
-                                        <li><a href="#">18</a></li>
-                                        <li><a href="#">19</a></li>
-                                        <li><a href="#">20</a></li>
-                                        <li><a href="#">21</a></li>
-                                        <li><a href="#">22</a></li>
-                                        <li><a href="#">23</a></li>
-                                        <li><a href="#">24</a></li>
-                                        <li><a href="#">25</a></li>
-                                        <li><a href="#">26</a></li>
-                                        <li><a href="#">27</a></li>
-                                        <li><a href="#">28</a></li>
-                                        <li><a href="#">29</a></li>
-                                        <li><a href="#">30</a></li>
+                                    <ul id="expiration-2" class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">
+                                        <li><a href="#" value="16">16</a></li>
+                                        <li><a href="#" value="17">17</a></li>
+                                        <li><a href="#" value="18">18</a></li>
+                                        <li><a href="#" value="19">19</a></li>
+                                        <li><a href="#" value="20">20</a></li>
+                                        <li><a href="#" value="21">21</a></li>
+                                        <li><a href="#" value="22">22</a></li>
+                                        <li><a href="#" value="23">23</a></li>
+                                        <li><a href="#" value="24">24</a></li>
+                                        <li><a href="#" value="25">25</a></li>
+                                        <li><a href="#" value="26">26</a></li>
+                                        <li><a href="#" value="27">27</a></li>
+                                        <li><a href="#" value="28">28</a></li>
+                                        <li><a href="#" value="29">29</a></li>
+                                        <li><a href="#" value="30">30</a></li>
                                       </ul>
                                     </div>
                                 </div>
@@ -531,7 +534,7 @@
                     <a><button id="go-to-step-two" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Continuar</button></a>
                     <a><button id="go-to-step-three" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Continuar</button></a>
                     <a><button id="go-back-to-step-one" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Anterior</button></a>
-                    <a><button id="edit-donor-info" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Edit Info</button></a>
+                    <a><button id="edit-donor-info" class="btn btn-primary btn-md checkout-nav pull-right" type="button">Editar Información</button></a>
                     <div id="donor-info-confirmation">
                         <div class="form-group">
                             <span class="donor-label col-md-5">Nombre:</span>

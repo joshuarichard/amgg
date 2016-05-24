@@ -106,8 +106,8 @@ $(document).ready(function() {
         amount.innerHTML = 'Total: 0 Q/mes';
         $('#donor-total').text('0 Q/mes');
     } else {
-        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
-        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+        amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
+        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
     }
     total.appendChild(amount);
     container.appendChild(total);
@@ -133,7 +133,7 @@ $(document).ready(function() {
                             sessionStorage.setItem('cart', kidsInCartOnPage.toString());
                         }
                         if (inStorage('cart')) {
-                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
                         }
                     } else {
                         for (key in res) {
@@ -144,7 +144,7 @@ $(document).ready(function() {
                             sessionStorage.setItem('cart', kidsInCartInDB.toString());
                         }
                         if (inStorage('cart')) {
-                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
+                            amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
                         }
                     }
                 }
@@ -170,22 +170,22 @@ $(document).ready(function() {
                                     }
                                 }
                                 sessionStorage.setItem('cart', kidsInCartOnPage.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         } else {
                             for (key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 sessionStorage.setItem('cart', kidsInCartInDB.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         }
                     } else if (inStorage('cart')) {
-                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                        $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                     }
                 }
             });
         } else if (inStorage('cart')) {
-            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+            $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
         }
     }
     updateCart();
@@ -429,8 +429,8 @@ $(document).ready(function() {
                     amount.innerHTML = 'Total: 0 Q/mes';
                     $('#donor-total').text('0 Q/mes');
                 } else {
-                    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes';
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    amount.innerHTML = 'Total: ' + Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes';
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
                 }
             };
 
@@ -717,7 +717,7 @@ $(document).ready(function() {
                     $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
                     $('#donor-cvv').text(sessionStorage.getItem('cvv'));
                     $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
-                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 1) + ' Q/mes');
                 }
             });
         });
@@ -768,6 +768,8 @@ $(document).ready(function() {
     function displaySuccess() {
         // empty child _id's from session storage cart
         sessionStorage.removeItem('cart');
+        //set cart to 0 after all children are successfully sponsored
+        $('.counter').html(' Cesta (0)');
 
         $('#children-to-sponsor').remove();
         $('#donor-info').remove();
@@ -785,23 +787,15 @@ $(document).ready(function() {
         $('.content').append(centerDiv);
     }
 
-    // =========================================================================
-    // =========================================================================
-    // ==================== Deleting the below soon ============================
-    // =========================================================================
-    // =========================================================================
-
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').slideDown(function() {
-                $(this).show();
-            });
-        }
-        else {
-            $('.login').slideUp(function() {
-                $(this).hide();
-            });
+        if ($('.login').hasClass('fadeOutUp')) {
+            $('.login').removeClass('fadeOutUp');
+            $('.login').addClass('fadeInDown');
+            $('.login').show();
+        } else {
+            $('.login').removeClass('fadeInDown');
+            $('.login').addClass('fadeOutUp');
         }
     }
 
@@ -859,16 +853,15 @@ $(document).ready(function() {
                             // clear create account form after the account is successfully created
                             $(':input', '#create-account-form').each(function() {
                                 $(this).val('');
+                                location.reload();
                             });
                         },
-                        error: function(res) {
-                            console.log(res);
+                        error: function() {
                             alert('Su cuenta ha sido creada pero no hemos podido conectarlo ahora, por favor intente de nuevo más tarde.');
                         }
                     });
                 },
-                error: function(res) {
-                    console.log(res);
+                error: function() {
                     $('.modal').modal('hide');
                 },
                 statusCode: {
@@ -964,8 +957,6 @@ $(document).ready(function() {
                 return false;
             }
         } else {
-            console.log(password.value);
-            console.log(confirmPassword.value);
             alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
@@ -982,9 +973,6 @@ $(document).ready(function() {
             return false;
         }
     }
-
-    // =========================================================================
-    // =========================================================================
 
     $('.forgot-password').click(function() {
         if ($('.donor-email').val() != '' && $('.donor-email').val() != null) {
@@ -1014,4 +1002,15 @@ $(document).ready(function() {
             alert('Por favor, introduzca su correo electrónico en el campo de correo electrónico antes de hacer clic "Olvidé mi contraseña".');
         }
     });
+
+    $('#expiration-1 li > a').click(function() {
+        $('#form-expiration-1').html(this.innerHTML + ' <span class="caret"></span>');
+        $('#form-expiration-1').val(this.innerHTML);
+    });
+
+    $('#expiration-2 li > a').click(function() {
+        $('#form-expiration-2').val(this.innerHTML);
+        $('#form-expiration-2').html(this.innerHTML + ' <span class="caret"></span>');
+    });
+
 });

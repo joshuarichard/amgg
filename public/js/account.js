@@ -111,22 +111,22 @@ $(document).ready(function() {
                                     }
                                 }
                                 sessionStorage.setItem('cart', kidsInCartOnPage.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         } else {
                             for (key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 sessionStorage.setItem('cart', kidsInCartInDB.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         }
                     } else if (inStorage('cart')) {
-                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                        $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                     }
                 }
             });
         } else if (inStorage('cart')) {
-            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+            $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
         }
     }
 
@@ -1011,11 +1011,13 @@ $(document).ready(function() {
 
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
+        if ($('.login').hasClass('fadeOutUp')) {
+            $('.login').removeClass('fadeOutUp');
+            $('.login').addClass('fadeInDown');
             $('.login').show();
-        }
-        else {
-            $('.login').hide();
+        } else {
+            $('.login').removeClass('fadeInDown');
+            $('.login').addClass('fadeOutUp');
         }
     }
 
