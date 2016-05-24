@@ -2,6 +2,18 @@ var nodemailer = require('nodemailer');
 var nconf = require('nconf');
 var argv = require('minimist')(process.argv.slice(2));
 var crypto = require('crypto');
+var bunyan = require('bunyan');
+
+// bunyan options for server logs
+var log = bunyan.createLogger({
+    name: 'app',
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout
+        }
+    ]
+});
 
 nconf.file({
     file: './config.json'
@@ -19,6 +31,7 @@ function decrypt(text, pass) {
 }
 
 if (typeof argv.password === 'undefined') {
+    log.error('Add password with the --password option.');
     process.exit();
 }
 
