@@ -130,22 +130,22 @@ $(document).ready(function() {
                                     }
                                 }
                                 sessionStorage.setItem('cart', kidsInCartOnPage.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         } else {
                             for (key in res) {
                                 kidsInCartInDB = res[key]['kids_in_cart'];
                                 sessionStorage.setItem('cart', kidsInCartInDB.toString());
-                                $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                                $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                             }
                         }
                     } else if (inStorage('cart')) {
-                        $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+                        $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
                     }
                 }
             });
         } else if (inStorage('cart')) {
-            $('.counter').html(' (' + sessionStorage.getItem('cart').split(',').length + ')');
+            $('.counter').html(' Cesta (' + sessionStorage.getItem('cart').split(',').length + ')');
         }
     }
     updateCart();
@@ -191,9 +191,11 @@ $(document).ready(function() {
 
         // create the description element
         var divData = document.createElement('div');
-        divData.className = 'col-xs-6';
-        var hData = document.createElement('h2');
-        hData.innerHTML = '<b>Hola, me llamo ' + name + '!</b>';
+        divData.className = 'col-xs-6 child-name';
+        divData.style = 'height:75px; color:#F5842A';
+        var hData = document.createElement('span');
+        hData.id = 'child-name-text';
+        hData.innerHTML = 'Hola, me llamo ' + name + '!';
         divData.appendChild(hData);
         var divDescription = document.createElement('div');
         divDescription.className = 'child-description';
@@ -214,24 +216,36 @@ $(document).ready(function() {
         // add the function for the sponsor button. clicking this should add
         // the child's id from the parent-most div into sessionStorage
         sponsorButton.onclick = function() {
-            if(sessionStorage.getItem('cart') === null ||
-                sessionStorage.getItem('cart') === '') {
+            if(!inStorage('cart')) {
                 sessionStorage.setItem('cart', this.parentNode.parentNode.id);
+                //update checkout cart count
                 updateCart();
             } else {
-                var existingStorage = sessionStorage.getItem('cart');
-                sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
-                updateCart();
+                //if the id is not in sessionStorage, add the id to the cart
+                if (!inCart(this.parentNode.parentNode.id)) {
+                    var existingStorage = sessionStorage.getItem('cart');
+                    sessionStorage.setItem('cart', existingStorage + ',' + this.parentNode.parentNode.id);
+                    //update checkout cart count
+                    updateCart();
+                }
             }
         };
+        //add the sponsor button the the DOM
         divData.appendChild(sponsorButton);
         slide.appendChild(divData);
 
         $('#slides').append(slide);
         callback(slide);
     }
-
+    //hide slider nav buttons until the slide appears on the DOM
     $('.nav-buttons').hide();
+
+    //resize the child name header if their name is really long
+    $(document).arrive('#child-name-text', {existing: true}, function() {
+        $('.child-name').textfill({
+            minFontPixels: 25
+        });
+    });
 
     // add a slide to the carousel given slide html
     function addSlide(slide) {
@@ -275,6 +289,7 @@ $(document).ready(function() {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
                             $('.nav-buttons').show();
+                            $('.left-right').hide();
                             callback({success: true});
                         });
                     }
@@ -354,6 +369,7 @@ $(document).ready(function() {
                 console.log('inserted child.');
                 var slide = owl.data('owlCarousel').owl.owlItems.length;
                 owl.data('owlCarousel').jumpTo(slide);
+                $('.left-right').show();
             } else {
                 console.log('did not insert a child.');
             }
@@ -502,15 +518,13 @@ $(document).ready(function() {
 
     /* Toggle the login box when login link is clicked */
     function toggleLogin () {
-        if ($('.login').css('display') == 'none') {
-            $('.login').slideDown(function() {
-                $(this).show();
-            });
-        }
-        else {
-            $('.login').slideUp(function() {
-                $(this).hide();
-            });
+        if ($('.login').hasClass('fadeOutUp')) {
+            $('.login').removeClass('fadeOutUp');
+            $('.login').addClass('fadeInDown');
+            $('.login').show();
+        } else {
+            $('.login').removeClass('fadeInDown');
+            $('.login').addClass('fadeOutUp');
         }
     }
 
@@ -655,6 +669,7 @@ $(document).ready(function() {
                             // successfully created
                             $(':input', '#create-account-form').each(function() {
                                 $(this).val('');
+                                location.reload();
                             });
                         },
                         error: function(res) {
@@ -715,6 +730,19 @@ $(document).ready(function() {
 function inStorage(object) {
     if (sessionStorage.getItem(object) !== null && sessionStorage.getItem(object) !== '') {
         return true;
+    } else {
+        return false;
+    }
+}
+
+function inCart(id) {
+    var cart = sessionStorage.getItem('cart').split(',');
+    if (cart.length > 0) {
+        for (var i = 0; i <= cart.length; i++) {
+            if (cart[i] === id) {
+                return true;
+            }
+        }
     } else {
         return false;
     }
