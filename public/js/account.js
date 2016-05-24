@@ -244,10 +244,16 @@ $(document).ready(function() {
                             tabA.appendChild(table);
                         }
                     } else {
+                        // if user is not sponsoring any children, remove loading spinner
+                        // and remove the write a letter section
                         $('.spinner').remove();
+                        $('#tabC').remove();
                     }
                 } else {
+                    // if user is not sponsoring any children, remove loading spinner
+                    // and remove the write a letter section
                     $('.spinner').remove();
+                    $('#tabC').remove();
                 }
                 /*
                 donorInfo['nombre'] = res.nombre;
