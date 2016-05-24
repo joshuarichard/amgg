@@ -748,7 +748,7 @@ $(document).ready(function() {
                 },
                 error: function() {
                     alert('Había un problema patrocinar a sus hijos. Su tarjeta no fue acusado.');
-                    window.location = 'children.html';
+                    location.reload();
                 }
             });
         } else {
