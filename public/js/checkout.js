@@ -684,7 +684,29 @@ $(document).ready(function() {
 
     //confirm sponsorship details before submitting
     function goToStepThree() {
-        sessionStorage.setItem('ccnumber', $('#form-credit').val());
+        //make sure all the fields are filled in
+        var passed = true;
+        //remove any dashes the user put into the cc number
+        var ccNumber = $('#form-credit').val().replace(/-/g,'');
+        $('.required', '#donor-credit-form').each(function() {
+            //clear any red borders
+            $(this).css('border-color', '');
+            //if any field is empty
+            if($(this).val() == '') {
+                $(this).css('border-color', 'red');
+                passed = false;
+            }
+            //or if the credit card number is not 16 digits
+            else if (ccNumber.length != 16 || /[a-z]/i.test(ccNumber)) {
+                $('#form-credit').css('border-color', 'red');
+                passed = false;
+            //or if the cvv number is not 3 digits
+            } else if ($('#form-cvv').val().length != 3 || /[a-z]/i.test($('#form-cvv').val())) {
+                $('#form-cvv').css('border-color', 'red');
+                passed = false;
+            }
+        });
+        sessionStorage.setItem('ccnumber', ccNumber);
         sessionStorage.setItem('cvv', $('#form-cvv').val());
         sessionStorage.setItem('expiration', $('#form-expiration-1').val() + '/' + $('#form-expiration-2').val());
 
@@ -721,6 +743,51 @@ $(document).ready(function() {
                 }
             });
         });
+        if (passed) {
+            //remove red border color on all three fields
+            $('.required', '#donor-credit-form').each(function() {
+                $(this).css('border-color', '');
+            });
+            sessionStorage.setItem('ccnumber', ccNumber);
+            sessionStorage.setItem('cvv', $('#form-cvv').val());
+            sessionStorage.setItem('expiration', $('#form-expiration-1').val() + '/' + $('#form-expiration-2').val());
+
+            //hide elements from step two
+            $('#donor-credit-form').hide();
+            $('#go-back-to-step-one').hide();
+            $('#go-to-step-three').hide();
+            // change header
+            document.getElementById('right-header').innerHTML = 'Confirm Your Information';
+
+            // show elements for step three
+            $('#donor-info-confirmation').show();
+            $('#go-back-to-step-two').show();
+            $('#submit-sponsorship').show();
+
+            // send the cart one final time but this time with the requestToPay = true
+            sendCart(true, function() {
+                $.ajax({
+                    url: '/api/v1/donor/id/' + sessionStorage.getItem('id'),
+                    type: 'POST',
+                    data: {
+                        'token': sessionStorage.getItem('token')
+                    },
+                    success: function(res) {
+                        $('#donor-name').text(res[0].nombre + ' ' + res[0].apellido);
+                        $('#donor-phone').text(res[0].teléfono);
+                        $('#donor-address').text(res[0].calle + ' ' + res[0].ciudad);
+                        $('#donor-address-2').text(res[0].departamento + ', ' + res[0].país);
+                        $('#donor-email').text(res[0].correo_electrónico);
+                        $('#donor-credit-card').text(sessionStorage.getItem('ccnumber'));
+                        $('#donor-cvv').text(sessionStorage.getItem('cvv'));
+                        $('#donor-expiration-date').text(sessionStorage.getItem('expiration'));
+                        $('#donor-total').text(Math.round((sessionStorage.getItem('cart').split(',').length) * 200) + ' Q/mes');
+                    }
+                });
+            });
+        } else {
+            alert('Please complete the highlighted fields');
+        }
     }
 
     $('#submit-sponsorship').click(sendPayment);
