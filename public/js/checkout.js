@@ -686,6 +686,8 @@ $(document).ready(function() {
     function goToStepThree() {
         //make sure all the fields are filled in
         var passed = true;
+        //remove any dashes the user put into the cc number
+        var ccNumber = $('#form-credit').val().replace(/-/g,'');
         $('.required', '#donor-credit-form').each(function() {
             //clear any red borders
             $(this).css('border-color', '');
@@ -695,7 +697,7 @@ $(document).ready(function() {
                 passed = false;
             }
             //or if the credit card number is not 16 digits
-            else if ($('#form-credit').val().length != 16 || /[a-z]/i.test($('#form-credit').val())) {
+            else if (ccNumber.length != 16 || /[a-z]/i.test(ccNumber)) {
                 $('#form-credit').css('border-color', 'red');
                 passed = false;
             //or if the cvv number is not 3 digits
@@ -709,7 +711,7 @@ $(document).ready(function() {
             $('.required', '#donor-credit-form').each(function() {
                 $(this).css('border-color', '');
             });
-            sessionStorage.setItem('ccnumber', $('#form-credit').val());
+            sessionStorage.setItem('ccnumber', ccNumber);
             sessionStorage.setItem('cvv', $('#form-cvv').val());
             sessionStorage.setItem('expiration', $('#form-expiration-1').val() + '/' + $('#form-expiration-2').val());
 
