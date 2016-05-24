@@ -1,3 +1,9 @@
+input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+
 html, body {
   height: 100%;
 }
