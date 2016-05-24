@@ -289,6 +289,7 @@ $(document).ready(function() {
                         buildHTMLforSlide(child, function(slide) {
                             addSlide(slide);
                             $('.nav-buttons').show();
+                            $('.left-right').hide();
                             callback({success: true});
                         });
                     }
@@ -368,6 +369,7 @@ $(document).ready(function() {
                 console.log('inserted child.');
                 var slide = owl.data('owlCarousel').owl.owlItems.length;
                 owl.data('owlCarousel').jumpTo(slide);
+                $('.left-right').show();
             } else {
                 console.log('did not insert a child.');
             }
