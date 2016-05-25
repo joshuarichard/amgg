@@ -998,12 +998,6 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
-console.log(SSL_KEY_PATH);
-console.log(SSL_CERT_PATH);
-console.log(SSL_CA_PATH_1);
-console.log(SSL_CA_PATH_2);
-console.log(SSL_CA_PATH_3);
-
 https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
                      certificate: fs.readFileSync(SSL_CERT_PATH),
                      ca: [ fs.readFileSync(SSL_CA_PATH_1, 'utf8'),
