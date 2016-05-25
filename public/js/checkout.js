@@ -33,6 +33,7 @@ $(document).ready(function() {
                 $('#form-email').val(res[0].correo_electrónico);
                 $('#form-email').prop('disabled', true);
                 $('#form-country').prop('disabled', true);
+                $('.confirm-password').remove();
             },
             error: function() {
                 if (jqxhr.readyState !== 0 || jqxhr.status !== 0) {
@@ -504,6 +505,7 @@ $(document).ready(function() {
             $('#departamento-checkout').prop('disabled', true);
             $('#form-email').prop('disabled', true);
             $('#form-country').prop('disabled', true);
+            $('.confirm-password').remove();
         }
     }
 
@@ -961,6 +963,9 @@ $(document).ready(function() {
         var email = $('[name=email]', form)[0];
         var password = $('[name=password]', form)[0];
         var confirmPassword = $('[name=password-confirm]', form)[0];
+        if (typeof confirmPassword === 'undefined') {
+            confirmPassword = password;
+        }
 
         if(firstName.value == '') {
             alert('Error: El primer nombre no puede ir en blanco.');
