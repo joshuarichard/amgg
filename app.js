@@ -999,7 +999,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
 });
 
 https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
-                     certificate: fs.readFileSync(SSL_CERT_PATH),
+                     cert: fs.readFileSync(SSL_CERT_PATH),
                      ca: [fs.readFileSync(SSL_CA_PATH_1, 'utf8'),
                           fs.readFileSync(SSL_CA_PATH_2, 'utf8'),
                           fs.readFileSync(SSL_CA_PATH_3, 'utf8')]
