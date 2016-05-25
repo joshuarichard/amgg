@@ -274,7 +274,7 @@ $(document).ready(function() {
         fillChildPool(selector, function(childPool) {
             // if the child pool is empty, return false
             if (childPool.hasOwnProperty('err')) {
-                alert('no hay niños de la búsqueda');
+                alert('No hay niños de la búsqueda');
                 callback({success: false});
                 //no children found, remove loading spinner
                 $('.spinner').remove();
@@ -283,7 +283,7 @@ $(document).ready(function() {
                     // if there's an err in the response that means the child is
                     // in the cart but there are no more children to display
                     if (child.hasOwnProperty('err')) {
-                        alert('no hay niños de la búsqueda');
+                        alert('No hay niños de la búsqueda');
                         callback({success: false});
                     } else {
                         buildHTMLforSlide(child, function(slide) {
@@ -503,7 +503,7 @@ $(document).ready(function() {
                         alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
-                        alert('see console for error info.');
+                        alert('Hubo un error.');
                     }
                     worked = false;
                 },
@@ -689,7 +689,7 @@ $(document).ready(function() {
                         alert('Ya existe un cuenta con la misma dirección de correo. Por favor ingrese.');
                     },
                     500: function() {
-                        alert('An error occured, please try again or contact an admin');
+                        alert('Ha ocurrido un error. Por favor inténtelo de nuevo o póngase en contacto con un administrador.');
                     }
                 }
             });
@@ -716,7 +716,7 @@ $(document).ready(function() {
                         alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
-                        alert('Error.');
+                        alert('Habo un error.');
                     }
                 }
             });

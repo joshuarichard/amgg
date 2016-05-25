@@ -27,7 +27,7 @@ $(document).ready(function() {
             lastName.focus();
             return false;
         } else if(phone.value == '') {
-            alert('Error: Phone number cannot be blank!');
+            alert('Error: No. de telefono no debe ir en blanco');
             phone.focus();
             return false;
         } else if(email.value == '') {
@@ -59,34 +59,34 @@ $(document).ready(function() {
 
         if(password.value != '' && oldPassword.value != '' && password.value == confirmPassword.value) {
             if(password.value.length < 6) {
-                alert('Error: Password must contain at least six characters');
+                alert('Error: La contraseña debe contener al menos 6 carácteres.');
                 password.focus();
                 return false;
             }
             re = /[0-9]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one number (0-9)');
+                alert('Error: La contraseña debe contener al menos un  número (0-9).');
                 password.focus();
                 return false;
             }
             re = /[a-z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one lowercase letter (a-z)');
+                alert('Error: La contraseña debe contener al menos una letra en minuscula (a-z).');
                 password.focus();
                 return false;
             }
             re = /[A-Z]/;
             if(!re.test(password.value)) {
-                alert('Error: password must contain at least one uppercase letter (A-Z)');
+                alert('Error: La  contraseña debe contener al menos una letra en mayuscula (A-Z).');
                 password.focus();
                 return false;
             }
         } else if(oldPassword.value == '') {
-            alert('Error: Please enter your old password');
+            alert('Error: Por favor introduzca su contraseña anterior.');
             oldPassword.focus();
             return false;
         } else {
-            alert('Error: Please check that you\'ve entered and confirmed your password');
+            alert('Error: Por favor revise que usted haya ingresado y confirme su contraseña.');
             password.focus();
             return false;
         }
@@ -727,7 +727,7 @@ $(document).ready(function() {
                         alert('el correo electrónico ya está asociada a una cuenta.');
                     },
                     500: function() {
-                        alert('An error occured, please try again or contact an admin');
+                        alert('Ha ocurrido un error. Por favor inténtelo de nuevo o póngase en contacto con un administrador.');
                     }
                 }
             });

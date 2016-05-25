@@ -69,7 +69,7 @@ $(document).ready(function() {
                     // ... then remove it from the table
                     removeChildFromCart(lockedChildren[q]);
                 }
-                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                alert('Lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
             }
         });
     }
@@ -242,10 +242,10 @@ $(document).ready(function() {
                 },
                 error: function(httpObj) {
                     if(httpObj.status === 401) {
-                        alert('correo o contraseña incorrectos.');
+                        alert('Correo o contraseña incorrectos.');
                     } else {
                         console.log(JSON.stringify(httpObj));
-                        alert('see console for error info.');
+                        alert('Hubo un error.');
                     }
                     worked = false;
                 },
@@ -551,7 +551,7 @@ $(document).ready(function() {
                                                     // ... then remove it from the table
                                                     removeChildFromCart(lockedChildren[q]);
                                                 }
-                                                alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                                alert('Lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
                                             } else {
                                                 // if there aren't any children that are locked then send the cart
                                                 sendCart(false, function() {
@@ -649,7 +649,7 @@ $(document).ready(function() {
                                                 // ... then remove it from the table
                                                 removeChildFromCart(lockedChildren[q]);
                                             }
-                                            alert('lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
+                                            alert('Lo sentimos, pero algunos de los niños en su carrito ya no están disponibles para el patrocinio.');
                                         } else {
                                             // if there aren't any children that are locked then send the cart
                                             sendCart(false, function() {
