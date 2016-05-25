@@ -137,8 +137,11 @@ var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
 var CHILD_COST = nconf.get('amgg:childCost');
 var TOKEN_KEY = nconf.get('keys:token');
-var SSL_KEY_PATH = nconf.get('keys:sslKey');
-var SSL_CERT_PATH = nconf.get('keys:sslCert');
+var SSL_KEY_PATH = nconf.get('keys:sslkey');
+var SSL_CERT_PATH = nconf.get('keys:certificate');
+var SSL_CA_PATH_1 = nconf.get('keys:ca')[0];
+var SSL_CA_PATH_2 = nconf.get('keys:ca')[1];
+var SSL_CA_PATH_3 = nconf.get('keys:ca')[2];
 
 // email strings
 //var emailHeaderSponsor =  'Thank you for your sponsorship';
@@ -995,8 +998,18 @@ app.post('/api/v1/donor/reset', function(req, res) {
     });
 });
 
+console.log(SSL_KEY_PATH);
+console.log(SSL_CERT_PATH);
+console.log(SSL_CA_PATH_1);
+console.log(SSL_CA_PATH_2);
+console.log(SSL_CA_PATH_3);
+
 https.createServer({ key: fs.readFileSync(SSL_KEY_PATH),
-                     cert: fs.readFileSync(SSL_CERT_PATH)}, app)
+                     certificate: fs.readFileSync(SSL_CERT_PATH),
+                     ca: [ fs.readFileSync(SSL_CA_PATH_1, 'utf8'),
+                           fs.readFileSync(SSL_CA_PATH_2, 'utf8'),
+                           fs.readFileSync(SSL_CA_PATH_3, 'utf8')],
+                     app })
      .listen(APP_PORT, function () {
          log.info('Server up and listening at https://0.0.0.0:' + APP_PORT + '...');
      });
