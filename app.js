@@ -522,14 +522,15 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 // bank parameters from the client
                 var donor_id = donor.donor_id;
                 var children = donor.child_id;
+                var ccnumber, cvv, expiration;
                 if (argv.dev === false) {
-                    var ccnumber = donor.ccnumber;
-                    var cvv = donor.cvv;
-                    var expiration = donor.expiration.replace('/', '');
+                    ccnumber = donor.ccnumber;
+                    cvv = donor.cvv;
+                    expiration = donor.expiration.replace('/', '');
                 } else {
-                    var ccnumber = '4111111111111111';
-                    var cvv = '111'
-                    var expiration = '1120';
+                    ccnumber = '4111111111111111';
+                    cvv = '111';
+                    expiration = '1120';
                 }
 
                 // other bank parameters
@@ -605,7 +606,7 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                              .digest('hex');
 
                             if (responseHash === computedResponseHash) {
-                                if (argv.dev === true) { responseCode = '1' };
+                                if (argv.dev === true) { responseCode = '1'; }
                                 if (responseCode === '1') {
                                     // find the donor's cart in the cart collection
                                     // and get the children to sponsor

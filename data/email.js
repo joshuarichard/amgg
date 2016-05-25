@@ -42,6 +42,11 @@ var emailHash = crypto.createHash('md5')
                               decryptedEmail[1])
                       .digest('hex');
 
+if (emailHash !== decryptedEmail[2]) {
+    log.error('Incorrect password given at startup.');
+    process.exit();
+}
+
 var ADMIN_EMAIL = decryptedEmail[0];
 var ADMIN_PASSWORD = decryptedEmail[1];
 
