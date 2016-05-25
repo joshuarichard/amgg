@@ -19,8 +19,13 @@
         "numOfDocs": "10"
     },
     "keys": {
-        "sslKey": "./keys/key.pem",
-        "sslCert": "./keys/cert.pem",
+        "sslkey": "./keys/amgg.key",
+        "certificate": "./keys/amgg.crt",
+        "ca": [
+            "./keys/gd1.crt",
+            "./keys/gd2.crt",
+            "./keys/gd3.crt"
+        ],
         "token": "x",
         "credomatic": "6f6a8ed30c751ab1746cffa17cfdd9a9a93aa7859d2689472cd585bcaf63dffcab51a2e2c6a3b51c98d53fe14284076aa11f48fae851207d3ee89754591d48db6c2ab311f72904d8ffa45c0e3438c2f913c66589f6647b46"
     },
