@@ -100,7 +100,7 @@ function decrypt(text, pass) {
     return decrypted;
 }
 
-var decryptedBank = decrypt(nconf.get('keys:credomatic'), argv.password);
+var decryptedBank = decrypt(nconf.get('credomatic:credentials'), argv.password);
 decryptedBank = decryptedBank.split('|');
 var credomaticHash = crypto.createHash('md5')
                            .update(decryptedBank[0] + '|' +
@@ -113,7 +113,7 @@ if (credomaticHash !== decryptedBank[3]) {
     process.exit();
 }
 
-var decryptedEmail = decrypt(nconf.get('admin:email'), argv.password);
+var decryptedEmail = decrypt(nconf.get('admin:credentials'), argv.password);
 decryptedEmail = decryptedEmail.split('|');
 var emailHash = crypto.createHash('md5')
                       .update(decryptedEmail[0] + '|' +
