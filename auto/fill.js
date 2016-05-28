@@ -27,7 +27,7 @@ function decrypt(text, pass) {
 }
 
 if (typeof argv.password === 'undefined') {
-    log.error('Add password with the --password option.');
+    console.log('Add password with the --password option.');
     process.exit();
 }
 
@@ -39,7 +39,7 @@ var mongoHash = crypto.createHash('md5')
                       .digest('hex');
 
 if (mongoHash !== decryptedMongoDB[2]) {
-    log.error('Incorrect password given at startup. Bank and email worked but mongodb didn\'t.');
+    console.log('Incorrect password given at startup. Bank and email worked but mongodb didn\'t.');
     process.exit();
 }
 
@@ -48,7 +48,7 @@ var url;
 if (argv.noauth === true) {
     url = 'mongodb://' + host + ':' + port + '/' + dbName;
 } else {
-    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + "@" + host + ':' + port + '/' + dbName;
+    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + '@' + host + ':' + port + '/' + dbName;
 }
 
 console.log('Importing ' + numOfDocs + ' documents into db:' + dbName + ' and collection:' + collectionName + ' at ' + url + '.');

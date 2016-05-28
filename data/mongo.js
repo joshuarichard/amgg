@@ -95,7 +95,7 @@ var url;
 if (argv.noauth === true) {
     url = 'mongodb://' + host + ':' + port + '/' + dbName;
 } else {
-    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + "@" + host + ':' + port + '/' + dbName;
+    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + '@' + host + ':' + port + '/' + dbName;
 }
 
 // TODO: this test works if connected or unconnected to the internet, but if the
