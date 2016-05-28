@@ -12,6 +12,8 @@ nconf.env()
 var dbName = nconf.get('autofill:db');
 var collectionName = nconf.get('autofill:childCollection');
 var numOfDocs = nconf.get('autofill:numOfDocs');
+var host = nconf.get('mongo:host');
+var port = nconf.get('mongo:port');
 
 var algorithm = 'aes-256-ctr';
 
@@ -41,8 +43,13 @@ if (mongoHash !== decryptedMongoDB[2]) {
     process.exit();
 }
 
-// mongodb://host:port/databasename
-var url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + "@" + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + dbName;
+// mongodb:/username:password@/host:port/databasename
+var url;
+if (argv.noauth === true) {
+    url = 'mongodb://' + host + ':' + port + '/' + dbName;
+} else {
+    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + "@" + host + ':' + port + '/' + dbName;
+}
 
 console.log('Importing ' + numOfDocs + ' documents into db:' + dbName + ' and collection:' + collectionName + ' at ' + url + '.');
 
