@@ -4,6 +4,8 @@ var MongoClient = require('mongodb').MongoClient;
 var mongo = require('mongodb');
 var nconf = require('nconf');
 var bunyan = require('bunyan');
+var crypto = require('crypto');
+var argv = require('minimist')(process.argv.slice(2));
 
 // TODO: need to take care of making this more robust. don't log.trace(success)
 // when there's failure. know this is happening for edit() with undefined ID
@@ -59,8 +61,42 @@ var host = nconf.get('MONGODB_PORT_27017_TCP_ADDR') || nconf.get('mongo:host');
 var port = nconf.get('mongo:port');
 var dbName = nconf.get('mongo:db');
 
-// mongodb://host:port/databasename
-var url = 'mongodb://' + host + ':' + port + '/' + dbName;
+var algorithm = 'aes-256-ctr';
+
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
+function decrypt(text, pass) {
+    var decipher = crypto.createDecipher(algorithm, pass);
+    var decrypted = decipher.update(text, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+if (typeof argv.password === 'undefined') {
+    log.error('Add password with the --password option.');
+    process.exit();
+}
+
+var decryptedMongoDB = decrypt(nconf.get('mongo:credentials'), argv.password);
+decryptedMongoDB = decryptedMongoDB.split('|');
+var mongoHash = crypto.createHash('md5')
+                      .update(decryptedMongoDB[0] + '|' +
+                              decryptedMongoDB[1])
+                      .digest('hex');
+
+if (mongoHash !== decryptedMongoDB[2]) {
+    log.error('Incorrect password given at startup. Bank and email worked but mongodb didn\'t.');
+    process.exit();
+}
+
+// mongodb://username:password@host:port/databasename
+
+var url;
+if (argv.noauth === true) {
+    url = 'mongodb://' + host + ':' + port + '/' + dbName;
+} else {
+    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + '@' + host + ':' + port + '/' + dbName;
+}
 
 // TODO: this test works if connected or unconnected to the internet, but if the
 // IP is wrong, it will take a million years to timeout. look into a MongoClient

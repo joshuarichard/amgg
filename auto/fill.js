@@ -2,6 +2,8 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var fs = require('fs');
+var crypto = require('crypto');
+var argv = require('minimist')(process.argv.slice(2));
 
 var nconf = require('nconf');
 nconf.env()
@@ -10,8 +12,44 @@ nconf.env()
 var dbName = nconf.get('autofill:db');
 var collectionName = nconf.get('autofill:childCollection');
 var numOfDocs = nconf.get('autofill:numOfDocs');
+var host = nconf.get('mongo:host');
+var port = nconf.get('mongo:port');
 
-var url = 'mongodb://' + nconf.get('mongo:host') + ':' + nconf.get('mongo:port') + '/' + dbName;
+var algorithm = 'aes-256-ctr';
+
+// encrypt and decrypt functions taken from:
+// http://lollyrock.com/articles/nodejs-encryption/
+function decrypt(text, pass) {
+    var decipher = crypto.createDecipher(algorithm, pass);
+    var decrypted = decipher.update(text, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
+if (typeof argv.password === 'undefined') {
+    console.log('Add password with the --password option.');
+    process.exit();
+}
+
+var decryptedMongoDB = decrypt(nconf.get('mongo:credentials'), argv.password);
+decryptedMongoDB = decryptedMongoDB.split('|');
+var mongoHash = crypto.createHash('md5')
+                      .update(decryptedMongoDB[0] + '|' +
+                              decryptedMongoDB[1])
+                      .digest('hex');
+
+if (mongoHash !== decryptedMongoDB[2]) {
+    console.log('Incorrect password given at startup. Bank and email worked but mongodb didn\'t.');
+    process.exit();
+}
+
+// mongodb:/username:password@/host:port/databasename
+var url;
+if (argv.noauth === true) {
+    url = 'mongodb://' + host + ':' + port + '/' + dbName;
+} else {
+    url = 'mongodb://' + decryptedMongoDB[0] + ':' + decryptedMongoDB[1] + '@' + host + ':' + port + '/' + dbName;
+}
 
 console.log('Importing ' + numOfDocs + ' documents into db:' + dbName + ' and collection:' + collectionName + ' at ' + url + '.');
 

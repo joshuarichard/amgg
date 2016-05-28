@@ -2,8 +2,7 @@
     "mongo": {
         "host": "73.227.187.84",
         "port": "27017",
-        "username": "x",
-        "password": "x",
+        "credentials": "x",
         "db": "prod-v2",
         "childCollection": "children",
         "donorCollection": "donors",
@@ -26,11 +25,13 @@
             "./keys/gd2.crt",
             "./keys/gd3.crt"
         ],
-        "token": "x",
-        "credomatic": "x"
+        "token": "x"
+    },
+    "credomatic": {
+        "credentials": "x"
     },
     "admin": {
-        "email": "x"
+        "credentials": "x"
     },
     "amgg": {
         "childCost": 1

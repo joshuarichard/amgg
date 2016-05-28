@@ -19,7 +19,15 @@ $ brew install nodejs
 Windows:
 Download and run an installer: https://nodejs.org/en/download/
 
-You must also have access to an instance of MongoDB. To fill a database with test data run `node auto/fill.js`. The number of children to be inserted each time you execute this command is found in the config file. Feel free to bump it up from 10 to 100 if you should feel so inclined, just know that there might be async issues that occur and that full number might not be inserted.
+You must also have access to an instance of MongoDB. To fill a database with test data run:
+
+```shell
+$ node auto/fill.js --password <PASSWORD>
+```
+
+The number of children to be inserted each time you execute this command is found in the config file. Feel free to bump it up from 10 to 100 if you should feel so inclined, just know that there might be async issues that occur and that full number might not be inserted.
+
+You may also use the `--noauth` option if connecting to an instance of MongoDB that does not require authentication.
 
 ### Building
 Use npm to install all dependencies.
@@ -30,18 +38,20 @@ $ npm install
 
 Install all SSL keys in the `keys/` folder in the root directory of the project. See `config.json` for more information.
 
-Lastly, to to create the log directory run:
+Lastly, to create the log directory run:
 ```shell
 $ mkdir log
-``` 
+```
 
 ### Configuration
-Everything needed to configure the system is in `config.json` in the root directory of the project.
+Everything needed to configure the system is in `config.json` in the root directory of the project. It's important to note that we're currently encrypting sensitive information with AES-256. How we derive the encrypted string that includes banking, email, and MongoDB credentials can be found in the source code, and there is currently no way to start the system without those encrypted piece of information and a password used to decrypt that information.
 
 ### Running
-Run `node app.js --password <PASSWORD> | bunyan` to start the application and pipe the server logs into bunyan for human readible formatting. PASSWORD should be the password used to start the system.
+Run `node app.js --password <PASSWORD> | bunyan` to start the application and pipe the server logs into Bunyan for human readable formatting. PASSWORD should be the password used to start the system.
 
-If you don't have the password you can also run the system using the `--dev` flag. This will use test financial information for every transaction and not require a password at startup, however you won't be able to send emails to an administrator.
+Using the `--dev` flag will start the system in a state where only test credit cards will be charged when sponsoring children. This will use test financial information for bank transactions.
+
+You may also use the `--noauth` option if connecting to an instance of MongoDB that does not require authentication.
 
 Go to `https://localhost:3000/` in your browser to get access to the project.
 
