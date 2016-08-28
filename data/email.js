@@ -4,6 +4,8 @@ var argv = require('minimist')(process.argv.slice(2));
 var crypto = require('crypto');
 var bunyan = require('bunyan');
 
+var decrypt = require('./decrypt.js');
+
 // bunyan options for server logs
 var log = bunyan.createLogger({
     name: 'app',
@@ -19,36 +21,18 @@ nconf.file({
     file: './config.json'
 });
 
-var algorithm = 'aes-256-ctr';
+var ADMIN_EMAIL = '';
+var ADMIN_PASSWORD = '';
 
-// encrypt and decrypt functions taken from:
-// http://lollyrock.com/articles/nodejs-encryption/
-function decrypt(text, pass) {
-    var decipher = crypto.createDecipher(algorithm, pass);
-    var decrypted = decipher.update(text, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-}
+decrypt.email(argv.password, function(decryptedEmail) {
+    if (decryptedEmail.hasOwnProperty('err')) {
+        log.error(decryptedEmail.err);
+        process.exit();
+    }
 
-if (typeof argv.password === 'undefined') {
-    log.error('Add password with the --password option.');
-    process.exit();
-}
-
-var decryptedEmail = decrypt(nconf.get('admin:credentials'), argv.password);
-decryptedEmail = decryptedEmail.split('|');
-var emailHash = crypto.createHash('md5')
-                      .update(decryptedEmail[0] + '|' +
-                              decryptedEmail[1])
-                      .digest('hex');
-
-if (emailHash !== decryptedEmail[2]) {
-    log.error('Incorrect password given at startup.');
-    process.exit();
-}
-
-var ADMIN_EMAIL = decryptedEmail[0];
-var ADMIN_PASSWORD = decryptedEmail[1];
+    ADMIN_EMAIL = decryptedEmail.decryptedEmail[0];
+    ADMIN_PASSWORD = decryptedEmail.decryptedEmail[1];
+});
 
 var exports = module.exports = {};
 
