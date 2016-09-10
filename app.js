@@ -963,7 +963,7 @@ app.post('/api/v1/donor/reset', function(req, res) {
                                     message: 'Donor password reset.'
                                 });
                             } else {
-                                eventlog.error('Error sending donor their new password. Donor password is: ' + tempPassword '. Donor ID: ' + id);
+                                eventlog.error('Error sending donor their new password. Donor password is: ' + tempPassword + '. Donor ID: ' + id);
                                 res.status(500).send({
                                     success: false,
                                     message: 'An error occured on email.'
