@@ -8,7 +8,6 @@ var bunyan = require('bunyan');
 var nconf = require('nconf');
 var jwt = require('jsonwebtoken');
 var request = require('request');
-var crypto = require('crypto');
 var querystring = require('querystring');
 var argv = require('minimist')(process.argv.slice(2));
 
@@ -17,6 +16,8 @@ var password = require('./data/password.js');
 var query = require('./data/query.js');
 var emailModule = require('./data/email.js');
 var cart = require('./data/cart.js');
+var decrypt = require('./data/decrypt.js');
+var emailmessages = require('./emailmessages.js');
 
 // bunyan options for server logs
 var log = bunyan.createLogger({
@@ -83,55 +84,34 @@ nconf.file({
 
 log.info('Using password to decrypt bank credentials...');
 
-var algorithm = 'aes-256-ctr';
-var argvPassword = argv.password;
+var BANK_PUBLIC_KEY;
+var BANK_PRIVATE_KEY;
+var AMGG_USERNAME;
+var ADMIN_EMAIL;
 
-if (typeof argvPassword === 'undefined') {
-    log.error('Add password with the --password option.');
-    process.exit();
-}
+decrypt.bank(argv.password, function(decryptedBank) {
+    if (decryptedBank.hasOwnProperty('err')) {
+        log.error(decryptedBank.err);
+        process.exit();
+    }
 
-// encrypt and decrypt functions taken from:
-// http://lollyrock.com/articles/nodejs-encryption/
-function decrypt(text, pass) {
-    var decipher = crypto.createDecipher(algorithm, pass);
-    var decrypted = decipher.update(text, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-}
+    BANK_PUBLIC_KEY = decryptedBank.decryptedBank[0];
+    BANK_PRIVATE_KEY = decryptedBank.decryptedBank[1];
+    AMGG_USERNAME = decryptedBank.decryptedBank[2];
+});
 
-var decryptedBank = decrypt(nconf.get('credomatic:credentials'), argv.password);
-decryptedBank = decryptedBank.split('|');
-var credomaticHash = crypto.createHash('md5')
-                           .update(decryptedBank[0] + '|' +
-                                   decryptedBank[1] + '|' +
-                                   decryptedBank[2])
-                           .digest('hex');
+decrypt.email(argv.password, function(decryptedEmail) {
+    if (decryptedEmail.hasOwnProperty('err')) {
+        log.error(decryptedEmail.err);
+        process.exit();
+    }
 
-if (credomaticHash !== decryptedBank[3]) {
-    log.error('Incorrect password given at startup.');
-    process.exit();
-}
-
-var decryptedEmail = decrypt(nconf.get('admin:credentials'), argv.password);
-decryptedEmail = decryptedEmail.split('|');
-var emailHash = crypto.createHash('md5')
-                      .update(decryptedEmail[0] + '|' +
-                              decryptedEmail[1])
-                      .digest('hex');
-
-if (emailHash !== decryptedEmail[2]) {
-    log.error('Incorrect password given at startup. Bank worked but email didn\'t.');
-    process.exit();
-}
+    ADMIN_EMAIL = decryptedEmail.decryptedEmail[0];
+});
 
 log.info('Setting constants...');
 
 var APP_PORT = nconf.get('app:port');
-var BANK_PUBLIC_KEY = decryptedBank[0];
-var BANK_PRIVATE_KEY = decryptedBank[1];
-var AMGG_USERNAME = decryptedBank[2];
-var ADMIN_EMAIL = decryptedEmail[0];
 var CHILD_COLLECTION = nconf.get('mongo:childCollection');
 var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
@@ -142,22 +122,6 @@ var SSL_CERT_PATH = nconf.get('keys:certificate');
 var SSL_CA_PATH_1 = nconf.get('keys:ca')[0];
 var SSL_CA_PATH_2 = nconf.get('keys:ca')[1];
 var SSL_CA_PATH_3 = nconf.get('keys:ca')[2];
-
-// email strings
-//var emailHeaderSponsor =  'Thank you for your sponsorship';
-//var emailBodySponsor = 'You sponsored a child!!!!!';
-var emailHeaderRemoveSponsorship = 'Donor requesting removal of their sponsorship.';
-var emailBodyRemoveSponsorship = 'A donor is requesting the removal of their sponsorship.';
-var emailHeaderDeleteAccount = 'Donor requesting their account be deleted.';
-var emailBodyDeleteAccount = 'A donor is requesting their account be deleted.';
-var emailHeaderTempPassword = 'Temporary password for AMGG';
-var emailBodyTempPassword = 'Your temporary password is: ';
-var emailHeaderLetter = 'A Letter has Arrived';
-var emailBodyLetter = ' Contents of the Letter';
-
-// error email strings
-//var emailErrorHeader = 'Error adding sponsor for donor.';
-//var emailErrorBody = 'Error adding sponsorship for donor'; // JSON.stringify(donor);
 
 /** api routes:
  *
@@ -811,7 +775,7 @@ app.delete('/api/v1/donor/unsponsor', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    emailModule.email(ADMIN_EMAIL, emailHeaderRemoveSponsorship, emailBodyRemoveSponsorship + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
+                    emailModule.email(ADMIN_EMAIL, emailmessages.messages.to_admin.sponsorship.deleted.header, emailmessages.messages.to_admin.sponsorship.deleted.body + '\n\ndonor: ' + donorID + '\nchild: ' + childID, function(didEmail) {
                         if(didEmail === true) {
                             res.status(200).send({
                                 success: true,
@@ -865,7 +829,13 @@ app.delete('/api/v1/donor/delete', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    emailModule.email(ADMIN_EMAIL, emailHeaderDeleteAccount, emailBodyDeleteAccount + '\n\ndonor: ' + donorID, function(didEmail) {
+                    /*
+                    var changes = {
+                        'a_borrar'
+                    };
+                    mongo.edit(donorID, )
+                    */
+                    emailModule.email(ADMIN_EMAIL, emailmessages.messages.to_admin.account.deleted.header, emailmessages.messages.to_admin.account.deleted.body + '\n\ndonor: ' + donorID, function(didEmail) {
                         if(didEmail === true) {
                             res.status(200).send({
                                 success: true,
@@ -923,7 +893,7 @@ app.post('/api/v1/donor/letter', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    emailModule.email(ADMIN_EMAIL, emailHeaderLetter, emailBodyLetter + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
+                    emailModule.email(ADMIN_EMAIL, emailmessages.messages.to_admin.letter_received.header, emailmessages.messages.to_admin.letter_received.body + '\n\ndonor: ' + donorID + '\nchild: ' + childID + '\nletter: ' + letterText, function(didEmail) {
                         if(didEmail === true) {
                             res.status(200).send({
                                 success: true,
@@ -986,11 +956,19 @@ app.post('/api/v1/donor/reset', function(req, res) {
                         });
                     } else {
                         // construct the email with the donor's new password and send the email
-                        emailModule.email(data['correo_electrónico'], emailHeaderTempPassword, emailBodyTempPassword + tempPassword, function() {
-                            res.status(200).send({
-                                success: true,
-                                message: 'Donor password reset.'
-                            });
+                        emailModule.email(data['correo_electrónico'], emailmessages.messages.to_donor.forgot_password.header, emailmessages.messages.to_donor.forgot_password.header.body + ' ' + tempPassword, function(didEmail) {
+                            if(didEmail === true) {
+                                res.status(200).send({
+                                    success: true,
+                                    message: 'Donor password reset.'
+                                });
+                            } else {
+                                eventlog.error('Error sending donor their new password. Donor password is: ' + tempPassword + '. Donor ID: ' + id);
+                                res.status(500).send({
+                                    success: false,
+                                    message: 'An error occured on email.'
+                                });
+                            }
                         });
                     }
                 });
