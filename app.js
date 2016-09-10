@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 var request = require('request');
 var querystring = require('querystring');
 var argv = require('minimist')(process.argv.slice(2));
+var crypto = require('crypto');
 
 var mongo = require('./data/mongo.js');
 var password = require('./data/password.js');
@@ -602,10 +603,24 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 for (var kid = 0; kid < cartKids.length; kid++) {
                                                     donorKids.push(cartKids[kid]);
                                                 }
-                                                mongo.edit(donor_id, {'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
+
+                                                // encrypt some credit card credentials
+                                                var cipherCC = crypto.createCipher('aes-256-ctr', argv.password);
+                                                var cryptedCC = cipherCC.update(ccnumber, 'utf8', 'hex');
+                                                cryptedCC += cipherCC.final('hex');
+
+                                                var cipherEXP = crypto.createCipher('aes-256-ctr', argv.password);
+                                                var cryptedEXP = cipherEXP.update(expiration, 'utf8', 'hex');
+                                                cryptedEXP += cipherEXP.final('hex');
+
+                                                var cipherCVV = crypto.createCipher('aes-256-ctr', argv.password);
+                                                var cryptedCVV = cipherCVV.update(cvv, 'utf8', 'hex');
+                                                cryptedCVV += cipherCVV.final('hex');
+
+                                                mongo.edit(donor_id, {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'cvv': cryptedCVV, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
                                                     if (result.hasOwnProperty('err')) {
                                                         // log lack of editing and response appropriately...
-                                                        eventlog.error('Error editing database when sponsoring children. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + {'transacciones': donorPayments});
+                                                        eventlog.error('Error editing database when sponsoring children. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'cvv': cryptedCVV, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments});
                                                     }
                                                     // then delete the cart doc
                                                     cart.delete(donor_id, function() {
