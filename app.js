@@ -613,14 +613,10 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                                                 var cryptedEXP = cipherEXP.update(expiration, 'utf8', 'hex');
                                                 cryptedEXP += cipherEXP.final('hex');
 
-                                                var cipherCVV = crypto.createCipher('aes-256-ctr', argv.password);
-                                                var cryptedCVV = cipherCVV.update(cvv, 'utf8', 'hex');
-                                                cryptedCVV += cipherCVV.final('hex');
-
-                                                mongo.edit(donor_id, {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'cvv': cryptedCVV, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
+                                                mongo.edit(donor_id, {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments}, DONOR_COLLECTION, function(result) {
                                                     if (result.hasOwnProperty('err')) {
                                                         // log lack of editing and response appropriately...
-                                                        eventlog.error('Error editing database when sponsoring children. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'cvv': cryptedCVV, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments});
+                                                        eventlog.error('Error editing database when sponsoring children. Card charged but no edits were made on the donor document. Check to see the children are correctly marked as sponsored. Donor changes: ' + {'ccnumber': cryptedCC, 'expiration': cryptedEXP, 'niños_patrocinadoras': donorKids, 'transacciones': donorPayments});
                                                     }
                                                     // then delete the cart doc
                                                     cart.delete(donor_id, function() {
