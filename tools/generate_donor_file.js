@@ -33,11 +33,10 @@ mongo.find({'niños_patrocinadoras':{$ne:null}}, nconf.get('mongo:donorCollectio
         donor.ref = 'Padrino ' + (i + 1);
         donor.ccnumber = decrypt(donorDocs[i].ccnumber);
         donor.exp = exp.slice(0,2) + '20' + exp.slice(2, 4);
-        donor.amount = 200;
+        donor.amount = 200 * donorDocs[i].niños_patrocinadoras.length;
         donor.date = date.getDate().toString() + (date.getMonth() + 1).toString() + date.getFullYear().toString().replace('20', '');
         donor.email = donorDocs[i].correo_electrónico;
         writer.write(donor);
-
     }
 
     writer.end();
