@@ -77,6 +77,6 @@ exports.mongo = function(argvPassword, callback) {
     if (mongoHash !== decryptedMongo[2]) {
         callback({'err': 'incorrect password given at startup.'})
     } else {
-        callback({'decryptedBank': decryptedMongo});
+        callback({'decryptedMongo': decryptedMongo});
     }
 };
