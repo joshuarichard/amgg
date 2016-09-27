@@ -191,12 +191,15 @@ $(document).ready(function() {
 
         // create the description element
         var divData = document.createElement('div');
-        divData.className = 'col-xs-6 child-name';
-        divData.style = 'height:75px; color:#F5842A';
-        var hData = document.createElement('span');
-        hData.id = 'child-name-text';
-        hData.innerHTML = 'Hola, me llamo ' + name + '!';
+        divData.className = 'col-xs-6';
+        // umbrella
+        //divData.style = 'height:75px; color:#F5842A';
+        var hData = document.createElement('h2');
+        //hData.id = 'child-name-text';
+        //hData.innerHTML = 'Hola, me llamo ' + name + '!';
+        hData.innerHTML = '<b>Hola, me llamo ' + name + '!</b>';
         divData.appendChild(hData);
+
         var divDescription = document.createElement('div');
         divDescription.className = 'child-description';
         var pData1 = document.createElement('p');
@@ -241,11 +244,13 @@ $(document).ready(function() {
     $('.nav-buttons').hide();
 
     //resize the child name header if their name is really long
+    /* took out Jake's child name modifications (for long names) for now
     $(document).arrive('#child-name-text', {existing: true}, function() {
         $('.child-name').textfill({
             minFontPixels: 25
         });
     });
+    */
 
     // add a slide to the carousel given slide html
     function addSlide(slide) {
