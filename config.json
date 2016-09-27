@@ -1,9 +1,9 @@
 {
     "mongo": {
-        "host": "73.227.187.84",
+        "host": "192.169.197.108",
         "port": "27017",
         "credentials": "x",
-        "db": "prod-v2",
+        "db": "production-beta",
         "childCollection": "children",
         "donorCollection": "donors",
         "cartCollection": "carts"
@@ -12,19 +12,12 @@
         "port": 3000
     },
     "autofill": {
-        "db": "prod-v2",
+        "db": "production-beta",
         "childCollection": "children",
         "donorCollection": "donors",
         "numOfDocs": "10"
     },
     "keys": {
-        "sslkey": "./keys/amgg-rsa.key",
-        "certificate": "./keys/amgg.crt",
-        "ca": [
-            "./keys/gd1.crt",
-            "./keys/gd2.crt",
-            "./keys/gd3.crt"
-        ],
         "token": "x"
     },
     "credomatic": {

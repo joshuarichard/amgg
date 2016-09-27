@@ -118,11 +118,6 @@ var DONOR_COLLECTION = nconf.get('mongo:donorCollection');
 var CART_COLLECTION = nconf.get('mongo:cartCollection');
 var CHILD_COST = nconf.get('amgg:childCost');
 var TOKEN_KEY = nconf.get('keys:token');
-var SSL_KEY_PATH = nconf.get('keys:sslkey');
-var SSL_CERT_PATH = nconf.get('keys:certificate');
-var SSL_CA_PATH_1 = nconf.get('keys:ca')[0];
-var SSL_CA_PATH_2 = nconf.get('keys:ca')[1];
-var SSL_CA_PATH_3 = nconf.get('keys:ca')[2];
 
 /** api routes:
  *
@@ -989,5 +984,5 @@ app.post('/api/v1/donor/reset', function(req, res) {
 });
 
 app.listen(APP_PORT, function () {
-    log.info('Server up and listening at https://0.0.0.0:' + APP_PORT);
+    log.info('Server up and listening at http://0.0.0.0:' + APP_PORT);
 });
