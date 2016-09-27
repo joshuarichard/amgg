@@ -23,9 +23,11 @@ footer, .content-container:after {
   margin-bottom: 5%;
 }
 
+/* took out Jake's child name modifications (for long names) for now
 #child-name-text {
   font-weight: bold;
 }
+*/
 
 .search-info {
   font-size: 13px;
