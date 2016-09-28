@@ -376,6 +376,9 @@ app.post('/api/v1/donor/id/:id', function(req, res) {
                         delete data[0].password;
                         delete data[0].salt;
                         delete data[0].transacciones;
+                        delete data[0].ccnumber;
+                        delete data[0].expiration;
+                        delete data[0].cvv;
                         res.send(data);
                     }
                 });
@@ -428,10 +431,19 @@ app.put('/api/v1/donor/id/:id', function(req, res) {
                     mongo.edit(id, changes, DONOR_COLLECTION, function(result) {
                         if (result.hasOwnProperty('err')) {
                             eventlog.error('Internal server error. Donor ' + id + ' not edited with changes ' + changes + '. Error: ' + result);
-                            res.status(500).send({
-                                success: false,
-                                message: result.err
-                            });
+                            if (result.hasOwnProperty('code')) {
+                                if (result.code === 11000) {
+                                    res.status(409).send({
+                                        success: false,
+                                        message: result.err
+                                    });
+                                }
+                            } else {
+                                res.status(500).send({
+                                    success: false,
+                                    message: result.err
+                                });
+                            }
                         } else {
                             eventlog.info('Donor ' + id + ' edited with changes ' + changes);
                             res.status(200).send({

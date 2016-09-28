@@ -709,13 +709,13 @@ $(document).ready(function() {
                             'token' : sessionStorage.getItem('token')
                         },
                         success: function(res) {
-                            document.getElementById('form-first-name').value = res.nombre;
-                            document.getElementById('form-last-name').value = res.apellido;
-                            document.getElementById('form-phone').value = res.teléfono;
-                            document.getElementById('form-email').value = res.correo_electrónico;
-                            document.getElementById('form-street').value = res.calle;
-                            document.getElementById('form-city').value = res.ciudad;
-                            document.getElementById('departamento').value = res.departamento;
+                            document.getElementById('form-first-name').value = res[0].nombre;
+                            document.getElementById('form-last-name').value = res[0].apellido;
+                            document.getElementById('form-phone').value = res[0].teléfono;
+                            document.getElementById('form-email').value = res[0].correo_electrónico;
+                            document.getElementById('form-street').value = res[0].calle;
+                            document.getElementById('form-city').value = res[0].ciudad;
+                            document.getElementById('departamento').value = res[0].departamento;
                         }
                     });
                 },
@@ -724,7 +724,7 @@ $(document).ready(function() {
                         alert('Página no encontrada.');
                     },
                     409: function() {
-                        alert('el correo electrónico ya está asociada a una cuenta.');
+                        alert('El correo electrónico ya está asociada a una cuenta.');
                     },
                     500: function() {
                         alert('Ha ocurrido un error. Por favor inténtelo de nuevo o póngase en contacto con un administrador.');
