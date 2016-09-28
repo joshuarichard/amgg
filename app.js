@@ -835,12 +835,6 @@ app.delete('/api/v1/donor/delete', function(req, res) {
                         message: 'Failed to authenticate token.'
                     });
                 } else {
-                    /*
-                    var changes = {
-                        'a_borrar'
-                    };
-                    mongo.edit(donorID, )
-                    */
                     emailModule.email(ADMIN_EMAIL, emailmessages.messages.to_admin.account.deleted.header, emailmessages.messages.to_admin.account.deleted.body + '\n\ndonor: ' + donorID, function(didEmail) {
                         if(didEmail === true) {
                             res.status(200).send({
