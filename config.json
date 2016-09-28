@@ -1,6 +1,6 @@
 {
     "mongo": {
-        "host": "192.169.197.108",
+        "host": "x",
         "port": "27017",
         "credentials": "x",
         "db": "production-beta",
