@@ -367,6 +367,7 @@ $(document).ready(function() {
 
     // add a child to the slide button
     $('#add-button').click(function() {
+        $('#adding-child-spinner').show();
         var selector = checkSearchPanel();
 
         insertChild(selector, function(res) {
@@ -374,9 +375,11 @@ $(document).ready(function() {
                 console.log('inserted child.');
                 var slide = owl.data('owlCarousel').owl.owlItems.length;
                 owl.data('owlCarousel').jumpTo(slide);
+                $('#adding-child-spinner').hide();
                 $('.left-right').show();
             } else {
                 console.log('did not insert a child.');
+                $('#adding-child-spinner').hide();
             }
         });
     });
@@ -424,6 +427,7 @@ $(document).ready(function() {
                 if (res.success === true) {
                     console.log('inserted search child.');
                 } else {
+                    $('#adding-child-spinner').show();
                     owl.owlCarousel({
                         navigation : false,
                         slideSpeed : 800,
@@ -436,8 +440,10 @@ $(document).ready(function() {
                     insertChild({}, function(res) {
                         if (res.success === true) {
                             console.log('inserted child. search came up empty.');
+                            $('#adding-child-spinner').hide();
                         } else {
                             console.log('general unsponsored child not inserted.');
+                            location.reload();
                         }
                     });
                     console.log('did not insert a child.');
