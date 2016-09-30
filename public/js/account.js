@@ -624,7 +624,7 @@ $(document).ready(function() {
                 if (sessionStorage.getItem('assignedDonorID') != null && sessionStorage.getItem('assignedDonorID') != '') {
                     sessionStorage.removeItem('assignedDonorID');
                 }
-                window.location = 'children.html';
+                window.location = '../index.html';
             }
         });
 
@@ -676,7 +676,7 @@ $(document).ready(function() {
         console.log('No se encontró información de acceso, introduzca su login.');
         document.getElementById('myTab').remove();
         alert('Entra en la cuenta para acceder a esta página.');
-        window.location = 'children.html';
+        window.location = '../index.html';
     }
 
     function submitInfoChanges() {
@@ -841,16 +841,21 @@ $(document).ready(function() {
                     if (today < birthdayISO) { age--; }
 
                     var gender = res[0].género;
+                    if (gender = "M") {
+                        gender = "masculino";
+                    } else {
+                        gender = "mujer";
+                    }
                     var departamento = res[0].departamento;
                     var center = res[0].centro_de_niños;
-                    var hobbies = res[0].pasatiempos;
+                    //var hobbies = res[0].pasatiempos;
                     var picture = res[0].foto;
 
                     //create elements for child picture
                     var picTD = document.createElement('td');
                     var picIMG = document.createElement('img');
                     picIMG.className = 'child-img';
-                    picIMG.src = picture;
+                    picIMG.src = 'data:image/jpeg;base64,' + picture;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
 
@@ -864,7 +869,7 @@ $(document).ready(function() {
                     var genderDiv = document.createElement('div');
                     var departamentoDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
-                    var hobbiesDiv = document.createElement('div');
+                    //var hobbiesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
@@ -873,7 +878,7 @@ $(document).ready(function() {
                     genderDiv.className = 'child-info';
                     departamentoDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
-                    hobbiesDiv.className = 'child-info';
+                    //hobbiesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
@@ -882,7 +887,7 @@ $(document).ready(function() {
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro de Niños:  </b>' + center;
-                    hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
+                    //hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
@@ -892,7 +897,7 @@ $(document).ready(function() {
                     dataDiv.appendChild(dataTD);
                     dataTD.appendChild(departamentoDiv);
                     dataTD.appendChild(centerDiv);
-                    dataTD.appendChild(hobbiesDiv);
+                    //dataTD.appendChild(hobbiesDiv);
 
                     //append child info
                     tr.appendChild(dataDiv);
@@ -996,7 +1001,7 @@ $(document).ready(function() {
     }
 
     if (sessionStorage.getItem('token') != null && sessionStorage.getItem('token') != '') {
-        document.getElementById('toggle-login').href = 'children.html';
+        document.getElementById('toggle-login').href = '../index.html';
         document.getElementById('toggle-login').innerHTML = 'Cerrar Sesión';
         $('#toggle-login').click(logout);
     } else {

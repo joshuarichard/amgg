@@ -70,7 +70,6 @@ $(document).ready(function() {
                     birthday.setFullYear(today.getFullYear());
                     if (today < birthday) { age--; }
 
-
                     var gender = childPool[a].género;
                     if (gender = "M") {
                         gender = "masculino";
