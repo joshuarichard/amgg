@@ -164,6 +164,9 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 app.get('/api/v1/children/find/:selector', function(req, res) {
     log.info('GET /api/v1/children/find/' + req.params.selector);
     var selector = query.format(JSON.parse(req.params.selector));
+    
+    // only children with pictures right now. data was all messed up.
+    selector['foto'] = {$regex: '/9j/'};
 
     // get a child pool
     mongo.find(selector, CHILD_COLLECTION, 20, true, function(children) {
@@ -495,14 +498,14 @@ app.post('/api/v1/donor/sponsor', function(req, res) {
                 var donor_id = donor.donor_id;
                 var children = donor.child_id;
                 var ccnumber, cvv, expiration;
-                if (argv.dev === false) {
-                    ccnumber = donor.ccnumber;
-                    cvv = donor.cvv;
-                    expiration = donor.expiration.replace('/', '');
-                } else {
+                if (argv.dev === true) {
                     ccnumber = '4111111111111111';
                     cvv = '111';
                     expiration = '1120';
+                } else {
+                    ccnumber = donor.ccnumber;
+                    cvv = donor.cvv;
+                    expiration = donor.expiration.replace('/', '');
                 }
 
                 // other bank parameters

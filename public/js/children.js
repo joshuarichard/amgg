@@ -71,12 +71,18 @@ $(document).ready(function() {
                     if (today < birthday) { age--; }
 
                     var gender = childPool[a].género;
+                    if (gender = "M") {
+                        gender = "masculino";
+                    } else {
+                        gender = "mujer";
+                    }
                     var location = childPool[a].departamento;
-                    var hobbies = childPool[a].pasatiempos;
+                    //var hobbies = childPool[a].pasatiempos;
                     var picture = childPool[a].foto;
                     var center = childPool[a].centro_de_niños;
-                    var dreams = childPool[a].sueños;
+                    //var dreams = childPool[a].sueños;
 
+                    /*
                     var child = {
                         'id': id,
                         'name': name,
@@ -86,6 +92,17 @@ $(document).ready(function() {
                         'hobbies': hobbies,
                         'center': center,
                         'dreams': dreams,
+                        'picture': picture
+                    };
+                    */
+
+                    var child = {
+                        'id': id,
+                        'name': name,
+                        'age': age,
+                        'gender': gender,
+                        'location': location,
+                        'center': center,
                         'picture': picture
                     };
 
@@ -183,9 +200,10 @@ $(document).ready(function() {
         var img = document.createElement('img');
         img.id = 'child-picture';
         img.className = 'img-responsive center-block child-picture';
-        img.src = picture;
+        img.src = 'data:image/jpeg;base64,' + picture;
         img.alt = 'foto de niño';
         img.title = 'foto de niño';
+        //console.log('data:image/jpeg;' + picture);
         divImg.appendChild(img);
         slide.appendChild(divImg);
 
@@ -204,7 +222,7 @@ $(document).ready(function() {
         divDescription.className = 'child-description';
         var pData1 = document.createElement('p');
         pData1.className = 'lead';
-        pData1.innerHTML = 'Vivo en ' + location + ' Guatemala y asisto al colegio ' + center + ' de AMG, mis sueños son \"' + dreams + '\"';
+        pData1.innerHTML = 'Vivo en ' + location + ' Guatemala y asisto al colegio ' + center + ' de AMG.'; /*'mis sueños son \"' + dreams + '\"'*/
         var pData2 = document.createElement('p');
         pData2.innerHTML = 'Con tu aporte mensual tu puedes ayudarme a alcanzar mis sueños.​';
         divDescription.appendChild(pData1);
@@ -213,7 +231,7 @@ $(document).ready(function() {
         var sponsorButton = document.createElement('a');
         sponsorButton.id = 'sponsor-button';
         sponsorButton.className = 'btn btn-primary btn-lg';
-        sponsorButton.href = 'checkout.html';
+        sponsorButton.href = '/views/checkout.html';
         sponsorButton.innerHTML = 'Conviértase Mi Padrino';
 
         // add the function for the sponsor button. clicking this should add
@@ -307,9 +325,14 @@ $(document).ready(function() {
     function checkSearchPanel() {
         var selector = {};
         if($('#genderSearch').text() !== 'género') {
-            selector['género'] = $('#genderSearch').text();
+            if ($('#genderSearch').text() === 'mujer') {
+                selector['género'] = 'F';
+            } else {
+                selector['género'] = 'M';
+            }
         }
-        if($('#locationSearch').text() !== 'departamento') {
+        // this should be departamento if sponsoring children from multiple schools
+        if($('#locationSearch').text() !== 'Verbena') {
             selector['departamento'] = $('#locationSearch').text();
         }
         if($('#ageSearch').text() !== 'años') {
@@ -367,6 +390,7 @@ $(document).ready(function() {
 
     // add a child to the slide button
     $('#add-button').click(function() {
+        $('#adding-child-spinner').show();
         var selector = checkSearchPanel();
 
         insertChild(selector, function(res) {
@@ -374,9 +398,11 @@ $(document).ready(function() {
                 console.log('inserted child.');
                 var slide = owl.data('owlCarousel').owl.owlItems.length;
                 owl.data('owlCarousel').jumpTo(slide);
+                $('#adding-child-spinner').hide();
                 $('.left-right').show();
             } else {
                 console.log('did not insert a child.');
+                $('#adding-child-spinner').hide();
             }
         });
     });
@@ -424,6 +450,7 @@ $(document).ready(function() {
                 if (res.success === true) {
                     console.log('inserted search child.');
                 } else {
+                    $('#adding-child-spinner').show();
                     owl.owlCarousel({
                         navigation : false,
                         slideSpeed : 800,
@@ -436,8 +463,10 @@ $(document).ready(function() {
                     insertChild({}, function(res) {
                         if (res.success === true) {
                             console.log('inserted child. search came up empty.');
+                            $('#adding-child-spinner').hide();
                         } else {
                             console.log('general unsponsored child not inserted.');
+                            location.reload();
                         }
                     });
                     console.log('did not insert a child.');

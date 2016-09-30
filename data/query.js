@@ -11,8 +11,7 @@ function pad(n, width) {
 
 exports.format = function(selector) {
     // variables up here to make eslint happy
-    var currentYear, startYear, endYear, i,
-        gteDate, ltDate, birthday, currentOrs = [], ranges = [], orMonths = {};
+    var currentYear, startYear, endYear, i, gteDate, ltDate, birthday, currentOrs = [], ranges = [], orMonths = {};
 
     // selector swizzingly here we go......
 
