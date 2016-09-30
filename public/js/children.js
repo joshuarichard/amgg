@@ -64,13 +64,7 @@ $(document).ready(function() {
                     // then add the child to the slider
                     var name = childPool[a].nombre;
 
-                    function toDate(dateStr) {
-                        dateStr = dateStr.substring(0, dateStr.indexOf(' '))
-                        var parts = dateStr.split("-");
-                        return new Date(parts[2], parts[1] - 1, parts[0]);
-                    }
-
-                    var birthday = toDate(childPool[a].cumpleaños);
+                    var birthday = new Date(childPool[a].cumpleaños);
                     var today = new Date();
                     var age = today.getFullYear() - birthday.getFullYear();
                     birthday.setFullYear(today.getFullYear());
@@ -338,7 +332,8 @@ $(document).ready(function() {
                 selector['género'] = 'M';
             }
         }
-        if($('#locationSearch').text() !== 'departamento') {
+        // this should be departamento if sponsoring children from multiple schools
+        if($('#locationSearch').text() !== 'Verbena') {
             selector['departamento'] = $('#locationSearch').text();
         }
         if($('#ageSearch').text() !== 'años') {

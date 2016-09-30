@@ -164,6 +164,8 @@ app.get('/api/v1/children/id/:id', function(req, res) {
 app.get('/api/v1/children/find/:selector', function(req, res) {
     log.info('GET /api/v1/children/find/' + req.params.selector);
     var selector = query.format(JSON.parse(req.params.selector));
+    
+    // only children with pictures right now. data was all messed up.
     selector['foto'] = {$regex: '/9j/'};
 
     // get a child pool

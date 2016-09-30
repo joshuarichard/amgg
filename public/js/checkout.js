@@ -197,7 +197,7 @@ $(document).ready(function() {
     var addButton = document.createElement('button');
     addButton.className = 'btn btn-primary btn-md';
     addButton.onclick = function() {
-        window.location = 'children.html';
+        window.location = '../index.html';
     };
 
     addButton.appendChild(document.createTextNode('Apadrinar a otro niño/a'));
@@ -323,12 +323,6 @@ $(document).ready(function() {
         });
     }
 
-    function toDate(dateStr) {
-        dateStr = dateStr.substring(0, dateStr.indexOf(' '))
-        var parts = dateStr.split("-");
-        return new Date(parts[2], parts[1] - 1, parts[0]);
-    }
-
     function addChildToCart(id) {
         // create child's table row
         var tr = document.createElement('tr');
@@ -348,11 +342,11 @@ $(document).ready(function() {
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
-                    var date = toDate(res[0].cumpleaños);
+                    var date = new Date(res[0].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[0].nombre;
 
-                    var birthdayISO = toDate(res[0].cumpleaños);
+                    var birthdayISO = new Date(res[0].cumpleaños);
                     var today = new Date();
                     var age = today.getFullYear() - birthdayISO.getFullYear();
                     birthdayISO.setFullYear(today.getFullYear());
