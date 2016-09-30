@@ -323,6 +323,12 @@ $(document).ready(function() {
         });
     }
 
+    function toDate(dateStr) {
+        dateStr = dateStr.substring(0, dateStr.indexOf(' '))
+        var parts = dateStr.split("-");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
     function addChildToCart(id) {
         // create child's table row
         var tr = document.createElement('tr');
@@ -342,26 +348,31 @@ $(document).ready(function() {
                                       'Mayo', 'Junio', 'Julio', 'Agosto',
                                       'Septiembre', 'Octubre', 'Noviembre',
                                       'Diciembre'];
-                    var date = new Date(res[0].cumpleaños);
+                    var date = toDate(res[0].cumpleaños);
                     var birthday = monthNames[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
                     var name = res[0].nombre;
 
-                    var birthdayISO = new Date(res[0].cumpleaños);
+                    var birthdayISO = toDate(res[0].cumpleaños);
                     var today = new Date();
                     var age = today.getFullYear() - birthdayISO.getFullYear();
                     birthdayISO.setFullYear(today.getFullYear());
                     if (today < birthdayISO) { age--; }
 
                     var gender = res[0].género;
+                    if (gender = "M") {
+                        gender = "masculino";
+                    } else {
+                        gender = "mujer";
+                    }
                     var departamento = res[0].departamento;
                     var center = res[0].centro_de_niños;
-                    var hobbies = res[0].pasatiempos;
+                    //var hobbies = res[0].pasatiempos;
                     var picture = res[0].foto;
 
                     var picTD = document.createElement('td');
                     var picIMG = document.createElement('img');
                     picIMG.className = 'child-img';
-                    picIMG.src = picture;
+                    picIMG.src = 'data:image/jpeg;base64,' + picture;
                     picTD.appendChild(picIMG);
                     tr.appendChild(picTD);
 
@@ -375,7 +386,7 @@ $(document).ready(function() {
                     var genderDiv = document.createElement('div');
                     var departamentoDiv = document.createElement('div');
                     var centerDiv = document.createElement('div');
-                    var hobbiesDiv = document.createElement('div');
+                    //var hobbiesDiv = document.createElement('div');
 
                     // assign classes to those elements
                     nameDiv.className = 'child-info';
@@ -384,7 +395,7 @@ $(document).ready(function() {
                     genderDiv.className = 'child-info';
                     departamentoDiv.className = 'child-info';
                     centerDiv.className = 'child-info';
-                    hobbiesDiv.className = 'child-info';
+                    //hobbiesDiv.className = 'child-info';
 
                     // assign values
                     nameDiv.innerHTML = '<b> Nombre: </b>' + name;
@@ -393,7 +404,7 @@ $(document).ready(function() {
                     genderDiv.innerHTML = '<b> Género:  </b>' + gender;
                     departamentoDiv.innerHTML = '<b> Departamento: </b>' + departamento;
                     centerDiv.innerHTML = '<b> Centro/Colegio:  </b>' + center;
-                    hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
+                    //hobbiesDiv.innerHTML = '<b> Pasatiempos: </b>' + hobbies;
 
                     // append children to div
                     dataTD.appendChild(nameDiv);
@@ -402,7 +413,7 @@ $(document).ready(function() {
                     dataTD.appendChild(genderDiv);
                     dataTD.appendChild(departamentoDiv);
                     dataTD.appendChild(centerDiv);
-                    dataTD.appendChild(hobbiesDiv);
+                    //dataTD.appendChild(hobbiesDiv);
 
                     // append dataTD to the dataDiv for styling, then append to row
                     dataDiv.appendChild(dataTD);
