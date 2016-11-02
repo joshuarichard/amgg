@@ -20,7 +20,8 @@ function decrypt(text) {
 
 mongo.find({'niños_patrocinadoras':{$ne:null}}, nconf.get('mongo:donorCollection'), 10000, false, function(donorDocs) {
     var donor = {};
-    writer.pipe(fs.createWriteStream('donor_payments_' + new Date() + '.csv'));
+    var today = new Date();
+    writer.pipe(fs.createWriteStream('donor.monthly.billing.' + today.getDate() + '.' + (parseInt(today.getMonth()) + 1) + '.' + today.getFullYear() + '.csv'));
 
     for (var i = 0; i < donorDocs.length; i++) {
         donor = {};
